@@ -6,6 +6,12 @@
              mc:Ignorable="d"
              x:Class="ANT.App">
     <Application.Resources>
-
+        <ResourceDictionary>
+            
+            
+            <!--#region CORES -->
+            <Color x:Key="ColorPurple">Purple</Color>
+            <!--#endregion-->
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
