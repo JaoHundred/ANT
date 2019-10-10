@@ -4,12 +4,17 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="ANT.Modules.SettingsView">
+             x:Class="ANT.Modules.SettingsView"
+             xmlns:module="clr-namespace:ANT.Modules"
+             x:DataType="module:SettingsViewModel">
+    
+    <ContentPage.BindingContext>
+        <module:SettingsViewModel/>
+    </ContentPage.BindingContext>
+    
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <TableView Intent="Settings" HasUnevenRows="True">
+            
+        </TableView>
     </ContentPage.Content>
 </ContentPage>

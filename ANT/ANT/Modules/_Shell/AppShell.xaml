@@ -1,36 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Shell xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             xmlns:modules="clr-namespace:ANT.Modules"
-             x:Class="ANT.Modules.AppShell"
-             FlyoutHeaderBehavior="Fixed"
-             x:DataType="modules:AppShell">
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       mc:Ignorable="d"
+       xmlns:modules="clr-namespace:ANT.Modules"
+       x:Class="ANT.Modules.AppShell"
+       x:DataType="modules:AppShell"
+       FlyoutHeaderBehavior="Fixed" >
+    <!--para mudar a cor da navigation bar, só funciona se setar o backgroundColor direto na prop do shell-->
+
 
     <Shell.BindingContext>
         <modules:AppShellViewModel/>
     </Shell.BindingContext>
 
     <Shell.FlyoutHeader>
-        <Grid>
-            <Label Text="Teste flyout" FontSize="Header"/>
+        <!--para mudar a cor do fundo do cabeçalho do hamburguer menu aberto(espaço em cima dos itens) usar a prop backgroundcolor-->
+        <Grid BackgroundColor="Green">
+            <Label Text="Teste flyout" FontSize="40"/>
         </Grid>
     </Shell.FlyoutHeader>
 
+
     <FlyoutItem Title="Home" >
-        <ShellContent ContentTemplate="{DataTemplate modules:HomeView}" />
+        <ShellContent ContentTemplate="{DataTemplate modules:HomeView}"/>
     </FlyoutItem>
-    <FlyoutItem Title="Settings" >
-        <ShellContent ContentTemplate="{DataTemplate modules:SettingsView}" />
-    </FlyoutItem>
-    
-    <ShellItem>
-        <ShellSection>
-            <ShellContent>
-                <modules:HomeView/>
-            </ShellContent>
-        </ShellSection>
-    </ShellItem>
+
 </Shell>
