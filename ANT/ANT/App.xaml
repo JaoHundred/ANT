@@ -8,7 +8,6 @@
     <Application.Resources>
         <ResourceDictionary>
             
-            
             <!--#region CORES -->
             <Color x:Key="ColorPurple">Purple</Color>
             <!--#endregion-->

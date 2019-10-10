@@ -1,4 +1,4 @@
-﻿using ANT.Modules.AppShell;
+﻿using ANT.Modules;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

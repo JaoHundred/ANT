@@ -10,12 +10,11 @@ using Xamarin.Forms.Xaml;
 namespace ANT.Modules
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AppShell : Shell
+    public partial class SettingsView : ContentPage
     {
-        public AppShell()
+        public SettingsView()
         {
             InitializeComponent();
-            
         }
     }
 }

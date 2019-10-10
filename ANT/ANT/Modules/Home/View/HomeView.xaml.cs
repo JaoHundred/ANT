@@ -15,7 +15,6 @@ namespace ANT.Modules
         public HomeView()
         {
             InitializeComponent();
-            BindingContext = new HomeViewModel();
         }
     }
 }
