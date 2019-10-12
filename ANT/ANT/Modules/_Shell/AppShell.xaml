@@ -7,12 +7,13 @@
        xmlns:modules="clr-namespace:ANT.Modules"
        x:Class="ANT.Modules.AppShell"
        x:DataType="modules:AppShell"
-       FlyoutHeaderBehavior="Fixed">
-    <!--para mudar a cor da navigation bar, só funciona se setar o backgroundColor direto na prop do shell-->
+       FlyoutHeaderBehavior="Fixed"
+       BackgroundColor="{DynamicResource StatusBarColor}">
+    <!--para mudar a cor da status bar, só funciona se setar o backgroundColor direto na prop do shell-->
 
     <Shell.FlyoutHeader>
         <!--para mudar a cor do fundo do cabeçalho do hamburguer menu aberto(espaço em cima dos itens) usar a prop backgroundcolor-->
-        <Grid BackgroundColor="Green">
+        <Grid BackgroundColor="{DynamicResource HamburgerMenuHeaderColor}">
             <Label Text="Teste flyout" FontSize="40"/>
         </Grid>
     </Shell.FlyoutHeader>

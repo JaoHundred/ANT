@@ -13,14 +13,19 @@
     <!--https://www.color-hex.com/color/C1CDD9-->
     <Color x:Key="AppBackgroundColor">#C1CDD9</Color>
 
-    <Color x:Key="PrimaryColor">#000000</Color>
+    <Color x:Key="PrimaryColor">Pink</Color>
 
-    <Color x:Key="SecondaryColor">#000000</Color>
-
-    <!--cor placeholder-->
-    <Color x:Key="NavigationBarColor">Magenta</Color>
-    <Color x:Key="BarTextColor">Green</Color>
+    <Color x:Key="SecondaryColor">Blue</Color>
     
+    <Color x:Key="HamburgerMenuHeaderColor">#7E7958</Color>
+    <Color x:Key="StatusBarColor">#7E7958</Color>
+
+    <!--#region NAVIGATION BAR-->
+    <!--https://www.color-hex.com/color/7E7958-->
+    <Color x:Key="NavigationBarColor">#7E7958</Color>
+    <!--<Color x:Key="BarTextColor">White</Color>-->
+    <!--#endregion-->
+
     <!--#endregion-->
 
 </ResourceDictionary>

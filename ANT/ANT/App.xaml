@@ -16,7 +16,7 @@
             </Style>
             <Style TargetType="NavigationPage">
                 <Setter Property="BarBackgroundColor" Value="{DynamicResource NavigationBarColor}"/>
-                <Setter Property="BarTextColor" Value="{DynamicResource BarTextColor}"/>
+                <!--<Setter Property="BarTextColor" Value="{DynamicResource BarTextColor}"/>-->
             </Style>
 
             <!--#endregion-->

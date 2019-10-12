@@ -10,9 +10,24 @@
     <!--#region DARK THEME-->
 
     <Color x:Key="LabelTestColor">Blue</Color>
-    
+
     <!--https://www.color-hex.com/color/26292B-->
     <Color x:Key="AppBackgroundColor">#26292B</Color>
+
+    <Color x:Key="PrimaryColor">Pink</Color>
+
+    <Color x:Key="SecondaryColor">WhiteSmoke</Color>
+
+    <Color x:Key="HamburgerMenuHeaderColor">#26292B</Color>
+    <Color x:Key="StatusBarColor">#26292B</Color>
+    <!--#endregion-->
+
+    <!--#region NAVIGATION BAR-->
+    <!--https://www.color-hex.com/color/7E7958-->
+    <Color x:Key="NavigationBarColor">#7E7958</Color>
+    <!--<Color x:Key="BarTextColor">White</Color>-->
+    <!--#endregion-->
+
     <!--#endregion-->
 
 </ResourceDictionary>
