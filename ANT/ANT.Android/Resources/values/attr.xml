@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<resources>
-  <attr name="toolbarStyle" format="reference"/>
-  <attr name="toolbarPopupStyle" format="reference"/>
-</resources>
