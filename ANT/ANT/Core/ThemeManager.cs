@@ -39,15 +39,12 @@ namespace ANT.Core
                 {
                     case Themes.Light:
                         mergedDictionaries.Add(new LightTheme());
-                        //ChangeNavBar(theme);
                         break;
                     case Themes.Dark:
                         mergedDictionaries.Add(new DarkTheme());
-                        //ChangeNavBar(theme);
                         break;
                     default:
                         mergedDictionaries.Add(new LightTheme());
-                        //ChangeNavBar(theme);
                         break;
                 }
             }
@@ -69,16 +66,6 @@ namespace ANT.Core
         public static Themes CurrentTheme()
         {
             return (Themes)CrossSettings.Current.GetValueOrDefault("SelectedTheme", (int)Themes.Light);
-        }
-
-        private static void ChangeNavBar(Themes theme)
-        {
-            if (Device.RuntimePlatform == Device.Android)
-            {
-                var dp = DependencyService.Get<INativeChangeThemeService>();
-
-                dp.onThemeChanged(theme);
-            }
         }
     }
 }
