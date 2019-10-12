@@ -67,5 +67,19 @@ namespace ANT.Core
         {
             return (Themes)CrossSettings.Current.GetValueOrDefault("SelectedTheme", (int)Themes.Light);
         }
+
+        //TODO: descobrir um meio de setar a acent color com o valor do dicionário de chave "PrimaryColor"
+        private void GetAcentColor(Themes themes, ResourceDictionary dic)
+        {
+            switch (themes)
+            {
+                case Themes.Light:
+                    break;
+                case Themes.Dark:
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

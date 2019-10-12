@@ -6,25 +6,26 @@
              mc:Ignorable="d"
              x:Class="ANT.Themes.LightTheme">
 
+    <!--https://www.color-hex.com/color/{codigo da cor sem #}-->
+
     <!--#region LIGHT/DEFAULT THEME-->
 
-    <Color x:Key="LabelTestColor">Red</Color>
+    <!--blackgray-->
+    <Color x:Key="TextColor">#26292B</Color>
 
-    <!--https://www.color-hex.com/color/C1CDD9-->
+    
+
+    <!--azul desbotado-->
     <Color x:Key="AppBackgroundColor">#C1CDD9</Color>
 
-    <Color x:Key="PrimaryColor">Pink</Color>
+    <Color x:Key="PrimaryColor">BlueViolet</Color>
 
     <Color x:Key="SecondaryColor">Blue</Color>
-    
+
+    <!--dourado desbotado-->
     <Color x:Key="HamburgerMenuHeaderColor">#7E7958</Color>
     <Color x:Key="StatusBarColor">#7E7958</Color>
 
-    <!--#region NAVIGATION BAR-->
-    <!--https://www.color-hex.com/color/7E7958-->
-    <Color x:Key="NavigationBarColor">#7E7958</Color>
-    <!--<Color x:Key="BarTextColor">White</Color>-->
-    <!--#endregion-->
 
     <!--#endregion-->
 

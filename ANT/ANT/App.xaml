@@ -10,15 +10,20 @@
         <ResourceDictionary Source="Themes/LightTheme.xaml">
             <!--tema padrao setado no source-->
 
-            <!--#region STYLES CONTROLS COLORS-->
+            <!--#region Padrão todos os controles-->
             <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
                 <Setter Property="BackgroundColor" Value="{DynamicResource AppBackgroundColor}"/>
             </Style>
-            <Style TargetType="NavigationPage">
-                <Setter Property="BarBackgroundColor" Value="{DynamicResource NavigationBarColor}"/>
-                <!--<Setter Property="BarTextColor" Value="{DynamicResource BarTextColor}"/>-->
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
+            </Style>
+            <Style TargetType="Picker">
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
             </Style>
 
+            <!--#endregion-->
+            
+            <!--#region ESPECIFICO DE CONTROLES -->
             <!--#endregion-->
 
         </ResourceDictionary>
