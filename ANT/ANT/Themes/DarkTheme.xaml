@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="ANT.Themes.DarkTheme">
+
+
+    <!--#region DARK THEME-->
+
+    <Color x:Key="LabelTestColor">Blue</Color>
+    
+    <!--https://www.color-hex.com/color/26292B-->
+    <Color x:Key="AppBackgroundColor">#26292B</Color>
+    <!--#endregion-->
+
+</ResourceDictionary>

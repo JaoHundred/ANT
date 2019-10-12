@@ -5,18 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
-using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms.Xaml;
 
-namespace ANT.Modules
+namespace ANT.Themes
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AppShell : Shell
+    public partial class LightTheme : ResourceDictionary
     {
-        public AppShell()
+        public LightTheme()
         {
             InitializeComponent();
-            BindingContext = new AppShellViewModel();
         }
     }
 }

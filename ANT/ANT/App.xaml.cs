@@ -1,4 +1,5 @@
-﻿using ANT.Modules;
+﻿using ANT.Core;
+using ANT.Modules;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -10,7 +11,7 @@ namespace ANT
         public App()
         {
             InitializeComponent();
-
+            ThemeManager.LoadTheme();
             MainPage = new AppShell();
         }
 

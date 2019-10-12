@@ -4,16 +4,21 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:Theme="clr-namespace:ANT.Themes"
              x:Class="ANT.App">
     <Application.Resources>
-        <ResourceDictionary >
+        <ResourceDictionary Source="Themes/LightTheme.xaml">
+            <!--tema padrao setado no source-->
 
-            <!--#region COLORS-->
-            <Color x:Key="ColorPurple">Purple</Color>
-            <Color x:Key="ColorMediumPurple">MediumPurple</Color>
-            <!--#endregion-->
+            <!--#region STYLES CONTROLS COLORS-->
+            <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
+                <Setter Property="BackgroundColor" Value="{DynamicResource AppBackgroundColor}"/>
+            </Style>
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="{DynamicResource NavigationBarColor}"/>
+                <Setter Property="BarTextColor" Value="{DynamicResource BarTextColor}"/>
+            </Style>
 
-            <!--#region STYLES ALL -->
             <!--#endregion-->
 
         </ResourceDictionary>

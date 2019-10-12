@@ -15,6 +15,7 @@ namespace ANT.Modules
         public SettingsView()
         {
             InitializeComponent();
+            BindingContext = new SettingsViewModel();
         }
     }
 }

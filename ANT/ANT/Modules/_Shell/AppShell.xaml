@@ -7,13 +7,8 @@
        xmlns:modules="clr-namespace:ANT.Modules"
        x:Class="ANT.Modules.AppShell"
        x:DataType="modules:AppShell"
-       FlyoutHeaderBehavior="Fixed" >
+       FlyoutHeaderBehavior="Fixed">
     <!--para mudar a cor da navigation bar, só funciona se setar o backgroundColor direto na prop do shell-->
-
-
-    <Shell.BindingContext>
-        <modules:AppShellViewModel/>
-    </Shell.BindingContext>
 
     <Shell.FlyoutHeader>
         <!--para mudar a cor do fundo do cabeçalho do hamburguer menu aberto(espaço em cima dos itens) usar a prop backgroundcolor-->
@@ -25,6 +20,10 @@
 
     <FlyoutItem Title="Home" >
         <ShellContent ContentTemplate="{DataTemplate modules:HomeView}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Settings">
+        <ShellContent ContentTemplate="{DataTemplate modules:SettingsView}"/>
     </FlyoutItem>
 
 </Shell>

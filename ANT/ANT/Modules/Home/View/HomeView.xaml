@@ -4,11 +4,8 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="ANT.Modules.HomeView" BackgroundColor="{StaticResource ColorPurple}"
-             xmlns:modules="clr-namespace:ANT.Modules">
-    <ContentPage.BindingContext>
-        <modules:HomeViewModel/>
-    </ContentPage.BindingContext>
+             x:Class="ANT.Modules.HomeView" 
+             >
 
     <ContentPage.Content>
         <StackLayout>
