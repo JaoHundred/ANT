@@ -13,7 +13,8 @@
     <!--blackgray-->
     <Color x:Key="TextColor">#26292B</Color>
 
-    
+    <!--azul violeta-->
+    <Color x:Key="TextMenuColor">#4d4dff</Color>
 
     <!--azul desbotado-->
     <Color x:Key="AppBackgroundColor">#C1CDD9</Color>
@@ -22,6 +23,8 @@
 
     <Color x:Key="SecondaryColor">Blue</Color>
 
+
+    <Color x:Key="HamburgerMenuBodyColor">WhiteSmoke</Color> 
     <!--dourado desbotado-->
     <Color x:Key="HamburgerMenuHeaderColor">#7E7958</Color>
     <Color x:Key="StatusBarColor">#7E7958</Color>

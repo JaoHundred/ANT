@@ -13,6 +13,9 @@
     <!--whitegray-->
     <Color x:Key="TextColor">#d3d4d4</Color>
 
+    <!--verde limão escuro-->
+    <Color x:Key="TextMenuColor">#6ea503</Color>
+
     <!--quase total preto-->
     <Color x:Key="AppBackgroundColor">#26292B</Color>
 
@@ -24,6 +27,7 @@
     <Color x:Key="HamburgerMenuHeaderColor">#26292B</Color>
     <Color x:Key="StatusBarColor">#26292B</Color>
 
+    <Color x:Key="HamburgerMenuBodyColor">#323232</Color>
 
     <!--#endregion-->
 

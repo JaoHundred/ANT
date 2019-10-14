@@ -8,7 +8,8 @@
        x:Class="ANT.Modules.AppShell"
        x:DataType="modules:AppShell"
        FlyoutHeaderBehavior="Fixed"
-       BackgroundColor="{DynamicResource StatusBarColor}">
+       BackgroundColor="{DynamicResource StatusBarColor}" 
+       FlyoutBackgroundColor="{DynamicResource HamburgerMenuBodyColor }">
     <!--para mudar a cor da status bar, só funciona se setar o backgroundColor direto na prop do shell-->
 
     <Shell.FlyoutHeader>
@@ -18,8 +19,9 @@
         </Grid>
     </Shell.FlyoutHeader>
 
+    
 
-    <FlyoutItem Title="Home" >
+    <FlyoutItem Title="Home">
         <ShellContent ContentTemplate="{DataTemplate modules:HomeView}"/>
     </FlyoutItem>
 

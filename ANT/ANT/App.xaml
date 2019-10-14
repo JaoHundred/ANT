@@ -24,6 +24,10 @@
             <!--#endregion-->
             
             <!--#region ESPECIFICO DE CONTROLES -->
+            <Style TargetType="Label" x:Key="MenuLabelColor">
+                <Setter Property="TextColor" Value="{DynamicResource TextMenuColor}"/>
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
             <!--#endregion-->
 
         </ResourceDictionary>
