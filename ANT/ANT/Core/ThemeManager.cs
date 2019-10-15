@@ -1,14 +1,18 @@
 ﻿using ANT.Themes;
-using Plugin.Settings;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace ANT.Core
 {
     public class ThemeManager
     {
+
+        private static readonly string _themeKey = "SelectedTheme";
+        public static int _currentThemeIndex;
+
         /// <summary>
         /// Defines the supported themes for the sample app
         /// </summary>
@@ -24,49 +28,79 @@ namespace ANT.Core
         /// This also updates the local key storage value for the selected theme.
         /// </summary>
         /// <param name="theme"></param>
-        public static void ChangeTheme(Themes theme)
+        public static Task ChangeThemeAsync(Themes theme)
         {
-            //TODO:não está salvando a preferência de tema entre execuções
-            var mergedDictionaries = Application.Current.Resources.MergedDictionaries;
-            if (mergedDictionaries != null)
+            return Task.Run(async () =>
             {
-                mergedDictionaries.Clear();
-
-                //Update local key value with the new theme you select.
-                CrossSettings.Current.AddOrUpdateValue("SelectedTheme", (int)theme);
-
-                switch (theme)
+                var mergedDictionaries = Application.Current.Resources.MergedDictionaries;
+                if (mergedDictionaries != null)
                 {
-                    case Themes.Light:
-                        mergedDictionaries.Add(new LightTheme());
-                        break;
-                    case Themes.Dark:
-                        mergedDictionaries.Add(new DarkTheme());
-                        break;
-                    default:
-                        mergedDictionaries.Add(new LightTheme());
-                        break;
+                    mergedDictionaries.Clear();
+
+                    await UpdateSelectedThemeAsync(theme);
+                    _currentThemeIndex = (int)theme;
+
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        switch (theme)
+                        {
+                            case Themes.Light:
+                                mergedDictionaries.Add(new LightTheme());
+                                break;
+                            case Themes.Dark:
+                                mergedDictionaries.Add(new DarkTheme());
+                                break;
+                            default:
+                                mergedDictionaries.Add(new LightTheme());
+                                break;
+                        }
+                    });
                 }
-            }
+            });
         }
 
         /// <summary>
         /// Reads current theme id from the local storage and loads it.
         /// </summary>
-        public static void LoadTheme()
+        public static Task LoadThemeAsync()
         {
-            Themes currentTheme = CurrentTheme();
-            ChangeTheme(currentTheme);
+            return Task.Run(async () =>
+           {
+               Themes currentTheme = await CurrentThemeOrCreateAsync();
+               await ChangeThemeAsync(currentTheme);
+           });
         }
 
         /// <summary>
         /// Gives current/last selected theme from the local storage.
         /// </summary>
         /// <returns></returns>
-        public static Themes CurrentTheme()
+        private static Task<Themes> CurrentThemeOrCreateAsync()
         {
-            return (Themes)CrossSettings.Current.GetValueOrDefault("SelectedTheme", (int)Themes.Light);
+            return Task<Themes>.Run(async () =>
+            {
+                bool hasKey = App.Current.Properties.ContainsKey(_themeKey);
+
+                if (hasKey)
+                    return (Themes)App.Current.Properties[_themeKey];
+
+                App.Current.Properties.Add(_themeKey, (int)Themes.Light);
+                await App.Current.SavePropertiesAsync();
+
+                return Themes.Light;
+            });
         }
 
+        private static Task UpdateSelectedThemeAsync(Themes theme)
+        {
+            return Task.Run(async () =>
+            {
+
+                var themeId = (int)theme;
+                App.Current.Properties[_themeKey] = themeId;
+
+                await App.Current.SavePropertiesAsync();
+            });
+        }
     }
 }

@@ -7,8 +7,10 @@
              xmlns:Theme="clr-namespace:ANT.Themes"
              x:Class="ANT.App">
     <Application.Resources>
-        <ResourceDictionary Source="Themes/LightTheme.xaml">
-            <!--tema padrao setado no source-->
+        <ResourceDictionary >
+            <ResourceDictionary.MergedDictionaries>
+                <Theme:LightTheme/> <!--tema padrão-->
+            </ResourceDictionary.MergedDictionaries>
 
             <!--#region Padrão todos os controles-->
             <Style TargetType="ContentPage" ApplyToDerivedTypes="True">

@@ -11,7 +11,7 @@ namespace ANT.UTIL
         public event PropertyChangedEventHandler PropertyChanged;
 
 
-        protected void OnPropertyChanged<T>(ref T property, T newValue, [CallerMemberName] string propertyName = null)
+        protected void Changed<T>(ref T property, T newValue, [CallerMemberName] string propertyName = null)
         {
             if (!EqualityComparer<T>.Default.Equals(property, newValue))
             {

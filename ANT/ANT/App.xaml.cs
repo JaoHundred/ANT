@@ -11,13 +11,13 @@ namespace ANT
         public App()
         {
             InitializeComponent();
-            ThemeManager.LoadTheme();
             MainPage = new AppShell();
         }
 
-        protected override void OnStart()
+        protected async override void OnStart()
         {
             // Handle when your app starts
+            await ThemeManager.LoadThemeAsync();
         }
 
         protected override void OnSleep()
