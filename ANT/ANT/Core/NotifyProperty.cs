@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ANT.UTIL
 {
-    public class NotifyProperty : INotifyPropertyChanged
+    public abstract class NotifyProperty : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

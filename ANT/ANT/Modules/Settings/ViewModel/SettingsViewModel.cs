@@ -8,7 +8,7 @@ using Xamarin.Forms;
 
 namespace ANT.Modules
 {
-    class SettingsViewModel : NotifyProperty
+    public class SettingsViewModel
     {
         public SettingsViewModel()
         {
