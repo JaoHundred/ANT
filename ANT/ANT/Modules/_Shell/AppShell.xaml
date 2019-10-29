@@ -5,6 +5,7 @@
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        mc:Ignorable="d"
        xmlns:modules="clr-namespace:ANT.Modules"
+       xmlns:res="clr-namespace:ANT.Lang"
        x:Class="ANT.Modules.AppShell"
        x:DataType="modules:AppShell"
        FlyoutHeaderBehavior="Fixed"
@@ -15,17 +16,17 @@
     <Shell.FlyoutHeader>
         <!--para mudar a cor do fundo do cabeçalho do hamburguer menu aberto(espaço em cima dos itens) usar a prop backgroundcolor-->
         <Grid BackgroundColor="{DynamicResource HamburgerMenuHeaderColor}">
-            <Label Text="Teste flyout" FontSize="40"/>
+            <Label Text="ANT" FontSize="40"/>
         </Grid>
     </Shell.FlyoutHeader>
 
     
 
-    <FlyoutItem Title="Home">
+    <FlyoutItem Title="{res:Translate Home}">
         <ShellContent ContentTemplate="{DataTemplate modules:HomeView}"/>
     </FlyoutItem>
 
-    <FlyoutItem Title="Settings">
+    <FlyoutItem Title="{res:Translate Settings}">
         <ShellContent ContentTemplate="{DataTemplate modules:SettingsView}"/>
     </FlyoutItem>
 

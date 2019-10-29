@@ -29,6 +29,8 @@
 
     <Color x:Key="HamburgerMenuBodyColor">#323232</Color>
 
+    <Color x:Key="ProgressIndicatorColor">Green</Color>
+
     <!--#endregion-->
 
 </ResourceDictionary>

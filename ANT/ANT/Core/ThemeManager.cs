@@ -37,8 +37,10 @@ namespace ANT.Core
                 {
                     mergedDictionaries.Clear();
 
-                    await UpdateSelectedThemeAsync(theme);
-                    _currentThemeIndex = (int)theme;
+                    int themeId = (int)theme;
+
+                    await UpdateSelectedThemeAsync(themeId);
+                    _currentThemeIndex = themeId;
 
                     Device.BeginInvokeOnMainThread(() =>
                     {
@@ -91,12 +93,10 @@ namespace ANT.Core
             });
         }
 
-        private static Task UpdateSelectedThemeAsync(Themes theme)
+        private static Task UpdateSelectedThemeAsync(int themeId)
         {
             return Task.Run(async () =>
             {
-
-                var themeId = (int)theme;
                 App.Current.Properties[_themeKey] = themeId;
 
                 await App.Current.SavePropertiesAsync();

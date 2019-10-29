@@ -29,6 +29,7 @@
     <Color x:Key="HamburgerMenuHeaderColor">#7E7958</Color>
     <Color x:Key="StatusBarColor">#7E7958</Color>
 
+    <Color x:Key="ProgressIndicatorColor">DarkGreen</Color>
 
     <!--#endregion-->
 
