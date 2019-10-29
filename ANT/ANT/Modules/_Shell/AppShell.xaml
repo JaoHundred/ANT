@@ -27,7 +27,7 @@
     </FlyoutItem>
 
     <FlyoutItem Title="{res:Translate Settings}">
-        <ShellContent ContentTemplate="{DataTemplate modules:SettingsView}" />
+        <ShellContent ContentTemplate="{DataTemplate modules:SettingsView}"/>
     </FlyoutItem>
 
 </Shell>
