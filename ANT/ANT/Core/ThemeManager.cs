@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Linq;
 
 namespace ANT.Core
 {
@@ -35,9 +36,9 @@ namespace ANT.Core
                 var mergedDictionaries = Application.Current.Resources.MergedDictionaries;
                 if (mergedDictionaries != null)
                 {
-                    mergedDictionaries.Clear();
-
                     int themeId = (int)theme;
+
+                    RemoveCurrentTheme(mergedDictionaries);
 
                     await UpdateSelectedThemeAsync(themeId);
                     _currentThemeIndex = themeId;
@@ -59,6 +60,22 @@ namespace ANT.Core
                     });
                 }
             });
+        }
+
+        private static void RemoveCurrentTheme(ICollection<ResourceDictionary> mergedDictionaries)
+        {
+            ResourceDictionary currentTheme = null;
+
+            foreach (var item in mergedDictionaries)
+            {
+                if (!(item is ANT.Icons.FontIcons))
+                {
+                    currentTheme = item;
+                    break;
+                }
+            }
+
+            mergedDictionaries?.Remove(currentTheme);
         }
 
         /// <summary>

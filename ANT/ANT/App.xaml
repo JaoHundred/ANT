@@ -6,13 +6,18 @@
              xmlns:res="clr-namespace:ANT.Lang"
              mc:Ignorable="d"
              xmlns:Theme="clr-namespace:ANT.Themes"
+             xmlns:Icon="clr-namespace:ANT.Icons"
              x:Class="ANT.App">
     <Application.Resources>
         <ResourceDictionary >
             <ResourceDictionary.MergedDictionaries>
-                <Theme:LightTheme/>
                 <!--tema padrão-->
+                <Theme:LightTheme/>
+
+
+                <Icon:FontIcons />
             </ResourceDictionary.MergedDictionaries>
+ 
 
             <!--#region Padrão todos os controles-->
             <Style TargetType="ContentPage" ApplyToDerivedTypes="True">

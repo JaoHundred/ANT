@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="ANT.Icons.FontIcons">
+
+    <OnPlatform x:Key="FontIcon" x:TypeArguments="x:String">
+        <On Platform="Android" Value="segmdl2.ttf#Segoe MDL2 Assets"/>
+    </OnPlatform>
+
+
+    <!--icones de texto-->
+    <x:String x:Key="Home">&#xE80F;</x:String>
+    <x:String x:Key="Settings">&#xE713;</x:String>
+
+</ResourceDictionary>

@@ -16,7 +16,7 @@
     <Shell.FlyoutHeader>
         <!--para mudar a cor do fundo do cabeçalho do hamburguer menu aberto(espaço em cima dos itens) usar a prop backgroundcolor-->
         <Grid BackgroundColor="{DynamicResource HamburgerMenuHeaderColor}">
-            <Label Text="ANT" FontSize="40"/>
+            <Label Text="ANT" FontSize="40" HorizontalOptions="Center"/>
         </Grid>
     </Shell.FlyoutHeader>
 
