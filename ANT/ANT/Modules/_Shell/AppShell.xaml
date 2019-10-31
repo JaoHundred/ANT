@@ -20,14 +20,28 @@
         </Grid>
     </Shell.FlyoutHeader>
 
-    
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid Style="{StaticResource FloutItemStyle}"
+                  x:DataType="FlyoutItem">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="0.8*" />
+                </Grid.ColumnDefinitions>
+                <Image Source="{Binding FlyoutIcon}"
+                       Margin="5"
+                       HeightRequest="45" />
+                <Label Grid.Column="1" FontSize="Body"
+                       Text="{Binding Title}"
+                       VerticalTextAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
 
     <FlyoutItem Title="{res:Translate Home}">
         <ShellContent ContentTemplate="{DataTemplate modules:HomeView}"/>
     </FlyoutItem>
-
     <FlyoutItem Title="{res:Translate Settings}">
         <ShellContent ContentTemplate="{DataTemplate modules:SettingsView}"/>
     </FlyoutItem>
-
 </Shell>

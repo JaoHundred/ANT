@@ -23,6 +23,8 @@
 
     <Color x:Key="SecondaryColor">Blue</Color>
 
+    <!--cinza claro-->
+    <Color x:Key="FlyoutSelectionColor">#CCCCCC</Color>
 
     <Color x:Key="HamburgerMenuBodyColor">WhiteSmoke</Color> 
     <!--dourado desbotado-->

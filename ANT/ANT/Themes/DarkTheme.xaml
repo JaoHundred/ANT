@@ -23,6 +23,10 @@
 
     <Color x:Key="SecondaryColor">WhiteSmoke</Color>
 
+
+    <!--preto claro-->
+    <Color x:Key="FlyoutSelectionColor">#515355</Color>
+    
     <!--quase total preto-->
     <Color x:Key="HamburgerMenuHeaderColor">#26292B</Color>
     <Color x:Key="StatusBarColor">#26292B</Color>
