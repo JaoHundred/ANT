@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Linq;
+using ANT.Model;
 
 namespace ANT.Core
 {
     public class ThemeManager
     {
 
-        public static int _currentThemeIndex;
 
         /// <summary>
         /// Defines the supported themes for the sample app
@@ -40,7 +40,9 @@ namespace ANT.Core
                     RemoveCurrentTheme(mergedDictionaries);
 
                     await UpdateSelectedThemeAsync(themeId);
-                    _currentThemeIndex = themeId;
+                    App.SettingsPreferences.SelectedThemeIndex = themeId;
+
+
 
                     Device.BeginInvokeOnMainThread(() =>
                     {
@@ -57,6 +59,8 @@ namespace ANT.Core
                                 break;
                         }
                     });
+
+                    await JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
                 }
             });
         }
@@ -94,20 +98,20 @@ namespace ANT.Core
         /// </summary>
         /// <returns></returns>
 
-            //TODO:implementar os 2 abaixo quando estiver funcionando o json
+        //TODO:implementar os 2 abaixo quando estiver funcionando o json
         private static Task<Themes> CurrentThemeOrCreateAsync()
         {
-            return Task<Themes>.Run(async () =>
-            {
-                return Themes.Light;
-            });
+            return Task<Themes>.Run(() =>
+           {
+               return (Themes)App.SettingsPreferences.SelectedThemeIndex;
+           });
         }
 
         private static Task UpdateSelectedThemeAsync(int themeId)
         {
-            return Task.Run(async () =>
+            return Task.Run(() =>
             {
-
+                App.SettingsPreferences.SelectedThemeIndex = themeId;
             });
         }
     }

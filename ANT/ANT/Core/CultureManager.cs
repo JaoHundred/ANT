@@ -22,7 +22,7 @@ namespace ANT.Core
 
         public static Task SetCultureAsync(Culture culture)
         {
-            return Task.Run(async () =>
+            return Task.Run( () =>
             {
                 _currentCultureIndex = (int)culture;
                 //TODO: ver o que pode ser feito na parte de baixo para atualizar o idioma quando trocar de opção no picker
@@ -46,18 +46,16 @@ namespace ANT.Core
             });
         }
 
+        //TODO: implementar abaixo quando estiver funcionando o json
         public static async Task LoadCultureAsync()
         {
-            bool hasKey = App.Current.Properties.ContainsKey(StorageConsts.CultureKey);
-
-            if (hasKey)
-            {
-                Culture culture = (Culture)GetCultureIndex();
-                await SetCultureAsync(culture);
-            }
+            
+                //Culture culture = (Culture)GetCultureIndex();
+                //await SetCultureAsync(culture);
+            
         }
 
-        //TODO: implementar abaixo quando estiver funcionando o json
+        
         private static int GetCultureIndex()
         {
             return 0;

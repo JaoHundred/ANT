@@ -1,4 +1,5 @@
 ﻿using ANT.Core;
+using ANT.Model;
 using ANT.Modules;
 using System;
 using System.Diagnostics;
@@ -15,10 +16,15 @@ namespace ANT
             MainPage = new AppShell();
         }
 
+        public static SettingsPreferences SettingsPreferences;
+
         protected async override void OnStart()
         {
+            var settings = await JsonStorage.ReadSettingsAsync(StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
+            SettingsPreferences = settings ?? new SettingsPreferences();
+
             // Handle when your app starts
-            //await ThemeManager.LoadThemeAsync();
+            await ThemeManager.LoadThemeAsync();
             //await CultureManager.LoadCultureAsync();
 
             //Debug.WriteLine(App.Current.Properties.Keys);

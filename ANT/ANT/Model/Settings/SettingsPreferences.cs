@@ -3,11 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ANT.Model.Settings
+namespace ANT.Model
 {
     [JsonObject]
     public class SettingsPreferences
     {
+
+        public SettingsPreferences()
+        {
+            AutomaticTranslate = true;
+        }
+
         [JsonProperty(PropertyName = "AuTT")]
         public bool AutomaticTranslate { get; set; }
         
