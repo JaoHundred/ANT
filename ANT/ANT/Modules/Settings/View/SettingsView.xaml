@@ -4,18 +4,23 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:ANT.Lang"
+             xmlns:convert="clr-namespace:ANT.Converter"
              mc:Ignorable="d"
              x:Class="ANT.Modules.SettingsView">
 
+    <ContentPage.Resources>
+        <convert:InversorConverter x:Key="InversorConv"/>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
-        <TableView Intent="Settings" HasUnevenRows="True" >
+        <TableView Intent="Settings" HasUnevenRows="True" Margin="5" >
             <TableRoot>
                 <TableSection>
                     <ViewCell>
-                        <StackLayout Padding="5">
+                        <StackLayout >
                             <Label Text="{res:Translate ChangeTheme}" Style="{StaticResource MenuLabelColor}"
                                      />
-                            <Picker SelectedIndex="{Binding SelectedIndex}" 
+                            <Picker SelectedIndex="{Binding SelectedThemeIndex}" 
                                     Title="{res:Translate SelectAppTheme}">
                                 <Picker.Items>
                                     <x:String>Light</x:String>
@@ -23,6 +28,28 @@
                                 </Picker.Items>
                             </Picker>
                         </StackLayout>
+                    </ViewCell>
+                </TableSection>
+                <TableSection>
+                    <ViewCell>
+                        <Grid>
+                            <Label Text="{res:Translate AutomaticTranslate}" Style="{StaticResource MenuLabelColor}"
+                                   VerticalOptions="Center"/>
+                            <Switch Grid.Column="1" IsToggled="{Binding IsAutomaticTranslate}"/>
+
+                            <StackLayout Grid.ColumnSpan="2" Grid.Row="2" 
+                                         IsVisible="{Binding IsAutomaticTranslate, Converter={StaticResource InversorConv}}">
+                                <Label  Text="{res:Translate ChangeLanguage}" Style="{StaticResource MenuLabelColor}"/>
+                                <Picker SelectedIndex="{Binding SelectedLangIndex}" 
+                                    Title="{res:Translate SelectAppLang}">
+                                    <Picker.Items>
+                                        <x:String>en-US</x:String>
+                                        <x:String>pt-BR</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </StackLayout>
+
+                        </Grid>
                     </ViewCell>
                 </TableSection>
             </TableRoot>

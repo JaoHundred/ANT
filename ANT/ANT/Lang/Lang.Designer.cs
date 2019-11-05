@@ -61,6 +61,24 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Automatic Translate.
+        /// </summary>
+        public static string AutomaticTranslate {
+            get {
+                return ResourceManager.GetString("AutomaticTranslate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change language.
+        /// </summary>
+        public static string ChangeLanguage {
+            get {
+                return ResourceManager.GetString("ChangeLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change theme.
         /// </summary>
         public static string ChangeTheme {
@@ -75,6 +93,15 @@ namespace ANT.Lang {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select language.
+        /// </summary>
+        public static string SelectAppLang {
+            get {
+                return ResourceManager.GetString("SelectAppLang", resourceCulture);
             }
         }
         

@@ -11,7 +11,6 @@ namespace ANT.Core
     public class ThemeManager
     {
 
-        private static readonly string _themeKey = "SelectedTheme";
         public static int _currentThemeIndex;
 
         /// <summary>
@@ -98,12 +97,14 @@ namespace ANT.Core
         {
             return Task<Themes>.Run(async () =>
             {
-                bool hasKey = App.Current.Properties.ContainsKey(_themeKey);
+                bool hasKey = App.Current.Properties.ContainsKey(AppPropertiesConsts.ThemeKey);
 
                 if (hasKey)
-                    return (Themes)App.Current.Properties[_themeKey];
+                    return (Themes)App.Current.Properties[AppPropertiesConsts.ThemeKey];
 
-                App.Current.Properties.Add(_themeKey, (int)Themes.Light);
+
+                 App.Current.Properties.AddOrUpdate(AppPropertiesConsts.ThemeKey, (int)Themes.Light);
+
                 await App.Current.SavePropertiesAsync();
 
                 return Themes.Light;
@@ -114,9 +115,9 @@ namespace ANT.Core
         {
             return Task.Run(async () =>
             {
-                App.Current.Properties[_themeKey] = themeId;
-
+                 App.Current.Properties.AddOrUpdate(AppPropertiesConsts.ThemeKey, themeId);
                 await App.Current.SavePropertiesAsync();
+
             });
         }
     }

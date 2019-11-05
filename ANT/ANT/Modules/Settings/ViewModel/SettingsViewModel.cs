@@ -2,31 +2,40 @@
 using ANT.UTIL;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace ANT.Modules
 {
-    public class SettingsViewModel
+    public class SettingsViewModel : NotifyProperty
     {
         public SettingsViewModel()
         {
-            SelectedIndex = ThemeManager._currentThemeIndex;
+            SelectedThemeIndex = ThemeManager._currentThemeIndex;
+            SelectedLangIndex = CultureManager._currentCultureIndex;
+
+
+            object val;
+            App.Current.Properties.TryGetValue(AppPropertiesConsts.CultureKey, out val);
+
+            IsAutomaticTranslate = val is bool va ? va : true;
         }
 
-        private int _selectedIndex;
-        public int SelectedIndex
+        private int _selectedThemeIndex;
+        public int SelectedThemeIndex
         {
-            get => _selectedIndex;
+            get => _selectedThemeIndex;
             set
             {
-                if (_selectedIndex == value)
+                if (_selectedThemeIndex == value)
                     return;
 
-                _selectedIndex = value;
+                _selectedThemeIndex = value;
 
-                switch (_selectedIndex)
+                switch (_selectedThemeIndex)
                 {
                     case 0://light
                         ThemeManager.ChangeThemeAsync(ThemeManager.Themes.Light);
@@ -38,5 +47,44 @@ namespace ANT.Modules
             }
         }
 
+
+        private int _selectedLangIndex;
+        public int SelectedLangIndex
+        {
+            get => _selectedLangIndex;
+            set
+            {
+                if (_selectedLangIndex == value)
+                    return;
+
+                Changed(ref _selectedLangIndex, value);
+
+                switch (_selectedLangIndex)
+                {
+                    case 0://english
+                        CultureManager.SetCultureAsync(CultureManager.Culture.English);
+                        break;
+                    case 1://portuguese
+                        CultureManager.SetCultureAsync(CultureManager.Culture.Portuguese);
+                        break;
+                }
+            }
+        }
+
+        private bool _isAutomaticTranslate;
+
+        public bool IsAutomaticTranslate
+        {
+            get => _isAutomaticTranslate;
+            set
+            {
+                if (_isAutomaticTranslate == value)
+                    return;
+
+                Changed(ref _isAutomaticTranslate, value);
+
+                App.Current.Properties.AddOrUpdate(AppPropertiesConsts.CultureKey, _isAutomaticTranslate);
+            }
+        }
     }
 }

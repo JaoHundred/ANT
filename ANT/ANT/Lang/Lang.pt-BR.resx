@@ -117,11 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AutomaticTranslate" xml:space="preserve">
+    <value>Tradução automática</value>
+  </data>
+  <data name="ChangeLanguage" xml:space="preserve">
+    <value>Mudar o idioma</value>
+  </data>
   <data name="ChangeTheme" xml:space="preserve">
     <value>Trocar tema</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Principal</value>
+  </data>
+  <data name="SelectAppLang" xml:space="preserve">
+    <value>Selecione o idioma</value>
   </data>
   <data name="SelectAppTheme" xml:space="preserve">
     <value>Selecionar tema do aplicativo</value>

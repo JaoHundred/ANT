@@ -18,6 +18,7 @@ namespace ANT
         {
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
+            //await CultureManager.LoadCultureAsync();
         }
 
         protected override void OnSleep()
