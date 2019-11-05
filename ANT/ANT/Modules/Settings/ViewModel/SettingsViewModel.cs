@@ -17,9 +17,9 @@ namespace ANT.Modules
             SelectedThemeIndex = ThemeManager._currentThemeIndex;
             SelectedLangIndex = CultureManager._currentCultureIndex;
 
-
+            //TODO:substituir o save via properties para o settingspreferences + jsonstorage save
             object val;
-            App.Current.Properties.TryGetValue(AppPropertiesConsts.CultureKey, out val);
+            App.Current.Properties.TryGetValue(StorageConsts.CultureKey, out val);
 
             IsAutomaticTranslate = val is bool va ? va : true;
         }
@@ -83,7 +83,7 @@ namespace ANT.Modules
 
                 Changed(ref _isAutomaticTranslate, value);
 
-                App.Current.Properties.AddOrUpdate(AppPropertiesConsts.CultureKey, _isAutomaticTranslate);
+                App.Current.Properties.AddOrUpdate(StorageConsts.CultureKey, _isAutomaticTranslate);
             }
         }
     }

@@ -25,7 +25,7 @@ namespace ANT.Core
             return Task.Run(async () =>
             {
                 _currentCultureIndex = (int)culture;
-
+                //TODO: ver o que pode ser feito na parte de baixo para atualizar o idioma quando trocar de opção no picker
                 switch (culture)
                 {
                     default:
@@ -34,8 +34,6 @@ namespace ANT.Core
                         Lang.Lang.Culture = new CultureInfo("en-US");
                         //_service.SetLocale(new CultureInfo("en-US"));
 
-                        App.Current.Properties.AddOrUpdate(AppPropertiesConsts.CultureKey, _currentCultureIndex);
-                        await App.Current.SavePropertiesAsync();
                         break;
 
                     case Culture.Portuguese:
@@ -43,8 +41,6 @@ namespace ANT.Core
                         Lang.Lang.Culture = new CultureInfo("pt-BR");
                         //_service.SetLocale(new CultureInfo("pt-BR"));
 
-                        App.Current.Properties.AddOrUpdate(AppPropertiesConsts.CultureKey, _currentCultureIndex);
-                        await App.Current.SavePropertiesAsync();
                         break;
                 }
             });
@@ -52,7 +48,7 @@ namespace ANT.Core
 
         public static async Task LoadCultureAsync()
         {
-            bool hasKey = App.Current.Properties.ContainsKey(AppPropertiesConsts.CultureKey);
+            bool hasKey = App.Current.Properties.ContainsKey(StorageConsts.CultureKey);
 
             if (hasKey)
             {
@@ -61,9 +57,10 @@ namespace ANT.Core
             }
         }
 
+        //TODO: implementar abaixo quando estiver funcionando o json
         private static int GetCultureIndex()
         {
-            return (int)App.Current.Properties[AppPropertiesConsts.CultureKey];
+            return 0;
         }
     }
 }

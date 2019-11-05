@@ -1,6 +1,7 @@
 ﻿using ANT.Core;
 using ANT.Modules;
 using System;
+using System.Diagnostics;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,8 +18,13 @@ namespace ANT
         protected async override void OnStart()
         {
             // Handle when your app starts
-            await ThemeManager.LoadThemeAsync();
+            //await ThemeManager.LoadThemeAsync();
             //await CultureManager.LoadCultureAsync();
+
+            //Debug.WriteLine(App.Current.Properties.Keys);
+            //App.Current.Properties.Clear();
+            //await App.Current.SavePropertiesAsync();
+            //Debug.WriteLine(App.Current.Properties.Keys);
         }
 
         protected override void OnSleep()

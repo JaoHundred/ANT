@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ANT.Core
 {
-    public class AppPropertiesConsts
+    public class StorageConsts
     {
         public const string AutomaticTranslateKey = "AutomaticTranslate";
         public const string ThemeKey = "SelectedTheme";

@@ -93,20 +93,12 @@ namespace ANT.Core
         /// Gives current/last selected theme from the local storage.
         /// </summary>
         /// <returns></returns>
+
+            //TODO:implementar os 2 abaixo quando estiver funcionando o json
         private static Task<Themes> CurrentThemeOrCreateAsync()
         {
             return Task<Themes>.Run(async () =>
             {
-                bool hasKey = App.Current.Properties.ContainsKey(AppPropertiesConsts.ThemeKey);
-
-                if (hasKey)
-                    return (Themes)App.Current.Properties[AppPropertiesConsts.ThemeKey];
-
-
-                 App.Current.Properties.AddOrUpdate(AppPropertiesConsts.ThemeKey, (int)Themes.Light);
-
-                await App.Current.SavePropertiesAsync();
-
                 return Themes.Light;
             });
         }
@@ -115,8 +107,6 @@ namespace ANT.Core
         {
             return Task.Run(async () =>
             {
-                 App.Current.Properties.AddOrUpdate(AppPropertiesConsts.ThemeKey, themeId);
-                await App.Current.SavePropertiesAsync();
 
             });
         }
