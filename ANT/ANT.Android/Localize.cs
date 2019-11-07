@@ -21,6 +21,7 @@ namespace ANT.Droid
 
         public void SetLocale(CultureInfo ci)
         {
+            //TODO: setar a cultura por aqui não faz ela mudar, ela reseta para o padrão do aparelho, não funciona
             Thread.CurrentThread.CurrentCulture = ci;
             Thread.CurrentThread.CurrentUICulture = ci;
         }

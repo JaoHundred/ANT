@@ -31,18 +31,21 @@ namespace ANT.Core
                     default:
                     case Culture.English:
 
-                        Lang.Lang.Culture = new CultureInfo("en-US");
-                        //_service.SetLocale(new CultureInfo("en-US"));
+                        //Lang.Lang.Culture = new CultureInfo("en-US");
+                        _service.SetLocale(new CultureInfo("en-US"));
 
                         break;
 
                     case Culture.Portuguese:
 
-                        Lang.Lang.Culture = new CultureInfo("pt-BR");
-                        //_service.SetLocale(new CultureInfo("pt-BR"));
+                        //Lang.Lang.Culture = new CultureInfo("pt-BR");
+                        _service.SetLocale(new CultureInfo("pt-BR"));
 
                         break;
                 }
+
+                App.SettingsPreferences.SelectedLanguageIndex = _currentCultureIndex;
+                JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
             });
         }
 

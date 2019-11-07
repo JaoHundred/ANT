@@ -10,7 +10,6 @@ namespace ANT.Core
 {
    public static class JsonStorage
     {
-        //TODO: testar implementações e ver se funciona para salvar os settings, abandonar o properties se funcionar
         public async static Task SaveDataAsync<T>(T obj, string directoryPath, string fileName)
         {
             string path = Path.Combine(directoryPath, fileName);

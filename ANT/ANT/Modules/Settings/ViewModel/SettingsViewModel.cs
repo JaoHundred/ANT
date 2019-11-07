@@ -15,7 +15,7 @@ namespace ANT.Modules
         public SettingsViewModel()
         {
             SelectedThemeIndex = App.SettingsPreferences.SelectedThemeIndex;
-            SelectedLangIndex = CultureManager._currentCultureIndex;
+            SelectedLangIndex = App.SettingsPreferences.SelectedLanguageIndex;
             IsAutomaticTranslate = App.SettingsPreferences.AutomaticTranslate;
         }
 
@@ -79,7 +79,6 @@ namespace ANT.Modules
                 Changed(ref _isAutomaticTranslate, value);
 
                 App.SettingsPreferences.AutomaticTranslate = _isAutomaticTranslate;
-
                 JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
             }
         }
