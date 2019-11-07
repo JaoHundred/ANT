@@ -40,10 +40,7 @@ namespace ANT.Core
                     RemoveCurrentTheme(mergedDictionaries);
 
                     await UpdateSelectedThemeAsync(themeId);
-                    App.SettingsPreferences.SelectedThemeIndex = themeId;
-
-
-
+                    
                     Device.BeginInvokeOnMainThread(() =>
                     {
                         switch (theme)
@@ -60,6 +57,7 @@ namespace ANT.Core
                         }
                     });
 
+                    App.SettingsPreferences.SelectedThemeIndex = themeId;
                     await JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
                 }
             });
