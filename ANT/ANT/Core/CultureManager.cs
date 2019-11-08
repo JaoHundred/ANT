@@ -50,18 +50,24 @@ namespace ANT.Core
         }
 
         //TODO: implementar abaixo quando estiver funcionando o json
-        public static async Task LoadCultureAsync()
-        {
-            
-                //Culture culture = (Culture)GetCultureIndex();
-                //await SetCultureAsync(culture);
-            
-        }
+        //public static async Task LoadCultureAsync()
+        //{
+        //    Culture culture = (Culture)GetCultureIndex();
+        //    await SetCultureAsync(culture);
+        //}
 
-        
-        private static int GetCultureIndex()
-        {
-            return 0;
-        }
+        //private static int GetCultureIndex()
+        //{
+        //    var culture = _service.GetCurrentCultureInfo();
+
+        //    switch (culture.Name)
+        //    {
+        //        default:
+        //            return 0;
+
+        //        case "pt-BR":
+        //            return 1;
+        //    }
+        //}
     }
 }

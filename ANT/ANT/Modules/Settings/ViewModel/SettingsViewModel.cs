@@ -14,9 +14,12 @@ namespace ANT.Modules
     {
         public SettingsViewModel()
         {
+
+            //TODO: as funcionalidades de troca de idioma dentro dos settings não funcionam, deixar desativado isso por tempo indeterminado
+
             SelectedThemeIndex = App.SettingsPreferences.SelectedThemeIndex;
-            SelectedLangIndex = App.SettingsPreferences.SelectedLanguageIndex;
-            IsAutomaticTranslate = App.SettingsPreferences.AutomaticTranslate;
+            //SelectedLangIndex = App.SettingsPreferences.SelectedLanguageIndex;
+            //IsAutomaticTranslate = App.SettingsPreferences.AutomaticTranslate;
         }
 
         private int _selectedThemeIndex;
@@ -54,15 +57,15 @@ namespace ANT.Modules
 
                 Changed(ref _selectedLangIndex, value);
 
-                switch (_selectedLangIndex)
-                {
-                    case 0://english
-                        CultureManager.SetCultureAsync(CultureManager.Culture.English);
-                        break;
-                    case 1://portuguese
-                        CultureManager.SetCultureAsync(CultureManager.Culture.Portuguese);
-                        break;
-                }
+                //switch (_selectedLangIndex)
+                //{
+                //    case 0://english
+                //        CultureManager.SetCultureAsync(CultureManager.Culture.English);
+                //        break;
+                //    case 1://portuguese
+                //        CultureManager.SetCultureAsync(CultureManager.Culture.Portuguese);
+                //        break;
+                //}
             }
         }
 
@@ -78,8 +81,8 @@ namespace ANT.Modules
 
                 Changed(ref _isAutomaticTranslate, value);
 
-                App.SettingsPreferences.AutomaticTranslate = _isAutomaticTranslate;
-                JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
+                //App.SettingsPreferences.AutomaticTranslate = _isAutomaticTranslate;
+                //JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
             }
         }
     }
