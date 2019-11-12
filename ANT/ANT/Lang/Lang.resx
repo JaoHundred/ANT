@@ -120,6 +120,9 @@
   <data name="AutomaticTranslate" xml:space="preserve">
     <value>Automatic Translate</value>
   </data>
+  <data name="Catalogue" xml:space="preserve">
+    <value>Catalogue</value>
+  </data>
   <data name="ChangeLanguage" xml:space="preserve">
     <value>Change language</value>
   </data>

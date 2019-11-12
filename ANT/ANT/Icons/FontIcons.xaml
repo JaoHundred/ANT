@@ -13,6 +13,7 @@
 
     <!--icones de texto-->
     <x:String x:Key="Home">&#xE80F;</x:String>
+    <x:String x:Key="Catalogue">&#xE133;</x:String>
     <x:String x:Key="Settings">&#xE713;</x:String>
-
+    
 </ResourceDictionary>

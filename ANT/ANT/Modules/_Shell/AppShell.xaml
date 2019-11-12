@@ -69,6 +69,15 @@
         </FlyoutItem.Icon>
         <ShellContent  ContentTemplate="{DataTemplate modules:HomeView}"/>
     </FlyoutItem>
+    <FlyoutItem Title="{res:Translate Catalogue}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="{StaticResource FontIcon}"
+                             Glyph="{StaticResource Catalogue}"
+                             Color="{DynamicResource TextColor}"/>
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate modules:CatalogueView}"/>
+    </FlyoutItem>
+    
     <FlyoutItem Title="{res:Translate Settings}">
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="{StaticResource FontIcon}"
@@ -77,4 +86,5 @@
         </FlyoutItem.Icon>
         <ShellContent ContentTemplate="{DataTemplate modules:SettingsView}"/>
     </FlyoutItem>
+    
 </Shell>

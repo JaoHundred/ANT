@@ -70,6 +70,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Catalogue.
+        /// </summary>
+        public static string Catalogue {
+            get {
+                return ResourceManager.GetString("Catalogue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change language.
         /// </summary>
         public static string ChangeLanguage {
