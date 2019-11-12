@@ -14,6 +14,9 @@ namespace ANT.Modules
     {
         public CatalogueViewModel()
         {
+            //TODO: atualmente o comando está bindado para um botão, remover o botão e deixar carregar naturalmente quando entrar na view
+            //pesquisar como fazer isso, já que o eventtocommand do behavior não funcionou, ver como fazer isso para a contentpage
+            //TODO: trocar as fontes segoemdl2 para material(baixar em algum canto a fonte material e ver como se usa)
             OnLoadingCommand = new Command(OnLoad);
         }
 
@@ -27,8 +30,8 @@ namespace ANT.Modules
         public Command OnLoadingCommand { get; }
         private async void OnLoad()
         {
-            AnimeGenre genre = await JikanMALService.GetCatalogueByGenreAsync(GenreSearch.Action);
-            Animes = genre.Anime.Take(1000).ToList();
+            AnimeGenre genre = await JikanMALService.GetCatalogueByGenreAsync(GenreSearch.SciFi);
+            Animes = genre.Anime.Take(300).ToList();
         }
     }
 }

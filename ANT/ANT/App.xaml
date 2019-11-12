@@ -23,20 +23,29 @@
             <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
                 <Setter Property="BackgroundColor" Value="{DynamicResource AppBackgroundColor}"/>
             </Style>
+
             <Style TargetType="Label">
                 <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
             </Style>
-            
+
             <Style TargetType="Picker">
                 <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
             </Style>
+
             <Style TargetType="ActivityIndicator">
                 <Setter Property="Color" Value="{DynamicResource ProgressIndicatorColor}"/>
                 <Setter Property="HorizontalOptions" Value="Center"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
             </Style>
-           
 
+            <Style TargetType="Frame">
+                <Setter Property="BorderColor" Value="Gray"/>
+                <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueAnimeFrameColor}"/>
+                <Setter Property="CornerRadius" Value="10"/>
+            </Style>
+            <Style TargetType="CollectionView">
+                <Setter Property="Margin" Value="10,10"/>
+            </Style>
 
             <!--#endregion-->
 
@@ -46,6 +55,14 @@
                 <Setter Property="FontSize" Value="20"/>
             </Style>
             
+            <Style TargetType="Image" x:Key="AnimeFrameImage">
+                <Setter Property="HeightRequest" Value="200"/>
+            </Style>
+            <Style TargetType="Label" x:Key="AnimeFrameLabel">
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="FontSize" Value="Subtitle"/>
+            </Style>
+
             <!--#endregion-->
 
         </ResourceDictionary>

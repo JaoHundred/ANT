@@ -4,10 +4,15 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Event="clr-namespace:ANT._Behaviors"
+             xmlns:converter="clr-namespace:ANT.Converter"
              mc:Ignorable="d"
              
              x:Class="ANT.Modules.CatalogueView"
-             >
+             BackgroundColor="{DynamicResource AppBackgroundColor}">
+
+    <ContentPage.Resources>
+        <converter:TextReductionConverter x:Key="ShortTextConverter"/>
+    </ContentPage.Resources>
     <!--<ContentPage.Behaviors>
         <Event:EventToCommandBehavior EventName="Appearing" Command="{Binding OnLoading}"/>
     </ContentPage.Behaviors>-->
@@ -18,25 +23,28 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Button Text="Carregar" Command="{Binding OnLoadingCommand}"/>
-        <CollectionView ItemsSource="{Binding Animes}" Grid.Row="1" ItemSizingStrategy="MeasureAllItems" SelectionMode="Single" BackgroundColor="Transparent">
-            <CollectionView.EmptyViewTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
-                            <Label Text="Carregando..."/>
-                            <ActivityIndicator IsRunning="True"/>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </CollectionView.EmptyViewTemplate>
+        <CollectionView ItemsSource="{Binding Animes}" Grid.Row="1"  SelectionMode="Single"
+                        >
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" 
+                                 Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <StackLayout Orientation="Horizontal" Padding="5">
-                        <Image Source="{Binding ImageURL}" />
-                        <Label Text="{Binding Title}" Grid.Column="1" VerticalOptions="Center" />
-                    </StackLayout>
-                    <!--ImageSource="{Binding ImageURL}"-->
+                    <Frame>
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Image Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}" 
+                                   />
+                            <Label Grid.Row="1" Text="{Binding Title,Converter={StaticResource ShortTextConverter}}"
+                                   Style="{StaticResource AnimeFrameLabel}" />
+                        </Grid>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

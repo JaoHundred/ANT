@@ -33,6 +33,9 @@
 
     <Color x:Key="ProgressIndicatorColor">DarkGreen</Color>
 
+    <!--cor complementar do AppBackgroundColor-->
+    <Color x:Key="CatalogueAnimeFrameColor">#d9cdc1</Color>
+
     <!--#endregion-->
 
 </ResourceDictionary>
