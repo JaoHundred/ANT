@@ -7,17 +7,27 @@ using Xamarin.Forms;
 using ANT._Services;
 using System.Linq;
 using ANT.UTIL;
+using System.Threading.Tasks;
+using ANT.Interfaces;
 
 namespace ANT.Modules
 {
-    public class CatalogueViewModel : NotifyProperty
+    public class CatalogueViewModel : NotifyProperty, IAsyncInitialization
     {
         public CatalogueViewModel()
         {
-            //TODO: atualmente o comando está bindado para um botão, remover o botão e deixar carregar naturalmente quando entrar na view
-            //pesquisar como fazer isso, já que o eventtocommand do behavior não funcionou, ver como fazer isso para a contentpage
             //TODO: trocar as fontes segoemdl2 para material(baixar em algum canto a fonte material e ver como se usa)
-            OnLoadingCommand = new Command(OnLoad);
+            InitializeTask = LoadAync();
+        }
+
+
+        #region proriedades
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            set { Changed(ref _isLoading, value); }
         }
 
         private IList<AnimeSubEntry> _animes;
@@ -25,13 +35,16 @@ namespace ANT.Modules
         {
             get { return _animes; }
             set { Changed(ref _animes, value); }
-        }
+        } 
+        #endregion
 
-        public Command OnLoadingCommand { get; }
-        private async void OnLoad()
+        public Task InitializeTask { get; }
+        public async Task LoadAync()
         {
+            IsLoading = true;
             AnimeGenre genre = await JikanMALService.GetCatalogueByGenreAsync(GenreSearch.SciFi);
             Animes = genre.Anime.Take(300).ToList();
+            IsLoading = false;
         }
     }
 }

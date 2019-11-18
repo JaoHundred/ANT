@@ -8,22 +8,18 @@
              mc:Ignorable="d"
              
              x:Class="ANT.Modules.CatalogueView"
-             BackgroundColor="{DynamicResource AppBackgroundColor}">
+             BackgroundColor="{DynamicResource AppBackgroundColor}"
+             >
 
     <ContentPage.Resources>
         <converter:TextReductionConverter x:Key="ShortTextConverter"/>
     </ContentPage.Resources>
-    <!--<ContentPage.Behaviors>
-        <Event:EventToCommandBehavior EventName="Appearing" Command="{Binding OnLoading}"/>
-    </ContentPage.Behaviors>-->
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Button Text="Carregar" Command="{Binding OnLoadingCommand}"/>
-        <CollectionView ItemsSource="{Binding Animes}" Grid.Row="1"  SelectionMode="Single"
+        <ActivityIndicator IsVisible="{Binding IsLoading}"
+                           IsRunning="{Binding IsLoading}"/>
+
+        <CollectionView ItemsSource="{Binding Animes}" SelectionMode="Single"
                         >
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical" 
@@ -48,7 +44,7 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </Grid>
 
+    </Grid>
 
 </ContentPage>

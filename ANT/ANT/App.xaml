@@ -61,7 +61,7 @@
             </Style>
 
             <Style TargetType="CollectionView">
-                <Setter Property="Margin" Value="10,0,10,0"/>
+                <Setter Property="Margin" Value="10,10,10,0"/>
             </Style>
 
             <!--#endregion-->
