@@ -6,7 +6,6 @@
              xmlns:Event="clr-namespace:ANT._Behaviors"
              xmlns:converter="clr-namespace:ANT.Converter"
              mc:Ignorable="d"
-             
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
              >
@@ -19,8 +18,10 @@
         <ActivityIndicator IsVisible="{Binding IsLoading}"
                            IsRunning="{Binding IsLoading}"/>
 
-        <CollectionView ItemsSource="{Binding Animes}" SelectionMode="Single"
-                        >
+        <CollectionView ItemsSource="{Binding Animes}" x:Name="Collection"
+                        SelectionMode="{Binding SelectionMode}" SelectionChangedCommand="{Binding SelectItemsCommand}"
+                        SelectionChangedCommandParameter="{Binding Source={x:Reference Collection}, Path=SelectedItems}">
+
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical" 
                                  Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
