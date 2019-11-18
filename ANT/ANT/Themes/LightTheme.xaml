@@ -36,6 +36,10 @@
     <!--cor complementar do AppBackgroundColor-->
     <Color x:Key="CatalogueAnimeFrameColor">#d9cdc1</Color>
 
+    <!--verde limão claro-->
+    <Color x:Key="CatalogueAnimeSelectedColor">#c1d9cd</Color>
+    
+
     <!--#endregion-->
 
 </ResourceDictionary>

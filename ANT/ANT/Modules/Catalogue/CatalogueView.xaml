@@ -38,7 +38,7 @@
                                 <RowDefinition/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
-                            
+
                             <Image Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}" 
                                    />
                             <Label Grid.Row="1" Text="{Binding Title,Converter={StaticResource ShortTextConverter}}"

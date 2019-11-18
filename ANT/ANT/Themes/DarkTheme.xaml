@@ -38,6 +38,8 @@
     <!--cor complementar do AppBackgroundColor-->
     <Color x:Key="CatalogueAnimeFrameColor">#2b2826</Color>
 
+    <!--cinza claro-->
+    <Color x:Key="CatalogueAnimeSelectedColor">#515355</Color>
     <!--#endregion-->
 
 </ResourceDictionary>

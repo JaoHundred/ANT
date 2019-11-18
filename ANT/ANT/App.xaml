@@ -38,13 +38,30 @@
                 <Setter Property="VerticalOptions" Value="Center"/>
             </Style>
 
-            <Style TargetType="Frame">
+
+            <Style TargetType="Frame" x:Key="SelectedItemTemplateStyle">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal"/>
+                            <VisualState x:Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueAnimeSelectedColor}"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+            
+            <Style TargetType="Frame" BasedOn="{StaticResource SelectedItemTemplateStyle}">
                 <Setter Property="BorderColor" Value="Gray"/>
                 <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueAnimeFrameColor}"/>
                 <Setter Property="CornerRadius" Value="10"/>
             </Style>
+
             <Style TargetType="CollectionView">
-                <Setter Property="Margin" Value="10,10"/>
+                <Setter Property="Margin" Value="10,0,10,0"/>
             </Style>
 
             <!--#endregion-->
@@ -62,6 +79,8 @@
                 <Setter Property="HorizontalTextAlignment" Value="Center"/>
                 <Setter Property="FontSize" Value="Subtitle"/>
             </Style>
+
+           
 
             <!--#endregion-->
 
