@@ -36,8 +36,19 @@
                 <Setter Property="Color" Value="{DynamicResource ProgressIndicatorColor}"/>
                 <Setter Property="HorizontalOptions" Value="Center"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="WidthRequest" Value="50"/>
             </Style>
 
+            <Style TargetType="RefreshView">
+                <Setter Property="RefreshColor" Value="{DynamicResource ProgressIndicatorColor}"/>
+                <Setter Property="BackgroundColor" Value="WhiteSmoke"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="WidthRequest" Value="50"/>
+                <Setter Property="Margin" Value="5,0,5,0"/>
+            </Style>
 
             <Style TargetType="Frame" x:Key="SelectedItemTemplateStyle">
                 <Setter Property="VisualStateManager.VisualStateGroups">
@@ -58,10 +69,6 @@
                 <Setter Property="BorderColor" Value="Gray"/>
                 <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueAnimeFrameColor}"/>
                 <Setter Property="CornerRadius" Value="10"/>
-            </Style>
-
-            <Style TargetType="CollectionView">
-                <Setter Property="Margin" Value="10,10,10,0"/>
             </Style>
 
             <!--#endregion-->

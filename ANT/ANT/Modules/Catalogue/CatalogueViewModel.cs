@@ -18,15 +18,19 @@ namespace ANT.Modules
     {
         public CatalogueViewModel()
         {
-            //TODO: trocar as fontes segoemdl2 para material(baixar em algum canto a fonte material e ver como se usa)
             InitializeTask = LoadAync();
 
-            SelectionMode = SelectionMode.Multiple;
-
             SelectItemsCommand = new Command<IList<object>>(OnSelectItems);
+            RefreshCommand = new Command(OnRefreshCatalogue);
         }
 
-
+        public Task InitializeTask { get; }
+        public async Task LoadAync()
+        {
+            IsLoading = true;
+            await LoadCatalogueAsync();
+            IsLoading = false;
+        }
 
         #region proriedades
 
@@ -35,6 +39,13 @@ namespace ANT.Modules
         {
             get { return _isLoading; }
             set { Changed(ref _isLoading, value); }
+        }
+
+        private bool _isRefreshing;
+        public bool IsRefreshing
+        {
+            get { return _isRefreshing; }
+            set { Changed(ref _isRefreshing, value); }
         }
 
         private Xamarin.Forms.SelectionMode _selectionMode;
@@ -53,25 +64,30 @@ namespace ANT.Modules
 
         #endregion
 
-        public Task InitializeTask { get; }
-        public async Task LoadAync()
+        #region métodos da VM
+        private async Task LoadCatalogueAsync()
         {
-            IsLoading = true;
             AnimeGenre genre = await JikanMALService.GetCatalogueByGenreAsync(GenreSearch.SciFi);
             Animes = genre.Anime.Take(300).ToList();
-            IsLoading = false;
-        }
-
+        } 
+        #endregion
 
         #region commands
-
 
         public Command<IList<object>> SelectItemsCommand { get; }
         private void OnSelectItems(IList<object> selectedItems)
         {
             var items = selectedItems.Cast<AnimeSubEntry>();
 
-            //TODO: ver como adicionar menus via o tab no shell para esta tela, opções de modo de seleção, adicionar aos favoritos e deletar dos favoritos se já existir
+            //TODO: não tem como personalizar o toolbar(cor, outros controles além de texto, esconder)
+            //TODO: ver como adicionar menus via o toolbar para esta tela, opções de modo de seleção, adicionar aos favoritos e deletar dos favoritos se já existir
+        }
+
+        public Command RefreshCommand { get; }
+        private async void OnRefreshCatalogue(object obj)
+        {
+            await LoadCatalogueAsync();
+            IsRefreshing = false;
         }
 
         #endregion

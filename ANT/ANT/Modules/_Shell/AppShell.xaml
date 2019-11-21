@@ -35,6 +35,8 @@
             </Style>
         </ResourceDictionary>
     </Shell.Resources>
+    
+    
 
     <Shell.FlyoutHeader>
         <!--para mudar a cor do fundo do cabeçalho do hamburguer menu aberto(espaço em cima dos itens) usar a prop backgroundcolor-->

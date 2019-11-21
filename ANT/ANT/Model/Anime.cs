@@ -8,8 +8,6 @@ namespace ANT.Model
     {
         public string NameEg { get; set; }
         public string NameJp { get; set; }
-
-        //TODO: ver como se chama o idioma japones em simbolos
         public string NameJpSym { get; set; }
     }
 }

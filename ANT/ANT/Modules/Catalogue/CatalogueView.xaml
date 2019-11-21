@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:Event="clr-namespace:ANT._Behaviors"
+             xmlns:res="clr-namespace:ANT.Lang"
              xmlns:converter="clr-namespace:ANT.Converter"
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
@@ -12,15 +12,25 @@
 
     <ContentPage.Resources>
         <converter:TextReductionConverter x:Key="ShortTextConverter"/>
+        <converter:InversorConverter x:Key="InversorConverter"/>
     </ContentPage.Resources>
 
-    <Grid>
-        <ActivityIndicator IsVisible="{Binding IsLoading}"
-                           IsRunning="{Binding IsLoading}"/>
+    <!--<ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>-->
 
-        <CollectionView ItemsSource="{Binding Animes}" x:Name="Collection"
+    <RefreshView Command="{Binding RefreshCommand}" 
+                 IsRefreshing="{Binding IsRefreshing}" 
+                 IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
+        
+        <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
                         SelectionMode="{Binding SelectionMode}" SelectionChangedCommand="{Binding SelectItemsCommand}"
-                        SelectionChangedCommandParameter="{Binding Source={x:Reference Collection}, Path=SelectedItems}">
+                        SelectionChangedCommandParameter="{Binding Source={x:Reference CatalogueCollection}, Path=SelectedItems}">
+
+            <CollectionView.EmptyView>
+                <Grid>
+                    <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
+                </Grid>
+            </CollectionView.EmptyView>
 
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical" 
@@ -36,8 +46,7 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
 
-                            <Image Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}" 
-                                   />
+                            <Image Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}"/>
                             <Label Grid.Row="1" Text="{Binding Title,Converter={StaticResource ShortTextConverter}}"
                                    Style="{StaticResource AnimeFrameLabel}" />
                         </Grid>
@@ -45,7 +54,5 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-    </Grid>
-
+    </RefreshView>
 </ContentPage>
