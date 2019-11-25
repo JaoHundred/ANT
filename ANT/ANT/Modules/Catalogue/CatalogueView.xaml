@@ -13,7 +13,29 @@
     <ContentPage.Resources>
         <converter:TextReductionConverter x:Key="ShortTextConverter"/>
         <converter:InversorConverter x:Key="InversorConverter"/>
+        <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
     </ContentPage.Resources>
+
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntry}"
+               Text="{Binding SearchQuery}" ReturnCommand="{Binding SearchCommand}"/>
+
+            <Label Grid.Column="1" Style="{StaticResource SearchCancelButton}"  
+                   IsVisible="{Binding SearchQuery, Converter={StaticResource EmptyTextToBoolConverter}}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ClearTextCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+
+
+    </Shell.TitleView>
 
     <!--<ContentPage.ToolbarItems>
     </ContentPage.ToolbarItems>-->
@@ -21,7 +43,7 @@
     <RefreshView Command="{Binding RefreshCommand}" 
                  IsRefreshing="{Binding IsRefreshing}" 
                  IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
-        
+
         <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
                         SelectionMode="{Binding SelectionMode}" SelectionChangedCommand="{Binding SelectItemsCommand}"
                         SelectionChangedCommandParameter="{Binding Source={x:Reference CatalogueCollection}, Path=SelectedItems}">

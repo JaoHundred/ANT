@@ -132,6 +132,9 @@
   <data name="Home" xml:space="preserve">
     <value>Principal</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Pesquisar</value>
+  </data>
   <data name="SelectAppLang" xml:space="preserve">
     <value>Selecione o idioma</value>
   </data>

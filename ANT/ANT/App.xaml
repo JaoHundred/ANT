@@ -64,7 +64,7 @@
                     </VisualStateGroupList>
                 </Setter>
             </Style>
-            
+
             <Style TargetType="Frame" BasedOn="{StaticResource SelectedItemTemplateStyle}">
                 <Setter Property="BorderColor" Value="Gray"/>
                 <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueAnimeFrameColor}"/>
@@ -78,7 +78,7 @@
                 <Setter Property="TextColor" Value="{DynamicResource TextMenuColor}"/>
                 <Setter Property="FontSize" Value="20"/>
             </Style>
-            
+
             <Style TargetType="Image" x:Key="AnimeFrameImage">
                 <Setter Property="HeightRequest" Value="200"/>
             </Style>
@@ -87,7 +87,18 @@
                 <Setter Property="FontSize" Value="Subtitle"/>
             </Style>
 
-           
+            <Style TargetType="Label" x:Key="SearchCancelButton">
+                <Setter Property="Text" Value="X"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="25"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="End"/>
+                <Setter Property="Margin" Value="0,0,10,0"/>
+            </Style>
+            <Style TargetType="Entry" x:Key="SearchEntry">
+                <Setter Property="PlaceholderColor" Value="White"/>
+                <Setter Property="TextColor" Value="White"/>
+            </Style>
 
             <!--#endregion-->
 
