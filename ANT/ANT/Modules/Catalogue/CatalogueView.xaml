@@ -14,6 +14,7 @@
         <converter:TextReductionConverter x:Key="ShortTextConverter"/>
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
+        <converter:HasImageConverter x:Key="HasImageConverter"/>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -69,7 +70,9 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
 
-                            <Image Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}"/>
+                            <Image x:Name="AnimeImage" Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}"/>
+                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
+                                               IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
                             <Label Grid.Row="1" Text="{Binding Title,Converter={StaticResource ShortTextConverter}}"
                                    Style="{StaticResource AnimeFrameLabel}" />
                         </Grid>

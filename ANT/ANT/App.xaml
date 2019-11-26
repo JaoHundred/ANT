@@ -81,6 +81,7 @@
 
             <Style TargetType="Image" x:Key="AnimeFrameImage">
                 <Setter Property="HeightRequest" Value="200"/>
+                <Setter Property="IsOpaque" Value="True"/>
             </Style>
             <Style TargetType="Label" x:Key="AnimeFrameLabel">
                 <Setter Property="HorizontalTextAlignment" Value="Center"/>
@@ -90,7 +91,7 @@
             <Style TargetType="Label" x:Key="SearchCancelButton">
                 <Setter Property="Text" Value="X"/>
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="25"/>
+                <Setter Property="FontSize" Value="23.5"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
                 <Setter Property="HorizontalOptions" Value="End"/>
                 <Setter Property="Margin" Value="0,0,10,0"/>

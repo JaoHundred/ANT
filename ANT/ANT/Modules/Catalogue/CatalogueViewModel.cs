@@ -22,9 +22,7 @@ namespace ANT.Modules
             _jikan = new Jikan(useHttps: true);
             InitializeTask = LoadAync();
         }
-
-        //TODO: usar data trigger(?) para verificar se a imagem terminou de carregar, se não, exibir um activity indicator
-        //TODO: tentar ver outro tamanho para o "ícone" de X na pesquisa, testar entre 21 e 24 no tamanho da fonte
+        
         public Task InitializeTask { get; }
         public async Task LoadAync()
         {
