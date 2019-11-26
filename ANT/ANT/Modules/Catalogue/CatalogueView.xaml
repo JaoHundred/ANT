@@ -24,7 +24,8 @@
             </Grid.ColumnDefinitions>
 
             <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntry}"
-               Text="{Binding SearchQuery}" ReturnCommand="{Binding SearchCommand}"/>
+                   Text="{Binding SearchQuery}" ReturnCommand="{Binding SearchCommand}"
+                   IsEnabled="{Binding IsLoadingOrRefreshing, Converter={StaticResource InversorConverter}}"/>
 
             <Label Grid.Column="1" Style="{StaticResource SearchCancelButton}"  
                    IsVisible="{Binding SearchQuery, Converter={StaticResource EmptyTextToBoolConverter}}">

@@ -23,14 +23,16 @@ namespace ANT.Modules
             InitializeTask = LoadAync();
         }
 
-        //TODO: enquanto o catalogo carregar(tando pelo inicio quanto pelo refresh) manter desativado a barra de pesquisa
         //TODO: usar data trigger(?) para verificar se a imagem terminou de carregar, se não, exibir um activity indicator
+        //TODO: tentar ver outro tamanho para o "ícone" de X na pesquisa, testar entre 21 e 24 no tamanho da fonte
         public Task InitializeTask { get; }
         public async Task LoadAync()
         {
             IsLoading = true;
+            IsLoadingOrRefreshing = IsLoading || IsRefreshing;
             await LoadCatalogueAsync();
             IsLoading = false;
+            IsLoadingOrRefreshing = IsLoading || IsRefreshing;
         }
 
         #region proriedades
@@ -40,6 +42,13 @@ namespace ANT.Modules
         {
             get { return _isLoading; }
             set { Changed(ref _isLoading, value); }
+        }
+
+        private bool _isLoadingOrRefreshing;
+        public bool IsLoadingOrRefreshing
+        {
+            get { return _isLoadingOrRefreshing; }
+            set { Changed(ref _isLoadingOrRefreshing, value); }
         }
 
         private bool _isRefreshing;
@@ -80,6 +89,7 @@ namespace ANT.Modules
                 ClearTextQuery();
 
             var results = await _jikan.GetSeason();
+            results.RequestCached = true;
             Animes = _originalCollection = results.SeasonEntries.ToList();
         }
 
@@ -101,8 +111,10 @@ namespace ANT.Modules
 
         public Command RefreshCommand => new Command(async () =>
         {
+            IsLoadingOrRefreshing = IsLoading || IsRefreshing;
             await LoadCatalogueAsync();
             IsRefreshing = false;
+            IsLoadingOrRefreshing = IsLoading || IsRefreshing;
         });
 
         public Command ClearTextCommand => new Command(() =>
