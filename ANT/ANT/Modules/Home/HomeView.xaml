@@ -7,7 +7,5 @@
              x:Class="ANT.Modules.HomeView" 
              >
 
-    <ContentPage.Content>
-        <ActivityIndicator IsRunning="True"/>
-    </ContentPage.Content>
+    
 </ContentPage>

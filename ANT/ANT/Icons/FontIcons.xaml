@@ -10,10 +10,12 @@
         <On Platform="Android" Value="segmdl2.ttf#Segoe MDL2 Assets"/>
     </OnPlatform>
 
+    <!--prefixo necessário em todos '&#x' sem as aspas -->
 
     <!--icones de texto-->
     <x:String x:Key="Home">&#xE80F;</x:String>
     <x:String x:Key="Catalogue">&#xE133;</x:String>
     <x:String x:Key="Settings">&#xE713;</x:String>
+    <x:String x:Key="StarFill">&#xE735;</x:String>
     
 </ResourceDictionary>

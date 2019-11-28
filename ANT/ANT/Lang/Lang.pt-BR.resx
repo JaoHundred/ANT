@@ -132,6 +132,9 @@
   <data name="Home" xml:space="preserve">
     <value>Principal</value>
   </data>
+  <data name="MultiSelect" xml:space="preserve">
+    <value>Selecionar vários</value>
+  </data>
   <data name="Search" xml:space="preserve">
     <value>Pesquisar</value>
   </data>

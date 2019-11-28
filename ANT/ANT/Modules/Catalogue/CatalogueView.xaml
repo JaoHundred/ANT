@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
-             >
+             x:Name="_Page" >
 
     <ContentPage.Resources>
         <converter:TextReductionConverter x:Key="ShortTextConverter"/>
@@ -38,46 +38,64 @@
 
     </Shell.TitleView>
 
-    <!--<ContentPage.ToolbarItems>
-    </ContentPage.ToolbarItems>-->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{res:Translate MultiSelect}" Command="{Binding SelectionModeCommand}" Order="Secondary">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
 
-    <RefreshView Command="{Binding RefreshCommand}" 
+
+    <Grid>
+        <RefreshView Command="{Binding RefreshCommand}" 
                  IsRefreshing="{Binding IsRefreshing}" 
                  IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
 
-        <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
+            <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
                         SelectionMode="{Binding SelectionMode}" SelectionChangedCommand="{Binding SelectItemsCommand}"
                         SelectionChangedCommandParameter="{Binding Source={x:Reference CatalogueCollection}, Path=SelectedItems}">
 
-            <CollectionView.EmptyView>
-                <Grid>
-                    <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
-                </Grid>
-            </CollectionView.EmptyView>
+                <CollectionView.EmptyView>
+                    <Grid>
+                        <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
+                    </Grid>
+                </CollectionView.EmptyView>
 
-            <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical" 
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" 
                                  Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
-            </CollectionView.ItemsLayout>
+                </CollectionView.ItemsLayout>
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame>
-                        <Grid >
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame >
+                            <Grid >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
 
-                            <Image x:Name="AnimeImage" Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}"/>
-                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
+                                <Image x:Name="AnimeImage" Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}"/>
+                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
                                                IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
-                            <Label Grid.Row="1" Text="{Binding Title,Converter={StaticResource ShortTextConverter}}"
+                                <Label Grid.Row="1" Text="{Binding Title,Converter={StaticResource ShortTextConverter}}"
                                    Style="{StaticResource AnimeFrameLabel}" />
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </RefreshView>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}"
+                Style="{StaticResource FavoriteRoundedButton}" >
+
+            <Button.ImageSource>
+                <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                 Glyph="{StaticResource StarFill}"
+                                 Size="13" />
+            </Button.ImageSource>
+        </Button>
+    </Grid>
 </ContentPage>

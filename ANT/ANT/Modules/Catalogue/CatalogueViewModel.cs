@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace ANT.Modules
 {
-    public class CatalogueViewModel : NotifyProperty, IAsyncInitialization
+    public class CatalogueViewModel : ViewModelBase, IAsyncInitialization
     {
         private IJikan _jikan;
 
@@ -22,7 +22,7 @@ namespace ANT.Modules
             _jikan = new Jikan(useHttps: true);
             InitializeTask = LoadAync();
         }
-        
+
         public Task InitializeTask { get; }
         public async Task LoadAync()
         {
@@ -54,6 +54,13 @@ namespace ANT.Modules
         {
             get { return _isRefreshing; }
             set { Changed(ref _isRefreshing, value); }
+        }
+
+        private bool _isMultiSelect;
+        public bool IsMultiSelect
+        {
+            get { return _isMultiSelect; }
+            set { Changed(ref _isMultiSelect, value); }
         }
 
         private Xamarin.Forms.SelectionMode _selectionMode;
@@ -91,21 +98,31 @@ namespace ANT.Modules
             Animes = _originalCollection = results.SeasonEntries.ToList();
         }
 
-        private void ClearTextQuery()
-        {
-            SearchQuery = string.Empty;
-        }
+        private void ClearTextQuery() => SearchQuery = string.Empty;
         #endregion
 
         #region commands
 
-        public Command<IList<object>> SelectItemsCommand => new Command<IList<object>>
-            ((IList<object> selectedItems) =>
-        {
-            var items = selectedItems.Cast<AnimeSubEntry>();
 
-            //TODO: ver como adicionar menus via o toolbar para esta tela, opções de modo de seleção, adicionar aos favoritos e deletar dos favoritos se já existir
+        public Command SelectionModeCommand => new Command(() =>
+        {
+            SelectionMode = SelectionMode != SelectionMode.Multiple ? SelectionMode.Multiple : SelectionMode.None;
+            IsMultiSelect = SelectionMode == SelectionMode.Multiple;
         });
+
+        public Command AddToFavoriteCommand => new Command(() =>
+        {
+            //TODO: mudar o texto do toolbaritem entre "multi seleção" ou " multi seleção desligada"(pensar se esse é um nome bom)
+            //TODO:ver boas cores para por no botão redondo, aumentar o tamanho dele no app.xaml pelo favoriteroundedbutton
+
+        });
+
+        public Command<IList<object>> SelectItemsCommand => new Command<IList<object>>
+             ((IList<object> selectedItems) =>
+         {
+             var items = selectedItems.Cast<AnimeSubEntry>();
+
+         });
 
         public Command RefreshCommand => new Command(async () =>
         {
