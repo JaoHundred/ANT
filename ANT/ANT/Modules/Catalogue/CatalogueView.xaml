@@ -14,6 +14,7 @@
         <converter:TextReductionConverter x:Key="ShortTextConverter"/>
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
+        <converter:EmptyCollectionToBoolConverter x:Key="EmptyCollectionConverter"/>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -53,8 +54,7 @@
                  IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
 
             <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
-                        SelectionMode="{Binding SelectionMode}" SelectionChangedCommand="{Binding SelectItemsCommand}"
-                        SelectionChangedCommandParameter="{Binding Source={x:Reference CatalogueCollection}, Path=SelectedItems}">
+                        SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}">
 
                 <CollectionView.EmptyView>
                     <Grid>
@@ -88,9 +88,10 @@
             </CollectionView>
         </RefreshView>
 
-        <Button Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}"
-                Style="{StaticResource FavoriteRoundedButton}" >
-
+        <Button Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
+                IsEnabled="{Binding SelectedItems, Source={x:Reference CatalogueCollection}, Converter={StaticResource EmptyCollectionConverter}}"
+                Style="{StaticResource FavoriteRoundedButton}" BackgroundColor="Red" HeightRequest="60" WidthRequest="60"
+                >
             <Button.ImageSource>
                 <FontImageSource FontFamily="{StaticResource FontIcon}"
                                  Glyph="{StaticResource StarFill}"

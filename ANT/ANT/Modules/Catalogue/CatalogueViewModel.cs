@@ -70,6 +70,13 @@ namespace ANT.Modules
             set { Changed(ref _selectionMode, value); }
         }
 
+        private IList<object> _selectedItems;
+        public IList<object> SelectedItems
+        {
+            get { return _selectedItems; }
+            set { Changed(ref _selectedItems, value); }
+        }
+
         private IList<AnimeSubEntry> _originalCollection;
         private IList<AnimeSubEntry> _animes;
         public IList<AnimeSubEntry> Animes
@@ -108,6 +115,9 @@ namespace ANT.Modules
         {
             SelectionMode = SelectionMode != SelectionMode.Multiple ? SelectionMode.Multiple : SelectionMode.None;
             IsMultiSelect = SelectionMode == SelectionMode.Multiple;
+
+            if (SelectionMode != SelectionMode.Multiple)
+                SelectedItems = null;
         });
 
         public Command AddToFavoriteCommand => new Command(() =>
@@ -115,14 +125,15 @@ namespace ANT.Modules
             //TODO: mudar o texto do toolbaritem entre "multi seleção" ou " multi seleção desligada"(pensar se esse é um nome bom)
             //TODO:ver boas cores para por no botão redondo, aumentar o tamanho dele no app.xaml pelo favoriteroundedbutton
 
+            if (SelectedItems?.Count == 0)
+                return;
+
+            foreach (var item in SelectedItems)
+            {
+
+            }
+
         });
-
-        public Command<IList<object>> SelectItemsCommand => new Command<IList<object>>
-             ((IList<object> selectedItems) =>
-         {
-             var items = selectedItems.Cast<AnimeSubEntry>();
-
-         });
 
         public Command RefreshCommand => new Command(async () =>
         {
