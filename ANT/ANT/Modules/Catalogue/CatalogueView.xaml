@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:converter="clr-namespace:ANT.Converter"
+             xmlns:animate="clr-namespace:Xamanimation;assembly=Xamanimation"
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
@@ -14,7 +15,6 @@
         <converter:TextReductionConverter x:Key="ShortTextConverter"/>
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
-        <converter:EmptyCollectionToBoolConverter x:Key="EmptyCollectionConverter"/>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -54,8 +54,7 @@
                  IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
 
             <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
-                        SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}">
-
+                            SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}">
                 <CollectionView.EmptyView>
                     <Grid>
                         <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
@@ -88,14 +87,13 @@
             </CollectionView>
         </RefreshView>
 
-        <Button Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
-                IsEnabled="{Binding SelectedItems, Source={x:Reference CatalogueCollection}, Converter={StaticResource EmptyCollectionConverter}}"
-                Style="{StaticResource FavoriteRoundedButton}" BackgroundColor="Red" HeightRequest="60" WidthRequest="60"
-                >
+        <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
+                Style="{StaticResource FavoriteRoundedButton}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
+            
             <Button.ImageSource>
                 <FontImageSource FontFamily="{StaticResource FontIcon}"
                                  Glyph="{StaticResource StarFill}"
-                                 Size="13" />
+                                 Size="22" />
             </Button.ImageSource>
         </Button>
     </Grid>

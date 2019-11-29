@@ -102,14 +102,15 @@
             </Style>
 
             <Style TargetType="Button" x:Key="RoundedButtonStyle">
-                <Setter Property="WidthRequest" Value="50"/>
-                <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="WidthRequest" Value="60"/>
+                <Setter Property="HeightRequest" Value="60"/>
                 <Setter Property="CornerRadius" Value="50"/>
             </Style>
             <Style TargetType="Button" x:Key="FavoriteRoundedButton" BasedOn="{StaticResource RoundedButtonStyle}">
                 <Setter Property="VerticalOptions" Value="End"/>
                 <Setter Property="HorizontalOptions" Value="End"/>
                 <Setter Property="Margin" Value="30"/>
+                <Setter Property="BackgroundColor" Value="CornflowerBlue"/>
             </Style>
 
             <!--#endregion-->

@@ -100,9 +100,17 @@ namespace ANT.Modules
             if (SearchQuery?.Length > 0)
                 ClearTextQuery();
 
-            var results = await _jikan.GetSeason();
-            results.RequestCached = true;
-            Animes = _originalCollection = results.SeasonEntries.ToList();
+            try
+            {
+                var results = await _jikan.GetSeason();
+                results.RequestCached = true;
+                Animes = _originalCollection = results.SeasonEntries.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                //TODO:capturar aqui possíveis erros de conexão
+            }
         }
 
         private void ClearTextQuery() => SearchQuery = string.Empty;
@@ -123,7 +131,7 @@ namespace ANT.Modules
         public Command AddToFavoriteCommand => new Command(() =>
         {
             //TODO: mudar o texto do toolbaritem entre "multi seleção" ou " multi seleção desligada"(pensar se esse é um nome bom)
-            //TODO:ver boas cores para por no botão redondo, aumentar o tamanho dele no app.xaml pelo favoriteroundedbutton
+            //TODO:pensar o que fazer com o botão de favoritos se o usuário estiver no fim da lista E com um registro de anime logo atrás do botão
 
             if (SelectedItems?.Count == 0)
                 return;
