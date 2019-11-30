@@ -1,5 +1,4 @@
 ﻿using ANT.Core;
-using ANT.UTIL;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using MvvmHelpers;
 
 namespace ANT.Modules
 {
-    public class SettingsViewModel : ViewModelBase
+    public class SettingsViewModel : BaseViewModel
     {
         public SettingsViewModel()
         {
@@ -55,7 +55,7 @@ namespace ANT.Modules
                 if (_selectedLangIndex == value)
                     return;
 
-                Changed(ref _selectedLangIndex, value);
+                SetProperty(ref _selectedLangIndex, value);
 
                 //switch (_selectedLangIndex)
                 //{
@@ -79,7 +79,7 @@ namespace ANT.Modules
                 if (_isAutomaticTranslate == value)
                     return;
 
-                Changed(ref _isAutomaticTranslate, value);
+                SetProperty(ref _isAutomaticTranslate, value);
 
                 //App.SettingsPreferences.AutomaticTranslate = _isAutomaticTranslate;
                 //JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);

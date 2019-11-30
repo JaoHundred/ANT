@@ -7,9 +7,12 @@
              xmlns:converter="clr-namespace:ANT.Converter"
              xmlns:animate="clr-namespace:Xamanimation;assembly=Xamanimation"
              xmlns:comm="clr-namespace:ANT._Behaviors"
+             xmlns:ji="clr-namespace:JikanDotNet;assembly=JikanDotNet"
+             xmlns:VM="clr-namespace:ANT.Modules"
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
+             x:DataType="VM:CatalogueViewModel"
              x:Name="_Page" >
 
     <ContentPage.Resources>
@@ -54,8 +57,8 @@
 
     <Grid>
         <RefreshView Command="{Binding RefreshCommand}" 
-                 IsRefreshing="{Binding IsRefreshing}" 
-                 IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
+                     IsRefreshing="{Binding IsRefreshing}" 
+                     IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
 
             <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}">
@@ -67,12 +70,12 @@
 
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" 
-                                 Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
+                                     Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
                 </CollectionView.ItemsLayout>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame >
+                        <Frame x:DataType="ji:AnimeSubEntry">
                             <Grid >
                                 <Grid.RowDefinitions>
                                     <RowDefinition/>
@@ -80,10 +83,11 @@
                                 </Grid.RowDefinitions>
 
                                 <Image x:Name="AnimeImage" Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}"/>
-                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
-                                               IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
+                                <ActivityIndicator x:DataType="VM:CatalogueViewModel" 
+                                                   IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
+                                                   IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
                                 <Label Grid.Row="1" Text="{Binding Title,Converter={StaticResource ShortTextConverter}}"
-                                   Style="{StaticResource AnimeFrameLabel}" />
+                                       Style="{StaticResource AnimeFrameLabel}" />
                             </Grid>
                         </Frame>
                     </DataTemplate>

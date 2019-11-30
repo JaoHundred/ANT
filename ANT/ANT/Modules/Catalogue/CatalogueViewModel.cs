@@ -5,15 +5,15 @@ using JikanDotNet;
 using JikanDotNet.Helpers;
 using Xamarin.Forms;
 using System.Linq;
-using ANT.UTIL;
 using System.Threading.Tasks;
 using ANT.Interfaces;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using MvvmHelpers;
 
 namespace ANT.Modules
 {
-    public class CatalogueViewModel : ViewModelBase, IAsyncInitialization
+    public class CatalogueViewModel : BaseViewModel, IAsyncInitialization
     {
         private IJikan _jikan;
 
@@ -21,6 +21,8 @@ namespace ANT.Modules
         {
             _jikan = new Jikan(useHttps: true);
             InitializeTask = LoadAync();
+
+            Animes = new ObservableRangeCollection<AnimeSubEntry>();
         }
 
         public Task InitializeTask { get; }
@@ -39,57 +41,57 @@ namespace ANT.Modules
         public bool IsLoading
         {
             get { return _isLoading; }
-            set { Changed(ref _isLoading, value); }
+            set { SetProperty(ref _isLoading, value); }
         }
 
         private bool _isLoadingOrRefreshing;
         public bool IsLoadingOrRefreshing
         {
             get { return _isLoadingOrRefreshing; }
-            set { Changed(ref _isLoadingOrRefreshing, value); }
+            set { SetProperty(ref _isLoadingOrRefreshing, value); }
         }
 
         private bool _isRefreshing;
         public bool IsRefreshing
         {
             get { return _isRefreshing; }
-            set { Changed(ref _isRefreshing, value); }
+            set { SetProperty(ref _isRefreshing, value); }
         }
 
         private bool _isMultiSelect;
         public bool IsMultiSelect
         {
             get { return _isMultiSelect; }
-            set { Changed(ref _isMultiSelect, value); }
+            set { SetProperty(ref _isMultiSelect, value); }
         }
 
         private Xamarin.Forms.SelectionMode _selectionMode;
         public Xamarin.Forms.SelectionMode SelectionMode
         {
             get { return _selectionMode; }
-            set { Changed(ref _selectionMode, value); }
+            set { SetProperty(ref _selectionMode, value); }
         }
 
         private IList<object> _selectedItems;
         public IList<object> SelectedItems
         {
             get { return _selectedItems; }
-            set { Changed(ref _selectedItems, value); }
+            set { SetProperty(ref _selectedItems, value); }
         }
 
         private IList<AnimeSubEntry> _originalCollection;
-        private IList<AnimeSubEntry> _animes;
-        public IList<AnimeSubEntry> Animes
+        private ObservableRangeCollection<AnimeSubEntry> _animes;
+        public ObservableRangeCollection<AnimeSubEntry> Animes
         {
             get { return _animes; }
-            set { Changed(ref _animes, value); }
+            set { SetProperty(ref _animes, value); }
         }
 
         private string _searchQuery;
         public string SearchQuery
         {
             get { return _searchQuery; }
-            set { Changed(ref _searchQuery, value); }
+            set { SetProperty(ref _searchQuery, value); }
         }
 
         #endregion
@@ -104,7 +106,8 @@ namespace ANT.Modules
             {
                 var results = await _jikan.GetSeason();
                 results.RequestCached = true;
-                Animes = _originalCollection = results.SeasonEntries.ToList();
+                _originalCollection = results.SeasonEntries.ToList();
+                Animes.ReplaceRange(_originalCollection);
             }
             catch (Exception ex)
             {
@@ -164,10 +167,7 @@ namespace ANT.Modules
                return _originalCollection.Where(anime => anime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant())).ToList();
            });
 
-            bool EqualCollections = Animes.SequenceEqual(resultList);
-
-            if (!EqualCollections)
-                Animes = resultList;
+            Animes.ReplaceRange(resultList);
         });
 
         #endregion
