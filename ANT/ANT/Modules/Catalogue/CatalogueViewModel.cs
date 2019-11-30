@@ -132,7 +132,6 @@ namespace ANT.Modules
         {
             //TODO: mudar o texto do toolbaritem entre "multi seleção" ou " multi seleção desligada"(pensar se esse é um nome bom)
             //TODO: pensar o que fazer com o botão de favoritos se o usuário estiver no fim da lista E com um registro de anime logo atrás do botão
-            //TODO: trocar returncommand do entry para textchangedcommand(não tem forma natural de ser feito isso, pesquisar como fazer)
 
             if (SelectedItems?.Count == 0)
                 return;
@@ -158,9 +157,17 @@ namespace ANT.Modules
             SearchCommand.Execute(null);
         });
 
-        public Command SearchCommand => new Command(() =>
+        public Command SearchCommand => new Command(async () =>
         {
-            Animes = _originalCollection.Where(p => p.Title.ToLowerInvariant().StartsWith(SearchQuery.ToLowerInvariant())).ToList();
+            IList<AnimeSubEntry> resultList = await Task.Run(() =>
+           {
+               return _originalCollection.Where(anime => anime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant())).ToList();
+           });
+
+            bool EqualCollections = Animes.SequenceEqual(resultList);
+
+            if (!EqualCollections)
+                Animes = resultList;
         });
 
         #endregion

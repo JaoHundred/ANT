@@ -6,6 +6,7 @@
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:converter="clr-namespace:ANT.Converter"
              xmlns:animate="clr-namespace:Xamanimation;assembly=Xamanimation"
+             xmlns:comm="clr-namespace:ANT._Behaviors"
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
@@ -24,9 +25,12 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
-            <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntry}"
-                   Text="{Binding SearchQuery}" ReturnCommand="{Binding SearchCommand}"
-                   IsEnabled="{Binding IsLoadingOrRefreshing, Converter={StaticResource InversorConverter}}"/>
+            <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntry}" Text="{Binding SearchQuery}" 
+                   IsEnabled="{Binding IsLoadingOrRefreshing, Converter={StaticResource InversorConverter}}">
+                <Entry.Behaviors>
+                    <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
+                </Entry.Behaviors>
+            </Entry>
 
             <Label Grid.Column="1" Style="{StaticResource SearchCancelButton}"  
                    IsVisible="{Binding SearchQuery, Converter={StaticResource EmptyTextToBoolConverter}}">
