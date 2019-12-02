@@ -97,6 +97,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deselect.
+        /// </summary>
+        public static string Deselect {
+            get {
+                return ResourceManager.GetString("Deselect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         public static string Home {
@@ -106,7 +115,7 @@ namespace ANT.Lang {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multi Select.
+        ///   Looks up a localized string similar to Select.
         /// </summary>
         public static string MultiSelect {
             get {

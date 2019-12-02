@@ -129,11 +129,14 @@
   <data name="ChangeTheme" xml:space="preserve">
     <value>Change theme</value>
   </data>
+  <data name="Deselect" xml:space="preserve">
+    <value>Deselect</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
   <data name="MultiSelect" xml:space="preserve">
-    <value>Multi Select</value>
+    <value>Select</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>

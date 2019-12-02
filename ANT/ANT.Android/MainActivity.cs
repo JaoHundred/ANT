@@ -9,12 +9,16 @@ using Android.OS;
 using Xamarin.Forms;
 using ANT.Core;
 using Android.Util;
+using ANT.Modules;
+using ANT.Interfaces;
+using MvvmHelpers;
 
+[assembly: Xamarin.Forms.Dependency(typeof(ANT.Droid.MainActivity))]
 namespace ANT.Droid
 {
     [Activity(Label = "ANT", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation,
         ScreenOrientation = ScreenOrientation.Portrait)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, IMainPageAndroid
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -26,7 +30,21 @@ namespace ANT.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
+
+
         }
+
+        public override void OnBackPressed()
+        {
+            if (_currentVm is CatalogueViewModel ctl && ctl.IsMultiSelect)
+                ctl.SelectionModeCommand.Execute(null);
+            else
+                base.OnBackPressed();
+        }
+
+        private static BaseViewModel _currentVm;
+        public void OnBackPress(BaseViewModel vm)
+            => _currentVm = vm;
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -34,5 +52,7 @@ namespace ANT.Droid
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
+
     }
 }

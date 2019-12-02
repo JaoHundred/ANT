@@ -10,19 +10,22 @@ using ANT.Interfaces;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using MvvmHelpers;
+using System.Windows.Input;
 
 namespace ANT.Modules
 {
     public class CatalogueViewModel : BaseViewModel, IAsyncInitialization
     {
         private IJikan _jikan;
-
+        private IMainPageAndroid _mainPageAndroid;
         public CatalogueViewModel()
         {
             _jikan = new Jikan(useHttps: true);
             InitializeTask = LoadAync();
 
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
+            _mainPageAndroid = DependencyService.Get<IMainPageAndroid>();
+            _mainPageAndroid.OnBackPress(this);
         }
 
         public Task InitializeTask { get; }
@@ -122,31 +125,35 @@ namespace ANT.Modules
         #region commands
 
 
-        public Command SelectionModeCommand => new Command(() =>
+        public ICommand SelectionModeCommand => new Command(() =>
         {
-            SelectionMode = SelectionMode != SelectionMode.Multiple ? SelectionMode.Multiple : SelectionMode.None;
-            IsMultiSelect = SelectionMode == SelectionMode.Multiple;
-
-            if (SelectionMode != SelectionMode.Multiple)
+            if (SelectionMode == SelectionMode.Multiple)
+            {
+                SelectionMode = SelectionMode.None;
+                IsMultiSelect = false;
+            }
+            else
+            {
+                SelectionMode = SelectionMode.Multiple;
+                IsMultiSelect = true;
                 SelectedItems = null;
+            }
         });
 
-        public Command AddToFavoriteCommand => new Command(() =>
+        public ICommand AddToFavoriteCommand => new Command(() =>
         {
-            //TODO: mudar o texto do toolbaritem entre "multi seleção" ou " multi seleção desligada"(pensar se esse é um nome bom)
-            //TODO: pensar o que fazer com o botão de favoritos se o usuário estiver no fim da lista E com um registro de anime logo atrás do botão
 
             if (SelectedItems?.Count == 0)
                 return;
 
-            foreach (var item in SelectedItems)
-            {
+            var items = SelectedItems.Cast<AnimeSubEntry>().ToList();
 
-            }
+            //TODO: pensar em um sistema de save para guardar favoritos do usuário
+            //TODO: implementar função de clique em anime(implementar esse antes da multiseleção home/favoritos)
 
         });
 
-        public Command RefreshCommand => new Command(async () =>
+        public ICommand RefreshCommand => new Command(async () =>
         {
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
             await LoadCatalogueAsync();
@@ -154,13 +161,13 @@ namespace ANT.Modules
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
         });
 
-        public Command ClearTextCommand => new Command(() =>
+        public ICommand ClearTextCommand => new Command(() =>
         {
             ClearTextQuery();
             SearchCommand.Execute(null);
         });
 
-        public Command SearchCommand => new Command(async () =>
+        public ICommand SearchCommand => new Command(async () =>
         {
             IList<AnimeSubEntry> resultList = await Task.Run(() =>
            {

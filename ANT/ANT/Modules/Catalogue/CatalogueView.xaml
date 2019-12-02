@@ -20,7 +20,7 @@
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
     </ContentPage.Resources>
-
+    
     <Shell.TitleView>
         <Grid>
             <Grid.ColumnDefinitions>
