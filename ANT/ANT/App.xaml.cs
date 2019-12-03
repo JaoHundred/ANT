@@ -17,9 +17,11 @@ namespace ANT
         }
 
         public static SettingsPreferences SettingsPreferences;
-
+        public static INavigation Navigation;
         protected async override void OnStart()
         {
+            Navigation = MainPage.Navigation;
+
             var settings = await JsonStorage.ReadSettingsAsync(StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
             SettingsPreferences = settings ?? new SettingsPreferences();
 

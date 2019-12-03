@@ -30,8 +30,6 @@ namespace ANT.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
-
-
         }
 
         public override void OnBackPressed()
@@ -39,8 +37,13 @@ namespace ANT.Droid
             if (_currentVm is CatalogueViewModel ctl && ctl.IsMultiSelect)
                 ctl.SelectionModeCommand.Execute(null);
             else
+            {
+                //TODO: atualmente, pressionar o botão de voltar faz o app fechar e retornar para a página raiz do shell, descobrir se isso é normal ou se é um bug
                 base.OnBackPressed();
+            }
         }
+
+       
 
         private static BaseViewModel _currentVm;
         public void OnBackPress(BaseViewModel vm)

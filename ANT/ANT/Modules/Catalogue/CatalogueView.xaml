@@ -74,20 +74,21 @@
                 </CollectionView.ItemsLayout>
 
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame x:DataType="ji:AnimeSubEntry">
+                    <DataTemplate x:DataType="ji:AnimeSubEntry" >
+                        <Frame>
                             <Frame.GestureRecognizers>
-                                <TapGestureRecognizer x:DataType="VM:CatalogueViewModel" Command="{Binding OpenAnimeCommand}"/>
+                                <TapGestureRecognizer Command="{Binding BindingContext.OpenAnimeCommand, Source={x:Reference CatalogueCollection}}"
+                                                      CommandParameter="{Binding .}"/>
                             </Frame.GestureRecognizers>
-                            <Grid>
+                            <Grid >
+                                
                                 <Grid.RowDefinitions>
                                     <RowDefinition/>
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
 
                                 <Image x:Name="AnimeImage" Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}"/>
-                                <ActivityIndicator x:DataType="VM:CatalogueViewModel" 
-                                                   IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
+                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
                                                    IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
                                 <Label Grid.Row="1" Text="{Binding Title,Converter={StaticResource ShortTextConverter}}"
                                        Style="{StaticResource AnimeFrameLabel}" />

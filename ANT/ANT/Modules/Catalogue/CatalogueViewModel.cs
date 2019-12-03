@@ -17,17 +17,20 @@ namespace ANT.Modules
 {
     public class CatalogueViewModel : BaseViewModel, IAsyncInitialization
     {
-        private IJikan _jikan;
-        private IMainPageAndroid _mainPageAndroid;
-        public CatalogueViewModel()
+        public CatalogueViewModel(INavigation navigation)
         {
             _jikan = new Jikan(useHttps: true);
             InitializeTask = LoadAync();
+            _navigation = navigation;
 
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
             _mainPageAndroid = DependencyService.Get<IMainPageAndroid>();
             _mainPageAndroid.OnBackPress(this);
         }
+
+        private IJikan _jikan;
+        private IMainPageAndroid _mainPageAndroid;
+        private INavigation _navigation;
 
         public Task InitializeTask { get; }
         public async Task LoadAync()
@@ -115,7 +118,7 @@ namespace ANT.Modules
                     anime => anime.R18 == false &&
                     anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
                     ).ToList();
-                
+
                 Animes.ReplaceRange(_originalCollection);
             }
             catch (Exception ex)
@@ -155,8 +158,6 @@ namespace ANT.Modules
             var items = SelectedItems.Cast<AnimeSubEntry>().ToList();
 
             //TODO: pensar em um sistema de save para guardar favoritos do usuário
-            //TODO: implementar função de clique em anime(implementar esse antes da multiseleção home/favoritos)
-
         });
 
         public ICommand RefreshCommand => new Command(async () =>
@@ -183,9 +184,13 @@ namespace ANT.Modules
             Animes.ReplaceRange(resultList);
         });
 
-        public ICommand OpenAnimeCommand = new Command(() => 
+        public ICommand OpenAnimeCommand => new Command(async (object item) =>
         {
-            
+            if (!IsMultiSelect)
+            {
+                var anime = (AnimeSubEntry)item;
+                await _navigation.PushAsync(new AnimeSpecsView(anime));
+            }
         });
 
         #endregion
