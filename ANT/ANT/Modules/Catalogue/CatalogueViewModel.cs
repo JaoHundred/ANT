@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using MvvmHelpers;
 using System.Windows.Input;
+using ANT.UTIL;
 
 namespace ANT.Modules
 {
@@ -109,7 +110,12 @@ namespace ANT.Modules
             {
                 var results = await _jikan.GetSeason();
                 results.RequestCached = true;
-                _originalCollection = results.SeasonEntries.ToList();
+                //TODO: temporário criar meios de filtros especializados no futuro
+                _originalCollection = results.SeasonEntries.Where(
+                    anime => anime.R18 == false &&
+                    anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
+                    ).ToList();
+                
                 Animes.ReplaceRange(_originalCollection);
             }
             catch (Exception ex)
@@ -175,6 +181,11 @@ namespace ANT.Modules
            });
 
             Animes.ReplaceRange(resultList);
+        });
+
+        public ICommand OpenAnimeCommand = new Command(() => 
+        {
+            
         });
 
         #endregion

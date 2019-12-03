@@ -76,7 +76,10 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame x:DataType="ji:AnimeSubEntry">
-                            <Grid >
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer x:DataType="VM:CatalogueViewModel" Command="{Binding OpenAnimeCommand}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition/>
                                     <RowDefinition Height="auto"/>
