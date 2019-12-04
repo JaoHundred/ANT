@@ -72,11 +72,18 @@ namespace ANT.Modules
             set { SetProperty(ref _isMultiSelect, value); }
         }
 
-        private Xamarin.Forms.SelectionMode _selectionMode;
+        private Xamarin.Forms.SelectionMode _selectionMode = SelectionMode.Single;
         public Xamarin.Forms.SelectionMode SelectionMode
         {
             get { return _selectionMode; }
             set { SetProperty(ref _selectionMode, value); }
+        }
+
+        private AnimeSubEntry _selectedItem;
+        public AnimeSubEntry SelectedItem
+        {
+            get { return _selectedItem; }
+            set { SetProperty(ref _selectedItem, value); }
         }
 
         private IList<object> _selectedItems;
@@ -138,7 +145,7 @@ namespace ANT.Modules
         {
             if (SelectionMode == SelectionMode.Multiple)
             {
-                SelectionMode = SelectionMode.None;
+                SelectionMode = SelectionMode.Single;
                 IsMultiSelect = false;
             }
             else
@@ -184,12 +191,12 @@ namespace ANT.Modules
             Animes.ReplaceRange(resultList);
         });
 
-        public ICommand OpenAnimeCommand => new Command(async (object item) =>
+        public ICommand OpenAnimeCommand => new Command(async () =>
         {
-            if (!IsMultiSelect)
+            if (!IsMultiSelect && SelectedItem != null)
             {
-                var anime = (AnimeSubEntry)item;
-                await _navigation.PushAsync(new AnimeSpecsView(anime));
+                await _navigation.PushAsync(new AnimeSpecsView(SelectedItem));
+                SelectedItem = null;
             }
         });
 

@@ -61,7 +61,9 @@
                      IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
 
             <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
-                            SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}">
+                            SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
+                            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                            SelectionChangedCommand="{Binding OpenAnimeCommand}">
                 <CollectionView.EmptyView>
                     <Grid>
                         <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
@@ -76,12 +78,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="ji:AnimeSubEntry" >
                         <Frame>
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BindingContext.OpenAnimeCommand, Source={x:Reference CatalogueCollection}}"
-                                                      CommandParameter="{Binding .}"/>
-                            </Frame.GestureRecognizers>
-                            <Grid >
-                                
+                            <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition/>
                                     <RowDefinition Height="auto"/>
