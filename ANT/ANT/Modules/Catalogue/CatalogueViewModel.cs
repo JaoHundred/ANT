@@ -15,13 +15,12 @@ using ANT.UTIL;
 
 namespace ANT.Modules
 {
-    public class CatalogueViewModel : BaseViewModel, IAsyncInitialization
+    public class CatalogueViewModel : BaseVMSelectionModeExtender, IAsyncInitialization
     {
-        public CatalogueViewModel(INavigation navigation)
+        public CatalogueViewModel()
         {
             _jikan = new Jikan(useHttps: true);
             InitializeTask = LoadAync();
-            _navigation = navigation;
 
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
             _mainPageAndroid = DependencyService.Get<IMainPageAndroid>();
@@ -30,7 +29,6 @@ namespace ANT.Modules
 
         private IJikan _jikan;
         private IMainPageAndroid _mainPageAndroid;
-        private INavigation _navigation;
 
         public Task InitializeTask { get; }
         public async Task LoadAync()
@@ -65,19 +63,7 @@ namespace ANT.Modules
             set { SetProperty(ref _isRefreshing, value); }
         }
 
-        private bool _isMultiSelect;
-        public bool IsMultiSelect
-        {
-            get { return _isMultiSelect; }
-            set { SetProperty(ref _isMultiSelect, value); }
-        }
-
-        private Xamarin.Forms.SelectionMode _selectionMode = SelectionMode.Single;
-        public Xamarin.Forms.SelectionMode SelectionMode
-        {
-            get { return _selectionMode; }
-            set { SetProperty(ref _selectionMode, value); }
-        }
+        
 
         private AnimeSubEntry _selectedItem;
         public AnimeSubEntry SelectedItem
@@ -144,14 +130,10 @@ namespace ANT.Modules
         public ICommand SelectionModeCommand => new Command(() =>
         {
             if (SelectionMode == SelectionMode.Multiple)
-            {
-                SelectionMode = SelectionMode.Single;
-                IsMultiSelect = false;
-            }
+                SingleSelectionMode();
             else
             {
-                SelectionMode = SelectionMode.Multiple;
-                IsMultiSelect = true;
+                MultiSelectionMode();
                 SelectedItems = null;
             }
         });
@@ -159,7 +141,7 @@ namespace ANT.Modules
         public ICommand AddToFavoriteCommand => new Command(() =>
         {
 
-            if (SelectedItems?.Count == 0)
+            if (SelectedItems == null || SelectedItems.Count == 0)
                 return;
 
             var items = SelectedItems.Cast<AnimeSubEntry>().ToList();
@@ -195,7 +177,7 @@ namespace ANT.Modules
         {
             if (!IsMultiSelect && SelectedItem != null)
             {
-                await _navigation.PushAsync(new AnimeSpecsView(SelectedItem));
+                await App.Current.MainPage.Navigation.PushAsync(new AnimeSpecsView(SelectedItem));
                 SelectedItem = null;
             }
         });

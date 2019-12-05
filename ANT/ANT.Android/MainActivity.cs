@@ -12,6 +12,7 @@ using Android.Util;
 using ANT.Modules;
 using ANT.Interfaces;
 using MvvmHelpers;
+using ANT.UTIL;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ANT.Droid.MainActivity))]
 namespace ANT.Droid
@@ -32,22 +33,41 @@ namespace ANT.Droid
             LoadApplication(new App());
         }
 
-        public override void OnBackPressed()
+        private readonly string _rootRoute = "Home";
+
+        public override async void OnBackPressed()
         {
-            if (_currentVm is CatalogueViewModel ctl && ctl.IsMultiSelect)
-                ctl.SelectionModeCommand.Execute(null);
+            if (Shell.Current.FlyoutIsPresented) // se o hamburger menu está aberto, fecho
+            {
+                Shell.Current.FlyoutIsPresented = false;
+                return;
+            }
             else
             {
-                //TODO: atualmente, pressionar o botão de voltar faz o app fechar e retornar para a página raiz do shell, descobrir se isso é normal ou se é um bug
-                base.OnBackPressed();
+                if (_currentVm is BaseVMSelectionModeExtender vm && vm.IsMultiSelect) // se estou com a multi seleção ativa, fecho
+                {
+                    vm.SingleSelectionMode();
+                    return;
+                }
+
+                else
+                {
+                    string route = Shell.Current.CurrentItem.Route;
+                    int stackCount = App.Current.MainPage.Navigation.NavigationStack.Count;
+
+                    if (stackCount == 1 && route != _rootRoute)// estou na raiz da pilha e não estou na home
+                        await Shell.Current.GoToAsync($"///{_rootRoute}");
+                    else if (stackCount == 1 && route == _rootRoute || stackCount > 1) // estou na home ou qualquer página hierárquica
+                        base.OnBackPressed();
+
+                }
             }
         }
-
-       
 
         private static BaseViewModel _currentVm;
         public void OnBackPress(BaseViewModel vm)
             => _currentVm = vm;
+
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

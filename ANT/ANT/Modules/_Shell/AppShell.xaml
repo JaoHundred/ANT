@@ -63,7 +63,7 @@
         </DataTemplate>
     </Shell.ItemTemplate>
 
-    <FlyoutItem Title="{res:Translate Home}" >
+    <FlyoutItem Title="{res:Translate Home}" Route="Home">
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="{StaticResource FontIcon}"
                              Glyph="{StaticResource Home}"
@@ -71,7 +71,7 @@
         </FlyoutItem.Icon>
         <ShellContent  ContentTemplate="{DataTemplate modules:HomeView}"/>
     </FlyoutItem>
-    <FlyoutItem Title="{res:Translate Catalogue}">
+    <FlyoutItem Title="{res:Translate Catalogue}" Route="Catalogue">
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="{StaticResource FontIcon}"
                              Glyph="{StaticResource Catalogue}"
@@ -80,7 +80,7 @@
         <ShellContent ContentTemplate="{DataTemplate modules:CatalogueView}"/>
     </FlyoutItem>
     
-    <FlyoutItem Title="{res:Translate Settings}">
+    <FlyoutItem Title="{res:Translate Settings}" Route="Settings">
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="{StaticResource FontIcon}"
                              Glyph="{StaticResource Settings}"

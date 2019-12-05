@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MvvmHelpers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ANT.Modules
 {
-    class HomeViewModel
+    public class HomeViewModel : BaseViewModel
     {
     }
 }

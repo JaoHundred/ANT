@@ -15,7 +15,7 @@ namespace ANT.Modules
         public CatalogueView()
         {
             InitializeComponent();
-            BindingContext = new CatalogueViewModel(Navigation);
+            BindingContext = new CatalogueViewModel();
         }
 
         private async void FavoriteButton_AnimationOnIsVisible(object sender, System.ComponentModel.PropertyChangedEventArgs e)

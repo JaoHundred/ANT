@@ -1,6 +1,8 @@
 ﻿using ANT.Core;
+using ANT.Interfaces;
 using ANT.Model;
 using ANT.Modules;
+using MvvmHelpers;
 using System;
 using System.Diagnostics;
 using Xamarin.Forms;
@@ -17,11 +19,8 @@ namespace ANT
         }
 
         public static SettingsPreferences SettingsPreferences;
-        public static INavigation Navigation;
         protected async override void OnStart()
         {
-            Navigation = MainPage.Navigation;
-
             var settings = await JsonStorage.ReadSettingsAsync(StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
             SettingsPreferences = settings ?? new SettingsPreferences();
 
@@ -39,5 +38,6 @@ namespace ANT
         {
             // Handle when your app resumes
         }
+
     }
 }
