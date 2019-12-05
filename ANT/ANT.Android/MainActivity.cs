@@ -37,6 +37,7 @@ namespace ANT.Droid
 
         public override async void OnBackPressed()
         {
+            //TODO: tentar fazer uma solução com MessagingCenter? se for boa, descobrir como passar a viewmodel atual
             if (Shell.Current.FlyoutIsPresented) // se o hamburger menu está aberto, fecho
             {
                 Shell.Current.FlyoutIsPresented = false;
@@ -56,9 +57,10 @@ namespace ANT.Droid
                     int stackCount = App.Current.MainPage.Navigation.NavigationStack.Count;
 
                     if (stackCount == 1 && route != _rootRoute)// estou na raiz da pilha e não estou na home
-                        await Shell.Current.GoToAsync($"///{_rootRoute}");
+                        await Shell.Current.GoToAsync($"///{_rootRoute}", animate: true);
                     else if (stackCount == 1 && route == _rootRoute || stackCount > 1) // estou na home ou qualquer página hierárquica
-                        base.OnBackPressed();
+                        base.OnBackPressed(); //TODO: quando isso é chamado em páginas hierárquicas o retorno da uma leve engasgada
+                    //, descobrir o que pode ser, não dá pra usar async await nessa linha
 
                 }
             }

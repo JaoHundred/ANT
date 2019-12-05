@@ -106,7 +106,8 @@ namespace ANT.Modules
             {
                 var results = await _jikan.GetSeason();
                 results.RequestCached = true;
-                //TODO: temporário criar meios de filtros especializados no futuro
+                //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 
+                //que seleciona os filtros e repassa para cá
                 _originalCollection = results.SeasonEntries.Where(
                     anime => anime.R18 == false &&
                     anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
@@ -177,7 +178,7 @@ namespace ANT.Modules
         {
             if (!IsMultiSelect && SelectedItem != null)
             {
-                await App.Current.MainPage.Navigation.PushAsync(new AnimeSpecsView(SelectedItem));
+                await Shell.Current.Navigation.PushAsync(new AnimeSpecsView(SelectedItem));
                 SelectedItem = null;
             }
         });
