@@ -19,7 +19,7 @@ namespace ANT.Modules
     {
         public CatalogueViewModel()
         {
-            _jikan = new Jikan(useHttps: true);
+            
             InitializeTask = LoadAync();
 
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
@@ -27,7 +27,6 @@ namespace ANT.Modules
             _mainPageAndroid.OnBackPress(this);
         }
 
-        private IJikan _jikan;
         private IMainPageAndroid _mainPageAndroid;
 
         public Task InitializeTask { get; }
@@ -104,7 +103,7 @@ namespace ANT.Modules
 
             try
             {
-                var results = await _jikan.GetSeason();
+                var results = await App.Jikan.GetSeason();
                 results.RequestCached = true;
                 //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 
                 //que seleciona os filtros e repassa para cá

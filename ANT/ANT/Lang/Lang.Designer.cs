@@ -61,6 +61,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Air Date.
+        /// </summary>
+        public static string AiringStart {
+            get {
+                return ResourceManager.GetString("AiringStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automatic Translate.
         /// </summary>
         public static string AutomaticTranslate {
@@ -120,6 +129,15 @@ namespace ANT.Lang {
         public static string MultiSelect {
             get {
                 return ResourceManager.GetString("MultiSelect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Score.
+        /// </summary>
+        public static string Score {
+            get {
+                return ResourceManager.GetString("Score", resourceCulture);
             }
         }
         

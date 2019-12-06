@@ -2,6 +2,7 @@
 using ANT.Interfaces;
 using ANT.Model;
 using ANT.Modules;
+using JikanDotNet;
 using MvvmHelpers;
 using System;
 using System.Diagnostics;
@@ -19,6 +20,7 @@ namespace ANT
         }
 
         public static SettingsPreferences SettingsPreferences;
+        public static IJikan Jikan { get; private set; }
         protected async override void OnStart()
         {
             var settings = await JsonStorage.ReadSettingsAsync(StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
@@ -27,6 +29,8 @@ namespace ANT
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
             //await CultureManager.LoadCultureAsync();
+
+            Jikan = new Jikan(useHttps: true);
         }
 
         protected override void OnSleep()
