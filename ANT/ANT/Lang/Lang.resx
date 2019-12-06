@@ -135,6 +135,12 @@
   <data name="Deselect" xml:space="preserve">
     <value>Deselect</value>
   </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Episodes" xml:space="preserve">
+    <value>Episodes</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>

@@ -22,11 +22,18 @@ namespace ANT.Modules
         public Task InitializeTask { get; }
         public async Task LoadAync()
         {
-            AnimeEpisodes epi = await App.Jikan.GetAnimeEpisodes(_animeRef.MalId);
-            epi.RequestCached = true;
+            try
+            {
+                AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(_animeRef.MalId);
+                episodes.RequestCached = true;
 
-            AnimeContext = _animeRef;
-            Episodes = epi.EpisodeCollection.ToList();
+                AnimeContext = _animeRef;
+                Episodes = episodes.EpisodeCollection.ToList();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
         }
 
@@ -45,6 +52,6 @@ namespace ANT.Modules
             set { SetProperty(ref _episodes, value); }
         }
 
-        //TODO: testar com tabbed page, uma página para informações e outra para os episódios, desabilitar o uso do hamburger menu na tabbed page
+        //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página
     }
 }

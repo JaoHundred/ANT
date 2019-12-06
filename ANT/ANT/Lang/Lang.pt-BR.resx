@@ -135,6 +135,12 @@
   <data name="Deselect" xml:space="preserve">
     <value>Tirar seleção</value>
   </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detalhes</value>
+  </data>
+  <data name="Episodes" xml:space="preserve">
+    <value>Episódios</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Principal</value>
   </data>

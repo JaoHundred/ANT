@@ -11,7 +11,7 @@ using Xamarin.Forms.Xaml;
 namespace ANT.Modules
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AnimeSpecsView : ContentPage
+    public partial class AnimeSpecsView : TabbedPage
     {
         public AnimeSpecsView()
         {

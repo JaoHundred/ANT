@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -9,46 +9,57 @@
              xmlns:converter="clr-namespace:ANT.Converter"
              mc:Ignorable="d"
              x:Class="ANT.Modules.AnimeSpecsView"
-             x:DataType="VM:AnimeSpecsViewModel">
-
-    <ContentPage.Resources>
-        <converter:DateConverter x:Key="DateConverter"/>
-    </ContentPage.Resources>
+             x:DataType="VM:AnimeSpecsViewModel"
+            Shell.FlyoutBehavior="Disabled">
 
 
 
 
-    <Grid Margin="5,0,5,0"  RowSpacing="3">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="300"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Frame >
-            <Image Source="{Binding AnimeContext.ImageURL}"/>
-        </Frame>
-        <Frame Grid.Row="1" Padding="10,0,10,5">
-            <Grid RowSpacing="0">
-                <ScrollView Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalOptions="Center" >
-                    <Label Text="{Binding AnimeContext.Title}" FontSize="28"/>
+    <ContentPage Title="{res:Translate Details}">
+        <ContentPage.Resources>
+            <converter:DateConverter x:Key="DateConverter"/>
+        </ContentPage.Resources>
 
-                </ScrollView>
+        <Grid Margin="5,0,5,0"  RowSpacing="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Frame >
+                <Image Source="{Binding AnimeContext.ImageURL}"/>
+            </Frame>
+            <Frame Grid.Row="1" Padding="10,0,10,5">
+                <Grid RowSpacing="0">
+                    <ScrollView Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalOptions="Center" >
+                        <Label Text="{Binding AnimeContext.Title}" FontSize="28"/>
 
-                <StackLayout Grid.Row="1" Orientation="Vertical" Spacing="0">
-                    <Label Text="{res:Translate Score}" FontSize="19"/>
-                    <Label Text="{Binding AnimeContext.Score}" FontSize="18"/>
+                    </ScrollView>
 
-                </StackLayout>
-                <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Vertical" HorizontalOptions="End"
-                             Spacing="0">
-                    <Label Text="{res:Translate AiringStart}" FontSize="19"/>
-                    <Label Text="{Binding AnimeContext.AiringStart, Converter={StaticResource DateConverter}}" FontSize="18"/>
-                </StackLayout>
-            </Grid>
-        </Frame>
+                    <StackLayout Grid.Row="1" Orientation="Vertical" Spacing="0">
+                        <Label Text="{res:Translate Score}" FontSize="19"/>
+                        <Label Text="{Binding AnimeContext.Score}" FontSize="18"/>
+
+                    </StackLayout>
+                    <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Vertical" HorizontalOptions="End" 
+                                 Spacing="0">
+                        <Label Text="{res:Translate AiringStart}" FontSize="19"/>
+                        <Label Text="{Binding AnimeContext.AiringStart, Converter={StaticResource DateConverter}}" FontSize="18"/>
+                    </StackLayout>
+                </Grid>
+            </Frame>
+        </Grid>
+    </ContentPage>
+
+    <ContentPage Title="{res:Translate Episodes}">
+        <CollectionView ItemsSource="{Binding Episodes}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="ji:AnimeEpisode">
+                    <Label Text="{Binding Title}"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </ContentPage>
 
 
-
-
-    </Grid>
-</ContentPage>
+</TabbedPage>

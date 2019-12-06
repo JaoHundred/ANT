@@ -23,6 +23,9 @@
             <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
                 <Setter Property="BackgroundColor" Value="{DynamicResource AppBackgroundColor}"/>
             </Style>
+            <Style TargetType="TabbedPage" ApplyToDerivedTypes="True">
+                <Setter Property="BarBackgroundColor" Value="{DynamicResource StatusBarColor}"/>
+            </Style>
 
             <Style TargetType="Label">
                 <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
