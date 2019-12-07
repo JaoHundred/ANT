@@ -53,5 +53,8 @@ namespace ANT.Modules
         }
 
         //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página
+        //TODO: campo da pontuação por no canto superior esquerdo(ao lado da imagem de capa do anime)
+        //TODO: botão de favorito no meio(campo de título/faxada do anime)
+        
     }
 }
