@@ -77,21 +77,21 @@
             <!--#endregion-->
 
             <!--#region ESPECIFICO DE CONTROLES -->
-            <Style TargetType="Label" x:Key="MenuLabelColor">
+            <Style TargetType="Label" x:Key="MenuLabelColorStyle">
                 <Setter Property="TextColor" Value="{DynamicResource TextMenuColor}"/>
                 <Setter Property="FontSize" Value="20"/>
             </Style>
 
-            <Style TargetType="Image" x:Key="AnimeFrameImage">
+            <Style TargetType="Image" x:Key="AnimeFrameImageStyle">
                 <Setter Property="HeightRequest" Value="200"/>
                 <Setter Property="IsOpaque" Value="True"/>
             </Style>
-            <Style TargetType="Label" x:Key="AnimeFrameLabel">
+            <Style TargetType="Label" x:Key="AnimeFrameLabelStyle">
                 <Setter Property="HorizontalTextAlignment" Value="Center"/>
                 <Setter Property="FontSize" Value="Subtitle"/>
             </Style>
 
-            <Style TargetType="Label" x:Key="SearchCancelButton">
+            <Style TargetType="Label" x:Key="SearchCancelButtonStyle">
                 <Setter Property="Text" Value="X"/>
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="23.5"/>
@@ -99,7 +99,7 @@
                 <Setter Property="HorizontalOptions" Value="End"/>
                 <Setter Property="Margin" Value="0,0,10,0"/>
             </Style>
-            <Style TargetType="Entry" x:Key="SearchEntry">
+            <Style TargetType="Entry" x:Key="SearchEntryStyle">
                 <Setter Property="PlaceholderColor" Value="White"/>
                 <Setter Property="TextColor" Value="White"/>
             </Style>
@@ -109,12 +109,24 @@
                 <Setter Property="HeightRequest" Value="60"/>
                 <Setter Property="CornerRadius" Value="50"/>
             </Style>
-            <Style TargetType="Button" x:Key="FavoriteRoundedButton" BasedOn="{StaticResource RoundedButtonStyle}">
+            <Style TargetType="Button" x:Key="FavoriteRoundedButtonStyle" BasedOn="{StaticResource RoundedButtonStyle}">
+                <Setter Property="BackgroundColor" Value="CornflowerBlue"/>
+                <Setter Property="ImageSource">
+                    <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                     Glyph="{StaticResource StarFill}"
+                                     Size="22"/>
+                </Setter>
+            </Style>
+            <Style TargetType="Button" x:Key="FavoriteRoundedButtonOverlayStyle" BasedOn="{StaticResource FavoriteRoundedButtonStyle}">
                 <Setter Property="VerticalOptions" Value="End"/>
                 <Setter Property="HorizontalOptions" Value="End"/>
                 <Setter Property="Margin" Value="30"/>
-                <Setter Property="BackgroundColor" Value="CornflowerBlue"/>
             </Style>
+
+            <Style TargetType="Grid" x:Key="GridFullPageForActivityIndicatorStyle">
+                <Setter Property="BackgroundColor" Value="{DynamicResource AppBackgroundColor}"/>
+            </Style>
+            
 
             <!--#endregion-->
 

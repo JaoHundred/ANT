@@ -19,24 +19,24 @@ namespace ANT.Modules
     {
         public CatalogueViewModel()
         {
-            
-            InitializeTask = LoadAync();
+            InitializeTask = LoadAync(null);
 
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
-            _mainPageAndroid = DependencyService.Get<IMainPageAndroid>();
-            _mainPageAndroid.OnBackPress(this);
         }
 
         private IMainPageAndroid _mainPageAndroid;
 
         public Task InitializeTask { get; }
-        public async Task LoadAync()
+        public async Task LoadAync(object param)
         {
             IsLoading = true;
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
             await LoadCatalogueAsync();
             IsLoading = false;
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
+
+            _mainPageAndroid = DependencyService.Get<IMainPageAndroid>();
+            _mainPageAndroid.OnBackPress(this);
         }
 
         #region proriedades

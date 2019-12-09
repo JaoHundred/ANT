@@ -6,6 +6,8 @@ using MvvmHelpers;
 using ANT.Interfaces;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace ANT.Modules
 {
@@ -13,28 +15,41 @@ namespace ANT.Modules
     {
         public AnimeSpecsViewModel(AnimeSubEntry anime)
         {
-            _animeRef = anime;
-            InitializeTask = LoadAync();
+            InitializeTask = LoadAync(anime);
 
         }
 
         private AnimeSubEntry _animeRef;
         public Task InitializeTask { get; }
-        public async Task LoadAync()
+        public async Task LoadAync(object anime)
         {
+            _animeRef = (AnimeSubEntry) anime;
+            IsLoading = true;
             try
             {
+                
                 AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(_animeRef.MalId);
                 episodes.RequestCached = true;
 
-                AnimeContext = _animeRef;
+                
                 Episodes = episodes.EpisodeCollection.ToList();
+                IsLoading = false;
+
+                AnimeContext = _animeRef;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
+        }
 
+        #region properties
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            set { SetProperty(ref _isLoading, value); }
         }
 
         private AnimeSubEntry _animeContext;
@@ -51,10 +66,17 @@ namespace ANT.Modules
             get { return _episodes; }
             set { SetProperty(ref _episodes, value); }
         }
+        #endregion
+
+        #region commands
+        public ICommand FavoriteCommand => new Command(() => 
+        {
+            //TODO:implementar classe modelo e serviço de favoritar
+        });
+        #endregion
 
         //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página
-        //TODO: campo da pontuação por no canto superior esquerdo(ao lado da imagem de capa do anime)
         //TODO: botão de favorito no meio(campo de título/faxada do anime)
-        
+
     }
 }

@@ -28,14 +28,14 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
-            <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntry}" Text="{Binding SearchQuery}" 
+            <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntryStyle}" Text="{Binding SearchQuery}" 
                    IsEnabled="{Binding IsLoadingOrRefreshing, Converter={StaticResource InversorConverter}}">
                 <Entry.Behaviors>
                     <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
                 </Entry.Behaviors>
             </Entry>
 
-            <Label Grid.Column="1" Style="{StaticResource SearchCancelButton}"  
+            <Label Grid.Column="1" Style="{StaticResource SearchCancelButtonStyle}"  
                    IsVisible="{Binding SearchQuery, Converter={StaticResource EmptyTextToBoolConverter}}">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ClearTextCommand}"/>
@@ -84,11 +84,11 @@
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Image x:Name="AnimeImage" Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImage}"/>
+                                <Image x:Name="AnimeImage" Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImageStyle}"/>
                                 <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
                                                    IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
                                 <Label Grid.Row="1" Text="{Binding Title,Converter={StaticResource ShortTextConverter}}"
-                                       Style="{StaticResource AnimeFrameLabel}" />
+                                       Style="{StaticResource AnimeFrameLabelStyle}" />
                             </Grid>
                         </Frame>
                     </DataTemplate>
@@ -97,7 +97,7 @@
         </RefreshView>
 
         <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
-                Style="{StaticResource FavoriteRoundedButton}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
+                Style="{StaticResource FavoriteRoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
             
             <Button.ImageSource>
                 <FontImageSource FontFamily="{StaticResource FontIcon}"

@@ -18,7 +18,7 @@
                 <TableSection>
                     <ViewCell>
                         <StackLayout >
-                            <Label Text="{res:Translate ChangeTheme}" Style="{StaticResource MenuLabelColor}"
+                            <Label Text="{res:Translate ChangeTheme}" Style="{StaticResource MenuLabelColorStyle}"
                                      />
                             <Picker SelectedIndex="{Binding SelectedThemeIndex}" 
                                     Title="{res:Translate SelectAppTheme}">

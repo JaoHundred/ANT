@@ -11,6 +11,11 @@ namespace ANT.Interfaces
     public interface IAsyncInitialization
     {
         Task InitializeTask { get; }
-        Task LoadAync();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="param">parâmetro opcional para se passar qualquer tipo de objeto</param>
+        /// <returns></returns>
+        Task LoadAync(object param);
     }
 }
