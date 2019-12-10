@@ -10,57 +10,81 @@
              mc:Ignorable="d"
              x:Class="ANT.Modules.AnimeSpecsView"
              x:DataType="VM:AnimeSpecsViewModel"
-            Shell.FlyoutBehavior="Disabled">
+            Shell.FlyoutBehavior="Disabled" 
+            IsEnabled="{Binding CanEnable}">
 
+    <TabbedPage.Resources>
+        <converter:InversorConverter x:Key="InversorConverter"/>
+    </TabbedPage.Resources>
 
 
 
     <ContentPage Title="{res:Translate Details}" x:DataType="VM:AnimeSpecsViewModel">
         <ContentPage.Resources>
             <converter:DateConverter x:Key="DateConverter"/>
-
+            <converter:HasEndDateConverter x:Key="HasEndDateConverter"/>
         </ContentPage.Resources>
 
         <Grid Margin="5,5,5,0"  RowSpacing="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="45*"/>
-                <RowDefinition Height="35*"/>
-                <RowDefinition Height="25*"/>
+                <RowDefinition Height="55*"/>
             </Grid.RowDefinitions>
 
             <Frame Padding="0,10,0,10">
-                <Image Source="{Binding AnimeContext.ImageURL}"/>
-            </Frame>
-            <Frame Grid.Row="1" Padding="10,0,10,5">
-                <Grid RowSpacing="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+                <Grid ColumnSpacing="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30*"/>
+                        <ColumnDefinition Width="40*"/>
+                        <ColumnDefinition Width="30*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <ScrollView Grid.ColumnSpan="3" Orientation="Horizontal" >
-                        <Label Text="{Binding AnimeContext.Title}" FontSize="28"/>
-                    </ScrollView>
-
-                    <StackLayout Grid.Row="1" Orientation="Vertical" Spacing="0" VerticalOptions="End"
-                                 HorizontalOptions="Center" Margin="0,0,0,5">
+                    <StackLayout Orientation="Vertical" Spacing="0" Margin="10,0">
                         <Label Text="{res:Translate Score}" FontSize="19" />
                         <Label Text="{Binding AnimeContext.Score}" FontSize="18" />
                     </StackLayout>
-                    
-                    <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource FavoriteRoundedButtonStyle}"
-                            VerticalOptions="Center" HorizontalOptions="Center"
-                            Command="{Binding FavoriteCommand}"/>
-                    
-                    <StackLayout Grid.Row="1" Grid.Column="2" Orientation="Vertical" HorizontalOptions="Center" 
-                                 Spacing="0" VerticalOptions="End" Margin="0,0,0,5">
-                        <Label Text="{res:Translate AiringStart}" FontSize="19"/>
-                        <Label Text="{Binding AnimeContext.AiringStart, Converter={StaticResource DateConverter}}" FontSize="18"/>
+
+                    <StackLayout Grid.Row="1" Spacing="0" Orientation="Vertical" VerticalOptions="End" Margin="10,0">
+                        <Label Text="{res:Translate Rank}" FontSize="19" />
+                        <Label Text="{Binding AnimeContext.Rank, StringFormat='#{0}'}" FontSize="18"/>
                     </StackLayout>
-                    
+
+                    <Image Grid.RowSpan="2" Grid.Column="1" Source="{Binding AnimeContext.ImageURL}">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenImageInBrowserCommand}"/>
+                        </Image.GestureRecognizers>
+                    </Image>
+
+                    <StackLayout Grid.Column="2" Orientation="Vertical" Spacing="0" HorizontalOptions="Center" >
+                        <Label Text="{res:Translate Airing}" FontSize="19"/>
+                        <Label Text="{Binding AnimeContext.Aired.From, Converter={StaticResource DateConverter}}" FontSize="18"/>
+                        <Label IsVisible="{Binding AnimeContext.Aired.To, Converter={StaticResource HasEndDateConverter}}" 
+                               Text="{Binding AnimeContext.Aired.To, Converter={StaticResource DateConverter}}" FontSize="18"/>
+                    </StackLayout>
+
+                    <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource FavoriteRoundedButtonStyle}" HorizontalOptions="Center"
+                            VerticalOptions="Center" Command="{Binding FavoriteCommand}"/>
+                </Grid>
+
+            </Frame>
+            <Frame Grid.Row="1" Padding="10,0,10,5" >
+                <Grid RowSpacing="0" Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="55*"/>
+                        <RowDefinition Height="15*"/>
+                    </Grid.RowDefinitions>
+
+                    <ScrollView Orientation="Horizontal" Margin="0,0,0,5">
+                        <Label Text="{Binding AnimeContext.Title}" FontSize="28" HorizontalOptions="CenterAndExpand"/>
+                    </ScrollView>
+
+                    <ScrollView Grid.Row="1">
+                        <Label Text="{Binding AnimeContext.Synopsis}" FontSize="20"/>
+                    </ScrollView>
                 </Grid>
             </Frame>
-            <Grid Grid.RowSpan="3" Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
+            <Grid Grid.RowSpan="2" Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
                   IsVisible="{Binding IsLoading}">
                 <ActivityIndicator IsVisible="{Binding IsLoading}"
                                    IsRunning="{Binding IsLoading}"/>

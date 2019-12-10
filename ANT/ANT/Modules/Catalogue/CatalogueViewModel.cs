@@ -175,9 +175,10 @@ namespace ANT.Modules
 
         public ICommand OpenAnimeCommand => new Command(async () =>
         {
+            //TODO:desabilitar o clique enquanto transita para a página nova, atualmente dá para clicar duas vezes se for rápido e abrir duas da mesma view
             if (!IsMultiSelect && SelectedItem != null)
             {
-                await Shell.Current.Navigation.PushAsync(new AnimeSpecsView(SelectedItem));
+                await Shell.Current.Navigation.PushAsync(new AnimeSpecsView(SelectedItem.MalId));
                 SelectedItem = null;
             }
         });

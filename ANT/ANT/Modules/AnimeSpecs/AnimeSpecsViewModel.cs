@@ -8,34 +8,39 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 namespace ANT.Modules
 {
     public class AnimeSpecsViewModel : BaseViewModel, IAsyncInitialization
     {
-        public AnimeSpecsViewModel(AnimeSubEntry anime)
+        public AnimeSpecsViewModel(long animeId)
         {
-            InitializeTask = LoadAync(anime);
-
+            InitializeTask = LoadAync(animeId);
         }
 
-        private AnimeSubEntry _animeRef;
         public Task InitializeTask { get; }
-        public async Task LoadAync(object anime)
+        public async Task LoadAync(object animeId)
         {
-            _animeRef = (AnimeSubEntry) anime;
+            long id = (long)animeId;
+
             IsLoading = true;
+            CanEnable = false;
             try
             {
-                
-                AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(_animeRef.MalId);
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(id);
                 episodes.RequestCached = true;
-
-                
                 Episodes = episodes.EpisodeCollection.ToList();
-                IsLoading = false;
 
-                AnimeContext = _animeRef;
+                await Task.Delay(TimeSpan.FromSeconds(4));
+
+                Anime anime = await App.Jikan.GetAnime(id);
+                anime.RequestCached = true;
+                AnimeContext = anime;
+
+                IsLoading = false;
+                CanEnable = true;
             }
             catch (Exception ex)
             {
@@ -52,11 +57,18 @@ namespace ANT.Modules
             set { SetProperty(ref _isLoading, value); }
         }
 
-        private AnimeSubEntry _animeContext;
-        public AnimeSubEntry AnimeContext
+        private Anime _animeContext;
+        public Anime AnimeContext
         {
             get { return _animeContext; }
             set { SetProperty(ref _animeContext, value); }
+        }
+
+        private bool _canEnable;
+        public bool CanEnable
+        {
+            get { return _canEnable; }
+            set { SetProperty(ref _canEnable, value); }
         }
 
 
@@ -69,14 +81,20 @@ namespace ANT.Modules
         #endregion
 
         #region commands
-        public ICommand FavoriteCommand => new Command(() => 
+        public ICommand FavoriteCommand => new Command(() =>
         {
             //TODO:implementar classe modelo e serviço de favoritar
+            
         });
+
+        public ICommand OpenImageInBrowserCommand => new Command(async () =>
+        {
+            await Launcher.TryOpenAsync(AnimeContext.ImageURL);
+        });
+
         #endregion
 
         //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página
         //TODO: botão de favorito no meio(campo de título/faxada do anime)
-
     }
 }

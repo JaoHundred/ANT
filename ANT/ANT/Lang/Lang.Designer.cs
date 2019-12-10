@@ -63,9 +63,9 @@ namespace ANT.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Air Date.
         /// </summary>
-        public static string AiringStart {
+        public static string Airing {
             get {
-                return ResourceManager.GetString("AiringStart", resourceCulture);
+                return ResourceManager.GetString("Airing", resourceCulture);
             }
         }
         
@@ -147,6 +147,15 @@ namespace ANT.Lang {
         public static string MultiSelect {
             get {
                 return ResourceManager.GetString("MultiSelect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rank.
+        /// </summary>
+        public static string Rank {
+            get {
+                return ResourceManager.GetString("Rank", resourceCulture);
             }
         }
         

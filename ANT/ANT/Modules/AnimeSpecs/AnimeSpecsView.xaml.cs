@@ -18,10 +18,10 @@ namespace ANT.Modules
             InitializeComponent();
         }
 
-        public AnimeSpecsView(AnimeSubEntry anime)
+        public AnimeSpecsView(long animeId)
         {
             InitializeComponent();
-            BindingContext = new AnimeSpecsViewModel(anime);
+            BindingContext = new AnimeSpecsViewModel(animeId);
         }
     }
 }
