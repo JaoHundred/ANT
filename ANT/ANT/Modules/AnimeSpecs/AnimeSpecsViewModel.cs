@@ -95,6 +95,6 @@ namespace ANT.Modules
         #endregion
 
         //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página
-        //TODO: botão de favorito no meio(campo de título/faxada do anime)
+        //TODO:pensar o que por no espaço vazio abaixo da sinopse, provavelmente botões para acesso a página do MAL e um para abrir um popup com os gêneros do anime
     }
 }

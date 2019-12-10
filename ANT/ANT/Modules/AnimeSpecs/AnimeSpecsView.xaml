@@ -13,12 +13,6 @@
             Shell.FlyoutBehavior="Disabled" 
             IsEnabled="{Binding CanEnable}">
 
-    <TabbedPage.Resources>
-        <converter:InversorConverter x:Key="InversorConverter"/>
-    </TabbedPage.Resources>
-
-
-
     <ContentPage Title="{res:Translate Details}" x:DataType="VM:AnimeSpecsViewModel">
         <ContentPage.Resources>
             <converter:DateConverter x:Key="DateConverter"/>
@@ -49,11 +43,15 @@
                         <Label Text="{Binding AnimeContext.Rank, StringFormat='#{0}'}" FontSize="18"/>
                     </StackLayout>
 
-                    <Image Grid.RowSpan="2" Grid.Column="1" Source="{Binding AnimeContext.ImageURL}">
+                    <Image Grid.RowSpan="2" Grid.Column="1" Source="{Binding AnimeContext.ImageURL}"
+                           x:Name="AnimeImage">
                         <Image.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding OpenImageInBrowserCommand}"/>
                         </Image.GestureRecognizers>
                     </Image>
+                    <ActivityIndicator Grid.RowSpan="2" Grid.Column="1"
+                                       IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}"
+                                       IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
 
                     <StackLayout Grid.Column="2" Orientation="Vertical" Spacing="0" HorizontalOptions="Center" >
                         <Label Text="{res:Translate Airing}" FontSize="19"/>
