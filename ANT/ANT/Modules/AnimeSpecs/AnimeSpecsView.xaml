@@ -17,6 +17,7 @@
         <ContentPage.Resources>
             <converter:DateConverter x:Key="DateConverter"/>
             <converter:HasEndDateConverter x:Key="HasEndDateConverter"/>
+            <converter:ValueIsNullToBoolConverter x:Key="ValueIsNullToBoolConverter"/>
         </ContentPage.Resources>
 
         <Grid Margin="5,5,5,0"  RowSpacing="3">
@@ -33,12 +34,14 @@
                         <ColumnDefinition Width="30*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackLayout Orientation="Vertical" Spacing="0" Margin="10,0">
+                    <StackLayout Orientation="Vertical" Spacing="0" Margin="10,0" 
+                                 IsVisible="{Binding AnimeContext.Score, Converter={StaticResource ValueIsNullToBoolConverter}}">
                         <Label Text="{res:Translate Score}" FontSize="19" />
                         <Label Text="{Binding AnimeContext.Score}" FontSize="18" />
                     </StackLayout>
 
-                    <StackLayout Grid.Row="1" Spacing="0" Orientation="Vertical" VerticalOptions="End" Margin="10,0">
+                    <StackLayout Grid.Row="1" Spacing="0" Orientation="Vertical" VerticalOptions="End" Margin="10,0"
+                                 IsVisible="{Binding AnimeContext.Rank, Converter={StaticResource ValueIsNullToBoolConverter}}">
                         <Label Text="{res:Translate Rank}" FontSize="19" />
                         <Label Text="{Binding AnimeContext.Rank, StringFormat='#{0}'}" FontSize="18"/>
                     </StackLayout>
@@ -53,7 +56,8 @@
                                        IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}"
                                        IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
 
-                    <StackLayout Grid.Column="2" Orientation="Vertical" Spacing="0" HorizontalOptions="Center" >
+                    <StackLayout Grid.Column="2" Orientation="Vertical" Spacing="0" HorizontalOptions="Center" 
+                                 IsVisible="{Binding AnimeContext.Score, Converter={StaticResource ValueIsNullToBoolConverter}}">
                         <Label Text="{res:Translate Airing}" FontSize="19"/>
                         <Label Text="{Binding AnimeContext.Aired.From, Converter={StaticResource DateConverter}}" FontSize="18"/>
                         <Label IsVisible="{Binding AnimeContext.Aired.To, Converter={StaticResource HasEndDateConverter}}" 
@@ -80,8 +84,15 @@
                     <ScrollView Grid.Row="1">
                         <Label Text="{Binding AnimeContext.Synopsis}" FontSize="20"/>
                     </ScrollView>
+
+                    <Button Grid.Row="2" Text="{res:Translate Genre}" HorizontalOptions="Start"
+                            Command="{Binding CheckAnimeGenresCommand}"/>
+                    
+                    <Button Grid.Row="2" Text="My Anime List" HorizontalOptions="End"
+                            Command="{Binding OpenAnimeInBrowserCommand}"/>
                 </Grid>
             </Frame>
+            
             <Grid Grid.RowSpan="2" Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
                   IsVisible="{Binding IsLoading}">
                 <ActivityIndicator IsVisible="{Binding IsLoading}"
@@ -94,7 +105,7 @@
         <CollectionView ItemsSource="{Binding Episodes}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="ji:AnimeEpisode">
-                    <Label Text="{Binding Title}"/>
+                    <Label Text="{Binding Title}" FontSize="25"/>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

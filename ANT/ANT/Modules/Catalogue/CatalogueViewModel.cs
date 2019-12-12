@@ -12,10 +12,11 @@ using System.Diagnostics;
 using MvvmHelpers;
 using System.Windows.Input;
 using ANT.UTIL;
+using ANT.Helpers;
 
 namespace ANT.Modules
 {
-    public class CatalogueViewModel : BaseVMSelectionModeExtender, IAsyncInitialization
+    public class CatalogueViewModel : BaseVMExtender, IAsyncInitialization
     {
         public CatalogueViewModel()
         {
@@ -62,8 +63,6 @@ namespace ANT.Modules
             set { SetProperty(ref _isRefreshing, value); }
         }
 
-        
-
         private AnimeSubEntry _selectedItem;
         public AnimeSubEntry SelectedItem
         {
@@ -86,12 +85,7 @@ namespace ANT.Modules
             set { SetProperty(ref _animes, value); }
         }
 
-        private string _searchQuery;
-        public string SearchQuery
-        {
-            get { return _searchQuery; }
-            set { SetProperty(ref _searchQuery, value); }
-        }
+        
 
         #endregion
 
@@ -175,16 +169,13 @@ namespace ANT.Modules
 
         public ICommand OpenAnimeCommand => new Command(async () =>
         {
-            var lastPageInStack = Shell.Current.Navigation.NavigationStack.LastOrDefault();
+            bool canNavigate = await NavigateHelper.CanShellNavigateAsync<AnimeSpecsView>(() =>
+              {
+                  SelectedItem = null;
+              });
+            
 
-            //impedindo que seja executado dupla chamada durante a execução do PushAsync
-            if (lastPageInStack?.GetType() == typeof(AnimeSpecsView))
-            {
-                SelectedItem = null;
-                return;
-            }
-
-            if (!IsMultiSelect && SelectedItem != null)
+            if (!IsMultiSelect && SelectedItem != null && canNavigate)
             {
                 await Shell.Current.Navigation.PushAsync(new AnimeSpecsView(SelectedItem.MalId), animated: true);
                 SelectedItem = null;

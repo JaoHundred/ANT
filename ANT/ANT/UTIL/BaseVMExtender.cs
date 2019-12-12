@@ -8,9 +8,9 @@ using Xamarin.Forms;
 namespace ANT.UTIL
 {
     /// <summary>
-    /// herda de MvvmHelpers BaseViewModel, classe usada para troca de modo de seleção em CollectionView
+    /// herda de MvvmHelpers BaseViewModel, classe usada para troca de modo de seleção em CollectionView, e propriedade para pesquisa na navigationBar
     /// </summary>
-    public abstract class BaseVMSelectionModeExtender : BaseViewModel
+    public abstract class BaseVMExtender : BaseViewModel
     {
         private bool _isMultiSelect;
         public bool IsMultiSelect
@@ -24,6 +24,13 @@ namespace ANT.UTIL
         {
             get { return _selectionMode; }
             set { SetProperty(ref _selectionMode, value); }
+        }
+
+        private string _searchQuery;
+        public string SearchQuery
+        {
+            get { return _searchQuery; }
+            set { SetProperty(ref _searchQuery, value); }
         }
 
         /// <summary>

@@ -28,8 +28,11 @@ namespace ANT.Droid
 
             base.OnCreate(savedInstanceState);
 
+
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
+
             LoadApplication(new App());
         }
 
@@ -43,11 +46,21 @@ namespace ANT.Droid
                 Shell.Current.FlyoutIsPresented = false;
                 return;
             }
+            else if (Rg.Plugins.Popup.Popup.SendBackPressed())//se tenho um modal popup aberto, tiro da pilha
+            {
+                if (Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.Count > 0)
+                    await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
+            }
             else
             {
-                if (_currentVm is BaseVMSelectionModeExtender vm && vm.IsMultiSelect) // se estou com a multi seleção ativa, fecho
+                if (_currentVm is BaseVMExtender vm && vm.IsMultiSelect) // se estou com a multi seleção ativa, fecho
                 {
                     vm.SingleSelectionMode();
+                    return;
+                }
+                if(_currentVm is BaseVMExtender vmm &&  vmm.SearchQuery?.Length>0)//se a barra de pesquisa na navigation tiver preenchida, apague o texto
+                {
+                    vmm.SearchQuery = string.Empty;
                     return;
                 }
 

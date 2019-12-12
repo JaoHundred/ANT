@@ -141,6 +141,9 @@
   <data name="Episodes" xml:space="preserve">
     <value>Episodes</value>
   </data>
+  <data name="Genre" xml:space="preserve">
+    <value>Genre</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>

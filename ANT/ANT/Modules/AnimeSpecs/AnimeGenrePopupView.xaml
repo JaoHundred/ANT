@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<popup:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:popup="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+                 xmlns:res="clr-namespace:ANT.Lang"
+                 xmlns:vm="clr-namespace:ANT.Modules"
+                 xmlns:jikan="clr-namespace:JikanDotNet;assembly=JikanDotNet"
+                 x:DataType="vm:AnimeGenrePopupViewModel"
+             mc:Ignorable="d"
+             x:Class="ANT.Modules.AnimeGenrePopupView"
+                 
+                 HasSystemPadding="True"
+                 SystemPaddingSides="All"
+                 Padding="50">
+    <Grid BackgroundColor="WhiteSmoke">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <Label Text="{res:Translate Genre}" HorizontalOptions="Center" FontSize="30"/>
+        <CollectionView Grid.Row="1" ItemsSource="{Binding AnimeGenres}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="jikan:MALSubItem">
+                    <Label Text="{Binding Name}" FontSize="25"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</popup:PopupPage>
