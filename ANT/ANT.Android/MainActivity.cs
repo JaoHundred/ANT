@@ -48,8 +48,8 @@ namespace ANT.Droid
             }
             else if (Rg.Plugins.Popup.Popup.SendBackPressed())//se tenho um modal popup aberto, tiro da pilha
             {
-                if (Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.Count > 0)
-                    await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
+                if (NavigationManager.PopUpPageStackCount > 0)
+                    await NavigationManager.PopPopUpPageAsync();
             }
             else
             {
@@ -58,7 +58,7 @@ namespace ANT.Droid
                     vm.SingleSelectionMode();
                     return;
                 }
-                if(_currentVm is BaseVMExtender vmm &&  vmm.SearchQuery?.Length>0)//se a barra de pesquisa na navigation tiver preenchida, apague o texto
+                if (_currentVm is BaseVMExtender vmm && vmm.SearchQuery?.Length > 0)//se a barra de pesquisa na navigation tiver preenchida, apague o texto
                 {
                     vmm.SearchQuery = string.Empty;
                     return;
@@ -74,7 +74,7 @@ namespace ANT.Droid
                     else if (stackCount > 1) // estou em qualquer página hierárquica
                         //TODO:xamarin forms está com bug no retorno da animação
                         //quando corrigirem, usar somente o base.OnBackPressed e fungir os 2 else if "else if("stackCount == 1 && route == _rootRoute ||stackCount > 1)
-                        await App.Current.MainPage.Navigation.PopAsync(animated: false);
+                        await NavigationManager.PopShellPageAsync(animated: false);
 
                     //TODO: quando isso é chamado em páginas hierárquicas o retorno da uma leve engasgada
                     //, descobrir o que pode ser, não dá pra usar async await nessa linha

@@ -9,21 +9,22 @@ using System.Linq;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Essentials;
-using ANT.Helpers;
+using ANT.Core;
+using ANT.UTIL;
 
 namespace ANT.Modules
 {
-    public class AnimeSpecsViewModel : BaseViewModel, IAsyncInitialization
+    public class AnimeSpecsViewModel : BaseVMExtender, IAsyncInitialization
     {
-        public AnimeSpecsViewModel(long animeId)
+        public AnimeSpecsViewModel(long malID)
         {
-            InitializeTask = LoadAync(animeId);
+            InitializeTask = LoadAync(malID);
         }
 
         public Task InitializeTask { get; }
-        public async Task LoadAync(object animeId)
+        public async Task LoadAync(object param)
         {
-            long id = (long)animeId;
+            long id = (long)param;
 
             IsLoading = true;
             CanEnable = false;
@@ -96,10 +97,10 @@ namespace ANT.Modules
 
         public ICommand CheckAnimeGenresCommand => new Command(async () =>
         {
-            bool canNavigate = await NavigateHelper.CanPopUpNavigateAsync<AnimeGenrePopupView>();
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<AnimeGenrePopupView>();
 
             if (canNavigate)
-                await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(new AnimeGenrePopupView(AnimeContext.Genres.ToList()));
+                await NavigationManager.NavigatePopUpAsync<AnimeGenrePopupViewModel>(AnimeContext.Genres.ToList());
         });
 
 

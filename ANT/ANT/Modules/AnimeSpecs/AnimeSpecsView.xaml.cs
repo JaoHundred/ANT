@@ -17,11 +17,5 @@ namespace ANT.Modules
         {
             InitializeComponent();
         }
-
-        public AnimeSpecsView(long animeId)
-        {
-            InitializeComponent();
-            BindingContext = new AnimeSpecsViewModel(animeId);
-        }
     }
 }

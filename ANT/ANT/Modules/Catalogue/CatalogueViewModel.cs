@@ -12,7 +12,7 @@ using System.Diagnostics;
 using MvvmHelpers;
 using System.Windows.Input;
 using ANT.UTIL;
-using ANT.Helpers;
+using ANT.Core;
 
 namespace ANT.Modules
 {
@@ -169,7 +169,7 @@ namespace ANT.Modules
 
         public ICommand OpenAnimeCommand => new Command(async () =>
         {
-            bool canNavigate = await NavigateHelper.CanShellNavigateAsync<AnimeSpecsView>(() =>
+            bool canNavigate = await NavigationManager.CanShellNavigateAsync<AnimeSpecsView>(() =>
               {
                   SelectedItem = null;
               });
@@ -177,7 +177,7 @@ namespace ANT.Modules
 
             if (!IsMultiSelect && SelectedItem != null && canNavigate)
             {
-                await Shell.Current.Navigation.PushAsync(new AnimeSpecsView(SelectedItem.MalId), animated: true);
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedItem.MalId);
                 SelectedItem = null;
             }
         });

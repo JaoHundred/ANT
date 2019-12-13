@@ -13,10 +13,9 @@ namespace ANT.Modules
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AnimeGenrePopupView : Rg.Plugins.Popup.Pages.PopupPage
     {
-        public AnimeGenrePopupView(IList<MALSubItem> animeGenres)
+        public AnimeGenrePopupView()
         {
             InitializeComponent();
-            BindingContext = new AnimeGenrePopupViewModel(animeGenres);
         }
     }
 }

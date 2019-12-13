@@ -7,11 +7,11 @@ using ANT.Interfaces;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using ANT.Helpers;
+using ANT.UTIL;
 
 namespace ANT.Modules
 {
-    public class AnimeGenrePopupViewModel : BaseViewModel, IAsyncInitialization
+    public class AnimeGenrePopupViewModel : BaseVMExtender, IAsyncInitialization
     {
         public AnimeGenrePopupViewModel(IList<MALSubItem> animeGenres)
         {
