@@ -9,22 +9,30 @@
                  xmlns:jikan="clr-namespace:JikanDotNet;assembly=JikanDotNet"
                  x:DataType="vm:AnimeGenrePopupViewModel"
              mc:Ignorable="d"
-             x:Class="ANT.Modules.AnimeGenrePopupView"
+             x:Class="ANT.Modules.AnimeGenrePopupView" 
                  
                  HasSystemPadding="True"
                  SystemPaddingSides="All"
-                 Padding="50">
-    <Grid BackgroundColor="WhiteSmoke">
+                 Padding="60">
+    <Grid Style="{StaticResource GridPopUpViewStyle}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition />
+            <RowDefinition Height="99*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        
+
         <Label Text="{res:Translate Genre}" HorizontalOptions="Center" FontSize="30"/>
-        <CollectionView Grid.Row="1" ItemsSource="{Binding AnimeGenres}">
+        <CollectionView Grid.Row="1" ItemsSource="{Binding AnimeGenres}" >
+            <CollectionView.ItemsLayout >
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="jikan:MALSubItem">
-                    <Label Text="{Binding Name}" FontSize="25"/>
+                    <Frame Style="{StaticResource OuterFrameGenreStyle}">
+                        <Frame Style="{StaticResource FrameGenreStyle}">
+                            <Label Text="{Binding Name}" FontSize="18" HorizontalOptions="Center"/>
+                        </Frame>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:res="clr-namespace:ANT.Lang"
              mc:Ignorable="d"
              xmlns:Theme="clr-namespace:ANT.Themes"
              xmlns:Icon="clr-namespace:ANT.Icons"
@@ -74,6 +73,18 @@
                 <Setter Property="CornerRadius" Value="10"/>
             </Style>
 
+            <Style TargetType="Frame" x:Key="FrameGenreStyle" >
+                <Setter Property="BackgroundColor" Value="{DynamicResource GenresColor}"/>
+                <Setter Property="BorderColor" Value="Transparent"/>
+                <Setter Property="CornerRadius" Value="5"/>
+            </Style>
+
+            <Style TargetType="Frame" x:Key="OuterFrameGenreStyle">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="BorderColor" Value="Transparent"/>
+                <Setter Property="Padding" Value="35,0,35,0"/>
+            </Style>
+
             <!--#endregion-->
 
             <!--#region ESPECIFICO DE CONTROLES -->
@@ -126,7 +137,11 @@
             <Style TargetType="Grid" x:Key="GridFullPageForActivityIndicatorStyle">
                 <Setter Property="BackgroundColor" Value="{DynamicResource AppBackgroundColor}"/>
             </Style>
-            
+
+            <Style TargetType="Grid" x:Key="GridPopUpViewStyle">
+                <Setter Property="BackgroundColor" Value="{DynamicResource PopUpViewColor}"/>
+            </Style>
+
 
             <!--#endregion-->
 

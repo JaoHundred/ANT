@@ -38,7 +38,12 @@
 
     <!--verde limão claro-->
     <Color x:Key="CatalogueAnimeSelectedColor">#c1d9cd</Color>
-    
+
+    <!--cinza azulado-->
+    <Color x:Key="PopUpViewColor">#9aa4ad</Color>
+
+    <!--violeta claro-->
+    <Color x:Key="GenresColor">#c1c1d9</Color>
 
     <!--#endregion-->
 

@@ -23,7 +23,6 @@
 
     <Color x:Key="SecondaryColor">WhiteSmoke</Color>
 
-
     <!--preto claro-->
     <Color x:Key="FlyoutSelectionColor">#515355</Color>
     
@@ -40,6 +39,13 @@
 
     <!--cinza claro-->
     <Color x:Key="CatalogueAnimeSelectedColor">#515355</Color>
+
+    <!--cinza azulado-->
+    <Color x:Key="PopUpViewColor">#4a5054</Color>
+
+    <!--violeta medio-->
+    <Color x:Key="GenresColor">#666683</Color>
+
     <!--#endregion-->
 
 </ResourceDictionary>

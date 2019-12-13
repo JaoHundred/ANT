@@ -38,6 +38,6 @@ namespace ANT.Modules
             //TODO: carregar aqui o CatalogueView passando como parâmetro o ID do gênero clicado(a nova coleção carregada em CatalogueView deve ter animes com o gênero clicado no popup)
         });
 
-        //TODO:estilizar a view popup
+       
     }
 }
