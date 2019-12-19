@@ -46,7 +46,7 @@ namespace ANT.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Problema encontrado em :{ex.Message}");
             }
         }
 

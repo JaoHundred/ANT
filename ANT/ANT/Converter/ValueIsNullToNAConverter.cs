@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ANT.Core;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -6,11 +7,11 @@ using Xamarin.Forms;
 
 namespace ANT.Converter
 {
-    public class HasEndDateConverter : IValueConverter
+    public class ValueIsNullToNAConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value is DateTime ? true : false;
+            return value is null ? Consts.NA : value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

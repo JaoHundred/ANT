@@ -85,8 +85,6 @@ namespace ANT.Modules
             set { SetProperty(ref _animes, value); }
         }
 
-        
-
         #endregion
 
         #region métodos da VM
@@ -101,10 +99,14 @@ namespace ANT.Modules
                 results.RequestCached = true;
                 //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 
                 //que seleciona os filtros e repassa para cá
-                _originalCollection = results.SeasonEntries.Where(
+                /*
+                 * .Where(
                     anime => anime.R18 == false &&
                     anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
-                    ).ToList();
+                    )
+                */
+
+                _originalCollection = results.SeasonEntries.ToList();
 
                 Animes.ReplaceRange(_originalCollection);
             }
@@ -173,7 +175,7 @@ namespace ANT.Modules
               {
                   SelectedItem = null;
               });
-            
+
 
             if (!IsMultiSelect && SelectedItem != null && canNavigate)
             {

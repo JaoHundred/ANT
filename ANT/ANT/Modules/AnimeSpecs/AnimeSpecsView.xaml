@@ -14,14 +14,13 @@
             IsEnabled="{Binding CanEnable}">
 
     <TabbedPage.ToolbarItems>
-        <ToolbarItem Order="Secondary" Text="{res:Translate MAL}"  Command="{Binding OpenAnimeInBrowserCommand}"/>
+        <ToolbarItem Order="Secondary" Text="{res:Translate MAL}" Command="{Binding OpenAnimeInBrowserCommand}"/>
     </TabbedPage.ToolbarItems>
 
     <ContentPage Title="{res:Translate Details}" x:DataType="VM:AnimeSpecsViewModel">
         <ContentPage.Resources>
             <converter:DateConverter x:Key="DateConverter"/>
-            <converter:HasEndDateConverter x:Key="HasEndDateConverter"/>
-            <converter:ValueIsNullToBoolConverter x:Key="ValueIsNullToBoolConverter"/>
+            <converter:ValueIsNullToNAConverter x:Key="ValueIsNullToNAConverter"/>
         </ContentPage.Resources>
 
         <Grid Margin="5,5,5,0"  RowSpacing="3">
@@ -38,16 +37,14 @@
                         <ColumnDefinition Width="30*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackLayout Orientation="Vertical" Spacing="0" Margin="10,0" 
-                                 IsVisible="{Binding AnimeContext.Score, Converter={StaticResource ValueIsNullToBoolConverter}}">
+                    <StackLayout Orientation="Vertical" Spacing="0" Margin="10,0" >
                         <Label Text="{res:Translate Score}" FontSize="19" />
-                        <Label Text="{Binding AnimeContext.Score}" FontSize="18" />
+                        <Label Text="{Binding AnimeContext.Score, Converter={StaticResource ValueIsNullToNAConverter}}" FontSize="18" />
                     </StackLayout>
 
-                    <StackLayout Grid.Row="1" Spacing="0" Orientation="Vertical" VerticalOptions="End" Margin="10,0"
-                                 IsVisible="{Binding AnimeContext.Rank, Converter={StaticResource ValueIsNullToBoolConverter}}">
+                    <StackLayout Grid.Row="1" Spacing="0" Orientation="Vertical" VerticalOptions="End" Margin="10,0">
                         <Label Text="{res:Translate Rank}" FontSize="19" />
-                        <Label Text="{Binding AnimeContext.Rank, StringFormat='#{0}'}" FontSize="18"/>
+                        <Label Text="{Binding AnimeContext.Rank, Converter={StaticResource ValueIsNullToNAConverter}, StringFormat='#{0}'}" FontSize="18"/>
                     </StackLayout>
 
                     <Image Grid.RowSpan="2" Grid.Column="1" Source="{Binding AnimeContext.ImageURL}"
@@ -60,12 +57,11 @@
                                        IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}"
                                        IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
 
-                    <StackLayout Grid.Column="2" Orientation="Vertical" Spacing="0" HorizontalOptions="Center" 
-                                 IsVisible="{Binding AnimeContext.Score, Converter={StaticResource ValueIsNullToBoolConverter}}">
+                    <StackLayout Grid.Column="2" Orientation="Vertical" Spacing="0" HorizontalOptions="Center">
                         <Label Text="{res:Translate Airing}" FontSize="19"/>
                         <Label Text="{Binding AnimeContext.Aired.From, Converter={StaticResource DateConverter}}" FontSize="18"/>
-                        <Label IsVisible="{Binding AnimeContext.Aired.To, Converter={StaticResource HasEndDateConverter}}" 
-                               Text="{Binding AnimeContext.Aired.To, Converter={StaticResource DateConverter}}" FontSize="18"/>
+                        <Label x:Name="EndDateLabel" Text="{Binding AnimeContext.Aired.To, Converter={StaticResource DateConverter},
+                            ConverterParameter={x:Reference EndDateLabel}}" FontSize="18"/>
                     </StackLayout>
 
                     <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource FavoriteRoundedButtonStyle}" HorizontalOptions="Center"

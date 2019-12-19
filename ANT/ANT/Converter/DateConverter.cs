@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ANT.Core;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -10,9 +11,10 @@ namespace ANT.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is  DateTime date)
+            if (value is DateTime date)
                 return date.ToShortDateString();
-            return null;
+
+            return parameter != null ? null : Consts.NA;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -99,7 +99,7 @@
             </Style>
             <Style TargetType="Label" x:Key="AnimeFrameLabelStyle">
                 <Setter Property="HorizontalTextAlignment" Value="Center"/>
-                <Setter Property="FontSize" Value="Subtitle"/>
+                <Setter Property="FontSize" Value="20"/>
             </Style>
 
             <Style TargetType="Label" x:Key="SearchCancelButtonStyle">
