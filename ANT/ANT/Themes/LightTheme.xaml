@@ -19,9 +19,10 @@
     <!--azul desbotado-->
     <Color x:Key="AppBackgroundColor">#C1CDD9</Color>
 
-    <Color x:Key="PrimaryColor">BlueViolet</Color>
+    <!--<Color x:Key="PrimaryColor">BlueViolet</Color>-->
 
-    <Color x:Key="SecondaryColor">Blue</Color>
+    <!--darker cornflower blue-->
+    <Color x:Key="SecondaryColor">#5077bd</Color>
 
     <!--cinza claro-->
     <Color x:Key="FlyoutSelectionColor">#CCCCCC</Color>

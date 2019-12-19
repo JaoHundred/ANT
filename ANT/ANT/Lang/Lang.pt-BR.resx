@@ -132,6 +132,9 @@
   <data name="ChangeTheme" xml:space="preserve">
     <value>Trocar tema</value>
   </data>
+  <data name="Characters" xml:space="preserve">
+    <value>Personagens</value>
+  </data>
   <data name="Deselect" xml:space="preserve">
     <value>Tirar seleção</value>
   </data>
@@ -146,6 +149,9 @@
   </data>
   <data name="Home" xml:space="preserve">
     <value>Principal</value>
+  </data>
+  <data name="MAL" xml:space="preserve">
+    <value>Ver no MAL</value>
   </data>
   <data name="MultiSelect" xml:space="preserve">
     <value>Selecionar</value>
@@ -167,8 +173,5 @@
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Configurações</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value />
   </data>
 </root>

@@ -15,11 +15,11 @@ namespace ANT.Modules
     {
         public AnimeGenrePopupViewModel(IList<MALSubItem> animeGenres)
         {
-            InitializeTask = LoadAync(animeGenres);
+            InitializeTask = LoadAsync(animeGenres);
         }
 
         public Task InitializeTask { get; }
-        public Task LoadAync(object param)
+        public Task LoadAsync(object param)
         {
             return Task.Run(() => { AnimeGenres = (IList<MALSubItem>)param; });
         }

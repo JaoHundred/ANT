@@ -19,9 +19,10 @@
     <!--quase total preto-->
     <Color x:Key="AppBackgroundColor">#26292B</Color>
 
-    <Color x:Key="PrimaryColor">Pink</Color>
+    <!--<Color x:Key="PrimaryColor">Pink</Color>-->
 
-    <Color x:Key="SecondaryColor">WhiteSmoke</Color>
+    <!--cornflower blue-->
+    <Color x:Key="SecondaryColor">#6495ed</Color>
 
     <!--preto claro-->
     <Color x:Key="FlyoutSelectionColor">#515355</Color>

@@ -106,6 +106,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Characters.
+        /// </summary>
+        public static string Characters {
+            get {
+                return ResourceManager.GetString("Characters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deselect.
         /// </summary>
         public static string Deselect {
@@ -147,6 +156,15 @@ namespace ANT.Lang {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See at MAL.
+        /// </summary>
+        public static string MAL {
+            get {
+                return ResourceManager.GetString("MAL", resourceCulture);
             }
         }
         

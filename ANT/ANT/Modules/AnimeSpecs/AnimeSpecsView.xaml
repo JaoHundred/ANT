@@ -13,6 +13,10 @@
             Shell.FlyoutBehavior="Disabled" 
             IsEnabled="{Binding CanEnable}">
 
+    <TabbedPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="{res:Translate MAL}"  Command="{Binding OpenAnimeInBrowserCommand}"/>
+    </TabbedPage.ToolbarItems>
+
     <ContentPage Title="{res:Translate Details}" x:DataType="VM:AnimeSpecsViewModel">
         <ContentPage.Resources>
             <converter:DateConverter x:Key="DateConverter"/>
@@ -69,30 +73,31 @@
                 </Grid>
 
             </Frame>
-            <Frame Grid.Row="1" Padding="10,0,10,5" >
+            <Frame Grid.Row="1" Padding="10,0,10,3">
                 <Grid RowSpacing="0" Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
-                        <RowDefinition Height="55*"/>
-                        <RowDefinition Height="15*"/>
+                        <RowDefinition Height="57*"/>
+                        <RowDefinition Height="13*"/>
                     </Grid.RowDefinitions>
 
                     <ScrollView Orientation="Horizontal" Margin="0,0,0,5">
                         <Label Text="{Binding AnimeContext.Title}" FontSize="28" HorizontalOptions="CenterAndExpand"/>
                     </ScrollView>
 
-                    <ScrollView Grid.Row="1">
+                    <ScrollView Grid.Row="1" Margin="0,0,0,2">
                         <Label Text="{Binding AnimeContext.Synopsis}" FontSize="20"/>
                     </ScrollView>
 
-                    <Button Grid.Row="2" Text="{res:Translate Genre}" HorizontalOptions="Start"
-                            Command="{Binding CheckAnimeGenresCommand}"/>
-                    
-                    <Button Grid.Row="2" Text="My Anime List" HorizontalOptions="End"
-                            Command="{Binding OpenAnimeInBrowserCommand}"/>
+                    <Button Grid.Row="2" Text="{res:Translate Genre}" Command="{Binding CheckAnimeGenresCommand}"
+                                Style="{StaticResource SpecsButtonStyle}" HorizontalOptions="Start" Margin="5,0,0,0"/>
+
+                    <Button Grid.Row="2" Text="{res:Translate Characters}" Command="{Binding CheckAnimeCharactersCommand}" 
+                                Style="{StaticResource SpecsButtonStyle}" HorizontalOptions="End" Margin="0,0,5,0"/>
+
                 </Grid>
             </Frame>
-            
+
             <Grid Grid.RowSpan="2" Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
                   IsVisible="{Binding IsLoading}">
                 <ActivityIndicator IsVisible="{Binding IsLoading}"

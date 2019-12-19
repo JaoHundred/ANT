@@ -20,7 +20,7 @@ namespace ANT.Modules
     {
         public CatalogueViewModel()
         {
-            InitializeTask = LoadAync(null);
+            InitializeTask = LoadAsync(null);
 
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
         }
@@ -28,7 +28,7 @@ namespace ANT.Modules
         private IMainPageAndroid _mainPageAndroid;
 
         public Task InitializeTask { get; }
-        public async Task LoadAync(object param)
+        public async Task LoadAsync(object param)
         {
             IsLoading = true;
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;

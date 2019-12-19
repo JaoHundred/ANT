@@ -18,11 +18,11 @@ namespace ANT.Modules
     {
         public AnimeSpecsViewModel(long malID)
         {
-            InitializeTask = LoadAync(malID);
+            InitializeTask = LoadAsync(malID);
         }
 
         public Task InitializeTask { get; }
-        public async Task LoadAync(object param)
+        public async Task LoadAsync(object param)
         {
             long id = (long)param;
 
@@ -103,7 +103,11 @@ namespace ANT.Modules
                 await NavigationManager.NavigatePopUpAsync<AnimeGenrePopupViewModel>(AnimeContext.Genres.ToList());
         });
 
-
+        public ICommand CheckAnimeCharactersCommand => new Command(async () =>
+        {
+           //TODO: implementar, quando tiver a view para os personagens, linkar aqui
+        });
+        
         public ICommand OpenAnimeInBrowserCommand => new Command(async () =>
         {
             await Launcher.TryOpenAsync(AnimeContext.LinkCanonical);
