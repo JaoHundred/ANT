@@ -117,6 +117,6 @@ namespace ANT.Modules
         #endregion
 
         //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página(deixar pro futuro)
-        //TODO: estilizar os botões da parte de baixo da tela(gênero e My anime list), ver o que por e se por algo mais no espaço em branco restante
+        //TODO: estilizar o template dos episódios, ver quais dados eu posso exibir a cerca dos episódios e ver o que mostrar
     }
 }
