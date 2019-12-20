@@ -85,7 +85,9 @@ namespace ANT.Modules
         #region commands
         public ICommand FavoriteCommand => new Command(() =>
         {
-            //TODO:implementar classe modelo e serviço de favoritar
+            //TODO:implementar classe modelo e serviço de favoritar, ela deve ter animecontext e toda a parte referente a episódios, quando criar a classe
+            //chamar o serviço de salvar em json, se já estiver favoritado e o usuário clicar novamente, o save é apagado e o botão volta a ficar na cor padrão
+            //devo precisar de um datatemplate selector pra lidar com a aparência do botão de favoritar quando o show estiver favoritado ou não
 
         });
 
@@ -118,5 +120,6 @@ namespace ANT.Modules
 
         //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página(deixar pro futuro)
         //TODO: estilizar o template dos episódios, ver quais dados eu posso exibir a cerca dos episódios e ver o que mostrar
+        //TODO: trocar de idioma via configurações do android nesta página resulta em uma exception de fragment, provavel de estar relacionado ao tabbedpage
     }
 }

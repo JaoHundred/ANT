@@ -70,11 +70,29 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to at.
+        /// </summary>
+        public static string At {
+            get {
+                return ResourceManager.GetString("At", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automatic Translate.
         /// </summary>
         public static string AutomaticTranslate {
             get {
                 return ResourceManager.GetString("AutomaticTranslate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Broadcast.
+        /// </summary>
+        public static string Broadcast {
+            get {
+                return ResourceManager.GetString("Broadcast", resourceCulture);
             }
         }
         
@@ -142,6 +160,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fridays.
+        /// </summary>
+        public static string Fridays {
+            get {
+                return ResourceManager.GetString("Fridays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Genre.
         /// </summary>
         public static string Genre {
@@ -169,6 +196,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mondays.
+        /// </summary>
+        public static string Mondays {
+            get {
+                return ResourceManager.GetString("Mondays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select.
         /// </summary>
         public static string MultiSelect {
@@ -183,6 +219,15 @@ namespace ANT.Lang {
         public static string Rank {
             get {
                 return ResourceManager.GetString("Rank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saturdays.
+        /// </summary>
+        public static string Saturdays {
+            get {
+                return ResourceManager.GetString("Saturdays", resourceCulture);
             }
         }
         
@@ -228,6 +273,60 @@ namespace ANT.Lang {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sundays.
+        /// </summary>
+        public static string Sundays {
+            get {
+                return ResourceManager.GetString("Sundays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thursdays.
+        /// </summary>
+        public static string Thursdays {
+            get {
+                return ResourceManager.GetString("Thursdays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Episodes amount.
+        /// </summary>
+        public static string TotalEpisodes {
+            get {
+                return ResourceManager.GetString("TotalEpisodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tuesdays.
+        /// </summary>
+        public static string Tuesdays {
+            get {
+                return ResourceManager.GetString("Tuesdays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown broadcast.
+        /// </summary>
+        public static string UnknownDate {
+            get {
+                return ResourceManager.GetString("UnknownDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wednesdays.
+        /// </summary>
+        public static string Wednesdays {
+            get {
+                return ResourceManager.GetString("Wednesdays", resourceCulture);
             }
         }
     }

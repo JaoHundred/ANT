@@ -33,6 +33,8 @@ namespace ANT
             Jikan = new Jikan(useHttps: true);
         }
 
+        //TODO: resolução(talvez) da seleção de idioma https://forums.xamarin.com/discussion/79379/update-language-translation-on-the-fly-using-translateextension
+
         protected override void OnSleep()
         {
             // Handle when your app sleeps

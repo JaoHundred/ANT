@@ -120,8 +120,14 @@
   <data name="Airing" xml:space="preserve">
     <value>Air Date</value>
   </data>
+  <data name="At" xml:space="preserve">
+    <value>at</value>
+  </data>
   <data name="AutomaticTranslate" xml:space="preserve">
     <value>Automatic Translate</value>
+  </data>
+  <data name="Broadcast" xml:space="preserve">
+    <value>Broadcast</value>
   </data>
   <data name="Catalogue" xml:space="preserve">
     <value>Catalogue</value>
@@ -144,6 +150,9 @@
   <data name="Episodes" xml:space="preserve">
     <value>Episodes</value>
   </data>
+  <data name="Fridays" xml:space="preserve">
+    <value>Fridays</value>
+  </data>
   <data name="Genre" xml:space="preserve">
     <value>Genre</value>
   </data>
@@ -153,11 +162,17 @@
   <data name="MAL" xml:space="preserve">
     <value>See at MAL</value>
   </data>
+  <data name="Mondays" xml:space="preserve">
+    <value>Mondays</value>
+  </data>
   <data name="MultiSelect" xml:space="preserve">
     <value>Select</value>
   </data>
   <data name="Rank" xml:space="preserve">
     <value>Rank</value>
+  </data>
+  <data name="Saturdays" xml:space="preserve">
+    <value>Saturdays</value>
   </data>
   <data name="Score" xml:space="preserve">
     <value>Score</value>
@@ -173,5 +188,23 @@
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="Sundays" xml:space="preserve">
+    <value>Sundays</value>
+  </data>
+  <data name="Thursdays" xml:space="preserve">
+    <value>Thursdays</value>
+  </data>
+  <data name="TotalEpisodes" xml:space="preserve">
+    <value>Episodes amount</value>
+  </data>
+  <data name="Tuesdays" xml:space="preserve">
+    <value>Tuesdays</value>
+  </data>
+  <data name="UnknownDate" xml:space="preserve">
+    <value>Unknown broadcast</value>
+  </data>
+  <data name="Wednesdays" xml:space="preserve">
+    <value>Wednesdays</value>
   </data>
 </root>

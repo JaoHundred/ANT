@@ -13,16 +13,19 @@
             Shell.FlyoutBehavior="Disabled" 
             IsEnabled="{Binding CanEnable}">
 
+    <TabbedPage.Resources>
+        <converter:DateConverter x:Key="DateConverter"/>
+        <converter:ValueIsNullToNAConverter x:Key="ValueIsNullToNAConverter"/>
+        <converter:TranslateConverter x:Key="TranslateConverter"/>
+        <converter:BroadcastFormatTranslateConverter x:Key="BroadcastFormatTranslateConverter"/>
+        <converter:BroadcastTextToVisibleConverter x:Key="BroadcastTextToVisibleConverter"/>
+    </TabbedPage.Resources>
+
     <TabbedPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate MAL}" Command="{Binding OpenAnimeInBrowserCommand}"/>
     </TabbedPage.ToolbarItems>
 
     <ContentPage Title="{res:Translate Details}" x:DataType="VM:AnimeSpecsViewModel">
-        <ContentPage.Resources>
-            <converter:DateConverter x:Key="DateConverter"/>
-            <converter:ValueIsNullToNAConverter x:Key="ValueIsNullToNAConverter"/>
-        </ContentPage.Resources>
-
         <Grid Margin="5,5,5,0"  RowSpacing="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="45*"/>
@@ -103,14 +106,36 @@
     </ContentPage>
 
     <ContentPage Title="{res:Translate Episodes}">
-        <CollectionView ItemsSource="{Binding Episodes}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="ji:AnimeEpisode">
-                    <Label Text="{Binding Title}" FontSize="25"/>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <Grid Margin="5" RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Label Text="{res:Translate Broadcast}" FontSize="Title" HorizontalOptions="Center"/>
+            <Frame Grid.Row="1">
+                <Grid>
+                    <Label Text="{Binding AnimeContext.Broadcast, Converter={StaticResource BroadcastFormatTranslateConverter}}" FontSize="Title"/>
+                    <Label Text="{res:Translate UnknownDate}"
+                           IsVisible="{Binding AnimeContext.Broadcast, Converter={StaticResource BroadcastTextToVisibleConverter}}" FontSize="Title"/>
+
+                    <Label Grid.Row="1" Text="{res:Translate TotalEpisodes}" FontSize="Subtitle"/>
+                    <Label Grid.Row="2" Text="{Binding AnimeContext.Episodes, Converter={StaticResource ValueIsNullToNAConverter}}" FontSize="Subtitle"/>
+                </Grid>
+            </Frame>
+
+            <CollectionView Grid.Row="2" ItemsSource="{Binding Episodes}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="ji:AnimeEpisode">
+                        <Frame>
+                            <Grid>
+                                <Label Text="{Binding Title}" FontSize="25"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
     </ContentPage>
-
-
 </TabbedPage>
