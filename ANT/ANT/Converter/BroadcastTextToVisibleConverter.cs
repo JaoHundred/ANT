@@ -10,7 +10,7 @@ namespace ANT.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value is string str ? str == "Unknown" : true;
+            return value is string str ? str == "Unknown" || str == null : true;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
