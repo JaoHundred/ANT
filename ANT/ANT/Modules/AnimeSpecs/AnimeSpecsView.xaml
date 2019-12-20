@@ -19,6 +19,7 @@
         <converter:TranslateConverter x:Key="TranslateConverter"/>
         <converter:BroadcastFormatTranslateConverter x:Key="BroadcastFormatTranslateConverter"/>
         <converter:BroadcastTextToVisibleConverter x:Key="BroadcastTextToVisibleConverter"/>
+        <converter:DurationFormatToShortConverter x:Key="DurationFormatToShortConverter"/>
     </TabbedPage.Resources>
 
     <TabbedPage.ToolbarItems>
@@ -106,7 +107,7 @@
     </ContentPage>
 
     <ContentPage Title="{res:Translate Episodes}">
-        <Grid Margin="5" RowSpacing="0">
+        <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -116,19 +117,26 @@
             <Label Text="{res:Translate Broadcast}" FontSize="Title" HorizontalOptions="Center"/>
             <Frame Grid.Row="1">
                 <Grid>
-                    <Label Text="{Binding AnimeContext.Broadcast, Converter={StaticResource BroadcastFormatTranslateConverter}}" FontSize="Title"/>
-                    <Label Text="{res:Translate UnknownDate}"
-                           IsVisible="{Binding AnimeContext.Broadcast, Converter={StaticResource BroadcastTextToVisibleConverter}}" FontSize="Title"/>
+                    <Label Grid.ColumnSpan="2" Text="{Binding AnimeContext.Broadcast, Converter={StaticResource BroadcastFormatTranslateConverter}}" 
+                           FontSize="Title"/>
+                    <Label Grid.ColumnSpan="2" Text="{res:Translate UnknownDate}"
+                           IsVisible="{Binding AnimeContext.Broadcast, Converter={StaticResource BroadcastTextToVisibleConverter}}" 
+                           FontSize="Title"/>
 
                     <Label Grid.Row="1" Text="{res:Translate TotalEpisodes}" FontSize="Subtitle"/>
-                    <Label Grid.Row="2" Text="{Binding AnimeContext.Episodes, Converter={StaticResource ValueIsNullToNAConverter}}" FontSize="Subtitle"/>
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding AnimeContext.Episodes, Converter={StaticResource ValueIsNullToNAConverter}}" 
+                           FontSize="Subtitle"/>
+
+                    <Label Grid.Row="2" Text="{res:Translate DurationPerEpisode}" FontSize="Subtitle"/>
+                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding AnimeContext.Duration, Converter={StaticResource DurationFormatToShortConverter}}" 
+                           FontSize="Subtitle"/>
                 </Grid>
             </Frame>
 
             <CollectionView Grid.Row="2" ItemsSource="{Binding Episodes}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="ji:AnimeEpisode">
-                        <Frame>
+                        <Frame >
                             <Grid>
                                 <Label Text="{Binding Title}" FontSize="25"/>
                             </Grid>

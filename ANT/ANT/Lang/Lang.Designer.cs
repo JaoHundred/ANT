@@ -151,6 +151,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duration per episode:.
+        /// </summary>
+        public static string DurationPerEpisode {
+            get {
+                return ResourceManager.GetString("DurationPerEpisode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Episodes.
         /// </summary>
         public static string Episodes {
@@ -295,7 +304,7 @@ namespace ANT.Lang {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Episodes amount.
+        ///   Looks up a localized string similar to Episodes amount:.
         /// </summary>
         public static string TotalEpisodes {
             get {

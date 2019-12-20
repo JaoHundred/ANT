@@ -147,6 +147,9 @@
   <data name="Details" xml:space="preserve">
     <value>Details</value>
   </data>
+  <data name="DurationPerEpisode" xml:space="preserve">
+    <value>Duration per episode:</value>
+  </data>
   <data name="Episodes" xml:space="preserve">
     <value>Episodes</value>
   </data>
@@ -196,7 +199,7 @@
     <value>Thursdays</value>
   </data>
   <data name="TotalEpisodes" xml:space="preserve">
-    <value>Episodes amount</value>
+    <value>Episodes amount:</value>
   </data>
   <data name="Tuesdays" xml:space="preserve">
     <value>Tuesdays</value>

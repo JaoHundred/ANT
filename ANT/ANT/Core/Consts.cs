@@ -10,5 +10,9 @@ namespace ANT.Core
         /// string para "não aplicável" N/A
         /// </summary>
         public const string NA = "N/A";
+        /// <summary>
+        /// string para "desconhecido" Unknown
+        /// </summary>
+        public const string Unknown = "Unknown";
     }
 }
