@@ -17,5 +17,6 @@
     <x:String x:Key="Catalogue">&#xE133;</x:String>
     <x:String x:Key="Settings">&#xE713;</x:String>
     <x:String x:Key="StarFill">&#xE735;</x:String>
+    <x:String x:Key="Forum">&#xE90A;</x:String>
     
 </ResourceDictionary>

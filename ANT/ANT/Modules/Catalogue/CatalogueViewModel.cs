@@ -25,6 +25,13 @@ namespace ANT.Modules
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
         }
 
+        public CatalogueViewModel(object genreId)
+        {
+            InitializeTask = LoadAsync(genreId);
+
+            Animes = new ObservableRangeCollection<AnimeSubEntry>();
+        }
+
         private IMainPageAndroid _mainPageAndroid;
 
         public Task InitializeTask { get; }
@@ -32,7 +39,9 @@ namespace ANT.Modules
         {
             IsLoading = true;
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
-            await LoadCatalogueAsync();
+
+            await LoadCatalogueAsync(param);
+
             IsLoading = false;
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
 
@@ -88,26 +97,38 @@ namespace ANT.Modules
         #endregion
 
         #region métodos da VM
-        private async Task LoadCatalogueAsync()
+        private async Task LoadCatalogueAsync(object param)
         {
             if (SearchQuery?.Length > 0)
                 ClearTextQuery();
 
             try
             {
-                var results = await App.Jikan.GetSeason();
-                results.RequestCached = true;
-                //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 
-                //que seleciona os filtros e repassa para cá
-                /*
-                 * .Where(
-                    anime => anime.R18 == false &&
-                    anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
-                    )
-                */
+                if (param != null)
+                {
+                    if (param.GetType() == typeof(GenreSearch))//atualmenet carrega animes por gênero vindo da página genrepopup
+                    {
+                        //TODO: pesquisa abaixo está retornando nulo, descobrir o que está acontecendo no jikan
+                       AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre((GenreSearch)param);
+                        _originalCollection = animeGenre.Anime.ToList();
+                    }
+                }
+                else
+                {
+                    var results = await App.Jikan.GetSeason();
+                    results.RequestCached = true;
+                    //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 
+                    //que seleciona os filtros e repassa para cá
+                    /*
+                     * .Where(
+                        anime => anime.R18 == false &&
+                        anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
+                        )
+                    */
 
-                _originalCollection = results.SeasonEntries.ToList();
-
+                    _originalCollection = results.SeasonEntries.ToList();
+                }
+                
                 Animes.ReplaceRange(_originalCollection);
             }
             catch (Exception ex)
@@ -148,7 +169,7 @@ namespace ANT.Modules
         public ICommand RefreshCommand => new Command(async () =>
         {
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
-            await LoadCatalogueAsync();
+            await LoadCatalogueAsync(null);
             IsRefreshing = false;
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
         });

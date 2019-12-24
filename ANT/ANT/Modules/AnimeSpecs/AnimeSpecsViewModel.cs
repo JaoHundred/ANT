@@ -108,6 +108,7 @@ namespace ANT.Modules
         public ICommand CheckAnimeCharactersCommand => new Command(async () =>
         {
            //TODO: implementar, quando tiver a view para os personagens, linkar aqui
+
         });
         
         public ICommand OpenAnimeInBrowserCommand => new Command(async () =>
@@ -115,6 +116,12 @@ namespace ANT.Modules
             await Launcher.TryOpenAsync(AnimeContext.LinkCanonical);
         });
 
+        public ICommand DiscussionsCommand => new Command<object>(async (object forumLink) =>
+        {
+            await Launcher.TryOpenAsync(forumLink.ToString());
+        });
+
+        
 
         #endregion
 

@@ -150,6 +150,9 @@
   <data name="DurationPerEpisode" xml:space="preserve">
     <value>Duração por episódio: </value>
   </data>
+  <data name="EpisodeData" xml:space="preserve">
+    <value>Não há dados disponíveis, que tal contribuir?</value>
+  </data>
   <data name="Episodes" xml:space="preserve">
     <value>Episódios</value>
   </data>

@@ -10,7 +10,7 @@
                  x:DataType="vm:AnimeGenrePopupViewModel"
              mc:Ignorable="d"
              x:Class="ANT.Modules.AnimeGenrePopupView" 
-                 
+                 x:Name="PopupView"
                  HasSystemPadding="True"
                  SystemPaddingSides="All"
                  Padding="60">
@@ -29,6 +29,10 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="jikan:MALSubItem">
                     <Frame Style="{StaticResource OuterFrameGenreStyle}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BindingContext.GenreSearchCommand, Source={x:Reference PopupView}}"
+                                                  CommandParameter="{Binding Name}"/>
+                        </Frame.GestureRecognizers>
                         <Frame Style="{StaticResource FrameGenreStyle}">
                             <Label Text="{Binding Name}" FontSize="18" HorizontalOptions="Center"/>
                         </Frame>

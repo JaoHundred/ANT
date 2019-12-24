@@ -160,6 +160,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No data available, how about contribute?.
+        /// </summary>
+        public static string EpisodeData {
+            get {
+                return ResourceManager.GetString("EpisodeData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Episodes.
         /// </summary>
         public static string Episodes {

@@ -11,7 +11,8 @@
              x:Class="ANT.Modules.AnimeSpecsView"
              x:DataType="VM:AnimeSpecsViewModel"
             Shell.FlyoutBehavior="Disabled" 
-            IsEnabled="{Binding CanEnable}">
+            IsEnabled="{Binding CanEnable}"
+            x:Name="TabbedView">
 
     <TabbedPage.Resources>
         <converter:DateConverter x:Key="DateConverter"/>
@@ -20,6 +21,7 @@
         <converter:BroadcastFormatTranslateConverter x:Key="BroadcastFormatTranslateConverter"/>
         <converter:BroadcastTextToVisibleConverter x:Key="BroadcastTextToVisibleConverter"/>
         <converter:DurationFormatToShortConverter x:Key="DurationFormatToShortConverter"/>
+        <converter:IsMovieToVisibleConverter x:Key="IsMovieToVisibleConverter"/>
     </TabbedPage.Resources>
 
     <TabbedPage.ToolbarItems>
@@ -111,7 +113,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition/>
+                <RowDefinition />
             </Grid.RowDefinitions>
 
             <Label Text="{res:Translate Broadcast}" FontSize="Title" HorizontalOptions="Center"/>
@@ -133,17 +135,49 @@
                 </Grid>
             </Frame>
 
-            <CollectionView Grid.Row="2" ItemsSource="{Binding Episodes}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="ji:AnimeEpisode">
-                        <Frame >
-                            <Grid>
-                                <Label Text="{Binding Title}" FontSize="25"/>
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <StackLayout Grid.Row="2" IsVisible="{Binding AnimeContext.Type, Converter={StaticResource IsMovieToVisibleConverter}}">
+                <Label Text="{res:Translate Episodes}" 
+                   FontSize="Title" HorizontalOptions="Center"/>
+                <Frame >
+                    <CollectionView Grid.Row="2" ItemsSource="{Binding Episodes}" >
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.EmptyView>
+                            <Label Text="{res:Translate EpisodeData}" FontSize="20" VerticalOptions="Center"
+                                   TextDecorations="Underline">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer x:DataType="VM:AnimeSpecsViewModel" 
+                                    Command="{Binding OpenAnimeInBrowserCommand}"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate >
+                                <Grid x:DataType="ji:AnimeEpisode">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding Id}" FontSize="20" Margin="0,0,5,0"/>
+                                    <ScrollView Grid.Column="1" Orientation="Horizontal">
+                                        <Label Text="{Binding Title}" FontSize="20"/>
+                                    </ScrollView>
+                                    <Label Grid.Column="2" Text="{StaticResource Forum}" FontFamily="{StaticResource FontIcon}"
+                                           FontSize="20" VerticalOptions="Center">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding BindingContext.DiscussionsCommand, Source={x:Reference TabbedView}}"
+                                                                  CommandParameter="{Binding ForumUrl}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Frame>
+            </StackLayout>
+            
         </Grid>
     </ContentPage>
 </TabbedPage>
