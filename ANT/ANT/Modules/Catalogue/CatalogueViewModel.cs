@@ -25,7 +25,7 @@ namespace ANT.Modules
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
         }
 
-        public CatalogueViewModel(object genreId)
+        public CatalogueViewModel(long genreId)
         {
             InitializeTask = LoadAsync(genreId);
 
@@ -108,8 +108,9 @@ namespace ANT.Modules
                 {
                     if (param.GetType() == typeof(GenreSearch))//atualmenet carrega animes por gênero vindo da página genrepopup
                     {
-                        //TODO: pesquisa abaixo está retornando nulo, descobrir o que está acontecendo no jikan
-                       AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre((GenreSearch)param);
+                        //TODO: pesquisa abaixo precisa especificar o número das páginas(retorna 100 por vez), especificar um contador no 1
+                        //e usar o comando do collectionview de carregar mais e ir incrementando o número e fazer novas chamadas
+                       AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre((GenreSearch)param,1);
                         _originalCollection = animeGenre.Anime.ToList();
                     }
                 }

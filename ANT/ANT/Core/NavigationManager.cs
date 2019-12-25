@@ -101,13 +101,14 @@ namespace ANT.Core
                 string absoluteName = typeof(T).AssemblyQualifiedName + typeof(T).FullName;
 
                 Type type = Type.GetType(absoluteName.Replace("ViewModel", "View"));
-                Page view = (Page)Activator.CreateInstance(type);
+                
 
                 BaseVMExtender viewModel =
                     param != null ?
                     (BaseVMExtender)Activator.CreateInstance(Type.GetType(absoluteName), param)
                     : (BaseVMExtender)Activator.CreateInstance(Type.GetType(absoluteName));
 
+                Page view = (Page)Activator.CreateInstance(type);
                 view.BindingContext = viewModel;
                 return view;
             });
@@ -120,13 +121,13 @@ namespace ANT.Core
                 string absoluteName = typeof(T).AssemblyQualifiedName + typeof(T).FullName;
 
                 Type type = Type.GetType(absoluteName.Replace("ViewModel", "View"));
-                PopupPage view = (PopupPage)Activator.CreateInstance(type);
 
                 BaseVMExtender viewModel =
                     param != null ?
                     (BaseVMExtender)Activator.CreateInstance(Type.GetType(absoluteName), param)
                     : (BaseVMExtender)Activator.CreateInstance(Type.GetType(absoluteName));
 
+                PopupPage view = (PopupPage)Activator.CreateInstance(type);
                 view.BindingContext = viewModel;
                 return view;
             });
