@@ -77,7 +77,7 @@
                              Glyph="{StaticResource Catalogue}"
                              Color="{DynamicResource TextColor}"/>
         </FlyoutItem.Icon>
-        <ShellContent ContentTemplate="{DataTemplate modules:CatalogueView}"/>
+        <ShellContent ContentTemplate="{DataTemplate modules:CatalogueSelectView}"/>
     </FlyoutItem>
     
     <FlyoutItem Title="{res:Translate Settings}" Route="Settings">

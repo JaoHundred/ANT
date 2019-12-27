@@ -36,21 +36,37 @@ namespace ANT.Modules
 
         public ICommand GenreSearchCommand => new Command<object>(async (object genreName) =>
         {
-            //TODO: carregar aqui o CatalogueView passando como parâmetro o ID do gênero clicado(a nova coleção carregada em CatalogueView deve ter animes com o gênero clicado no popup)
-
             bool canNavigate = await NavigationManager.CanShellNavigateAsync<CatalogueView>();
-
 
             if (canNavigate)
             {
+                string formatedString = await RemoveOcurrencesFromStringAsync(genreName.ToString(), new char[] { '-', ' ' });
+                GenreSearch genre = (GenreSearch)Enum.Parse(typeof(GenreSearch), formatedString, true);
 
-                GenreSearch genre = (GenreSearch)Enum.Parse(typeof(GenreSearch), genreName.ToString(), true);
-
-                //TODO: trocar método de navegação abaixo por um que limpe a pilha de navegação(semelhante ao gotoAsync com route)
+                await NavigationManager.PopPopUpPageAsync();
+                //NavigationManager.RemovePageFromShellStack<CatalogueViewModel>();//remove a página de catálogo antigo
                 await NavigationManager.NavigateShellAsync<CatalogueViewModel>(genre);
             }
         });
 
+        //já que o trim não funcionava, fiz meu próprio formatador de string que remove caracteres escolhidos
+        private Task<string> RemoveOcurrencesFromStringAsync(string originalString, params char[] ocurrences)
+        {
+            return Task.Run(() =>
+            {
+                var builder = new StringBuilder();
+                string stringList = originalString;
 
+                for (int i = 0; i < stringList.Length; i++)
+                {
+                    char c = stringList[i];
+
+                    if (!ocurrences.Contains(c))
+                        builder.Append(c);
+                }
+
+                return builder.ToString();
+            });
+        }
     }
 }

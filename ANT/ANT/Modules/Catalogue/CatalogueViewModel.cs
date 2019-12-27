@@ -25,9 +25,9 @@ namespace ANT.Modules
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
         }
 
-        public CatalogueViewModel(long genreId)
+        public CatalogueViewModel(GenreSearch genreEnum)
         {
-            InitializeTask = LoadAsync(genreId);
+            InitializeTask = LoadAsync(genreEnum);
 
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
         }
@@ -110,7 +110,7 @@ namespace ANT.Modules
                     {
                         //TODO: pesquisa abaixo precisa especificar o número das páginas(retorna 100 por vez), especificar um contador no 1
                         //e usar o comando do collectionview de carregar mais e ir incrementando o número e fazer novas chamadas
-                       AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre((GenreSearch)param,1);
+                        AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre((GenreSearch)param, 1);
                         _originalCollection = animeGenre.Anime.ToList();
                     }
                 }
@@ -129,7 +129,7 @@ namespace ANT.Modules
 
                     _originalCollection = results.SeasonEntries.ToList();
                 }
-                
+
                 Animes.ReplaceRange(_originalCollection);
             }
             catch (Exception ex)

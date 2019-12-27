@@ -13,6 +13,9 @@ using ANT.Modules;
 
 namespace ANT.Core
 {
+
+    //TODO: revisar métodos de navegação para tornálos não blocantes
+
     /// <summary>
     /// Gerenciador de navegações, usado para navegações hierarquicas e popup, possui formas de disparar navegação somente uma vez
     /// (evitando o duplo clique equivocado do usuário)
@@ -38,18 +41,27 @@ namespace ANT.Core
 
         #region Métodos de navegação
 
+        public static  void RemovePageFromShellStack<T>() where T : BaseViewModel
+        {
+            Type viewType = GetViewFromViewModel<T>();
+            //TODO: a linha abaixo não consegue pegar a página antiga de CatalogueView, verificar o que pode ser usando breakpoints
+            var pageToRemove = Shell.Current.Navigation.NavigationStack.First(p => p.GetType() == viewType);
+
+            Shell.Current.Navigation.RemovePage(pageToRemove);
+        }
+
         public static async Task NavigateShellAsync<T>(params object[] param) where T : BaseViewModel
         {
-            Page view = await CreatePageAndBindAsync<T>(param);
+            var viewTask = CreatePageAndBindAsync<T>(param);
 
-            await Shell.Current.Navigation.PushAsync(view, animated: true);
+            await Shell.Current.Navigation.PushAsync(await viewTask, animated: true);
         }
 
         public static async Task NavigatePopUpAsync<T>(params object[] param) where T : BaseViewModel
         {
-            PopupPage view = await CreatePopUpPageAndBind<T>(param);
+            Page view = await CreatePageAndBindAsync<T>(param);
 
-            await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(view);
+            await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync((PopupPage )view);
         }
 
         public static async Task PopShellPageAsync(bool animated = true)
@@ -70,11 +82,9 @@ namespace ANT.Core
         /// <returns></returns>
         public static Task<bool> CanShellNavigateAsync<T>(Action executeBeforeReturn = null) where T : Page
         {
-            return Task.Run(() =>
-            {
-                var lastPageInStack = Shell.Current.Navigation.NavigationStack.LastOrDefault();
-                return CanNavigate<T>(executeBeforeReturn, lastPageInStack);
-            });
+            var lastPageInStack = Shell.Current.Navigation.NavigationStack.LastOrDefault();
+
+            return CanNavigateAsync<T>(executeBeforeReturn, lastPageInStack);
         }
 
         /// <summary>
@@ -85,66 +95,59 @@ namespace ANT.Core
         /// <returns></returns>
         public static Task<bool> CanPopUpNavigateAsync<T>(Action executeBeforeReturn = null) where T : Page
         {
-            return Task.Run(() =>
-            {
-                var lastPageInStack = Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.LastOrDefault();
-                return CanNavigate<T>(executeBeforeReturn, lastPageInStack);
-            });
+            var lastPageInStack = Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.LastOrDefault();
+            return CanNavigateAsync<T>(executeBeforeReturn, lastPageInStack);
         }
         #endregion
 
         #region Métodos auxiliares
-        private static Task<Page> CreatePageAndBindAsync<T>(object[] param) where T : BaseViewModel
+        private static async Task<Page> CreatePageAndBindAsync<T>(object[] param) where T : BaseViewModel
         {
-            return Task.Run(() =>
+            Type viewType = default;
+
+            var reflectionTask = Task<ConstructorInfo>.Run(() =>
             {
-                string absoluteName = typeof(T).AssemblyQualifiedName + typeof(T).FullName;
+                viewType = GetViewFromViewModel<T>();
 
-                Type type = Type.GetType(absoluteName.Replace("ViewModel", "View"));
-                
+                IEnumerable<Type> paramTypes = param.Select(p => p.GetType());
 
-                BaseVMExtender viewModel =
-                    param != null ?
-                    (BaseVMExtender)Activator.CreateInstance(Type.GetType(absoluteName), param)
-                    : (BaseVMExtender)Activator.CreateInstance(Type.GetType(absoluteName));
-
-                Page view = (Page)Activator.CreateInstance(type);
-                view.BindingContext = viewModel;
-                return view;
+                return typeof(T).GetConstructor(paramTypes.ToArray());
             });
+
+            ConstructorInfo constructor = await reflectionTask;
+            var vm = (BaseVMExtender)constructor.Invoke(param);
+
+            Page view = (Page)Activator.CreateInstance(viewType);
+            view.BindingContext = vm;
+
+            return view;
         }
 
-        private static Task<PopupPage> CreatePopUpPageAndBind<T>(object[] param) where T : BaseViewModel
+        private static Type GetViewFromViewModel<T>() where T : BaseViewModel
         {
-            return Task.Run(() =>
-            {
-                string absoluteName = typeof(T).AssemblyQualifiedName + typeof(T).FullName;
+            Type vmType;
+            string absoluteName = typeof(T).AssemblyQualifiedName + typeof(T).FullName;
 
-                Type type = Type.GetType(absoluteName.Replace("ViewModel", "View"));
-
-                BaseVMExtender viewModel =
-                    param != null ?
-                    (BaseVMExtender)Activator.CreateInstance(Type.GetType(absoluteName), param)
-                    : (BaseVMExtender)Activator.CreateInstance(Type.GetType(absoluteName));
-
-                PopupPage view = (PopupPage)Activator.CreateInstance(type);
-                view.BindingContext = viewModel;
-                return view;
-            });
+            vmType = Type.GetType(absoluteName.Replace("ViewModel", "View"));
+            return vmType;
         }
 
-        private static bool CanNavigate<T>(Action executeBeforeReturn, Page lastPageInStack) where T : Page
+        private static Task<bool> CanNavigateAsync<T>(Action executeBeforeReturn, Page lastPageInStack) where T : Page
         {
             //checa se existe uma mesma página na última posição da navigation stack
-            if (lastPageInStack?.GetType() == typeof(T))
+            return Task.Run(() =>
             {
-                if (executeBeforeReturn != null)
-                    executeBeforeReturn.Invoke();
+                if (lastPageInStack?.GetType() == typeof(T))
+                {
+                    if (executeBeforeReturn != null)
+                        executeBeforeReturn.Invoke();
 
-                return false;
-            }
+                    return false;
+                }
 
-            return true;
+                return true;
+            });
+
         }
         #endregion
     }
