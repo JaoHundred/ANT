@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using ANT.Core;
 
 namespace ANT.Lang
 {
@@ -17,7 +18,12 @@ namespace ANT.Lang
             //ex: app foi aberto com o sistema em inglês mas foi trocado com o app aberto para português, o código abaixo vai continuar retornarndo inglês
 
             string formatedBroadcast = string.Empty;
-            string formatedPhrase = "{0} " + $"{Lang.At} {split[2]} {split[3]}";
+            string formatedPhrase = string.Empty;
+
+            if (split.Contains(Consts.Unknown))
+                return Lang.UnknownDate;
+            else
+                formatedPhrase = "{0} " + $"{Lang.At} {split[2]} {split[3]}";
 
             switch (dayOfWeek)
             {

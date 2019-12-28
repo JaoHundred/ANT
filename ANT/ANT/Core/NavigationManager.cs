@@ -14,7 +14,8 @@ using ANT.Modules;
 namespace ANT.Core
 {
 
-    //TODO: revisar métodos de navegação para tornálos não blocantes
+    //TODO: revisar métodos de navegação e ver se deve ser feito as coisas com getconstructos ou activator, ver qual é mais rápido
+    //TODO: revisar as implementações de comandos de todas as ViewModel https://montemagno.com/asynccommand-more-come-to-mvvmhelpers/
 
     /// <summary>
     /// Gerenciador de navegações, usado para navegações hierarquicas e popup, possui formas de disparar navegação somente uma vez
@@ -41,13 +42,28 @@ namespace ANT.Core
 
         #region Métodos de navegação
 
-        public static  void RemovePageFromShellStack<T>() where T : BaseViewModel
+        public static void RemovePageFromShellStack<T>() where T : BaseViewModel
         {
             Type viewType = GetViewFromViewModel<T>();
-            //TODO: a linha abaixo não consegue pegar a página antiga de CatalogueView, verificar o que pode ser usando breakpoints
-            var pageToRemove = Shell.Current.Navigation.NavigationStack.First(p => p.GetType() == viewType);
+            var pageToRemove = Shell.Current.Navigation.NavigationStack.First(p => p?.GetType() == viewType);
 
             Shell.Current.Navigation.RemovePage(pageToRemove);
+        }
+
+        /// <summary>
+        /// decrescente e não inclui a página atual na remoção
+        /// </summary>
+        /// <param name="stackDepth"></param>
+        public static void RemoveLastPagesFromShellStack(int stackDepth)
+        {
+            var pagesToRemove = new List<Page>();
+
+            for (int i = stackDepth - 1; i >= 0; i--)
+                pagesToRemove.Add(Shell.Current.Navigation.NavigationStack[i]);
+
+            foreach (var view in pagesToRemove)
+                if (view != null)
+                    Shell.Current.Navigation.RemovePage(view);
         }
 
         public static async Task NavigateShellAsync<T>(params object[] param) where T : BaseViewModel
@@ -61,7 +77,7 @@ namespace ANT.Core
         {
             Page view = await CreatePageAndBindAsync<T>(param);
 
-            await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync((PopupPage )view);
+            await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync((PopupPage)view);
         }
 
         public static async Task PopShellPageAsync(bool animated = true)

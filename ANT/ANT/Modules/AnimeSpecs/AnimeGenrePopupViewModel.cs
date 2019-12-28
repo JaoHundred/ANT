@@ -44,7 +44,7 @@ namespace ANT.Modules
                 GenreSearch genre = (GenreSearch)Enum.Parse(typeof(GenreSearch), formatedString, true);
 
                 await NavigationManager.PopPopUpPageAsync();
-                //NavigationManager.RemovePageFromShellStack<CatalogueViewModel>();//remove a página de catálogo antigo
+                NavigationManager.RemoveLastPagesFromShellStack(3);
                 await NavigationManager.NavigateShellAsync<CatalogueViewModel>(genre);
             }
         });
