@@ -13,9 +13,6 @@ using ANT.Modules;
 
 namespace ANT.Core
 {
-
-    //TODO: revisar métodos de navegação e ver se deve ser feito as coisas com getconstructos ou activator, ver qual é mais rápido
-
     /// <summary>
     /// Gerenciador de navegações, usado para navegações hierarquicas e popup, possui formas de disparar navegação somente uma vez
     /// (evitando o duplo clique equivocado do usuário)
@@ -132,7 +129,8 @@ namespace ANT.Core
             ConstructorInfo constructor = await reflectionTask;
             var vm = (BaseVMExtender)constructor.Invoke(param);
 
-            Page view = (Page)Activator.CreateInstance(viewType);
+            ConstructorInfo viewConstructor =  viewType.GetConstructor(Type.EmptyTypes);
+            Page view = (Page)viewConstructor.Invoke(null);
             view.BindingContext = vm;
 
             return view;
