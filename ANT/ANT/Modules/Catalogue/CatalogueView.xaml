@@ -63,7 +63,9 @@
             <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                            SelectionChangedCommand="{Binding OpenAnimeCommand}">
+                            SelectionChangedCommand="{Binding OpenAnimeCommand}"
+                            RemainingItemsThreshold="0"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
                 <CollectionView.EmptyView>
                     <Grid>
                         <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>

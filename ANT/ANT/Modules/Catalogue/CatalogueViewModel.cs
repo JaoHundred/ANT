@@ -30,8 +30,9 @@ namespace ANT.Modules
 
         public CatalogueViewModel(GenreSearch genreEnum)
         {
-            InitializeTask = LoadAsync(genreEnum);
-            
+            _currentGenre = genreEnum;
+            InitializeTask = LoadAsync(null);
+
             InitializeCommands();
 
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
@@ -45,9 +46,21 @@ namespace ANT.Modules
             ClearTextCommand = new magno.Command(OnClearText);
             SearchCommand = new magno.AsyncCommand(OnSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
+            LoadMoreCommand = new magno.AsyncCommand(OnLoadMore,
+                (t)=>
+                {
+                    return true;
+                },
+                (ex)=>
+                {
+                    //TODO: ficar de olho nas eventuais exceções, desconfio ser da chamada do jikan pelos gêneros de animes, mas não tenho certeza
+                    Console.WriteLine(ex.InnerException);
+                });
         }
 
         private IMainPageAndroid _mainPageAndroid;
+        private int _pageCount = 1;
+        private GenreSearch? _currentGenre;
 
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
@@ -101,13 +114,22 @@ namespace ANT.Modules
             set { SetProperty(ref _selectedItems, value); }
         }
 
-        private IList<AnimeSubEntry> _originalCollection;
+        private List<AnimeSubEntry> _originalCollection;
         private ObservableRangeCollection<AnimeSubEntry> _animes;
         public ObservableRangeCollection<AnimeSubEntry> Animes
         {
             get { return _animes; }
             set { SetProperty(ref _animes, value); }
         }
+
+        private long _totalAnimeCount;
+
+        public long TotalAnimeCount
+        {
+            get { return _totalAnimeCount; }
+            set { SetProperty(ref _totalAnimeCount, value); }
+        }
+
 
         #endregion
 
@@ -119,15 +141,14 @@ namespace ANT.Modules
 
             try
             {
-                if (param != null)
+                if (_currentGenre != null)
                 {
-                    if (param.GetType() == typeof(GenreSearch))//atualmenet carrega animes por gênero vindo da página genrepopup
-                    {
-                        //TODO: pesquisa abaixo precisa especificar o número das páginas(retorna 100 por vez), especificar um contador no 1
-                        //e usar o comando do collectionview de carregar mais e ir incrementando o número e fazer novas chamadas
-                        AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre((GenreSearch)param, 1);
-                        _originalCollection = animeGenre.Anime.ToList();
-                    }
+
+                    //TODO: pesquisa abaixo precisa especificar o número das páginas(retorna 100 por vez), especificar um contador no 1
+                    //e usar o comando do collectionview de carregar mais e ir incrementando o número e fazer novas chamadas
+                    await OnLoadMore();
+                    IsBusy = false;
+
                 }
                 else
                 {
@@ -143,9 +164,9 @@ namespace ANT.Modules
                     */
 
                     _originalCollection = results.SeasonEntries.ToList();
+                    Animes.ReplaceRange(_originalCollection);
                 }
 
-                Animes.ReplaceRange(_originalCollection);
             }
             catch (Exception ex)
             {
@@ -158,6 +179,46 @@ namespace ANT.Modules
         #endregion
 
         #region commands
+
+        public ICommand LoadMoreCommand { get; private set; }
+        private async Task OnLoadMore()
+        {
+            //TODO:descobrir como fazer corretamente isso, testar com lock, na pesquisa por texto o método reinsere animes
+
+            if (_currentGenre == null || !string.IsNullOrEmpty(SearchQuery) && /*_originalCollection.Count == TotalAnimeCount */ IsBusy)
+                return;
+
+            IsBusy = true;
+            AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount);
+            animeGenre.RequestCached = true;
+
+            if (TotalAnimeCount == 0 || TotalAnimeCount != animeGenre.TotalCount)
+                TotalAnimeCount = animeGenre.TotalCount;
+
+            if (animeGenre != null)
+            {
+                if (_pageCount == 1)
+                {
+                    _originalCollection = animeGenre.Anime.ToList();
+                    Animes.ReplaceRange(_originalCollection);
+                }
+
+                else if (_pageCount > 1)
+                {
+                    var anime = animeGenre.Anime;
+
+                    if (anime != null)
+                    {
+                        _originalCollection.AddRange(anime);
+                        Animes.AddRange(anime);
+                    }
+                }
+
+                _pageCount++;
+                await Task.Delay(TimeSpan.FromSeconds(0.10));
+                IsBusy = false;
+            }
+        }
 
         public ICommand SelectionModeCommand { get; private set; }
         private void OnSelectionMode()
@@ -202,16 +263,18 @@ namespace ANT.Modules
         public ICommand SearchCommand { get; private set; }
         private async Task OnSearch()
         {
-            IList<AnimeSubEntry> resultList = await Task.Run(() =>
+            var resultListTask = Task.Run(() =>
            {
                return _originalCollection.Where(anime => anime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant())).ToList();
            });
 
+            var resultList = await resultListTask;
+            var unionList = Animes.Union(resultList);
             Animes.ReplaceRange(resultList);
         }
 
         public ICommand OpenAnimeCommand { get; private set; }
-        public async Task OnOpenAnime ()
+        public async Task OnOpenAnime()
         {
             bool canNavigate = await NavigationManager.CanShellNavigateAsync<AnimeSpecsView>(() =>
               {
