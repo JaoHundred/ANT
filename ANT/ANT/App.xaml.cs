@@ -13,6 +13,9 @@ namespace ANT
 {
     public partial class App : Application
     {
+        //TODO: a checagem periódica de internet pode ser feito por aqui, existe um plugin de conectividade e classes próprias do android para pegar
+        //informações da rede
+
         public App()
         {
             InitializeComponent();

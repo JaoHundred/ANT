@@ -15,7 +15,6 @@ namespace ANT.Core
 {
 
     //TODO: revisar métodos de navegação e ver se deve ser feito as coisas com getconstructos ou activator, ver qual é mais rápido
-    //TODO: revisar as implementações de comandos de todas as ViewModel https://montemagno.com/asynccommand-more-come-to-mvvmhelpers/
 
     /// <summary>
     /// Gerenciador de navegações, usado para navegações hierarquicas e popup, possui formas de disparar navegação somente uma vez

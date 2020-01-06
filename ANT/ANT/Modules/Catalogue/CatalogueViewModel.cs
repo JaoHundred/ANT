@@ -13,6 +13,7 @@ using MvvmHelpers;
 using System.Windows.Input;
 using ANT.UTIL;
 using ANT.Core;
+using magno = MvvmHelpers.Commands;
 
 namespace ANT.Modules
 {
@@ -22,14 +23,28 @@ namespace ANT.Modules
         {
             InitializeTask = LoadAsync(null);
 
+            InitializeCommands();
+
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
         }
 
         public CatalogueViewModel(GenreSearch genreEnum)
         {
             InitializeTask = LoadAsync(genreEnum);
+            
+            InitializeCommands();
 
             Animes = new ObservableRangeCollection<AnimeSubEntry>();
+        }
+
+        private void InitializeCommands()
+        {
+            SelectionModeCommand = new magno.Command(OnSelectionMode);
+            AddToFavoriteCommand = new magno.Command(OnAddToFavorite);
+            RefreshCommand = new magno.AsyncCommand(OnRefresh);
+            ClearTextCommand = new magno.Command(OnClearText);
+            SearchCommand = new magno.AsyncCommand(OnSearch);
+            OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
         }
 
         private IMainPageAndroid _mainPageAndroid;
@@ -144,8 +159,8 @@ namespace ANT.Modules
 
         #region commands
 
-
-        public ICommand SelectionModeCommand => new Command(() =>
+        public ICommand SelectionModeCommand { get; private set; }
+        private void OnSelectionMode()
         {
             if (SelectionMode == SelectionMode.Multiple)
                 SingleSelectionMode();
@@ -154,9 +169,10 @@ namespace ANT.Modules
                 MultiSelectionMode();
                 SelectedItems = null;
             }
-        });
+        }
 
-        public ICommand AddToFavoriteCommand => new Command(() =>
+        public ICommand AddToFavoriteCommand { get; private set; }
+        private void OnAddToFavorite()
         {
 
             if (SelectedItems == null || SelectedItems.Count == 0)
@@ -165,23 +181,26 @@ namespace ANT.Modules
             var items = SelectedItems.Cast<AnimeSubEntry>().ToList();
 
             //TODO: pensar em um sistema de save para guardar favoritos do usuário
-        });
+        }
 
-        public ICommand RefreshCommand => new Command(async () =>
+        public ICommand RefreshCommand { get; private set; }
+        private async Task OnRefresh()
         {
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
             await LoadCatalogueAsync(null);
             IsRefreshing = false;
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
-        });
+        }
 
-        public ICommand ClearTextCommand => new Command(() =>
+        public ICommand ClearTextCommand { get; private set; }
+        private void OnClearText()
         {
             ClearTextQuery();
             SearchCommand.Execute(null);
-        });
+        }
 
-        public ICommand SearchCommand => new Command(async () =>
+        public ICommand SearchCommand { get; private set; }
+        private async Task OnSearch()
         {
             IList<AnimeSubEntry> resultList = await Task.Run(() =>
            {
@@ -189,9 +208,10 @@ namespace ANT.Modules
            });
 
             Animes.ReplaceRange(resultList);
-        });
+        }
 
-        public ICommand OpenAnimeCommand => new Command(async () =>
+        public ICommand OpenAnimeCommand { get; private set; }
+        public async Task OnOpenAnime ()
         {
             bool canNavigate = await NavigationManager.CanShellNavigateAsync<AnimeSpecsView>(() =>
               {
@@ -204,7 +224,7 @@ namespace ANT.Modules
                 await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedItem.MalId);
                 SelectedItem = null;
             }
-        });
+        }
 
         #endregion
 

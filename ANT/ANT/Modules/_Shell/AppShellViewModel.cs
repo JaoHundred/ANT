@@ -7,6 +7,6 @@ namespace ANT.Modules
 {
     public class AppShellViewModel
     {
-        //TODO: talvez funciona criar checagem de internet via messagingcenter
+        
     }
 }

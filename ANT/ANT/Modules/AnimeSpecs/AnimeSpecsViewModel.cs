@@ -11,6 +11,7 @@ using Xamarin.Forms;
 using Xamarin.Essentials;
 using ANT.Core;
 using ANT.UTIL;
+using magno = MvvmHelpers.Commands;
 
 namespace ANT.Modules
 {
@@ -19,6 +20,13 @@ namespace ANT.Modules
         public AnimeSpecsViewModel(long malID)
         {
             InitializeTask = LoadAsync(malID);
+
+            FavoriteCommand = new magno.Command(OnFavorite);
+            OpenImageInBrowserCommand = new magno.AsyncCommand(OnOpenImageInBrowser);
+            CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
+            CheckAnimeCharactersCommand = new magno.AsyncCommand(OnCheckAnimeCharacters);
+            OpenAnimeInBrowserCommand = new magno.AsyncCommand(OnOpenAnimeInBrowser);
+            DiscussionsCommand = new magno.AsyncCommand<string>(OnDiscussions);
         }
 
         public Task InitializeTask { get; }
@@ -83,45 +91,50 @@ namespace ANT.Modules
         #endregion
 
         #region commands
-        public ICommand FavoriteCommand => new Command(() =>
+
+        public ICommand FavoriteCommand { get; private set; }
+        private void OnFavorite ()
         {
             //TODO:implementar classe modelo e serviço de favoritar, ela deve ter animecontext e toda a parte referente a episódios, quando criar a classe
             //chamar o serviço de salvar em json, se já estiver favoritado e o usuário clicar novamente, o save é apagado e o botão volta a ficar na cor padrão
             //devo precisar de um datatemplate selector pra lidar com a aparência do botão de favoritar quando o show estiver favoritado ou não
 
-        });
+        }
 
-        public ICommand OpenImageInBrowserCommand => new Command(async () =>
+        public ICommand OpenImageInBrowserCommand { get; private set; }
+        private async Task OnOpenImageInBrowser()
         {
             await Launcher.TryOpenAsync(AnimeContext.ImageURL);
-        });
+        }
 
 
-        public ICommand CheckAnimeGenresCommand => new Command(async () =>
+        public ICommand CheckAnimeGenresCommand { get; private set; }
+        private async Task OnCheckAnimeGenres ()
         {
             bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<AnimeGenrePopupView>();
 
             if (canNavigate)
                 await NavigationManager.NavigatePopUpAsync<AnimeGenrePopupViewModel>(AnimeContext.Genres.ToList());
-        });
+        }
 
-        public ICommand CheckAnimeCharactersCommand => new Command(async () =>
+        public ICommand CheckAnimeCharactersCommand { get; private set; }
+        private async Task OnCheckAnimeCharacters ()
         {
            //TODO: implementar, quando tiver a view para os personagens, linkar aqui
 
-        });
-        
-        public ICommand OpenAnimeInBrowserCommand => new Command(async () =>
+        }
+
+        public ICommand OpenAnimeInBrowserCommand { get; private set; }
+        private async Task OnOpenAnimeInBrowser()
         {
             await Launcher.TryOpenAsync(AnimeContext.LinkCanonical);
-        });
+        }
 
-        public ICommand DiscussionsCommand => new Command<object>(async (object forumLink) =>
+        public ICommand DiscussionsCommand { get; private set; }
+        private async Task OnDiscussions(string forumLink)
         {
-            await Launcher.TryOpenAsync(forumLink.ToString());
-        });
-
-        
+            await Launcher.TryOpenAsync(forumLink);
+        }
 
         #endregion
 
