@@ -173,8 +173,12 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
-            if (IsBusy)
+            if (_currentGenre == null || SearchQuery?.Length > 0 || TotalAnimeCount < 0 || IsBusy)
                 return;
+
+            IsBusy = true; 
+            //TODO: conflitos do IsBusy no footer da collectionview, ele nunca esconde o "Carregando..." do footer
+            //activity indicator também parece não funcionar, simplesmente não aparece, descobrir o que e como pode ser usado no footer do collecionview
 
             // semáforo, usado para permitir que somente um apanhado de thread/task passe por vez
             //parece ser um lock melhorado
@@ -182,12 +186,8 @@ namespace ANT.Modules
 
             try
             {
-                if (_currentGenre == null || SearchQuery?.Length > 0)
-                    return;
-
-                await Task.Delay(TimeSpan.FromSeconds(2));
+                await Task.Delay(TimeSpan.FromSeconds(4));
                 AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount);
-                IsBusy = true;
 
                 if (animeGenre != null)
                 {
@@ -211,6 +211,12 @@ namespace ANT.Modules
                     {
                         _originalCollection.AddRange(animes);
                         Animes.AddRange(animes);
+                    }
+
+                    if (TotalAnimeCount == 0) // usado para desativar a chamada da collectionview para este método
+                    {
+                        TotalAnimeCount = -1;
+                        return;
                     }
 
                     _pageCount++;

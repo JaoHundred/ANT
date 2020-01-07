@@ -95,13 +95,12 @@
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-                <CollectionView.FooterTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.FooterTemplate>
+                <CollectionView.Footer>
+                    <Grid>
+                        <Label Text="Carregando..." FontSize="30" HorizontalOptions="Center" Margin="3"
+                               IsVisible="{Binding IsBusy}"/>
+                    </Grid>
+                </CollectionView.Footer>
             </CollectionView>
         </RefreshView>
 
