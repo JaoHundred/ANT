@@ -64,7 +64,7 @@
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                             SelectionChangedCommand="{Binding OpenAnimeCommand}"
-                            RemainingItemsThreshold="0"
+                            RemainingItemsThreshold="{Binding TotalAnimeCount}"
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
                 <CollectionView.EmptyView>
                     <Grid>
@@ -95,6 +95,13 @@
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+                <CollectionView.FooterTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.FooterTemplate>
             </CollectionView>
         </RefreshView>
 

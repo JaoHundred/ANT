@@ -6,6 +6,7 @@ using JikanDotNet.Helpers;
 using Xamarin.Forms;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 using ANT.Interfaces;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -46,21 +47,14 @@ namespace ANT.Modules
             ClearTextCommand = new magno.Command(OnClearText);
             SearchCommand = new magno.AsyncCommand(OnSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
-            LoadMoreCommand = new magno.AsyncCommand(OnLoadMore,
-                (t)=>
-                {
-                    return true;
-                },
-                (ex)=>
-                {
-                    //TODO: ficar de olho nas eventuais exceções, desconfio ser da chamada do jikan pelos gêneros de animes, mas não tenho certeza
-                    Console.WriteLine(ex.InnerException);
-                });
+            LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
+            
         }
 
         private IMainPageAndroid _mainPageAndroid;
         private int _pageCount = 1;
-        private GenreSearch? _currentGenre;
+        private readonly GenreSearch? _currentGenre;
+        private readonly SemaphoreSlim loc = new SemaphoreSlim(1);
 
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
@@ -68,7 +62,7 @@ namespace ANT.Modules
             IsLoading = true;
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
 
-            await LoadCatalogueAsync(param);
+            await LoadCatalogueAsync();
 
             IsLoading = false;
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
@@ -134,7 +128,7 @@ namespace ANT.Modules
         #endregion
 
         #region métodos da VM
-        private async Task LoadCatalogueAsync(object param)
+        private async Task LoadCatalogueAsync()
         {
             if (SearchQuery?.Length > 0)
                 ClearTextQuery();
@@ -146,7 +140,7 @@ namespace ANT.Modules
 
                     //TODO: pesquisa abaixo precisa especificar o número das páginas(retorna 100 por vez), especificar um contador no 1
                     //e usar o comando do collectionview de carregar mais e ir incrementando o número e fazer novas chamadas
-                    await OnLoadMore();
+                   await OnLoadMore();
                     IsBusy = false;
 
                 }
@@ -183,40 +177,55 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
-            //TODO:descobrir como fazer corretamente isso, testar com lock, na pesquisa por texto o método reinsere animes
-
-            if (_currentGenre == null || !string.IsNullOrEmpty(SearchQuery) && /*_originalCollection.Count == TotalAnimeCount */ IsBusy)
+            if (IsBusy)
                 return;
 
-            IsBusy = true;
-            AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount);
-            animeGenre.RequestCached = true;
+            // semáforo, usado para permitir que somente um apanhado de thread/task passe por vez
+            //parece ser um lock melhorado
+            await loc.WaitAsync(); 
 
-            if (TotalAnimeCount == 0 || TotalAnimeCount != animeGenre.TotalCount)
-                TotalAnimeCount = animeGenre.TotalCount;
-
-            if (animeGenre != null)
+            try
             {
-                if (_pageCount == 1)
-                {
-                    _originalCollection = animeGenre.Anime.ToList();
-                    Animes.ReplaceRange(_originalCollection);
-                }
+                if (_currentGenre == null || SearchQuery?.Length > 0)
+                    return;
 
-                else if (_pageCount > 1)
-                {
-                    var anime = animeGenre.Anime;
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount);
+                IsBusy = true;
 
-                    if (anime != null)
+                if (animeGenre != null)
+                {
+                    animeGenre.RequestCached = true;
+
+                    if (TotalAnimeCount == 0)
+                        TotalAnimeCount = animeGenre.TotalCount;
+
+                    var animes = animeGenre.Anime;
+
+                    if (TotalAnimeCount <= animeGenre.TotalCount)
+                        TotalAnimeCount -= animes.Count;
+
+                    if (_pageCount == 1)
                     {
-                        _originalCollection.AddRange(anime);
-                        Animes.AddRange(anime);
+                        _originalCollection = animes.ToList();
+                        Animes.ReplaceRange(_originalCollection);
                     }
+
+                    else if (_pageCount > 1)
+                    {
+                        _originalCollection.AddRange(animes);
+                        Animes.AddRange(animes);
+                    }
+
+                    _pageCount++;
                 }
 
-                _pageCount++;
-                await Task.Delay(TimeSpan.FromSeconds(0.10));
+                await Task.Delay(TimeSpan.FromSeconds(4));
+            }
+            finally
+            {
                 IsBusy = false;
+                loc.Release();
             }
         }
 
@@ -248,7 +257,7 @@ namespace ANT.Modules
         private async Task OnRefresh()
         {
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
-            await LoadCatalogueAsync(null);
+            await LoadCatalogueAsync();
             IsRefreshing = false;
             IsLoadingOrRefreshing = IsLoading || IsRefreshing;
         }

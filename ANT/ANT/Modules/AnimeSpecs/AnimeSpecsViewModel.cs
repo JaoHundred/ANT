@@ -93,7 +93,7 @@ namespace ANT.Modules
         #region commands
 
         public ICommand FavoriteCommand { get; private set; }
-        private void OnFavorite ()
+        private void OnFavorite()
         {
             //TODO:implementar classe modelo e serviço de favoritar, ela deve ter animecontext e toda a parte referente a episódios, quando criar a classe
             //chamar o serviço de salvar em json, se já estiver favoritado e o usuário clicar novamente, o save é apagado e o botão volta a ficar na cor padrão
@@ -109,7 +109,7 @@ namespace ANT.Modules
 
 
         public ICommand CheckAnimeGenresCommand { get; private set; }
-        private async Task OnCheckAnimeGenres ()
+        private async Task OnCheckAnimeGenres()
         {
             bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<AnimeGenrePopupView>();
 
@@ -118,16 +118,17 @@ namespace ANT.Modules
         }
 
         public ICommand CheckAnimeCharactersCommand { get; private set; }
-        private async Task OnCheckAnimeCharacters ()
+        private async Task OnCheckAnimeCharacters()
         {
-           //TODO: implementar, quando tiver a view para os personagens, linkar aqui
+            //TODO: implementar, quando tiver a view para os personagens, linkar aqui
 
         }
 
         public ICommand OpenAnimeInBrowserCommand { get; private set; }
         private async Task OnOpenAnimeInBrowser()
         {
-            await Launcher.TryOpenAsync(AnimeContext.LinkCanonical);
+            if (AnimeContext != null)
+                await Launcher.TryOpenAsync(AnimeContext.LinkCanonical);
         }
 
         public ICommand DiscussionsCommand { get; private set; }
