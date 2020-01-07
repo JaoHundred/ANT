@@ -48,7 +48,7 @@ namespace ANT.Modules
             SearchCommand = new magno.AsyncCommand(OnSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
-            
+
         }
 
         private IMainPageAndroid _mainPageAndroid;
@@ -137,12 +137,8 @@ namespace ANT.Modules
             {
                 if (_currentGenre != null)
                 {
-
-                    //TODO: pesquisa abaixo precisa especificar o número das páginas(retorna 100 por vez), especificar um contador no 1
-                    //e usar o comando do collectionview de carregar mais e ir incrementando o número e fazer novas chamadas
-                   await OnLoadMore();
+                    await OnLoadMore();
                     IsBusy = false;
-
                 }
                 else
                 {
@@ -182,7 +178,7 @@ namespace ANT.Modules
 
             // semáforo, usado para permitir que somente um apanhado de thread/task passe por vez
             //parece ser um lock melhorado
-            await loc.WaitAsync(); 
+            await loc.WaitAsync();
 
             try
             {
