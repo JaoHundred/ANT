@@ -39,6 +39,10 @@ namespace ANT.Modules
             try
             {
                 await Task.Delay(TimeSpan.FromSeconds(2));
+
+                //TODO:adaptar o carregamento de N episódios via collectionview ifinity load(semelhante ao que foi feito em catalogueview para os animes por
+                //gênero
+
                 AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(id);
                 episodes.RequestCached = true;
                 Episodes = episodes.EpisodeCollection.ToList();
@@ -55,6 +59,7 @@ namespace ANT.Modules
             catch (Exception ex)
             {
                 Console.WriteLine($"Problema encontrado em :{ex.Message}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
             }
         }
 

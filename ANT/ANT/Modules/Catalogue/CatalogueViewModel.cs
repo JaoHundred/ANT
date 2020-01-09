@@ -48,7 +48,6 @@ namespace ANT.Modules
             SearchCommand = new magno.AsyncCommand(OnSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
-
         }
 
         private IMainPageAndroid _mainPageAndroid;
@@ -59,13 +58,11 @@ namespace ANT.Modules
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
         {
-            IsLoading = true;
-            IsLoadingOrRefreshing = IsLoading || IsRefreshing;
+            IsLoadingOrRefreshing = IsLoading = true;
 
             await LoadCatalogueAsync();
 
-            IsLoading = false;
-            IsLoadingOrRefreshing = IsLoading || IsRefreshing;
+            IsLoadingOrRefreshing = IsLoading = false;
 
             _mainPageAndroid = DependencyService.Get<IMainPageAndroid>();
             _mainPageAndroid.OnBackPress(this);
@@ -93,7 +90,6 @@ namespace ANT.Modules
             get { return _isRefreshing; }
             set { SetProperty(ref _isRefreshing, value); }
         }
-
         private AnimeSubEntry _selectedItem;
         public AnimeSubEntry SelectedItem
         {
@@ -137,8 +133,8 @@ namespace ANT.Modules
             {
                 if (_currentGenre != null)
                 {
-                    await OnLoadMore();
                     IsBusy = false;
+                    await OnLoadMore();
                 }
                 else
                 {
@@ -173,20 +169,28 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
+            //TODO: fazer teste unitário desse método, pesquisar como setar o projeto para xamarin forms
+
             if (_currentGenre == null || SearchQuery?.Length > 0 || TotalAnimeCount < 0 || IsBusy)
                 return;
 
-            IsBusy = true; 
-            //TODO: conflitos do IsBusy no footer da collectionview, ele nunca esconde o "Carregando..." do footer
-            //activity indicator também parece não funcionar, simplesmente não aparece, descobrir o que e como pode ser usado no footer do collecionview
+            if (!IsLoadingOrRefreshing) // só vai exibir o activity indicator se não estiver carregando nada atualizando a lista
+                IsLoadingOrRefreshing = IsBusy = true;
+            //TODO: conflitos no footer da collectionview, ele nunca esconde o activityindicator
+            //https://github.com/xamarin/Xamarin.Forms/issues/8700
+            // solução momentânea foi simular um footer de overlay com activity indicator, quando estiver corrigido, usar o footer
 
             // semáforo, usado para permitir que somente um apanhado de thread/task passe por vez
             //parece ser um lock melhorado
             await loc.WaitAsync();
-
+            
             try
             {
                 await Task.Delay(TimeSpan.FromSeconds(4));
+                
+                //if (!IsBusy)
+                //    IsBusy = true;
+
                 AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount);
 
                 if (animeGenre != null)
@@ -226,7 +230,7 @@ namespace ANT.Modules
             }
             finally
             {
-                IsBusy = false;
+                IsLoadingOrRefreshing = IsBusy = false;
                 loc.Release();
             }
         }
@@ -258,10 +262,9 @@ namespace ANT.Modules
         public ICommand RefreshCommand { get; private set; }
         private async Task OnRefresh()
         {
-            IsLoadingOrRefreshing = IsLoading || IsRefreshing;
+            IsLoadingOrRefreshing = true;
             await LoadCatalogueAsync();
-            IsRefreshing = false;
-            IsLoadingOrRefreshing = IsLoading || IsRefreshing;
+            IsLoadingOrRefreshing = IsRefreshing = false;
         }
 
         public ICommand ClearTextCommand { get; private set; }

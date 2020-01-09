@@ -156,6 +156,9 @@
   <data name="Episodes" xml:space="preserve">
     <value>Episódios</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Algo deu errado, por favor entre novamente nessa página</value>
+  </data>
   <data name="Fridays" xml:space="preserve">
     <value>Sextas</value>
   </data>

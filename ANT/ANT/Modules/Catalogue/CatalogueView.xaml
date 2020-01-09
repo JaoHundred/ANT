@@ -95,14 +95,11 @@
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-                <CollectionView.Footer>
-                    <Grid>
-                        <Label Text="Carregando..." FontSize="30" HorizontalOptions="Center" Margin="3"
-                               IsVisible="{Binding IsBusy}"/>
-                    </Grid>
-                </CollectionView.Footer>
+                
             </CollectionView>
         </RefreshView>
+        <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="End" Margin="3"
+                           IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
 
         <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
                 Style="{StaticResource FavoriteRoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
