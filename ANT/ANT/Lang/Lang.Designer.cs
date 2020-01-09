@@ -214,6 +214,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading more data....
+        /// </summary>
+        public static string LoadingMoreData {
+            get {
+                return ResourceManager.GetString("LoadingMoreData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to See at MAL.
         /// </summary>
         public static string MAL {

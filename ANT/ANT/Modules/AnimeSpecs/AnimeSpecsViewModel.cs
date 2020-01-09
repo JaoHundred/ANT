@@ -38,19 +38,30 @@ namespace ANT.Modules
             CanEnable = false;
             try
             {
-                await Task.Delay(TimeSpan.FromSeconds(2));
-
-                //TODO:adaptar o carregamento de N episódios via collectionview ifinity load(semelhante ao que foi feito em catalogueview para os animes por
-                //gênero
-
-                AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(id);
-                episodes.RequestCached = true;
-                Episodes = episodes.EpisodeCollection.ToList();
-
                 await Task.Delay(TimeSpan.FromSeconds(4));
-
                 Anime anime = await App.Jikan.GetAnime(id);
                 anime.RequestCached = true;
+
+                IsLoadingEpisodes = true;
+
+                await Task.Delay(TimeSpan.FromSeconds(4));
+                AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(id);
+                episodes.RequestCached = true;
+
+                var episodeList = new List<AnimeEpisode>();
+               
+                for (int i = 0; i < episodes.EpisodesLastPage; i++)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(4));
+                    var epiList = await App.Jikan.GetAnimeEpisodes(id, i + 1);
+
+                    episodeList.AddRange(epiList.EpisodeCollection);
+
+                }
+
+                IsLoadingEpisodes = false;
+
+                Episodes = episodeList;
                 AnimeContext = anime;
 
                 IsLoading = false;
@@ -61,6 +72,10 @@ namespace ANT.Modules
                 Console.WriteLine($"Problema encontrado em :{ex.Message}");
                 DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
             }
+            finally
+            {
+
+            }
         }
 
         #region properties
@@ -70,6 +85,13 @@ namespace ANT.Modules
         {
             get { return _isLoading; }
             set { SetProperty(ref _isLoading, value); }
+        }
+
+        private bool _isLoadingEpisodes;
+        public bool IsLoadingEpisodes
+        {
+            get { return _isLoadingEpisodes; }
+            set { SetProperty(ref _isLoadingEpisodes, value); }
         }
 
         private Anime _animeContext;

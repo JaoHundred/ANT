@@ -54,6 +54,7 @@ namespace ANT.Modules
         private int _pageCount = 1;
         private readonly GenreSearch? _currentGenre;
         private readonly SemaphoreSlim loc = new SemaphoreSlim(1);
+        private bool _firstLoad = true;
 
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
@@ -112,12 +113,12 @@ namespace ANT.Modules
             set { SetProperty(ref _animes, value); }
         }
 
-        private long _totalAnimeCount;
+        private long _remainingAnimeCount;
 
-        public long TotalAnimeCount
+        public long RemainingAnimeCount
         {
-            get { return _totalAnimeCount; }
-            set { SetProperty(ref _totalAnimeCount, value); }
+            get { return _remainingAnimeCount; }
+            set { SetProperty(ref _remainingAnimeCount, value); }
         }
 
 
@@ -169,27 +170,28 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
+            //TODO: problemas de carga, aparentemente vem do lado do servidor, na última página quase sempre vem faltando 1 anime, ficar de olho no
+            //discord do jikan
             //TODO: fazer teste unitário desse método, pesquisar como setar o projeto para xamarin forms
 
-            if (_currentGenre == null || SearchQuery?.Length > 0 || TotalAnimeCount < 0 || IsBusy)
-                return;
 
-            if (!IsLoadingOrRefreshing) // só vai exibir o activity indicator se não estiver carregando nada atualizando a lista
-                IsLoadingOrRefreshing = IsBusy = true;
-            //TODO: conflitos no footer da collectionview, ele nunca esconde o activityindicator
-            //https://github.com/xamarin/Xamarin.Forms/issues/8700
-            // solução momentânea foi simular um footer de overlay com activity indicator, quando estiver corrigido, usar o footer
+            if (_currentGenre == null || SearchQuery?.Length > 0 || RemainingAnimeCount < 0 || IsBusy)
+                return;
 
             // semáforo, usado para permitir que somente um apanhado de thread/task passe por vez
             //parece ser um lock melhorado
             await loc.WaitAsync();
-            
+
+            if (!_firstLoad)
+                IsLoadingOrRefreshing = IsBusy = true;
+
             try
             {
+                //TODO: conflitos no footer da collectionview, ele nunca esconde o activityindicator
+                //https://github.com/xamarin/Xamarin.Forms/issues/8700
+                // solução momentânea foi simular um footer de overlay com activity indicator, quando estiver corrigido, usar o footer
+
                 await Task.Delay(TimeSpan.FromSeconds(4));
-                
-                //if (!IsBusy)
-                //    IsBusy = true;
 
                 AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount);
 
@@ -197,13 +199,13 @@ namespace ANT.Modules
                 {
                     animeGenre.RequestCached = true;
 
-                    if (TotalAnimeCount == 0)
-                        TotalAnimeCount = animeGenre.TotalCount;
+                    if (RemainingAnimeCount == 0)
+                        RemainingAnimeCount = animeGenre.TotalCount;
 
                     var animes = animeGenre.Anime;
 
-                    if (TotalAnimeCount <= animeGenre.TotalCount)
-                        TotalAnimeCount -= animes.Count;
+                    if (RemainingAnimeCount <= animeGenre.TotalCount)
+                        RemainingAnimeCount -= animes.Count;
 
                     if (_pageCount == 1)
                     {
@@ -217,9 +219,9 @@ namespace ANT.Modules
                         Animes.AddRange(animes);
                     }
 
-                    if (TotalAnimeCount == 0) // usado para desativar a chamada da collectionview para este método
+                    if (RemainingAnimeCount == 0) // usado para desativar a chamada da collectionview para este método
                     {
-                        TotalAnimeCount = -1;
+                        RemainingAnimeCount = -1;
                         return;
                     }
 
@@ -228,9 +230,16 @@ namespace ANT.Modules
 
                 await Task.Delay(TimeSpan.FromSeconds(4));
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Problema encontrado: {ex.Message}, valor errado em : {RemainingAnimeCount}");
+            }
             finally
             {
+                Console.WriteLine($"Animes restantes: {RemainingAnimeCount}");
+                Console.WriteLine($"Animes da categoria {_currentGenre.Value} adicionados na lista : {Animes.Count}");
                 IsLoadingOrRefreshing = IsBusy = false;
+                _firstLoad = false;
                 loc.Release();
             }
         }

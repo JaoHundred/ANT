@@ -168,6 +168,9 @@
   <data name="Home" xml:space="preserve">
     <value>Principal</value>
   </data>
+  <data name="LoadingMoreData" xml:space="preserve">
+    <value>Carregando mais dados...</value>
+  </data>
   <data name="MAL" xml:space="preserve">
     <value>Ver no MAL</value>
   </data>

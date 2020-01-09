@@ -64,7 +64,7 @@
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                             SelectionChangedCommand="{Binding OpenAnimeCommand}"
-                            RemainingItemsThreshold="{Binding TotalAnimeCount}"
+                            RemainingItemsThreshold="{Binding RemainingAnimeCount}"
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
                 <CollectionView.EmptyView>
                     <Grid>
