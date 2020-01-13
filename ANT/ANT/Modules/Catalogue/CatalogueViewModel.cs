@@ -170,11 +170,6 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
-            //TODO: problemas de carga, aparentemente vem do lado do servidor, na última página quase sempre vem faltando 1 anime, ficar de olho no
-            //discord do jikan
-            //TODO: fazer teste unitário desse método, pesquisar como setar o projeto para xamarin forms
-
-
             if (_currentGenre == null || SearchQuery?.Length > 0 || RemainingAnimeCount < 0 || IsBusy)
                 return;
 
