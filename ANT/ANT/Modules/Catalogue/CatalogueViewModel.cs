@@ -15,6 +15,7 @@ using System.Windows.Input;
 using ANT.UTIL;
 using ANT.Core;
 using magno = MvvmHelpers.Commands;
+using ANT.Model;
 
 namespace ANT.Modules
 {
@@ -260,6 +261,22 @@ namespace ANT.Modules
 
             var items = SelectedItems.Cast<AnimeSubEntry>().ToList();
 
+            //foreach (var animeSub in items)
+            //{
+            //    FavoritedAnimeSubEntry favoritedSub = App.FavoritedSubEntryAnimes.FirstOrDefault(p => p.FavoritedAnime.MalId == animeSub.MalId);
+
+            //    if(favoritedSub == null)
+            //    {
+            //        FavoritedAnimeSubEntry sub = new FavoritedAnimeSubEntry(animeSub);
+            //        sub.IsFavorited = true;
+            //        App.FavoritedSubEntryAnimes.Add(sub);
+            //    }
+            //    else
+            //    {
+            //        favoritedSub.IsFavorited = false;
+            //        App.favo
+            //    }
+            //}
             //TODO: implementar sistema de save em massa, pensar o que fazer a respeito de favoritar e desfavoritar nesse aspecto,
             //lembrar que o favorito dentro do animespec salva um tipo anime e aqui ele é um animesubentry, decidir o que fazer no save
         }
@@ -288,7 +305,6 @@ namespace ANT.Modules
            });
 
             var resultList = await resultListTask;
-            var unionList = Animes.Union(resultList);
             Animes.ReplaceRange(resultList);
         }
 

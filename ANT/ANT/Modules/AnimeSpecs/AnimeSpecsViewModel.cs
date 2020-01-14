@@ -39,44 +39,41 @@ namespace ANT.Modules
             CanEnable = false;
             try
             {
-                await Task.Delay(TimeSpan.FromSeconds(4));
-                Anime anime = await App.Jikan.GetAnime(id);
-                anime.RequestCached = true;
-
-                await Task.Delay(TimeSpan.FromSeconds(4));
-                AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(id);
-                episodes.RequestCached = true;
-
+                //TODO: criar no futuro uma rotina de checagem por atualizações dos animes alvos em favoritos(algo semelhante ao tachiyomi
+                //pode acontecer todo dia, semanalmente ou até mesmo no dia específico de cada anime), a rotina é chamada como background e atualiza
+                //a lista com dados novos se houver
                 FavoritedAnime favoritedAnime = App.FavoritedAnimes.FirstOrDefault(p => p.Anime.MalId == id);
-
-
-                IsLoadingEpisodes = true;
 
                 if (favoritedAnime == null)
                 {
-                    List<AnimeEpisode> episodeList = await GetAnimeEpisodes(id, episodes.EpisodesLastPage);
+                    await Task.Delay(TimeSpan.FromSeconds(4));
+                    Anime anime = await App.Jikan.GetAnime(id);
+                    anime.RequestCached = true;
+
+                    IsLoadingEpisodes = true;
+
+                    await Task.Delay(TimeSpan.FromSeconds(4));
+                    AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(id);
+                    episodes.RequestCached = true;
+
+                    var episodeList = new List<AnimeEpisode>();
+
+                    for (int i = 0; i < episodes.EpisodesLastPage; i++)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(4));
+                        var epiList = await App.Jikan.GetAnimeEpisodes(id, i + 1);
+
+                        episodeList.AddRange(epiList.EpisodeCollection);
+                    }
 
                     favoritedAnime = new FavoritedAnime(anime, episodeList);
                 }
-                else if (favoritedAnime != null)
-                {
-                    bool hasNotChanged = favoritedAnime.Anime.Equals(anime);
-
-                    if (!hasNotChanged)
-                    {
-                        favoritedAnime.Anime = anime;
-                        favoritedAnime.Episodes = await GetAnimeEpisodes(id, episodes.EpisodesLastPage);
-                    }
-                }
-
-
-                IsLoadingEpisodes = false;
-
 
                 Episodes = favoritedAnime.Episodes;
                 AnimeContext = favoritedAnime;
 
                 IsLoading = false;
+                IsLoadingEpisodes = false;
                 CanEnable = true;
             }
             catch (Exception ex)
@@ -88,22 +85,6 @@ namespace ANT.Modules
             {
 
             }
-        }
-
-        private static async Task<List<AnimeEpisode>> GetAnimeEpisodes(long id, long episodeLastPage)
-        {
-            var episodeList = new List<AnimeEpisode>();
-
-            for (int i = 0; i < episodeLastPage; i++)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(4));
-                var epiList = await App.Jikan.GetAnimeEpisodes(id, i + 1);
-
-                episodeList.AddRange(epiList.EpisodeCollection);
-
-            }
-
-            return episodeList;
         }
 
         #region properties
@@ -135,7 +116,6 @@ namespace ANT.Modules
             get { return _canEnable; }
             set { SetProperty(ref _canEnable, value); }
         }
-
 
         private IList<AnimeEpisode> _episodes;
         public IList<AnimeEpisode> Episodes
