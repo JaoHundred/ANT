@@ -260,7 +260,8 @@ namespace ANT.Modules
 
             var items = SelectedItems.Cast<AnimeSubEntry>().ToList();
 
-            //TODO: pensar em um sistema de save para guardar favoritos do usuário
+            //TODO: implementar sistema de save em massa, pensar o que fazer a respeito de favoritar e desfavoritar nesse aspecto,
+            //lembrar que o favorito dentro do animespec salva um tipo anime e aqui ele é um animesubentry, decidir o que fazer no save
         }
 
         public ICommand RefreshCommand { get; private set; }

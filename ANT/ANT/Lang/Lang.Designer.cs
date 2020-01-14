@@ -61,6 +61,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Added to favorites.
+        /// </summary>
+        public static string AddedToFavorite {
+            get {
+                return ResourceManager.GetString("AddedToFavorite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Air Date.
         /// </summary>
         public static string Airing {
@@ -255,6 +264,15 @@ namespace ANT.Lang {
         public static string Rank {
             get {
                 return ResourceManager.GetString("Rank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removed from favorites.
+        /// </summary>
+        public static string RemovedFromFavorite {
+            get {
+                return ResourceManager.GetString("RemovedFromFavorite", resourceCulture);
             }
         }
         

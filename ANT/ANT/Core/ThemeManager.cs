@@ -58,7 +58,7 @@ namespace ANT.Core
                     });
 
                     App.SettingsPreferences.SelectedThemeIndex = themeId;
-                    await JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
+                    await JsonStorage.SaveDataAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
                 }
             });
         }

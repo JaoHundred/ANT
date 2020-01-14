@@ -45,15 +45,15 @@
 
                     <StackLayout Orientation="Vertical" Spacing="0" Margin="10,0" >
                         <Label Text="{res:Translate Score}" FontSize="19" />
-                        <Label Text="{Binding AnimeContext.Score, Converter={StaticResource ValueIsNullToNAConverter}}" FontSize="18" />
+                        <Label Text="{Binding AnimeContext.Anime.Score, Converter={StaticResource ValueIsNullToNAConverter}}" FontSize="18" />
                     </StackLayout>
 
                     <StackLayout Grid.Row="1" Spacing="0" Orientation="Vertical" VerticalOptions="End" Margin="10,0">
                         <Label Text="{res:Translate Rank}" FontSize="19" />
-                        <Label Text="{Binding AnimeContext.Rank, Converter={StaticResource ValueIsNullToNAConverter}, StringFormat='#{0}'}" FontSize="18"/>
+                        <Label Text="{Binding AnimeContext.Anime.Rank, Converter={StaticResource ValueIsNullToNAConverter}, StringFormat='#{0}'}" FontSize="18"/>
                     </StackLayout>
 
-                    <Image Grid.RowSpan="2" Grid.Column="1" Source="{Binding AnimeContext.ImageURL}"
+                    <Image Grid.RowSpan="2" Grid.Column="1" Source="{Binding AnimeContext.Anime.ImageURL}"
                            x:Name="AnimeImage">
                         <Image.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding OpenImageInBrowserCommand}"/>
@@ -66,13 +66,28 @@
 
                     <StackLayout Grid.Column="2" Orientation="Vertical" Spacing="0" HorizontalOptions="Center">
                         <Label Text="{res:Translate Airing}" FontSize="19"/>
-                        <Label Text="{Binding AnimeContext.Aired.From, Converter={StaticResource DateConverter}}" FontSize="18"/>
-                        <Label x:Name="EndDateLabel" Text="{Binding AnimeContext.Aired.To, Converter={StaticResource DateConverter},
+                        <Label Text="{Binding AnimeContext.Anime.Aired.From, Converter={StaticResource DateConverter}}" FontSize="18"/>
+                        <Label x:Name="EndDateLabel" Text="{Binding AnimeContext.Anime.Aired.To, Converter={StaticResource DateConverter},
                             ConverterParameter={x:Reference EndDateLabel}}" FontSize="18"/>
                     </StackLayout>
 
                     <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource FavoriteRoundedButtonStyle}" HorizontalOptions="Center"
-                            VerticalOptions="Center" Command="{Binding FavoriteCommand}"/>
+                            VerticalOptions="Center" Command="{Binding FavoriteCommand}">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                     Glyph="{StaticResource Star}"
+                                     Size="22"/>
+                        </Button.ImageSource>
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding AnimeContext.IsFavorited}" Value="True">
+                                <Setter Property="ImageSource">
+                                    <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                     Glyph="{StaticResource StarFill}"
+                                     Size="22"/>
+                                </Setter>
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
                 </Grid>
 
             </Frame>
@@ -85,11 +100,11 @@
                     </Grid.RowDefinitions>
 
                     <ScrollView Orientation="Horizontal" Margin="0,0,0,5">
-                        <Label Text="{Binding AnimeContext.Title}" FontSize="28" HorizontalOptions="CenterAndExpand"/>
+                        <Label Text="{Binding AnimeContext.Anime.Title}" FontSize="28" HorizontalOptions="CenterAndExpand"/>
                     </ScrollView>
 
                     <ScrollView Grid.Row="1" Margin="0,0,0,2">
-                        <Label Text="{Binding AnimeContext.Synopsis}" FontSize="20"/>
+                        <Label Text="{Binding AnimeContext.Anime.Synopsis}" FontSize="20"/>
                     </ScrollView>
 
                     <Button Grid.Row="2" Text="{res:Translate Genre}" Command="{Binding CheckAnimeGenresCommand}"
@@ -124,23 +139,23 @@
             <Label Text="{res:Translate Broadcast}" FontSize="Title" HorizontalOptions="Center"/>
             <Frame Grid.Row="1">
                 <Grid>
-                    <Label Grid.ColumnSpan="2" Text="{Binding AnimeContext.Broadcast, Converter={StaticResource BroadcastFormatTranslateConverter}}" 
+                    <Label Grid.ColumnSpan="2" Text="{Binding AnimeContext.Anime.Broadcast, Converter={StaticResource BroadcastFormatTranslateConverter}}" 
                            FontSize="Title"/>
                     <Label Grid.ColumnSpan="2" Text="{res:Translate UnknownDate}"
-                           IsVisible="{Binding AnimeContext.Broadcast, Converter={StaticResource BroadcastTextToVisibleConverter}}" 
+                           IsVisible="{Binding AnimeContext.Anime.Broadcast, Converter={StaticResource BroadcastTextToVisibleConverter}}" 
                            FontSize="Title"/>
 
                     <Label Grid.Row="1" Text="{res:Translate TotalEpisodes}" FontSize="Subtitle"/>
-                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding AnimeContext.Episodes, Converter={StaticResource ValueIsNullToNAConverter}}" 
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding AnimeContext.Anime.Episodes, Converter={StaticResource ValueIsNullToNAConverter}}" 
                            FontSize="Subtitle"/>
 
                     <Label Grid.Row="2" Text="{res:Translate DurationPerEpisode}" FontSize="Subtitle"/>
-                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding AnimeContext.Duration, Converter={StaticResource DurationFormatToShortConverter}}" 
+                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding AnimeContext.Anime.Duration, Converter={StaticResource DurationFormatToShortConverter}}" 
                            FontSize="Subtitle"/>
                 </Grid>
             </Frame>
 
-            <StackLayout Grid.Row="2" IsVisible="{Binding AnimeContext.Type, Converter={StaticResource IsMovieToVisibleConverter}}">
+            <StackLayout Grid.Row="2" IsVisible="{Binding AnimeContext.Anime.Type, Converter={StaticResource IsMovieToVisibleConverter}}">
                 <Label Text="{res:Translate Episodes}" 
                    FontSize="Title" HorizontalOptions="Center"/>
                 <Frame >

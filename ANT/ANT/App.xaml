@@ -122,11 +122,6 @@
             </Style>
             <Style TargetType="Button" x:Key="FavoriteRoundedButtonStyle" BasedOn="{StaticResource RoundedButtonStyle}">
                 <Setter Property="BackgroundColor" Value="{DynamicResource SecondaryColor}"/>
-                <Setter Property="ImageSource">
-                    <FontImageSource FontFamily="{StaticResource FontIcon}"
-                                     Glyph="{StaticResource StarFill}"
-                                     Size="22"/>
-                </Setter>
             </Style>
             <Style TargetType="Button" x:Key="FavoriteRoundedButtonOverlayStyle" BasedOn="{StaticResource FavoriteRoundedButtonStyle}">
                 <Setter Property="VerticalOptions" Value="End"/>

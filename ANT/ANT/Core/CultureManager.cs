@@ -45,7 +45,7 @@ namespace ANT.Core
                 }
 
                 App.SettingsPreferences.SelectedLanguageIndex = _currentCultureIndex;
-                JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
+                JsonStorage.SaveDataAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
             });
         }
 

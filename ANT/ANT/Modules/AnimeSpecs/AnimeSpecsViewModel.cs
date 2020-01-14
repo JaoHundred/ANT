@@ -12,6 +12,7 @@ using Xamarin.Essentials;
 using ANT.Core;
 using ANT.UTIL;
 using magno = MvvmHelpers.Commands;
+using ANT.Model;
 
 namespace ANT.Modules
 {
@@ -21,7 +22,7 @@ namespace ANT.Modules
         {
             InitializeTask = LoadAsync(malID);
 
-            FavoriteCommand = new magno.Command(OnFavorite);
+            FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenImageInBrowserCommand = new magno.AsyncCommand(OnOpenImageInBrowser);
             CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
             CheckAnimeCharactersCommand = new magno.AsyncCommand(OnCheckAnimeCharacters);
@@ -42,27 +43,38 @@ namespace ANT.Modules
                 Anime anime = await App.Jikan.GetAnime(id);
                 anime.RequestCached = true;
 
-                IsLoadingEpisodes = true;
-
                 await Task.Delay(TimeSpan.FromSeconds(4));
                 AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(id);
                 episodes.RequestCached = true;
 
-                var episodeList = new List<AnimeEpisode>();
-               
-                for (int i = 0; i < episodes.EpisodesLastPage; i++)
+                FavoritedAnime favoritedAnime = App.FavoritedAnimes.FirstOrDefault(p => p.Anime.MalId == id);
+
+
+                IsLoadingEpisodes = true;
+
+                if (favoritedAnime == null)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(4));
-                    var epiList = await App.Jikan.GetAnimeEpisodes(id, i + 1);
+                    List<AnimeEpisode> episodeList = await GetAnimeEpisodes(id, episodes.EpisodesLastPage);
 
-                    episodeList.AddRange(epiList.EpisodeCollection);
-
+                    favoritedAnime = new FavoritedAnime(anime, episodeList);
                 }
+                else if (favoritedAnime != null)
+                {
+                    bool hasNotChanged = favoritedAnime.Anime.Equals(anime);
+
+                    if (!hasNotChanged)
+                    {
+                        favoritedAnime.Anime = anime;
+                        favoritedAnime.Episodes = await GetAnimeEpisodes(id, episodes.EpisodesLastPage);
+                    }
+                }
+
 
                 IsLoadingEpisodes = false;
 
-                Episodes = episodeList;
-                AnimeContext = anime;
+
+                Episodes = favoritedAnime.Episodes;
+                AnimeContext = favoritedAnime;
 
                 IsLoading = false;
                 CanEnable = true;
@@ -76,6 +88,22 @@ namespace ANT.Modules
             {
 
             }
+        }
+
+        private static async Task<List<AnimeEpisode>> GetAnimeEpisodes(long id, long episodeLastPage)
+        {
+            var episodeList = new List<AnimeEpisode>();
+
+            for (int i = 0; i < episodeLastPage; i++)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(4));
+                var epiList = await App.Jikan.GetAnimeEpisodes(id, i + 1);
+
+                episodeList.AddRange(epiList.EpisodeCollection);
+
+            }
+
+            return episodeList;
         }
 
         #region properties
@@ -94,8 +122,8 @@ namespace ANT.Modules
             set { SetProperty(ref _isLoadingEpisodes, value); }
         }
 
-        private Anime _animeContext;
-        public Anime AnimeContext
+        private FavoritedAnime _animeContext;
+        public FavoritedAnime AnimeContext
         {
             get { return _animeContext; }
             set { SetProperty(ref _animeContext, value); }
@@ -120,18 +148,39 @@ namespace ANT.Modules
         #region commands
 
         public ICommand FavoriteCommand { get; private set; }
-        private void OnFavorite()
+        private async Task OnFavorite()
         {
-            //TODO:implementar classe modelo e serviço de favoritar, ela deve ter animecontext e toda a parte referente a episódios, quando criar a classe
-            //chamar o serviço de salvar em json, se já estiver favoritado e o usuário clicar novamente, o save é apagado e o botão volta a ficar na cor padrão
-            //devo precisar de um datatemplate selector pra lidar com a aparência do botão de favoritar quando o show estiver favoritado ou não
+            string lang = default;
 
+            if (App.FavoritedAnimes.Contains(AnimeContext))
+            {
+                AnimeContext.IsFavorited = false;
+                App.FavoritedAnimes.Remove(AnimeContext);
+                lang = Lang.Lang.RemovedFromFavorite;
+            }
+            else
+            {
+                AnimeContext.IsFavorited = true;
+                App.FavoritedAnimes.Add(AnimeContext);
+                lang = Lang.Lang.AddedToFavorite;
+            }
+
+            await JsonStorage.SaveDataAsync<IList<FavoritedAnime>>(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+            DependencyService.Get<IToast>().MakeToastMessageShort(lang);
+
+#if DEBUG
+            Console.WriteLine("Animes favoritados no momento");
+            foreach (var anime in App.FavoritedAnimes)
+            {
+                Console.WriteLine(anime.Anime.Title);
+            }
+#endif
         }
 
         public ICommand OpenImageInBrowserCommand { get; private set; }
         private async Task OnOpenImageInBrowser()
         {
-            await Launcher.TryOpenAsync(AnimeContext.ImageURL);
+            await Launcher.TryOpenAsync(AnimeContext.Anime.ImageURL);
         }
 
 
@@ -141,7 +190,7 @@ namespace ANT.Modules
             bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<AnimeGenrePopupView>();
 
             if (canNavigate)
-                await NavigationManager.NavigatePopUpAsync<AnimeGenrePopupViewModel>(AnimeContext.Genres.ToList());
+                await NavigationManager.NavigatePopUpAsync<AnimeGenrePopupViewModel>(AnimeContext.Anime.Genres.ToList());
         }
 
         public ICommand CheckAnimeCharactersCommand { get; private set; }
@@ -155,7 +204,7 @@ namespace ANT.Modules
         private async Task OnOpenAnimeInBrowser()
         {
             if (AnimeContext != null)
-                await Launcher.TryOpenAsync(AnimeContext.LinkCanonical);
+                await Launcher.TryOpenAsync(AnimeContext.Anime.LinkCanonical);
         }
 
         public ICommand DiscussionsCommand { get; private set; }

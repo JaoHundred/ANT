@@ -5,6 +5,7 @@ using ANT.Modules;
 using JikanDotNet;
 using MvvmHelpers;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -23,11 +24,15 @@ namespace ANT
         }
 
         public static SettingsPreferences SettingsPreferences;
+        public static List<FavoritedAnime> FavoritedAnimes;
         public static IJikan Jikan { get; private set; }
         protected async override void OnStart()
         {
-            var settings = await JsonStorage.ReadSettingsAsync(StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
-            SettingsPreferences = settings ?? new SettingsPreferences();
+            var settingsTask = JsonStorage.ReadDataAsync<SettingsPreferences>(StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
+            var favoritedAnimesTask = JsonStorage.ReadDataAsync<List<FavoritedAnime>>(StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+            
+            SettingsPreferences = await settingsTask ?? new SettingsPreferences();
+            FavoritedAnimes = await favoritedAnimesTask ?? new List<FavoritedAnime>();
 
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
