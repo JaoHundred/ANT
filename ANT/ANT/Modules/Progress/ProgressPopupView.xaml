@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<popup:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:popup="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+             x:Class="ANT.Modules.ProgressPopupView"
+                 xmlns:res="clr-namespace:ANT.Lang"
+                 xmlns:converter="clr-namespace:ANT.Converter"
+                 HasSystemPadding="True"
+                 SystemPaddingSides="All"
+                 Padding="60,200,60,200">
+
+    <popup:PopupPage.Resources>
+        <converter:DecimalProgressToFullPercentageConverter x:Key="DecimalToPercentagemConverter"/>
+        <converter:InversorConverter x:Key="InversorConverter"/>
+    </popup:PopupPage.Resources>
+
+
+    <Grid Style="{StaticResource GridPopUpViewStyle}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="60*"/>
+            <RowDefinition Height="15*"/>
+        </Grid.RowDefinitions>
+        <Label Text="{res:Translate PleaseWait}" d:Text="blabla" HorizontalOptions="Center"
+               Margin="3"/>
+        <StackLayout Grid.Row="1" VerticalOptions="Center"
+                     Margin="20,0,20,0">
+            <ProgressBar x:Name="ProgressBarControl" PropertyChanged="ProgressBarControl_PropertyChanged"/>
+            <Label Text="{Binding Progress, Source={x:Reference ProgressBarControl}, StringFormat='{0} %'
+                ,Converter={StaticResource DecimalToPercentagemConverter}}"
+                   HorizontalOptions="Center"/>
+        </StackLayout>
+
+        <Button Grid.Row="2" Text="{res:Translate Cancel}" Style="{StaticResource SpecsButtonStyle}"
+                HorizontalOptions="Center" Margin="0,0,0,5" Command="{Binding CancelProcessCommand}"
+                IsVisible="{Binding IsFinalizing, Converter={StaticResource InversorConverter}}"/>
+        <Label Grid.Row="2" Text="{res:Translate Finalizing}" 
+               HorizontalOptions="Center" Margin="0,0,0,5"
+               IsVisible="{Binding IsFinalizing}"/>
+    </Grid>
+</popup:PopupPage>

@@ -25,7 +25,6 @@ namespace ANT
 
         public static SettingsPreferences SettingsPreferences;
         public static List<FavoritedAnime> FavoritedAnimes;
-        public static List<FavoritedAnimeSubEntry> FavoritedSubEntryAnimes;
         public static IJikan Jikan { get; private set; }
         protected async override void OnStart()
         {
@@ -36,7 +35,6 @@ namespace ANT
 
             SettingsPreferences = await settingsTask ?? new SettingsPreferences();
             FavoritedAnimes = await favoritedAnimesTask ?? new List<FavoritedAnime>();
-            FavoritedSubEntryAnimes = await favoritedSubEntryAnimesTask ?? new List<FavoritedAnimeSubEntry>();
 
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();

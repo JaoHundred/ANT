@@ -27,7 +27,7 @@ namespace ANT.Modules
 
             InitializeCommands();
 
-            Animes = new ObservableRangeCollection<AnimeSubEntry>();
+            Animes = new ObservableRangeCollection<FavoritedAnimeSubEntry>();
         }
 
         public CatalogueViewModel(GenreSearch genreEnum)
@@ -37,13 +37,13 @@ namespace ANT.Modules
 
             InitializeCommands();
 
-            Animes = new ObservableRangeCollection<AnimeSubEntry>();
+            Animes = new ObservableRangeCollection<FavoritedAnimeSubEntry>();
         }
 
         private void InitializeCommands()
         {
             SelectionModeCommand = new magno.Command(OnSelectionMode);
-            AddToFavoriteCommand = new magno.Command(OnAddToFavorite);
+            AddToFavoriteCommand = new magno.AsyncCommand(OnAddToFavorite);
             RefreshCommand = new magno.AsyncCommand(OnRefresh);
             ClearTextCommand = new magno.Command(OnClearText);
             SearchCommand = new magno.AsyncCommand(OnSearch);
@@ -92,8 +92,8 @@ namespace ANT.Modules
             get { return _isRefreshing; }
             set { SetProperty(ref _isRefreshing, value); }
         }
-        private AnimeSubEntry _selectedItem;
-        public AnimeSubEntry SelectedItem
+        private FavoritedAnimeSubEntry _selectedItem;
+        public FavoritedAnimeSubEntry SelectedItem
         {
             get { return _selectedItem; }
             set { SetProperty(ref _selectedItem, value); }
@@ -106,9 +106,9 @@ namespace ANT.Modules
             set { SetProperty(ref _selectedItems, value); }
         }
 
-        private List<AnimeSubEntry> _originalCollection;
-        private ObservableRangeCollection<AnimeSubEntry> _animes;
-        public ObservableRangeCollection<AnimeSubEntry> Animes
+        private List<FavoritedAnimeSubEntry> _originalCollection;
+        private ObservableRangeCollection<FavoritedAnimeSubEntry> _animes;
+        public ObservableRangeCollection<FavoritedAnimeSubEntry> Animes
         {
             get { return _animes; }
             set { SetProperty(ref _animes, value); }
@@ -151,7 +151,7 @@ namespace ANT.Modules
                         )
                     */
 
-                    _originalCollection = results.SeasonEntries.ToList();
+                    _originalCollection = results.SeasonEntries.Select(p => new FavoritedAnimeSubEntry(p)).ToList();
                     Animes.ReplaceRange(_originalCollection);
                 }
 
@@ -198,7 +198,7 @@ namespace ANT.Modules
                     if (RemainingAnimeCount == 0)
                         RemainingAnimeCount = animeGenre.TotalCount;
 
-                    var animes = animeGenre.Anime;
+                    var animes = animeGenre.Anime.Select(p => new FavoritedAnimeSubEntry(p)).ToList();
 
                     if (RemainingAnimeCount <= animeGenre.TotalCount)
                         RemainingAnimeCount -= animes.Count;
@@ -253,34 +253,20 @@ namespace ANT.Modules
         }
 
         public ICommand AddToFavoriteCommand { get; private set; }
-        private void OnAddToFavorite()
+        private async Task OnAddToFavorite()
         {
-
             if (SelectedItems == null || SelectedItems.Count == 0)
                 return;
 
-            var items = SelectedItems.Cast<AnimeSubEntry>().ToList();
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ProgressPopupView>();
 
-            //foreach (var animeSub in items)
-            //{
-            //    FavoritedAnimeSubEntry favoritedSub = App.FavoritedSubEntryAnimes.FirstOrDefault(p => p.FavoritedAnime.MalId == animeSub.MalId);
+            if (canNavigate)
+            {
+                var items = SelectedItems.Cast<FavoritedAnimeSubEntry>().ToList();
+                await NavigationManager.NavigatePopUpAsync<ProgressPopupViewModel>(items);
+            }
 
-            //    if(favoritedSub == null)
-            //    {
-            //        FavoritedAnimeSubEntry sub = new FavoritedAnimeSubEntry(animeSub);
-            //        sub.IsFavorited = true;
-            //        App.FavoritedSubEntryAnimes.Add(sub);
-            //    }
-            //    else
-            //    {
-            //        favoritedSub.IsFavorited = false;
-            //        App.favo
-            //    }
-            //}
-            //TODO: implementar sistema de save em massa, só será possível favoritar, sendo impossível desfavoritar via este método
-            //abre um aviso mostrando o progresso de "favoritagem"(processo de passar AnimeSubEntry para Anime e salvar no final)
-            //enquanto o processo ocorrer, não será possível sair da popup(?) mas tem como cancelar(o cancelamento só vai ocorrer quando o último anime processado
-            //terminar de ser processado
+            SingleSelectionMode();
         }
 
         public ICommand RefreshCommand { get; private set; }
@@ -303,7 +289,7 @@ namespace ANT.Modules
         {
             var resultListTask = Task.Run(() =>
            {
-               return _originalCollection.Where(anime => anime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant())).ToList();
+               return _originalCollection.Where(anime => anime.FavoritedAnime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant())).ToList();
            });
 
             var resultList = await resultListTask;
@@ -321,7 +307,7 @@ namespace ANT.Modules
 
             if (!IsMultiSelect && SelectedItem != null && canNavigate)
             {
-                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedItem.MalId);
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedItem.FavoritedAnime.MalId);
                 SelectedItem = null;
             }
         }

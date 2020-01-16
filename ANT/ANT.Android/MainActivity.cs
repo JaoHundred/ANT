@@ -46,12 +46,7 @@ namespace ANT.Droid
                 Shell.Current.FlyoutIsPresented = false;
                 return;
             }
-            else if (Rg.Plugins.Popup.Popup.SendBackPressed())//se tenho um modal popup aberto, tiro da pilha
-            {
-                if (NavigationManager.PopUpPageStackCount > 0)
-                    await NavigationManager.PopPopUpPageAsync();
-            }
-            else
+            else if (!Rg.Plugins.Popup.Popup.SendBackPressed())//se não é um modal, posso voltar, o botão de retorno dos modais são lidados direto dos PopUpPage
             {
                 if (_currentVm is BaseVMExtender vm && vm.IsMultiSelect) // se estou com a multi seleção ativa, fecho
                 {

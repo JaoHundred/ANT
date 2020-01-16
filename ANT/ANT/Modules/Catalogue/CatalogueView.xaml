@@ -7,7 +7,7 @@
              xmlns:converter="clr-namespace:ANT.Converter"
              xmlns:animate="clr-namespace:Xamanimation;assembly=Xamanimation"
              xmlns:comm="clr-namespace:ANT._Behaviors"
-             xmlns:ji="clr-namespace:JikanDotNet;assembly=JikanDotNet"
+             xmlns:favo="clr-namespace:ANT.Model"
              xmlns:VM="clr-namespace:ANT.Modules"
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
@@ -78,7 +78,7 @@
                 </CollectionView.ItemsLayout>
 
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="ji:AnimeSubEntry" >
+                    <DataTemplate x:DataType="favo:FavoritedAnimeSubEntry" >
                         <Frame>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -86,10 +86,10 @@
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Image x:Name="AnimeImage" Source="{Binding ImageURL}" Style="{StaticResource AnimeFrameImageStyle}"/>
+                                <Image x:Name="AnimeImage" Source="{Binding FavoritedAnime.ImageURL}" Style="{StaticResource AnimeFrameImageStyle}"/>
                                 <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
                                                    IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
-                                <Label Grid.Row="1" Text="{Binding Title,Converter={StaticResource ShortTextConverter}}"
+                                <Label Grid.Row="1" Text="{Binding FavoritedAnime.Title,Converter={StaticResource ShortTextConverter}}"
                                        Style="{StaticResource AnimeFrameLabelStyle}" />
                             </Grid>
                         </Frame>

@@ -127,7 +127,7 @@ namespace ANT.Core
             });
 
             ConstructorInfo constructor = await reflectionTask;
-            var vm = (BaseVMExtender)constructor.Invoke(param);
+            var vm = (T)constructor.Invoke(param);
 
             ConstructorInfo viewConstructor =  viewType.GetConstructor(Type.EmptyTypes);
             Page view = (Page)viewConstructor.Invoke(null);

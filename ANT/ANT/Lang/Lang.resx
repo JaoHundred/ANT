@@ -132,6 +132,9 @@
   <data name="Broadcast" xml:space="preserve">
     <value>Broadcast</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
   <data name="Catalogue" xml:space="preserve">
     <value>Catalogue</value>
   </data>
@@ -162,6 +165,9 @@
   <data name="Error" xml:space="preserve">
     <value>Something went wrong, please reenter this page</value>
   </data>
+  <data name="Finalizing" xml:space="preserve">
+    <value>Finalizing...</value>
+  </data>
   <data name="Fridays" xml:space="preserve">
     <value>Fridays</value>
   </data>
@@ -182,6 +188,9 @@
   </data>
   <data name="MultiSelect" xml:space="preserve">
     <value>Select</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Please wait</value>
   </data>
   <data name="Rank" xml:space="preserve">
     <value>Rank</value>

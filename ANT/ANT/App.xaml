@@ -85,6 +85,10 @@
                 <Setter Property="Padding" Value="35,0,35,0"/>
             </Style>
 
+            <Style TargetType="ProgressBar">
+                <Setter Property="ProgressColor" Value="{DynamicResource ProgressIndicatorColor}"/>
+            </Style>
+
             <!--#endregion-->
 
             <!--#region ESPECIFICO DE CONTROLES -->

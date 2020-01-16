@@ -9,7 +9,6 @@ namespace ANT.Core
     {
         public const string SettingsFileName = "settings.json";
         public const string FavoritedAnimesFileName = "favorited_animes.json";
-        public const string FavoritedSubEntryAnimesFileName = "favorited_Sub_animes.json";
         public static readonly string LocalAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
     }
 }
