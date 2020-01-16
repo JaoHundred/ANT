@@ -277,8 +277,10 @@ namespace ANT.Modules
             //        App.favo
             //    }
             //}
-            //TODO: implementar sistema de save em massa, pensar o que fazer a respeito de favoritar e desfavoritar nesse aspecto,
-            //lembrar que o favorito dentro do animespec salva um tipo anime e aqui ele é um animesubentry, decidir o que fazer no save
+            //TODO: implementar sistema de save em massa, só será possível favoritar, sendo impossível desfavoritar via este método
+            //abre um aviso mostrando o progresso de "favoritagem"(processo de passar AnimeSubEntry para Anime e salvar no final)
+            //enquanto o processo ocorrer, não será possível sair da popup(?) mas tem como cancelar(o cancelamento só vai ocorrer quando o último anime processado
+            //terminar de ser processado
         }
 
         public ICommand RefreshCommand { get; private set; }

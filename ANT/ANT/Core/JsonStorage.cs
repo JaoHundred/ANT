@@ -6,7 +6,7 @@ namespace ANT.Core
 {
     public static class JsonStorage
     {
-        public  static Task SaveDataAsync<T>(T obj, string directoryPath, string fileName)
+        public static Task SaveDataAsync<T>(T data, string directoryPath, string fileName)
         {
             return Task.Run(() =>
             {
@@ -20,14 +20,14 @@ namespace ANT.Core
                 using (JsonWriter jw = new JsonTextWriter(writer))
                 {
                     JsonSerializer serializer = new JsonSerializer();
-                    serializer.Serialize(jw, obj);
+                    serializer.Serialize(jw, data);
                 }
             });
         }
 
-        public async static Task<T> ReadDataAsync<T>(string directoryPath, string fileName) 
+        public async static Task<T> ReadDataAsync<T>(string directoryPath, string fileName)
         {
-            T sett = default;
+            T data = default;
 
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
@@ -39,11 +39,11 @@ namespace ANT.Core
                 using (JsonReader jr = new JsonTextReader(reader))
                 {
                     JsonSerializer serializer = new JsonSerializer();
-                    sett = serializer.Deserialize<T>(jr);
+                    data = serializer.Deserialize<T>(jr);
                 }
             });
 
-            return sett;
+            return data;
         }
     }
 }

@@ -19,12 +19,31 @@ namespace ANT.Droid.Services
     {
         public void MakeToastMessageLong(string message)
         {
-            Toast.MakeText(Android.App.Application.Context, message, ToastLength.Long).Show();
+            Toast toast = Toast.MakeText(Android.App.Application.Context, message, ToastLength.Long);
+
+            SetFontSize(toast, 20);
+
+            toast.Show();
+        }
+
+        private static void SetFontSize(Toast toast, int fontSize)
+        {
+            ViewGroup toastView = (ViewGroup)toast.View;
+
+            if (toastView.ChildCount > 0 && toastView.GetChildAt(0) is TextView)
+            {
+                var textView = (TextView)toastView.GetChildAt(0);
+                textView.SetTextSize(Android.Util.ComplexUnitType.Sp, fontSize);
+            }
         }
 
         public void MakeToastMessageShort(string message)
         {
-            Toast.MakeText(Android.App.Application.Context, message, ToastLength.Short).Show();
+            Toast toast = Toast.MakeText(Android.App.Application.Context, message, ToastLength.Short);
+
+            SetFontSize(toast, 20);
+
+            toast.Show();
         }
     }
 }

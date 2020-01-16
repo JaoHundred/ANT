@@ -145,7 +145,7 @@ namespace ANT.Modules
                 lang = Lang.Lang.AddedToFavorite;
             }
 
-            await JsonStorage.SaveDataAsync<IList<FavoritedAnime>>(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+            await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             DependencyService.Get<IToast>().MakeToastMessageShort(lang);
 
 #if DEBUG
