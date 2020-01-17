@@ -52,21 +52,7 @@ namespace ANT.Modules
 
                     IsLoadingEpisodes = true;
 
-                    await Task.Delay(TimeSpan.FromSeconds(4));
-                    AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(id);
-                    episodes.RequestCached = true;
-
-                    var episodeList = new List<AnimeEpisode>();
-
-                    for (int i = 0; i < episodes.EpisodesLastPage; i++)
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(4));
-                        var epiList = await App.Jikan.GetAnimeEpisodes(id, i + 1);
-
-                        episodeList.AddRange(epiList.EpisodeCollection);
-                    }
-
-                    favoritedAnime = new FavoritedAnime(anime, episodeList);
+                    favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync());
                 }
 
                 Episodes = favoritedAnime.Episodes;

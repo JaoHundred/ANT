@@ -10,6 +10,7 @@ using JikanDotNet;
 using ANT.Model;
 using System.Threading;
 using ANT.Core;
+using ANT.UTIL;
 
 namespace ANT.Modules
 {
@@ -52,19 +53,7 @@ namespace ANT.Modules
                     Anime anime = await App.Jikan.GetAnime(id);
                     anime.RequestCached = true;
 
-                    AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(id);
-
-                    var episodeList = new List<AnimeEpisode>();
-
-                    for (int j = 0; j < episodes.EpisodesLastPage; j++)
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(4));
-                        var epiList = await App.Jikan.GetAnimeEpisodes(id, j + 1);
-
-                        episodeList.AddRange(epiList.EpisodeCollection);
-                    }
-
-                    var favoritedAnime = new FavoritedAnime(anime, episodeList);
+                    var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync());
                     favoritedAnime.IsFavorited = true;
 
                     App.FavoritedAnimes.Add(favoritedAnime);
