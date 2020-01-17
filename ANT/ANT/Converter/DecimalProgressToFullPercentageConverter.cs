@@ -11,7 +11,7 @@ namespace ANT.Converter
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             double percentage = (double)value;
-            return percentage * 100;
+            return Math.Round( percentage * 100, MidpointRounding.AwayFromZero);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

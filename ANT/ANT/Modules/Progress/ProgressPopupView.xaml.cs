@@ -31,12 +31,11 @@ namespace ANT.Modules
             return false;//false faz o popup não fechar ao apertar fora do popup
         }
 
-        private void ProgressBarControl_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private async void ProgressBarControl_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Progress" && ProgressBarControl.Progress == 1)
-                base.OnBackButtonPressed();
-            else if (e.PropertyName == "Progress")
-                ProgressBarControl.ProgressTo(ProgressBarControl.Progress, (uint)ProgressBarControl.Progress, Easing.Linear);
+            //TODO: descobrir um meio de chamar o progressto via ViewModel
+            if (e.PropertyName == "Progress")
+                await ProgressBarControl.ProgressTo(ProgressBarControl.Progress, 500, Easing.SinInOut);
         }
     }
 }

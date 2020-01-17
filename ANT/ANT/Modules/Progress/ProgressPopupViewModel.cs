@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ANT.Interfaces;
 using MvvmHelpers;
-using MvvmHelpers.Commands;
+using magno = MvvmHelpers.Commands;
 using JikanDotNet;
 using ANT.Model;
 using System.Threading;
 using ANT.Core;
 using ANT.UTIL;
+using Xamarin.Forms;
 
 namespace ANT.Modules
 {
@@ -20,7 +21,7 @@ namespace ANT.Modules
         {
             _cancelationToken = new CancellationTokenSource();
             InitializeTask = LoadAsync(animes);
-            CancelProcessCommand = new Command(OnCancel);
+            CancelProcessCommand = new magno.Command(OnCancel);
         }
 
         private CancellationTokenSource _cancelationToken;
@@ -45,6 +46,8 @@ namespace ANT.Modules
                         _cancelationToken.Token.ThrowIfCancellationRequested();
                     }
 
+                    Device.BeginInvokeOnMainThread(() => { ProgressValue = (double)i / animeSubList.Count; });
+
                     long id = animeSubList[i].FavoritedAnime.MalId;
                     if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == id))
                         continue;
@@ -58,18 +61,15 @@ namespace ANT.Modules
 
                     App.FavoritedAnimes.Add(favoritedAnime);
                     finalAnimeCount++;
-
-                    //TODO: descobrir o que fazer para a barra de progresso mostrar progresso, rever linha abaixo e ProgressPopupView.xaml.cs
-                    ProgressValue = (double)i / animeSubList.Count;
                 }
             }, _cancelationToken.Token);
 
             if (finalAnimeCount > initialAnimeCount)
                 await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
 
+            ProgressValue = 1;
             //necessário para não bugar o comportamento da popup, abrir e fechar muito rápido causa efeitos não esperados e mantém a popup aberta para sempre
             await Task.Delay(TimeSpan.FromSeconds(2));
-         
             await NavigationManager.PopPopUpPageAsync();
         }
 

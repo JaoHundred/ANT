@@ -8,9 +8,11 @@
              x:Class="ANT.Modules.ProgressPopupView"
                  xmlns:res="clr-namespace:ANT.Lang"
                  xmlns:converter="clr-namespace:ANT.Converter"
+                 xmlns:modules="clr-namespace:ANT.Modules"
                  HasSystemPadding="True"
                  SystemPaddingSides="All"
-                 Padding="60,200,60,200">
+                 Padding="60,200,60,200"
+                 x:DataType="modules:ProgressPopupViewModel">
 
     <popup:PopupPage.Resources>
         <converter:DecimalProgressToFullPercentageConverter x:Key="DecimalToPercentagemConverter"/>
@@ -28,9 +30,9 @@
                Margin="3"/>
         <StackLayout Grid.Row="1" VerticalOptions="Center"
                      Margin="20,0,20,0">
-            <ProgressBar x:Name="ProgressBarControl" PropertyChanged="ProgressBarControl_PropertyChanged"/>
-            <Label Text="{Binding Progress, Source={x:Reference ProgressBarControl}, StringFormat='{0} %'
-                ,Converter={StaticResource DecimalToPercentagemConverter}}"
+            <ProgressBar x:Name="ProgressBarControl" Progress="{Binding ProgressValue, Mode=TwoWay}" PropertyChanged="ProgressBarControl_PropertyChanged"/>
+            <Label Text="{Binding Progress, Source={x:Reference ProgressBarControl}
+                , Converter={StaticResource DecimalToPercentagemConverter}, StringFormat='{0} %'}"
                    HorizontalOptions="Center"/>
         </StackLayout>
 
