@@ -46,7 +46,8 @@ namespace ANT.Modules
                         _cancelationToken.Token.ThrowIfCancellationRequested();
                     }
 
-                    Device.BeginInvokeOnMainThread(() => { ProgressValue = (double)i / animeSubList.Count; });
+                    double result = (double)i / animeSubList.Count;
+                    MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
 
                     long id = animeSubList[i].FavoritedAnime.MalId;
                     if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == id))
@@ -67,20 +68,13 @@ namespace ANT.Modules
             if (finalAnimeCount > initialAnimeCount)
                 await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
 
-            ProgressValue = 1;
+            MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, 1);
             //necessário para não bugar o comportamento da popup, abrir e fechar muito rápido causa efeitos não esperados e mantém a popup aberta para sempre
             await Task.Delay(TimeSpan.FromSeconds(2));
             await NavigationManager.PopPopUpPageAsync();
         }
 
         #region propriedades
-        private double _progressValue;
-        public double ProgressValue
-        {
-            get { return _progressValue; }
-            set { SetProperty(ref _progressValue, value); }
-        }
-
         private bool _isFinalizing;
         public bool IsFinalizing
         {

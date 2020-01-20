@@ -16,6 +16,11 @@ namespace ANT.Modules
         public ProgressPopupView()
         {
             InitializeComponent();
+            
+            MessagingCenter.Subscribe<ProgressPopupViewModel, double>(this, string.Empty, async(sender, doubleValue) => 
+            {
+                await ProgressBarControl.ProgressTo(doubleValue, 500, Easing.SinInOut);
+            });
         }
 
         protected override bool OnBackButtonPressed()
@@ -31,11 +36,10 @@ namespace ANT.Modules
             return false;//false faz o popup não fechar ao apertar fora do popup
         }
 
-        private async void ProgressBarControl_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        protected override void OnDisappearing()
         {
-            //TODO: descobrir um meio de chamar o progressto via ViewModel
-            if (e.PropertyName == "Progress")
-                await ProgressBarControl.ProgressTo(ProgressBarControl.Progress, 500, Easing.SinInOut);
+            MessagingCenter.Unsubscribe<ProgressPopupViewModel>(this, string.Empty);
+            base.OnDisappearing();
         }
     }
 }

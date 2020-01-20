@@ -87,6 +87,7 @@
 
             <Style TargetType="ProgressBar">
                 <Setter Property="ProgressColor" Value="{DynamicResource ProgressIndicatorColor}"/>
+                <Setter Property="ScaleY" Value="5"/>
             </Style>
 
             <!--#endregion-->

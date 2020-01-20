@@ -27,20 +27,23 @@
             <RowDefinition Height="15*"/>
         </Grid.RowDefinitions>
         <Label Text="{res:Translate PleaseWait}" d:Text="blabla" HorizontalOptions="Center"
-               Margin="3"/>
-        <StackLayout Grid.Row="1" VerticalOptions="Center"
-                     Margin="20,0,20,0">
-            <ProgressBar x:Name="ProgressBarControl" Progress="{Binding ProgressValue, Mode=TwoWay}" PropertyChanged="ProgressBarControl_PropertyChanged"/>
-            <Label Text="{Binding Progress, Source={x:Reference ProgressBarControl}
+               Margin="3" FontSize="20"/>
+        <Grid Grid.Row="1" Margin="20,40,20,0" VerticalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <ProgressBar x:Name="ProgressBarControl"/>
+            <Label Grid.Row="1" Text="{Binding Progress, Source={x:Reference ProgressBarControl}
                 , Converter={StaticResource DecimalToPercentagemConverter}, StringFormat='{0} %'}"
-                   HorizontalOptions="Center"/>
-        </StackLayout>
+                   HorizontalOptions="Center" FontSize="Body"/>
+        </Grid>
 
         <Button Grid.Row="2" Text="{res:Translate Cancel}" Style="{StaticResource SpecsButtonStyle}"
                 HorizontalOptions="Center" Margin="0,0,0,5" Command="{Binding CancelProcessCommand}"
                 IsVisible="{Binding IsFinalizing, Converter={StaticResource InversorConverter}}"/>
-        <Label Grid.Row="2" Text="{res:Translate Finalizing}" 
-               HorizontalOptions="Center" Margin="0,0,0,5"
+        <Label Grid.Row="2" Text="{res:Translate Finalizing}" FontSize="20"
+               HorizontalOptions="Center" Margin="5,5,0,0"
                IsVisible="{Binding IsFinalizing}"/>
     </Grid>
 </popup:PopupPage>
