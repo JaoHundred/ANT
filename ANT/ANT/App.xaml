@@ -154,7 +154,7 @@
             <Style TargetType="Label" x:Key="FavoritedAnimeStyle">
                 <Setter Property="FontFamily" Value="{DynamicResource FontIcon}"/>
                 <Setter Property="Text" Value="{StaticResource StarFill}"/>
-                <Setter Property="TextColor" Value="YellowGreen"/>
+                <Setter Property="TextColor" Value="#ffff00"/>
                 <Setter Property="FontSize" Value="20"/>
             </Style>
 
