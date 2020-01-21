@@ -6,6 +6,7 @@
              mc:Ignorable="d"
              xmlns:Theme="clr-namespace:ANT.Themes"
              xmlns:Icon="clr-namespace:ANT.Icons"
+             xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Class="ANT.App">
     <Application.Resources>
         <ResourceDictionary >
@@ -90,6 +91,11 @@
                 <Setter Property="ScaleY" Value="5"/>
             </Style>
 
+            <Style TargetType="FFimage:CachedImage">
+                <Setter Property="HeightRequest" Value="200"/>
+                <Setter Property="IsOpaque" Value="True"/>
+            </Style>
+
             <!--#endregion-->
 
             <!--#region ESPECIFICO DE CONTROLES -->
@@ -98,10 +104,6 @@
                 <Setter Property="FontSize" Value="20"/>
             </Style>
 
-            <Style TargetType="Image" x:Key="AnimeFrameImageStyle">
-                <Setter Property="HeightRequest" Value="200"/>
-                <Setter Property="IsOpaque" Value="True"/>
-            </Style>
             <Style TargetType="Label" x:Key="AnimeFrameLabelStyle">
                 <Setter Property="HorizontalTextAlignment" Value="Center"/>
                 <Setter Property="FontSize" Value="20"/>
@@ -152,7 +154,7 @@
             <Style TargetType="Label" x:Key="FavoritedAnimeStyle">
                 <Setter Property="FontFamily" Value="{DynamicResource FontIcon}"/>
                 <Setter Property="Text" Value="{StaticResource StarFill}"/>
-                <Setter Property="TextColor" Value="Green"/>
+                <Setter Property="TextColor" Value="YellowGreen"/>
                 <Setter Property="FontSize" Value="20"/>
             </Style>
 

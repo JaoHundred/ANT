@@ -6,6 +6,7 @@
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:converter="clr-namespace:ANT.Converter"
              xmlns:animate="clr-namespace:Xamanimation;assembly=Xamanimation"
+             xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:comm="clr-namespace:ANT._Behaviors"
              xmlns:favo="clr-namespace:ANT.Model"
              xmlns:template="clr-namespace:ANT.DataTemplates"
@@ -29,7 +30,7 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <Image x:Name="AnimeImage" Source="{Binding FavoritedAnime.ImageURL}" Style="{StaticResource AnimeFrameImageStyle}"/>
+                    <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding FavoritedAnime.ImageURL}" DownsampleToViewSize="True"/>
                     <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
                                                    IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
                     <Label Grid.Row="1" Text="{Binding FavoritedAnime.Title,Converter={StaticResource ShortTextConverter}}"
@@ -45,11 +46,18 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <Image x:Name="AnimeImage" Source="{Binding FavoritedAnime.ImageURL}" Style="{StaticResource AnimeFrameImageStyle}"/>
+                    <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding FavoritedAnime.ImageURL}" 
+                                         DownsampleToViewSize="True"/>
+                    <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
+                             IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}, Converter={StaticResource InversorConverter}}"/>
+                    
                     <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
-                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                           IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}, Converter={StaticResource InversorConverter}}"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                    
                     <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
-                                                   IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
+                                       IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
+                    
                     <Label Grid.Row="1" Text="{Binding FavoritedAnime.Title,Converter={StaticResource ShortTextConverter}}"
                                        Style="{StaticResource AnimeFrameLabelStyle}" />
                 </Grid>

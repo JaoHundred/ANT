@@ -7,6 +7,7 @@
              xmlns:VM="clr-namespace:ANT.Modules"
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:converter="clr-namespace:ANT.Converter"
+            xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              mc:Ignorable="d"
              x:Class="ANT.Modules.AnimeSpecsView"
              x:DataType="VM:AnimeSpecsViewModel"
@@ -53,12 +54,12 @@
                         <Label Text="{Binding AnimeContext.Anime.Rank, Converter={StaticResource ValueIsNullToNAConverter}, StringFormat='#{0}'}" FontSize="18"/>
                     </StackLayout>
 
-                    <Image Grid.RowSpan="2" Grid.Column="1" Source="{Binding AnimeContext.Anime.ImageURL}"
-                           x:Name="AnimeImage">
-                        <Image.GestureRecognizers>
+                    <FFimage:CachedImage Grid.RowSpan="2" Grid.Column="1" Source="{Binding AnimeContext.Anime.ImageURL}"
+                                         x:Name="AnimeImage">
+                        <FFimage:CachedImage.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding OpenImageInBrowserCommand}"/>
-                        </Image.GestureRecognizers>
-                    </Image>
+                        </FFimage:CachedImage.GestureRecognizers>
+                    </FFimage:CachedImage>
 
                     <ActivityIndicator Grid.RowSpan="2" Grid.Column="1"
                                        IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}"
