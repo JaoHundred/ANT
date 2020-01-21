@@ -47,6 +47,9 @@
     <!--violeta medio-->
     <Color x:Key="GenresColor">#666683</Color>
 
+    <!--65% preto opaco-->
+    <Color x:Key="OpaqueBlackColor">#A6000000</Color>
+
     <!--#endregion-->
 
 </ResourceDictionary>

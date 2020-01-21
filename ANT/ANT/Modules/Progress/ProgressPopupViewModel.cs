@@ -12,19 +12,22 @@ using System.Threading;
 using ANT.Core;
 using ANT.UTIL;
 using Xamarin.Forms;
+using System.Linq;
 
 namespace ANT.Modules
 {
     public class ProgressPopupViewModel : BaseViewModel, IAsyncInitialization
     {
-        public ProgressPopupViewModel(IList<FavoritedAnimeSubEntry> animes)
+        public ProgressPopupViewModel(ICommand updateCommand, IList<FavoritedAnimeSubEntry> animes)
         {
             _cancelationToken = new CancellationTokenSource();
+            _updateCommand = updateCommand;
             InitializeTask = LoadAsync(animes);
             CancelProcessCommand = new magno.Command(OnCancel);
         }
 
         private CancellationTokenSource _cancelationToken;
+        private ICommand _updateCommand;
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
         {
@@ -40,7 +43,10 @@ namespace ANT.Modules
                     if (_cancelationToken.IsCancellationRequested)
                     {
                         if (finalAnimeCount > initialAnimeCount)
+                        {
                             await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+                            Device.BeginInvokeOnMainThread(() => { _updateCommand.Execute(null); });
+                        }
 
                         await NavigationManager.PopPopUpPageAsync();
                         _cancelationToken.Token.ThrowIfCancellationRequested();
@@ -66,7 +72,11 @@ namespace ANT.Modules
             }, _cancelationToken.Token);
 
             if (finalAnimeCount > initialAnimeCount)
+            {
                 await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+
+                _updateCommand.Execute(null);
+            }
 
             MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, 1);
             //necessário para não bugar o comportamento da popup, abrir e fechar muito rápido causa efeitos não esperados e mantém a popup aberta para sempre

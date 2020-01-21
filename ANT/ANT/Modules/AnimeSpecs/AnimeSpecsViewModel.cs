@@ -18,10 +18,11 @@ namespace ANT.Modules
 {
     public class AnimeSpecsViewModel : BaseVMExtender, IAsyncInitialization
     {
-        public AnimeSpecsViewModel(long malID)
+        public AnimeSpecsViewModel(ICommand updateCommand, long malID)
         {
             InitializeTask = LoadAsync(malID);
 
+            _updateCommand = updateCommand;
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenImageInBrowserCommand = new magno.AsyncCommand(OnOpenImageInBrowser);
             CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
@@ -29,6 +30,8 @@ namespace ANT.Modules
             OpenAnimeInBrowserCommand = new magno.AsyncCommand(OnOpenAnimeInBrowser);
             DiscussionsCommand = new magno.AsyncCommand<string>(OnDiscussions);
         }
+
+        private ICommand _updateCommand;
 
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
@@ -131,6 +134,7 @@ namespace ANT.Modules
                 lang = Lang.Lang.AddedToFavorite;
             }
 
+            _updateCommand.Execute(null);
             await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             DependencyService.Get<IToast>().MakeToastMessageShort(lang);
 

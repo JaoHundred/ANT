@@ -21,27 +21,28 @@ namespace ANT.Modules
 {
     public class CatalogueViewModel : BaseVMExtender, IAsyncInitialization
     {
+        //TODO: começar https://github.com/JaoHundred/ANT/issues/14
         public CatalogueViewModel()
         {
+            InitializeDefaultProperties();
+
             InitializeTask = LoadAsync(null);
-
-            InitializeCommands();
-
-            Animes = new ObservableRangeCollection<FavoritedAnimeSubEntry>();
         }
 
         public CatalogueViewModel(GenreSearch genreEnum)
         {
             _currentGenre = genreEnum;
+
+            InitializeDefaultProperties();
+
             InitializeTask = LoadAsync(null);
-
-            InitializeCommands();
-
-            Animes = new ObservableRangeCollection<FavoritedAnimeSubEntry>();
         }
 
-        private void InitializeCommands()
+        private void InitializeDefaultProperties()
         {
+            _originalCollection = new List<FavoritedAnimeSubEntry>();
+            Animes = new ObservableRangeCollection<FavoritedAnimeSubEntry>();
+
             SelectionModeCommand = new magno.Command(OnSelectionMode);
             AddToFavoriteCommand = new magno.AsyncCommand(OnAddToFavorite);
             RefreshCommand = new magno.AsyncCommand(OnRefresh);
@@ -122,7 +123,6 @@ namespace ANT.Modules
             set { SetProperty(ref _remainingAnimeCount, value); }
         }
 
-
         #endregion
 
         #region métodos da VM
@@ -150,8 +150,25 @@ namespace ANT.Modules
                         anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
                         )
                     */
+                    if (_originalCollection.Count > 0)
+                        _originalCollection.Clear();
 
-                    _originalCollection = results.SeasonEntries.Select(p => new FavoritedAnimeSubEntry(p)).ToList();
+                    for (int i = 0; i < results.SeasonEntries.Count; i++)
+                    {
+                        var anime = results.SeasonEntries.ElementAt(i);
+
+                        if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == anime.MalId))
+                        {
+                            var animeSub = new FavoritedAnimeSubEntry(anime);
+                            animeSub.IsFavorited = true;
+
+                            _originalCollection.Add(animeSub);
+                        }
+
+                        else
+                            _originalCollection.Add(new FavoritedAnimeSubEntry(anime));
+                    }
+
                     Animes.ReplaceRange(_originalCollection);
                 }
 
@@ -263,7 +280,7 @@ namespace ANT.Modules
             if (canNavigate)
             {
                 var items = SelectedItems.Cast<FavoritedAnimeSubEntry>().ToList();
-                await NavigationManager.NavigatePopUpAsync<ProgressPopupViewModel>(items);
+                await NavigationManager.NavigatePopUpAsync<ProgressPopupViewModel>(RefreshCommand, items);
             }
 
             SingleSelectionMode();
@@ -307,7 +324,7 @@ namespace ANT.Modules
 
             if (!IsMultiSelect && SelectedItem != null && canNavigate)
             {
-                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedItem.FavoritedAnime.MalId);
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(RefreshCommand, SelectedItem.FavoritedAnime.MalId);
                 SelectedItem = null;
             }
         }

@@ -149,6 +149,13 @@
                 <Setter Property="TextColor" Value="#d3d4d4"/> <!--white gray-->
             </Style>
 
+            <Style TargetType="Label" x:Key="FavoritedAnimeStyle">
+                <Setter Property="FontFamily" Value="{DynamicResource FontIcon}"/>
+                <Setter Property="Text" Value="{StaticResource StarFill}"/>
+                <Setter Property="TextColor" Value="Green"/>
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+
 
             <!--#endregion-->
 
