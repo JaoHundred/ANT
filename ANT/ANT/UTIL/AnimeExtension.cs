@@ -6,6 +6,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Reflection;
 using System.Threading.Tasks;
+using ANT.Model;
 
 namespace ANT.UTIL
 {
@@ -59,6 +60,26 @@ namespace ANT.UTIL
             }
 
             return episodeList;
+        }
+
+        public static void ConvertAnimesToFavoritedSubEntry(this ICollection<AnimeSubEntry> animeSubEntries
+            , IList<FavoritedAnimeSubEntry> originalCollection)
+        {
+            if (originalCollection.Count > 0)
+                originalCollection.Clear();
+
+            var animeSubs = animeSubEntries.ToList();
+
+            for (int i = 0; i < animeSubs.Count; i++)
+            {
+                var anime = animeSubs[i];
+                var animeSub = new FavoritedAnimeSubEntry(anime);
+
+                if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == anime.MalId))
+                    animeSub.IsFavorited = true;
+
+                originalCollection.Add(animeSub);
+            }
         }
     }
 }

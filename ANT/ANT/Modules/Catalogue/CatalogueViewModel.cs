@@ -21,7 +21,6 @@ namespace ANT.Modules
 {
     public class CatalogueViewModel : BaseVMExtender, IAsyncInitialization
     {
-        //TODO: começar https://github.com/JaoHundred/ANT/issues/14
         public CatalogueViewModel()
         {
             InitializeDefaultProperties();
@@ -131,6 +130,8 @@ namespace ANT.Modules
             if (SearchQuery?.Length > 0)
                 ClearTextQuery();
 
+           
+
             try
             {
                 if (_currentGenre != null)
@@ -150,25 +151,9 @@ namespace ANT.Modules
                         anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
                         )
                     */
-                    if (_originalCollection.Count > 0)
-                        _originalCollection.Clear();
+                    
 
-                    for (int i = 0; i < results.SeasonEntries.Count; i++)
-                    {
-                        var anime = results.SeasonEntries.ElementAt(i);
-
-                        if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == anime.MalId))
-                        {
-                            var animeSub = new FavoritedAnimeSubEntry(anime);
-                            animeSub.IsFavorited = true;
-
-                            _originalCollection.Add(animeSub);
-                        }
-
-                        else
-                            _originalCollection.Add(new FavoritedAnimeSubEntry(anime));
-                    }
-
+                    results.SeasonEntries.ConvertAnimesToFavoritedSubEntry(_originalCollection);
                     Animes.ReplaceRange(_originalCollection);
                 }
 
@@ -188,6 +173,8 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
+            //TODO: começar https://github.com/JaoHundred/ANT/issues/15
+
             if (_currentGenre == null || SearchQuery?.Length > 0 || RemainingAnimeCount < 0 || IsBusy)
                 return;
 
@@ -216,6 +203,7 @@ namespace ANT.Modules
                         RemainingAnimeCount = animeGenre.TotalCount;
 
                     var animes = animeGenre.Anime.Select(p => new FavoritedAnimeSubEntry(p)).ToList();
+                    //var animes = animeGenre.Anime;
 
                     if (RemainingAnimeCount <= animeGenre.TotalCount)
                         RemainingAnimeCount -= animes.Count;
@@ -224,12 +212,17 @@ namespace ANT.Modules
                     {
                         _originalCollection = animes.ToList();
                         Animes.ReplaceRange(_originalCollection);
+
+                        //animes.ConvertAnimesToFavoritedSubEntry(_originalCollection);
+                        //Animes.ReplaceRange(_originalCollection);
                     }
 
                     else if (_pageCount > 1)
                     {
                         _originalCollection.AddRange(animes);
                         Animes.AddRange(animes);
+                        //animes.ConvertAnimesToFavoritedSubEntry(_originalCollection);
+                        //Animes.AddRange(_originalCollection);
                     }
 
                     if (RemainingAnimeCount == 0) // usado para desativar a chamada da collectionview para este método
