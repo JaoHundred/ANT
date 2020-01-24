@@ -173,7 +173,7 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
-            //TODO: começar https://github.com/JaoHundred/ANT/issues/15
+            
 
             if (_currentGenre == null || SearchQuery?.Length > 0 || RemainingAnimeCount < 0 || IsBusy)
                 return;
@@ -203,6 +203,8 @@ namespace ANT.Modules
                         RemainingAnimeCount = animeGenre.TotalCount;
 
                     var animes = animeGenre.Anime.Select(p => new FavoritedAnimeSubEntry(p)).ToList();
+                    //TODO: começar https://github.com/JaoHundred/ANT/issues/15
+                    //TODO: checar aqui se os animes que estão chegando já estão na lista de favoritados, se tiver, usar os dados dos favoritados
                     //var animes = animeGenre.Anime;
 
                     if (RemainingAnimeCount <= animeGenre.TotalCount)
@@ -273,7 +275,7 @@ namespace ANT.Modules
             if (canNavigate)
             {
                 var items = SelectedItems.Cast<FavoritedAnimeSubEntry>().ToList();
-                await NavigationManager.NavigatePopUpAsync<ProgressPopupViewModel>(RefreshCommand, items);
+                await NavigationManager.NavigatePopUpAsync<ProgressPopupViewModel>(items);
             }
 
             SingleSelectionMode();
@@ -317,7 +319,7 @@ namespace ANT.Modules
 
             if (!IsMultiSelect && SelectedItem != null && canNavigate)
             {
-                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(RefreshCommand, SelectedItem.FavoritedAnime.MalId);
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedItem);
                 SelectedItem = null;
             }
         }

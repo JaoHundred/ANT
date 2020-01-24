@@ -18,11 +18,11 @@ namespace ANT.Modules
 {
     public class AnimeSpecsViewModel : BaseVMExtender, IAsyncInitialization
     {
-        public AnimeSpecsViewModel(ICommand updateCommand, long malID)
+        public AnimeSpecsViewModel(FavoritedAnimeSubEntry favoritedAnimeSubEntry)
         {
-            InitializeTask = LoadAsync(malID);
+            _favoritedAnimeSubEntry = favoritedAnimeSubEntry;
+            InitializeTask = LoadAsync(null);
 
-            _updateCommand = updateCommand;
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenImageInBrowserCommand = new magno.AsyncCommand(OnOpenImageInBrowser);
             CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
@@ -31,13 +31,10 @@ namespace ANT.Modules
             DiscussionsCommand = new magno.AsyncCommand<string>(OnDiscussions);
         }
 
-        private ICommand _updateCommand;
-
         public Task InitializeTask { get; }
+        private FavoritedAnimeSubEntry _favoritedAnimeSubEntry;
         public async Task LoadAsync(object param)
         {
-            long id = (long)param;
-
             IsLoading = true;
             CanEnable = false;
             try
@@ -45,18 +42,20 @@ namespace ANT.Modules
                 //TODO: criar no futuro uma rotina de checagem por atualizações dos animes alvos em favoritos(algo semelhante ao tachiyomi
                 //pode acontecer todo dia, semanalmente ou até mesmo no dia específico de cada anime), a rotina é chamada como background e atualiza
                 //a lista com dados novos se houver
-                FavoritedAnime favoritedAnime = App.FavoritedAnimes.FirstOrDefault(p => p.Anime.MalId == id);
+                FavoritedAnime favoritedAnime = App.FavoritedAnimes.FirstOrDefault(p => p.Anime.MalId == _favoritedAnimeSubEntry.FavoritedAnime.MalId);
 
                 if (favoritedAnime == null)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(4));
-                    Anime anime = await App.Jikan.GetAnime(id);
+                    Anime anime = await App.Jikan.GetAnime(_favoritedAnimeSubEntry.FavoritedAnime.MalId);
                     anime.RequestCached = true;
 
                     IsLoadingEpisodes = true;
 
                     favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync());
                 }
+
+                _favoritedAnimeSubEntry.IsFavorited = true;
 
                 Episodes = favoritedAnime.Episodes;
                 AnimeContext = favoritedAnime;
@@ -124,17 +123,20 @@ namespace ANT.Modules
             if (App.FavoritedAnimes.Contains(AnimeContext))
             {
                 AnimeContext.IsFavorited = false;
+                _favoritedAnimeSubEntry.IsFavorited = false;
+
                 App.FavoritedAnimes.Remove(AnimeContext);
                 lang = Lang.Lang.RemovedFromFavorite;
             }
             else
             {
                 AnimeContext.IsFavorited = true;
+                _favoritedAnimeSubEntry.IsFavorited = true;
+
                 App.FavoritedAnimes.Add(AnimeContext);
                 lang = Lang.Lang.AddedToFavorite;
             }
 
-            _updateCommand.Execute(null);
             await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             DependencyService.Get<IToast>().MakeToastMessageShort(lang);
 

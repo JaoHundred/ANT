@@ -9,7 +9,6 @@
              xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:comm="clr-namespace:ANT._Behaviors"
              xmlns:favo="clr-namespace:ANT.Model"
-             xmlns:template="clr-namespace:ANT.DataTemplates"
              xmlns:VM="clr-namespace:ANT.Modules"
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
@@ -21,54 +20,6 @@
         <converter:TextReductionConverter x:Key="ShortTextConverter"/>
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
-
-        <DataTemplate x:Key="NotFavoritedAnime" x:DataType="favo:FavoritedAnimeSubEntry">
-            <Frame>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-
-                    <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding FavoritedAnime.ImageURL}" DownsampleToViewSize="True"/>
-                    <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
-                                                   IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
-                    <Label Grid.Row="1" Text="{Binding FavoritedAnime.Title,Converter={StaticResource ShortTextConverter}}"
-                                       Style="{StaticResource AnimeFrameLabelStyle}" />
-                </Grid>
-            </Frame>
-        </DataTemplate>
-        <DataTemplate x:Key="FavoritedAnime" x:DataType="favo:FavoritedAnimeSubEntry">
-            <Frame>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-
-                    <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding FavoritedAnime.ImageURL}" 
-                                         DownsampleToViewSize="True"/>
-                    <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
-                             IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}, Converter={StaticResource InversorConverter}}"/>
-                    
-                    <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
-                           IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}, Converter={StaticResource InversorConverter}}"
-                           HorizontalOptions="Center" VerticalOptions="Center"/>
-                    
-                    <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
-                                       IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
-                    
-                    <Label Grid.Row="1" Text="{Binding FavoritedAnime.Title,Converter={StaticResource ShortTextConverter}}"
-                                       Style="{StaticResource AnimeFrameLabelStyle}" />
-                </Grid>
-            </Frame>
-        </DataTemplate>
-
-
-        <template:CatalogueDataTemplateSelector x:Key="FullCatalogueTemplate" 
-                                                NotFavoritedAnime="{StaticResource NotFavoritedAnime}"
-                                                FavoritedAnime="{StaticResource FavoritedAnime}"/>
-
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -110,7 +61,7 @@
                      IsRefreshing="{Binding IsRefreshing}" 
                      IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
 
-            <CollectionView ItemTemplate="{StaticResource FullCatalogueTemplate}" ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
+            <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                             SelectionChangedCommand="{Binding OpenAnimeCommand}"
@@ -126,6 +77,39 @@
                     <GridItemsLayout Orientation="Vertical" 
                                      Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
                 </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+
+                    <DataTemplate x:DataType="favo:FavoritedAnimeSubEntry">
+                        <Frame>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding FavoritedAnime.ImageURL}" 
+                                                     DownsampleToViewSize="True"/>
+
+                                <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
+                                    <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
+                                             IsVisible="{Binding IsFavorited}"/>
+
+                                    <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
+                                           IsVisible="{Binding IsFavorited}"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Grid>
+
+                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
+                                                   IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
+
+                                <Label Grid.Row="1" Text="{Binding FavoritedAnime.Title,Converter={StaticResource ShortTextConverter}}"
+                                       Style="{StaticResource AnimeFrameLabelStyle}" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
             </CollectionView>
         </RefreshView>
         <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="End" Margin="3"
