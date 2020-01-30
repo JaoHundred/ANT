@@ -26,7 +26,7 @@
         </CollectionView.EmptyView>
 
         <CollectionView.ItemsLayout>
-            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+            <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="10" />
         </CollectionView.ItemsLayout>
 
         <CollectionView.ItemTemplate>
@@ -37,7 +37,7 @@
                             <ffimage:CachedImage Grid.RowSpan="2" Source="{Binding Anime.FavoritedAnime.ImageURL}"/>
 
                             <Label Grid.Column="1" Text="{Binding Anime.FavoritedAnime.Title, Converter={StaticResource TextReductionConverter}}" 
-                                   FontSize="Title" />
+                                   FontSize="Title" MaxLines="2"/>
                             <StackLayout Grid.Row="1" Grid.Column="1">
                                 <ScrollView Orientation="Horizontal">
                                     <Label Text="{res:Translate LastSeen}" FontSize="Title"/>
