@@ -32,7 +32,7 @@ namespace ANT.Modules
         }
 
         public Task InitializeTask { get; }
-        private FavoritedAnimeSubEntry _favoritedAnimeSubEntry;
+        private readonly FavoritedAnimeSubEntry _favoritedAnimeSubEntry;
         public async Task LoadAsync(object param)
         {
             IsLoading = true;
@@ -190,30 +190,31 @@ namespace ANT.Modules
         #endregion
 
         #region métodos VM
-        private async Task AddOrUpdateRecentAnimeAsync(FavoritedAnimeSubEntry recentFavoritedSubEntryAnime)
+        private Task AddOrUpdateRecentAnimeAsync(FavoritedAnimeSubEntry recentFavoritedSubEntryAnime)
         {
             //TODO: devo precisar de um meio para atualizar a página de recentes(na hora que o usuário for voltar com o backbutton)
-
-            var favoritedSubEntry = App.RecentAnimes.FirstOrDefault(p => p.Anime.FavoritedAnime.MalId == recentFavoritedSubEntryAnime.FavoritedAnime.MalId);
-
-            if (favoritedSubEntry != null)
-                favoritedSubEntry.Date = DateTimeOffset.Now;
-            else
+            return Task.Run(async () =>
             {
-                if (App.RecentAnimes.Count == 10)
+                var favoritedSubEntry = App.RecentAnimes.FirstOrDefault(p => p.Anime.FavoritedAnime.MalId == recentFavoritedSubEntryAnime.FavoritedAnime.MalId);
+
+                if (favoritedSubEntry != null)
+                    favoritedSubEntry.Date = DateTimeOffset.Now;
+                else
                 {
-                    DateTimeOffset mostAntiqueDate = App.RecentAnimes.Min(p => p.Date);
-                    RecentVisualized mostAntiqueVisualized = App.RecentAnimes.First(p => p.Date == mostAntiqueDate);
+                    if (App.RecentAnimes.Count == 10)
+                    {
+                        DateTimeOffset mostAntiqueDate = App.RecentAnimes.Min(p => p.Date);
+                        RecentVisualized mostAntiqueVisualized = App.RecentAnimes.First(p => p.Date == mostAntiqueDate);
 
-                    App.RecentAnimes.Remove(mostAntiqueVisualized);
-                    App.RecentAnimes.Add(new RecentVisualized(recentFavoritedSubEntryAnime));
+                        App.RecentAnimes.Remove(mostAntiqueVisualized);
+                        App.RecentAnimes.Add(new RecentVisualized(recentFavoritedSubEntryAnime));
+                    }
+                    else if (App.RecentAnimes.Count < 10)
+                        App.RecentAnimes.Add(new RecentVisualized(recentFavoritedSubEntryAnime));
                 }
-                else if (App.RecentAnimes.Count < 10)
-                    App.RecentAnimes.Add(new RecentVisualized(recentFavoritedSubEntryAnime));
-            }
 
-            App.RecentAnimes = App.RecentAnimes.OrderByDescending(p => p.Date).ToList();
-            await JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
+                await JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
+            });
         }
         #endregion
 

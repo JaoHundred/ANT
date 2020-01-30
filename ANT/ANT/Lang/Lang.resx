@@ -177,6 +177,9 @@
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="LastSeen" xml:space="preserve">
+    <value>Last seen</value>
+  </data>
   <data name="LoadingMoreData" xml:space="preserve">
     <value>Loading more data...</value>
   </data>

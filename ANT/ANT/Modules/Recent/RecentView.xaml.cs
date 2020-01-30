@@ -15,6 +15,14 @@ namespace ANT.Modules
         public RecentView()
         {
             InitializeComponent();
+            BindingContext = new RecentViewModel();
+        }
+
+        private async void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            //Necessário para atualizar a lista de recentes toda vez que a página for aberta, já que o shell só carrega uma única vez
+            //a ViewModel
+            await (BindingContext as RecentViewModel)?.LoadAsync(null);
         }
     }
 }

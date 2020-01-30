@@ -5,9 +5,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:vm="clr-namespace:ANT.Modules"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:model="clr-namespace:ANT.Model"
+             xmlns:converter="clr-namespace:ANT.Converter"
              mc:Ignorable="d"
              x:DataType="vm:RecentViewModel"
-             x:Class="ANT.Modules.RecentView">
+             x:Class="ANT.Modules.RecentView"
+             Appearing="ContentPage_Appearing">
+
+    <ContentPage.Resources>
+        <converter:TextReductionConverter x:Key="TextReductionConverter"/>
+    </ContentPage.Resources>
 
     <CollectionView ItemsSource="{Binding Recents}">
         <CollectionView.EmptyView>
@@ -16,11 +24,31 @@
                        HorizontalOptions="Center"/>
             </Grid>
         </CollectionView.EmptyView>
-        
+
+        <CollectionView.ItemsLayout>
+            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+        </CollectionView.ItemsLayout>
+
         <CollectionView.ItemTemplate>
-            <DataTemplate>
-                
+            <DataTemplate x:DataType="model:RecentVisualized">
+                <ContentView>
+                    <Frame HeightRequest="200" Margin="10,0,10,0">
+                        <Grid>
+                            <ffimage:CachedImage Grid.RowSpan="2" Source="{Binding Anime.FavoritedAnime.ImageURL}"/>
+
+                            <Label Grid.Column="1" Text="{Binding Anime.FavoritedAnime.Title, Converter={StaticResource TextReductionConverter}}" 
+                                   FontSize="Title" />
+                            <StackLayout Grid.Row="1" Grid.Column="1">
+                                <ScrollView Orientation="Horizontal">
+                                    <Label Text="{res:Translate LastSeen}" FontSize="Title"/>
+                                </ScrollView>
+                                <Label Text="{Binding Date}" FontSize="Title"/>
+                            </StackLayout>
+                        </Grid>
+                    </Frame>
+                </ContentView>
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>
+
 </ContentPage>

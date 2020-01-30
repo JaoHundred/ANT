@@ -6,6 +6,7 @@ using magno = MvvmHelpers.Commands;
 using ANT.Interfaces;
 using System.Threading.Tasks;
 using ANT.Model;
+using System.Linq;
 
 namespace ANT.Modules
 {
@@ -14,7 +15,15 @@ namespace ANT.Modules
         public RecentViewModel()
         {
             Recents = new ObservableRangeCollection<RecentVisualized>();
-            Recents.AddRange(App.RecentAnimes);
+        }
+
+        public async Task LoadAsync(object param)
+        {
+            await Task.Run(() =>
+            {
+                var sortedRecents = App.RecentAnimes.OrderByDescending(p => p.Date).ToList();
+                Recents.ReplaceRange(sortedRecents);
+            });
         }
 
         #region propriedades vm
@@ -24,6 +33,9 @@ namespace ANT.Modules
             get { return _recents; }
             set { SetProperty(ref _recents, value); }
         }
+
+        //TODO: ajeitar a formatação da última vez vista, formato desejado  dd/mm/aaaa hh:mm:ss
+        //TODO: implementar o comando de item selecionado, navegar para a AnimeSpecsViewModel após clicar
 
         #endregion
     }

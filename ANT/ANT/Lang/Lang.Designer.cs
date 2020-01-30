@@ -241,6 +241,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last seen.
+        /// </summary>
+        public static string LastSeen {
+            get {
+                return ResourceManager.GetString("LastSeen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading more data....
         /// </summary>
         public static string LoadingMoreData {
