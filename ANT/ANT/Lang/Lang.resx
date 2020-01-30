@@ -189,11 +189,17 @@
   <data name="MultiSelect" xml:space="preserve">
     <value>Select</value>
   </data>
+  <data name="NothingForNow" xml:space="preserve">
+    <value>Nothing for now</value>
+  </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Please wait</value>
   </data>
   <data name="Rank" xml:space="preserve">
     <value>Rank</value>
+  </data>
+  <data name="Recents" xml:space="preserve">
+    <value>Recently seen</value>
   </data>
   <data name="RemovedFromFavorite" xml:space="preserve">
     <value>Removed from favorites</value>

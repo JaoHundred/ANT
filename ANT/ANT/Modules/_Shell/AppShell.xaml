@@ -71,6 +71,14 @@
         </FlyoutItem.Icon>
         <ShellContent  ContentTemplate="{DataTemplate modules:HomeView}"/>
     </FlyoutItem>
+    <FlyoutItem Title="{res:Translate Recents}" Route="Recent">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="{StaticResource FontIcon}"
+                             Glyph="{StaticResource Recent}"
+                             Color="{DynamicResource TextColor}"/>
+        </FlyoutItem.Icon>
+        <ShellContent  ContentTemplate="{DataTemplate modules:RecentView}"/>
+    </FlyoutItem>
     <FlyoutItem Title="{res:Translate Catalogue}" Route="Catalogue">
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="{StaticResource FontIcon}"

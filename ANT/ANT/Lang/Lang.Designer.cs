@@ -277,6 +277,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nothing for now.
+        /// </summary>
+        public static string NothingForNow {
+            get {
+                return ResourceManager.GetString("NothingForNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please wait.
         /// </summary>
         public static string PleaseWait {
@@ -291,6 +300,15 @@ namespace ANT.Lang {
         public static string Rank {
             get {
                 return ResourceManager.GetString("Rank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recently seen.
+        /// </summary>
+        public static string Recents {
+            get {
+                return ResourceManager.GetString("Recents", resourceCulture);
             }
         }
         

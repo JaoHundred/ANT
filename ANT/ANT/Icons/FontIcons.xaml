@@ -19,5 +19,7 @@
     <x:String x:Key="StarFill">&#xE735;</x:String>
     <x:String x:Key="Star">&#xE734;</x:String>
     <x:String x:Key="Forum">&#xE90A;</x:String>
+    <x:String x:Key="Recent">&#xE823;</x:String>
+    
     
 </ResourceDictionary>

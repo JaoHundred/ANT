@@ -25,6 +25,7 @@ namespace ANT
 
         public static SettingsPreferences SettingsPreferences;
         public static List<FavoritedAnime> FavoritedAnimes;
+        public static List<RecentVisualized> RecentAnimes;
         public static IJikan Jikan { get; private set; }
         protected async override void OnStart()
         {
@@ -32,12 +33,17 @@ namespace ANT
             var favoritedAnimesTask = JsonStorage.ReadDataAsync<List<FavoritedAnime>>(StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             var favoritedSubEntryAnimesTask = 
                 JsonStorage.ReadDataAsync<List<FavoritedAnimeSubEntry>>(StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+            var recentTask = JsonStorage.ReadDataAsync<List<RecentVisualized>>(StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
+
+
 
             SettingsPreferences = await settingsTask ?? new SettingsPreferences();
             FavoritedAnimes = await favoritedAnimesTask ?? new List<FavoritedAnime>();
+            RecentAnimes = await recentTask ?? new List<RecentVisualized>();
 
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
+            
             //await CultureManager.LoadCultureAsync();
 
             Jikan = new Jikan(useHttps: true);

@@ -57,6 +57,8 @@ namespace ANT.Modules
 
                 _favoritedAnimeSubEntry.IsFavorited = true;
 
+                await AddOrUpdateRecentAnimeAsync(_favoritedAnimeSubEntry);
+
                 Episodes = favoritedAnime.Episodes;
                 AnimeContext = favoritedAnime;
 
@@ -185,6 +187,34 @@ namespace ANT.Modules
             await Launcher.TryOpenAsync(forumLink);
         }
 
+        #endregion
+
+        #region métodos VM
+        private async Task AddOrUpdateRecentAnimeAsync(FavoritedAnimeSubEntry recentFavoritedSubEntryAnime)
+        {
+            //TODO: devo precisar de um meio para atualizar a página de recentes(na hora que o usuário for voltar com o backbutton)
+
+            var favoritedSubEntry = App.RecentAnimes.FirstOrDefault(p => p.Anime.FavoritedAnime.MalId == recentFavoritedSubEntryAnime.FavoritedAnime.MalId);
+
+            if (favoritedSubEntry != null)
+                favoritedSubEntry.Date = DateTimeOffset.Now;
+            else
+            {
+                if (App.RecentAnimes.Count == 10)
+                {
+                    DateTimeOffset mostAntiqueDate = App.RecentAnimes.Min(p => p.Date);
+                    RecentVisualized mostAntiqueVisualized = App.RecentAnimes.First(p => p.Date == mostAntiqueDate);
+
+                    App.RecentAnimes.Remove(mostAntiqueVisualized);
+                    App.RecentAnimes.Add(new RecentVisualized(recentFavoritedSubEntryAnime));
+                }
+                else if (App.RecentAnimes.Count < 10)
+                    App.RecentAnimes.Add(new RecentVisualized(recentFavoritedSubEntryAnime));
+            }
+
+            App.RecentAnimes = App.RecentAnimes.OrderByDescending(p => p.Date).ToList();
+            await JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
+        }
         #endregion
 
         //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página(deixar pro futuro)
