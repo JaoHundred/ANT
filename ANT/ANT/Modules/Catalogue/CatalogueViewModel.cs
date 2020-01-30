@@ -130,8 +130,6 @@ namespace ANT.Modules
             if (SearchQuery?.Length > 0)
                 ClearTextQuery();
 
-           
-
             try
             {
                 if (_currentGenre != null)
@@ -151,9 +149,10 @@ namespace ANT.Modules
                         anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
                         )
                     */
-                    
 
-                    results.SeasonEntries.ConvertAnimesToFavoritedSubEntry(_originalCollection);
+
+                    var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavoritedSubEntry();
+                    _originalCollection = favoritedEntries.ToList();
                     Animes.ReplaceRange(_originalCollection);
                 }
 
@@ -173,7 +172,7 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
-            
+
 
             if (_currentGenre == null || SearchQuery?.Length > 0 || RemainingAnimeCount < 0 || IsBusy)
                 return;
@@ -202,29 +201,21 @@ namespace ANT.Modules
                     if (RemainingAnimeCount == 0)
                         RemainingAnimeCount = animeGenre.TotalCount;
 
-                    var animes = animeGenre.Anime.Select(p => new FavoritedAnimeSubEntry(p)).ToList();
-                    //TODO: começar https://github.com/JaoHundred/ANT/issues/15
-                    //TODO: checar aqui se os animes que estão chegando já estão na lista de favoritados, se tiver, usar os dados dos favoritados
-                    //var animes = animeGenre.Anime;
+                    var favoritedSubEntries = animeGenre.Anime.ConvertAnimesToFavoritedSubEntry();
 
                     if (RemainingAnimeCount <= animeGenre.TotalCount)
-                        RemainingAnimeCount -= animes.Count;
+                        RemainingAnimeCount -= favoritedSubEntries.Count;
 
                     if (_pageCount == 1)
                     {
-                        _originalCollection = animes.ToList();
+                        _originalCollection = favoritedSubEntries.ToList();
                         Animes.ReplaceRange(_originalCollection);
-
-                        //animes.ConvertAnimesToFavoritedSubEntry(_originalCollection);
-                        //Animes.ReplaceRange(_originalCollection);
                     }
 
                     else if (_pageCount > 1)
                     {
-                        _originalCollection.AddRange(animes);
-                        Animes.AddRange(animes);
-                        //animes.ConvertAnimesToFavoritedSubEntry(_originalCollection);
-                        //Animes.AddRange(_originalCollection);
+                        _originalCollection.AddRange(favoritedSubEntries);
+                        Animes.AddRange(favoritedSubEntries);
                     }
 
                     if (RemainingAnimeCount == 0) // usado para desativar a chamada da collectionview para este método
