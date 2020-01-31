@@ -18,6 +18,11 @@
         <converter:DateTimeOffSetFormatToDadeAndHoursConverter x:Key="DateTimeOffSetConverter"/>
     </ContentPage.Resources>
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="{res:Translate ClearAll}"
+                     Command="{Binding ClearAllRecentCommand}"/>
+    </ContentPage.ToolbarItems>
+
     <CollectionView ItemsSource="{Binding Recents}">
         <CollectionView.EmptyView>
             <Grid>
@@ -36,7 +41,9 @@
                     <Frame HeightRequest="200" Margin="10,0,10,0">
                         <Grid>
 
-                            <ffimage:CachedImage Grid.RowSpan="3" Source="{Binding Anime.FavoritedAnime.ImageURL}"/>
+                            <ffimage:CachedImage Grid.RowSpan="3" x:Name="CacheImage" Source="{Binding Anime.FavoritedAnime.ImageURL}"/>
+                            <ActivityIndicator Grid.RowSpan="3" IsRunning="{Binding IsLoading, Source={x:Reference CacheImage}}"
+                                               IsVisible="{Binding IsLoading, Source={x:Reference CacheImage}}"/>
 
                             <Label Grid.Column="1" Text="{Binding Anime.FavoritedAnime.Title, Converter={StaticResource TextReductionConverter}}" 
                                    FontSize="Title" MaxLines="2"/>

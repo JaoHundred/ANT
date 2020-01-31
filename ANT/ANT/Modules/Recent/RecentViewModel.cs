@@ -7,6 +7,8 @@ using ANT.Interfaces;
 using System.Threading.Tasks;
 using ANT.Model;
 using System.Linq;
+using System.Windows.Input;
+using ANT.Core;
 
 namespace ANT.Modules
 {
@@ -14,6 +16,8 @@ namespace ANT.Modules
     {
         public RecentViewModel()
         {
+            ClearAllRecentCommand = new magno.AsyncCommand(OnClearAllRecent);
+
             Recents = new ObservableRangeCollection<RecentVisualized>();
         }
 
@@ -36,6 +40,26 @@ namespace ANT.Modules
 
         //TODO: implementar o comando de item selecionado, navegar para a AnimeSpecsViewModel após clicar
 
+        #endregion
+
+        #region commands
+        public ICommand ClearAllRecentCommand { get; private set; }
+        private async Task OnClearAllRecent()
+        {
+            if (Recents.Count == 0)
+                return;
+
+            //TODO: chamar aqui o modal de confirmação quando ele existir 
+            //https://github.com/JaoHundred/ANT/issues/16
+
+            await Task.Run(() =>
+            {
+                App.RecentAnimes.Clear();
+                JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
+            });
+
+            Recents.Clear();
+        }
         #endregion
     }
 }

@@ -147,6 +147,9 @@
   <data name="Characters" xml:space="preserve">
     <value>Characters</value>
   </data>
+  <data name="ClearAll" xml:space="preserve">
+    <value>Clear all</value>
+  </data>
   <data name="Deselect" xml:space="preserve">
     <value>Deselect</value>
   </data>
