@@ -34,7 +34,6 @@ namespace ANT.Modules
             set { SetProperty(ref _recents, value); }
         }
 
-        //TODO: ajeitar a formatação da última vez vista, formato desejado  dd/mm/aaaa hh:mm:ss
         //TODO: implementar o comando de item selecionado, navegar para a AnimeSpecsViewModel após clicar
 
         #endregion

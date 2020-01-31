@@ -55,8 +55,6 @@ namespace ANT.Modules
                     favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync());
                 }
 
-                _favoritedAnimeSubEntry.IsFavorited = true;
-
                 await AddOrUpdateRecentAnimeAsync(_favoritedAnimeSubEntry);
 
                 Episodes = favoritedAnime.Episodes;
