@@ -159,7 +159,7 @@ namespace ANT.Modules
         public ICommand CheckAnimeGenresCommand { get; private set; }
         private async Task OnCheckAnimeGenres()
         {
-            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<AnimeGenrePopupView>();
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<AnimeGenrePopupViewModel>();
 
             if (canNavigate)
                 await NavigationManager.NavigatePopUpAsync<AnimeGenrePopupViewModel>(AnimeContext.Anime.Genres.ToList());

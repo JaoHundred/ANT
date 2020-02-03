@@ -41,7 +41,7 @@ namespace ANT.Modules
         public ICommand GenreSearchCommand { get; private set; }
         public async Task OnGenreSearch (string genreName)
         {
-            bool canNavigate = await NavigationManager.CanShellNavigateAsync<CatalogueView>();
+            bool canNavigate = await NavigationManager.CanShellNavigateAsync<CatalogueViewModel>();
 
             if (canNavigate)
             {

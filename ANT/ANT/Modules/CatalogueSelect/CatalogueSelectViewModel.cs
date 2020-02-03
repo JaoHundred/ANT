@@ -23,7 +23,7 @@ namespace ANT.Modules
         public ICommand OpenSeasonCatalogueCommand { get; private set; }
         private async Task OnOpenSeasonCatalogue()
         {
-            bool canNavigate = await NavigationManager.CanShellNavigateAsync<CatalogueView>();
+            bool canNavigate = await NavigationManager.CanShellNavigateAsync<CatalogueViewModel>();
 
             if (canNavigate)
                 await NavigationManager.NavigateShellAsync<CatalogueViewModel>();

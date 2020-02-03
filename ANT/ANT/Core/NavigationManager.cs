@@ -92,7 +92,7 @@ namespace ANT.Core
         /// </summary>
         /// <param name="executeBeforeReturn">vai executar sempre antes do CanNavigate retornar</param>
         /// <returns></returns>
-        public static Task<bool> CanShellNavigateAsync<T>(Action executeBeforeReturn = null) where T : Page
+        public static Task<bool> CanShellNavigateAsync<T>(Action executeBeforeReturn = null) where T : BaseViewModel
         {
             var lastPageInStack = Shell.Current.Navigation.NavigationStack.LastOrDefault();
 
@@ -105,7 +105,7 @@ namespace ANT.Core
         /// </summary>
         /// <param name="executeBeforeReturn">vai executar sempre antes do CanNavigate retornar</param>
         /// <returns></returns>
-        public static Task<bool> CanPopUpNavigateAsync<T>(Action executeBeforeReturn = null) where T : Page
+        public static Task<bool> CanPopUpNavigateAsync<T>(Action executeBeforeReturn = null) where T : BaseViewModel
         {
             var lastPageInStack = Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.LastOrDefault();
             return CanNavigateAsync<T>(executeBeforeReturn, lastPageInStack);
@@ -145,12 +145,14 @@ namespace ANT.Core
             return vmType;
         }
 
-        private static Task<bool> CanNavigateAsync<T>(Action executeBeforeReturn, Page lastPageInStack) where T : Page
+        private static Task<bool> CanNavigateAsync<T>(Action executeBeforeReturn, Page lastPageInStack) where T : BaseViewModel
         {
             //checa se existe uma mesma página na última posição da navigation stack
             return Task.Run(() =>
             {
-                if (lastPageInStack?.GetType() == typeof(T))
+                Type viewType = GetViewFromViewModel<T>();
+
+                if (lastPageInStack?.GetType() == viewType)
                 {
                     if (executeBeforeReturn != null)
                         executeBeforeReturn.Invoke();

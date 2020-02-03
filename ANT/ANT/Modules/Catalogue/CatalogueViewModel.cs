@@ -261,7 +261,7 @@ namespace ANT.Modules
             if (SelectedItems == null || SelectedItems.Count == 0)
                 return;
 
-            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ProgressPopupView>();
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ProgressPopupViewModel>();
 
             if (canNavigate)
             {
@@ -302,7 +302,7 @@ namespace ANT.Modules
         public ICommand OpenAnimeCommand { get; private set; }
         public async Task OnOpenAnime()
         {
-            bool canNavigate = await NavigationManager.CanShellNavigateAsync<AnimeSpecsView>(() =>
+            bool canNavigate = await NavigationManager.CanShellNavigateAsync<AnimeSpecsViewModel>(() =>
               {
                   SelectedItem = null;
               });
