@@ -150,6 +150,15 @@
   <data name="ClearAll" xml:space="preserve">
     <value>Apagar todos</value>
   </data>
+  <data name="ClearCannotBeUndone" xml:space="preserve">
+    <value>Tem certeza que deseja limpar a lista? Esta ação não pode ser desfeita.</value>
+  </data>
+  <data name="ClearRecentList" xml:space="preserve">
+    <value>Limpar lista de recentes</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
   <data name="Deselect" xml:space="preserve">
     <value>Tirar seleção</value>
   </data>

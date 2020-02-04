@@ -55,16 +55,23 @@ namespace ANT.Modules
             if (Recents.Count == 0)
                 return;
 
-            //TODO: chamar aqui o modal de confirmação quando ele existir 
-            //https://github.com/JaoHundred/ANT/issues/16
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ChoiceModalViewModel>();
 
-            await Task.Run(() =>
+            if (canNavigate)
             {
-                App.RecentAnimes.Clear();
-                JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
-            });
+                var confirmDelegateAction = new Action(async () =>
+                {
+                    await Task.Run(() =>
+                    {
+                        App.RecentAnimes.Clear();
+                        JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
+                    });
 
-            Recents.Clear();
+                    Recents.Clear();
+                });
+
+                await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.ClearRecentList, Lang.Lang.ClearCannotBeUndone, confirmDelegateAction);
+            }
         }
 
         public ICommand OpenAnimeCommand { get; private set; }

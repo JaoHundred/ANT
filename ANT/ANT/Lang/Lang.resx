@@ -150,6 +150,15 @@
   <data name="ClearAll" xml:space="preserve">
     <value>Clear all</value>
   </data>
+  <data name="ClearCannotBeUndone" xml:space="preserve">
+    <value>Are you sure you want clear the list? This action cannot be undone.</value>
+  </data>
+  <data name="ClearRecentList" xml:space="preserve">
+    <value>Clear recent list</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
   <data name="Deselect" xml:space="preserve">
     <value>Deselect</value>
   </data>

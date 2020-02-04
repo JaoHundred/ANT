@@ -31,9 +31,9 @@ namespace ANT.Modules
         //tappedcommand,o selected item nunca era setado, o outro bug é mais uma falta, não há na data de hoje como passar binding via parâmetro do converter
         // e nem soluções com multibinding
         Frame _lastFrameSelected;
-        readonly ResourceDictionary _resourceDic = ThemeManager.GetCurrentTheme();
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
+            ResourceDictionary _resourceDic = ThemeManager.GetCurrentTheme();
             if (_lastFrameSelected != null)
                 _lastFrameSelected.BackgroundColor = (Color)_resourceDic["CatalogueAnimeFrameColor"];
 

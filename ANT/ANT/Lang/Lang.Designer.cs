@@ -160,6 +160,33 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want clear the list? This action cannot be undone..
+        /// </summary>
+        public static string ClearCannotBeUndone {
+            get {
+                return ResourceManager.GetString("ClearCannotBeUndone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear recent list.
+        /// </summary>
+        public static string ClearRecentList {
+            get {
+                return ResourceManager.GetString("ClearRecentList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm.
+        /// </summary>
+        public static string Confirm {
+            get {
+                return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deselect.
         /// </summary>
         public static string Deselect {
