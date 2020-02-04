@@ -23,7 +23,9 @@
                      Command="{Binding ClearAllRecentCommand}"/>
     </ContentPage.ToolbarItems>
 
-    <CollectionView ItemsSource="{Binding Recents}">
+    <CollectionView x:Name="RecentCollectionView" ItemsSource="{Binding Recents}" 
+                    SelectedItem="{Binding SelectedRecent, Mode=TwoWay}" SelectionMode="Single"
+                    SelectionChangedCommand="{Binding OpenAnimeCommand}">
         <CollectionView.EmptyView>
             <Grid>
                 <Label Text="{res:Translate NothingForNow}" FontSize="40" VerticalOptions="Center"
@@ -39,6 +41,9 @@
             <DataTemplate x:DataType="model:RecentVisualized">
                 <ContentView>
                     <Frame HeightRequest="200" Margin="10,0,10,0">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                        </Frame.GestureRecognizers>
                         <Grid>
 
                             <ffimage:CachedImage Grid.RowSpan="3" x:Name="CacheImage" Source="{Binding Anime.FavoritedAnime.ImageURL}"/>

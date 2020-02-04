@@ -40,7 +40,7 @@ namespace ANT.Core
                     RemoveCurrentTheme(mergedDictionaries);
 
                     await UpdateSelectedThemeAsync(themeId);
-                    
+
                     Device.BeginInvokeOnMainThread(() =>
                     {
                         switch (theme)
@@ -89,6 +89,12 @@ namespace ANT.Core
                Themes currentTheme = await CurrentThemeOrCreateAsync();
                await ChangeThemeAsync(currentTheme);
            });
+        }
+
+        public static ResourceDictionary GetCurrentTheme()
+        {
+            var dics = Application.Current.Resources.MergedDictionaries;
+            return dics.First(p => p is LightTheme || p is DarkTheme);
         }
 
         /// <summary>

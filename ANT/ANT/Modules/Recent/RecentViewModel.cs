@@ -17,6 +17,7 @@ namespace ANT.Modules
         public RecentViewModel()
         {
             ClearAllRecentCommand = new magno.AsyncCommand(OnClearAllRecent);
+            OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
 
             Recents = new ObservableRangeCollection<RecentVisualized>();
         }
@@ -38,8 +39,13 @@ namespace ANT.Modules
             set { SetProperty(ref _recents, value); }
         }
 
-        //TODO: implementar o comando de item selecionado, navegar para a AnimeSpecsViewModel após clicar
+        private RecentVisualized _selectedRecent;
 
+        public RecentVisualized SelectedRecent
+        {
+            get { return _selectedRecent; }
+            set { SetProperty(ref _selectedRecent, value); }
+        }
         #endregion
 
         #region commands
@@ -59,6 +65,17 @@ namespace ANT.Modules
             });
 
             Recents.Clear();
+        }
+
+        public ICommand OpenAnimeCommand { get; private set; }
+        private async Task OnOpenAnime()
+        {
+            bool canNavigate = await NavigationManager.CanShellNavigateAsync<AnimeSpecsViewModel>();
+
+            if (canNavigate)
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedRecent.Anime);
+
+            SelectedRecent = null;
         }
         #endregion
     }
