@@ -47,18 +47,19 @@ namespace ANT.Core
         }
 
         /// <summary>
-        /// decrescente e não inclui a página atual na remoção
+        /// Remove navegações antigas, menos navegações para raiz e navegações da raiz hierárquica
         /// </summary>
-        /// <param name="stackDepth"></param>
-        public static void RemoveLastPagesFromShellStack(int stackDepth)
+        public static void RemoveAllPagesExceptRootAndHierarquicalRoot()
         {
             var pagesToRemove = new List<Page>();
 
-            for (int i = stackDepth - 1; i >= 0; i--)
+            for (int i = PageStackCount - 1; i >= 0; i--)
                 pagesToRemove.Add(Shell.Current.Navigation.NavigationStack[i]);
 
             foreach (var view in pagesToRemove)
-                if (view != null)
+                if (view != null
+                    && view.GetType() != typeof(RecentView)
+                    && view.GetType() != typeof(CatalogueSelectView))
                     Shell.Current.Navigation.RemovePage(view);
         }
 
@@ -129,7 +130,7 @@ namespace ANT.Core
             ConstructorInfo constructor = await reflectionTask;
             var vm = (T)constructor.Invoke(param);
 
-            ConstructorInfo viewConstructor =  viewType.GetConstructor(Type.EmptyTypes);
+            ConstructorInfo viewConstructor = viewType.GetConstructor(Type.EmptyTypes);
             Page view = (Page)viewConstructor.Invoke(null);
             view.BindingContext = vm;
 

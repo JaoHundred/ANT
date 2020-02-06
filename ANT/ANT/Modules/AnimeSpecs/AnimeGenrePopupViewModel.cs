@@ -39,7 +39,7 @@ namespace ANT.Modules
 
         #region comandos
         public ICommand GenreSearchCommand { get; private set; }
-        public async Task OnGenreSearch (string genreName)
+        public async Task OnGenreSearch(string genreName)
         {
             bool canNavigate = await NavigationManager.CanShellNavigateAsync<CatalogueViewModel>();
 
@@ -49,7 +49,7 @@ namespace ANT.Modules
                 GenreSearch genre = (GenreSearch)Enum.Parse(typeof(GenreSearch), formatedString, true);
 
                 await NavigationManager.PopPopUpPageAsync();
-                NavigationManager.RemoveLastPagesFromShellStack(3);
+                NavigationManager.RemoveAllPagesExceptRootAndHierarquicalRoot();
                 await NavigationManager.NavigateShellAsync<CatalogueViewModel>(genre);
             }
         }
