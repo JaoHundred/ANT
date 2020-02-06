@@ -168,8 +168,10 @@ namespace ANT.Modules
         public ICommand CheckAnimeCharactersCommand { get; private set; }
         private async Task OnCheckAnimeCharacters()
         {
-            //TODO: implementar, quando tiver a view para os personagens, linkar aqui
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<AnimeCharacterPopupViewModel>();
 
+            if(canNavigate)
+                await NavigationManager.NavigatePopUpAsync<AnimeCharacterPopupViewModel>(AnimeContext.Anime.MalId);
         }
 
         public ICommand OpenAnimeInBrowserCommand { get; private set; }

@@ -204,6 +204,9 @@
   <data name="MultiSelect" xml:space="preserve">
     <value>Selecionar</value>
   </data>
+  <data name="NoDataAvailable" xml:space="preserve">
+    <value>Nenhum dado disponível</value>
+  </data>
   <data name="NothingForNow" xml:space="preserve">
     <value>Nada por enquanto</value>
   </data>

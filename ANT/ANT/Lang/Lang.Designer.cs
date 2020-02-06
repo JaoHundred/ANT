@@ -322,6 +322,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No data available.
+        /// </summary>
+        public static string NoDataAvailable {
+            get {
+                return ResourceManager.GetString("NoDataAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nothing for now.
         /// </summary>
         public static string NothingForNow {

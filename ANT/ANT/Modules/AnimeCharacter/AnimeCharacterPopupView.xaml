@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<popup:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:popup="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+             xmlns:res="clr-namespace:ANT.Lang"
+             xmlns:converter="clr-namespace:ANT.Converter"
+             xmlns:vm="clr-namespace:ANT.Modules"
+             xmlns:jikan="clr-namespace:JikanDotNet;assembly=JikanDotNet"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"    
+             mc:Ignorable="d"
+             x:Class="ANT.Modules.AnimeCharacterPopupView"
+             HasSystemPadding="True"
+             Padding="60"
+             x:DataType="vm:AnimeCharacterPopupViewModel"
+             x:Name="AnimeChView">
+
+    <popup:PopupPage.Resources>
+        <converter:InversorConverter x:Key="InversorConverter"/>
+        <converter:VACollectionToSpecifiedIndexConverter x:Key="VATOIndex"/>
+    </popup:PopupPage.Resources>
+
+    <Grid Style="{StaticResource GridPopUpViewStyle}">
+        <CollectionView ItemsSource="{Binding Characters}">
+            <CollectionView.EmptyView>
+                <Grid >
+                    <Label Text="{res:Translate NoDataAvailable}" VerticalOptions="Center" 
+                           HorizontalOptions="Center" FontSize="30" 
+                           IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}}"/>
+                    <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                       IsVisible="{Binding IsLoading}"/>
+                </Grid>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="jikan:CharacterEntry">
+                    <ContentView>
+                        <Frame Style="{StaticResource FrameGenreStyle}" Margin="5">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.OpenAnimeCharacterCommand, Source={x:Reference AnimeChView}}"
+                                                      CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <ffimage:CachedImage x:Name="CharacterCachedImage" Source="{Binding ImageURL}" 
+                                                     DownsampleHeight="200" DownsampleWidth="200"/>
+                                
+                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference CharacterCachedImage}}"
+                                                   IsVisible="{Binding IsLoading, Source={x:Reference CharacterCachedImage}}"/>
+                                
+                                <Label Grid.Column="1" Text="{Binding Name}" FontSize="Title" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                <Label Grid.Column="1" Text="{Binding VoiceActors, Converter={StaticResource VATOIndex}, ConverterParameter=0}"
+                                       FontSize="Body" FontAttributes="Bold" VerticalOptions="End" HorizontalOptions="Center"/>
+                            </Grid>
+                        </Frame>
+                    </ContentView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+
+
+</popup:PopupPage>

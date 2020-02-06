@@ -1,0 +1,26 @@
+﻿using JikanDotNet;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using Xamarin.Forms;
+using System.Linq;
+
+namespace ANT.Converter
+{
+    public class VACollectionToSpecifiedIndexConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var index = int.Parse(parameter.ToString());
+            var collection = (ICollection<VoiceActorEntry>)value;
+
+            return collection.ElementAtOrDefault(index);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
