@@ -5,26 +5,38 @@ VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ANT.Android", "ANT.Android\ANT.Android.csproj", "{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ANT", "ANT\ANT.csproj", "{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANT", "ANT\ANT.csproj", "{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Debug|x86.Build.0 = Debug|Any CPU
+		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Debug|x86.Deploy.0 = Debug|Any CPU
 		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Release|x86.ActiveCfg = Release|Any CPU
+		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Release|x86.Build.0 = Release|Any CPU
+		{13F43C55-ADEA-45CC-AEBA-6D9412725ACF}.Release|x86.Deploy.0 = Release|Any CPU
 		{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}.Debug|x86.ActiveCfg = Debug|x86
+		{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}.Debug|x86.Build.0 = Debug|x86
 		{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}.Release|Any CPU.Build.0 = Release|Any CPU
 		{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}.Release|x86.ActiveCfg = Release|Any CPU
+		{77DD2EEF-5DDB-48FD-AE8F-4B30C6894A43}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
