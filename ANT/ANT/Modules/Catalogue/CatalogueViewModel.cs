@@ -299,19 +299,17 @@ namespace ANT.Modules
             Animes.ReplaceRange(resultList);
         }
 
+        bool _canNavigate = true;
         public ICommand OpenAnimeCommand { get; private set; }
         public async Task OnOpenAnime()
         {
-            bool canNavigate = await NavigationManager.CanShellNavigateAsync<AnimeSpecsViewModel>(() =>
-              {
-                  SelectedItem = null;
-              });
 
-
-            if (!IsMultiSelect && SelectedItem != null && canNavigate)
+            if (!IsMultiSelect && SelectedItem != null && _canNavigate)
             {
+                _canNavigate = false;
                 await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedItem);
                 SelectedItem = null;
+                _canNavigate = true;
             }
         }
 

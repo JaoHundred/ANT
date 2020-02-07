@@ -41,16 +41,17 @@ namespace ANT.Modules
         public ICommand GenreSearchCommand { get; private set; }
         public async Task OnGenreSearch(string genreName)
         {
-            bool canNavigate = await NavigationManager.CanShellNavigateAsync<CatalogueViewModel>();
-
-            if (canNavigate)
+            if (IsNotBusy)
             {
+                IsBusy = true;
                 string formatedString = await RemoveOcurrencesFromStringAsync(genreName, new char[] { '-', ' ' });
                 GenreSearch genre = (GenreSearch)Enum.Parse(typeof(GenreSearch), formatedString, true);
 
                 await NavigationManager.PopPopUpPageAsync();
                 NavigationManager.RemoveAllPagesExceptRootAndHierarquicalRoot();
                 await NavigationManager.NavigateShellAsync<CatalogueViewModel>(genre);
+
+                IsBusy = false;
             }
         }
         #endregion

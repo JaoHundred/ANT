@@ -88,19 +88,6 @@ namespace ANT.Core
         }
 
         /// <summary>
-        /// Use esse método para previnir de executar duplo clique nas navegações entre views(impedindo de abrir mais de uma instância)
-        /// usar tipos View
-        /// </summary>
-        /// <param name="executeBeforeReturn">vai executar sempre antes do CanNavigate retornar</param>
-        /// <returns></returns>
-        public static Task<bool> CanShellNavigateAsync<T>(Action executeBeforeReturn = null) where T : BaseViewModel
-        {
-            var lastPageInStack = Shell.Current.Navigation.NavigationStack.LastOrDefault();
-
-            return CanNavigateAsync<T>(executeBeforeReturn, lastPageInStack);
-        }
-
-        /// <summary>
         /// Use esse método para previnir de executar duplo clique nas navegações entre views PopUp(impedindo de abrir mais de uma instância)
         /// Usar tipos View
         /// </summary>

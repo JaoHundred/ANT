@@ -144,6 +144,9 @@
   <data name="ChangeTheme" xml:space="preserve">
     <value>Change theme</value>
   </data>
+  <data name="CharacterPictures" xml:space="preserve">
+    <value>Character pictures</value>
+  </data>
   <data name="Characters" xml:space="preserve">
     <value>Characters</value>
   </data>

@@ -68,12 +68,12 @@ namespace ANT.Modules
         public ICommand OpenAnimeCharacterCommand { get; private set; }
         private async Task OnOpenAnimeCharacter(CharacterEntry characterEntry)
         {
-            bool canNavigate = await NavigationManager.CanShellNavigateAsync<AnimeCharacterViewModel>();
-
-            if (canNavigate)
+            if (IsNotBusy)
             {
+                IsBusy = true;
                 await NavigationManager.PopPopUpPageAsync();
-                await NavigationManager.NavigateShellAsync<AnimeCharacterViewModel>(characterEntry);
+                await NavigationManager.NavigateShellAsync<AnimeCharacterViewModel>(characterEntry.MalId);
+                IsBusy = false;
             }
         }
         #endregion

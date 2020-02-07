@@ -77,10 +77,12 @@ namespace ANT.Modules
         public ICommand OpenAnimeCommand { get; private set; }
         private async Task OnOpenAnime()
         {
-            bool canNavigate = await NavigationManager.CanShellNavigateAsync<AnimeSpecsViewModel>();
-
-            if (canNavigate)
+            if (IsNotBusy && SelectedRecent != null)
+            {
+                IsBusy = true;
                 await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedRecent.Anime);
+                IsBusy = false;
+            }
 
             SelectedRecent = null;
         }
