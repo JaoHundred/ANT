@@ -14,7 +14,6 @@
              Appearing="ContentPage_Appearing">
 
     <ContentPage.Resources>
-        <converter:TextReductionConverter x:Key="TextReductionConverter"/>
         <converter:DateTimeOffSetFormatToDadeAndHoursConverter x:Key="DateTimeOffSetConverter"/>
     </ContentPage.Resources>
 
@@ -50,7 +49,7 @@
                             <ActivityIndicator Grid.RowSpan="3" IsRunning="{Binding IsLoading, Source={x:Reference CacheImage}}"
                                                IsVisible="{Binding IsLoading, Source={x:Reference CacheImage}}"/>
 
-                            <Label Grid.Column="1" Text="{Binding Anime.FavoritedAnime.Title, Converter={StaticResource TextReductionConverter}}" 
+                            <Label Grid.Column="1" Text="{Binding Anime.FavoritedAnime.Title}" LineBreakMode="TailTruncation" 
                                    FontSize="Title" MaxLines="2"/>
                             <Label Grid.Row="1" Grid.Column="1" MaxLines="2"  Text="{res:Translate LastSeen}" FontSize="Title"/>
                             <Label Grid.Row="2" Grid.Column="1" Text="{Binding Date, Converter={StaticResource DateTimeOffSetConverter}}" FontSize="Title"/>

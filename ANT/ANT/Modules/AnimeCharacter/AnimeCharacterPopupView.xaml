@@ -6,6 +6,7 @@
              xmlns:popup="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:converter="clr-namespace:ANT.Converter"
+             xmlns:behavior="clr-namespace:ANT._Behaviors"    
              xmlns:vm="clr-namespace:ANT.Modules"
              xmlns:jikan="clr-namespace:JikanDotNet;assembly=JikanDotNet"
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"    
@@ -19,6 +20,7 @@
     <popup:PopupPage.Resources>
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:VACollectionToSpecifiedIndexConverter x:Key="VATOIndex"/>
+        <behavior:LabelLinesBehavior x:Key="LabelLinesBehavior"/>
     </popup:PopupPage.Resources>
 
     <Grid Style="{StaticResource GridPopUpViewStyle}">
@@ -36,26 +38,32 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="jikan:CharacterEntry">
                     <ContentView>
-                        <Frame Style="{StaticResource FrameGenreStyle}" Margin="5">
+                        <Frame Style="{StaticResource FrameGenreStyle}" Margin="5" >
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding BindingContext.OpenAnimeCharacterCommand, Source={x:Reference AnimeChView}}"
                                                       CommandParameter="{Binding .}"/>
                             </Frame.GestureRecognizers>
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
 
-                                <ffimage:CachedImage x:Name="CharacterCachedImage" Source="{Binding ImageURL}" 
-                                                     DownsampleHeight="200" DownsampleWidth="200"/>
-                                
-                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference CharacterCachedImage}}"
+                                <ffimage:CachedImage Grid.RowSpan="2" x:Name="CharacterCachedImage" Source="{Binding ImageURL}" 
+                                                     DownsampleHeight="200" HeightRequest="140" />
+
+                                <ActivityIndicator Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference CharacterCachedImage}}"
                                                    IsVisible="{Binding IsLoading, Source={x:Reference CharacterCachedImage}}"/>
-                                
-                                <Label Grid.Column="1" Text="{Binding Name}" FontSize="Title" FontAttributes="Bold" HorizontalOptions="Center"/>
-                                <Label Grid.Column="1" Text="{Binding VoiceActors, Converter={StaticResource VATOIndex}, ConverterParameter=0}"
-                                       FontSize="Body" FontAttributes="Bold" VerticalOptions="End" HorizontalOptions="Center"/>
+
+                                <Label Grid.Column="1" Text="{Binding Name}" FontSize="Title" FontAttributes="Bold" 
+                                       LineBreakMode="TailTruncation" >
+                                    <Label.Behaviors>
+                                        <behavior:LabelLinesBehavior/>
+                                    </Label.Behaviors>
+                                </Label>
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding VoiceActors, Converter={StaticResource VATOIndex}, ConverterParameter=0}"
+                                       FontSize="Body" FontAttributes="Bold" VerticalOptions="End"
+                                       LineBreakMode="TailTruncation"/>
                             </Grid>
                         </Frame>
                     </ContentView>
