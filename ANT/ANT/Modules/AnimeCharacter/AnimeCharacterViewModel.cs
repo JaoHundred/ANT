@@ -89,5 +89,6 @@ namespace ANT.Modules
         #endregion
 
         //TODO: https://github.com/JaoHundred/ANT/issues/20
+        //implementar a parte dos Voice Actors na tela
     }
 }

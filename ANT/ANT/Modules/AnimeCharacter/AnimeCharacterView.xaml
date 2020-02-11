@@ -7,20 +7,25 @@
              xmlns:vm="clr-namespace:ANT.Modules"
              xmlns:jikan="clr-namespace:JikanDotNet;assembly=JikanDotNet"
              xmlns:res="clr-namespace:ANT.Lang"
+             xmlns:converter="clr-namespace:ANT.Converter"
              x:DataType="vm:AnimeCharacterViewModel"
              mc:Ignorable="d"
              x:Class="ANT.Modules.AnimeCharacterView"
              x:Name="Pageview">
+    
+    <ContentPage.Resources>
+        <converter:InversorConverter x:Key="InversorConverter"/>
+    </ContentPage.Resources>
 
-    <Grid Margin="5,5,5,0" RowSpacing="3">
+    <Grid Margin="3,3,3,0" RowSpacing="3">
         <Frame>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition/>
+                    <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <StackLayout>
+                <StackLayout >
                     <ScrollView Orientation="Horizontal">
                         <Label  Text="{Binding CharacterContext.Name}" HorizontalOptions="Center"
                                 FontSize="Title" d:Text="Name"/>
@@ -41,14 +46,32 @@
                                    IsVisible="{Binding IsLoading, Source={x:Reference ChImage}}"/>
             </Grid>
         </Frame>
-        <Frame Grid.Row="1">
+        <Button Style="{StaticResource FavoriteRoundedButtonStyle}" Command="{Binding FavoriteCommand}" 
+                HorizontalOptions="End" VerticalOptions="End" Margin="0,0,10,10"
+                IsVisible="{Binding IsLoading, Source={x:Reference ChImage}, Converter={StaticResource InversorConverter}}">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                 Glyph="{StaticResource Star}"
+                                 Size="20"/>
+            </Button.ImageSource>
+            <Button.Triggers>
+                <DataTrigger TargetType="Button" Binding="{Binding CharacterContext.IsFavorited}" Value="True">
+                    <Setter Property="ImageSource">
+                        <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                         Glyph="{StaticResource StarFill}"
+                                         Size="22"/>
+                    </Setter>
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
+        <Frame Grid.Row="1" Margin="0,0,0,3">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Label Text="{res:Translate CharacterPictures}" d:Text="Pictures" FontSize="Title"/>
-                <Frame Grid.Row="1" Style="{StaticResource FrameGenreStyle}" BorderColor="Gray">
+                <Label Text="{res:Translate Pictures}" d:Text="Pictures" FontSize="Title"/>
+                <Frame Grid.Row="1" Style="{StaticResource FrameGenreStyle}" BorderColor="Gray" >
                     <CollectionView ItemsSource="{Binding CharacterPictures}">
                         <CollectionView.EmptyView>
                             <Grid>
@@ -79,6 +102,7 @@
                 </Frame>
             </Grid>
         </Frame>
+
         <Grid Grid.RowSpan="2" Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
               IsVisible="{Binding IsLoading}" d:IsVisible="False">
             <ActivityIndicator IsRunning="{Binding IsLoading}"

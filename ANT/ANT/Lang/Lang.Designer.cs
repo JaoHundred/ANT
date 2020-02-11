@@ -142,15 +142,6 @@ namespace ANT.Lang {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Character pictures.
-        /// </summary>
-        public static string CharacterPictures {
-            get {
-                return ResourceManager.GetString("CharacterPictures", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Characters.
         /// </summary>
         public static string Characters {
@@ -345,6 +336,15 @@ namespace ANT.Lang {
         public static string NothingForNow {
             get {
                 return ResourceManager.GetString("NothingForNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pictures.
+        /// </summary>
+        public static string Pictures {
+            get {
+                return ResourceManager.GetString("Pictures", resourceCulture);
             }
         }
         

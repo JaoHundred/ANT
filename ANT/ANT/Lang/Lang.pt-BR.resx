@@ -144,9 +144,6 @@
   <data name="ChangeTheme" xml:space="preserve">
     <value>Trocar tema</value>
   </data>
-  <data name="CharacterPictures" xml:space="preserve">
-    <value>Imagens do personagem</value>
-  </data>
   <data name="Characters" xml:space="preserve">
     <value>Personagens</value>
   </data>
@@ -212,6 +209,9 @@
   </data>
   <data name="NothingForNow" xml:space="preserve">
     <value>Nada por enquanto</value>
+  </data>
+  <data name="Pictures" xml:space="preserve">
+    <value>Imagens</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Por favor, aguarde</value>

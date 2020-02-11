@@ -30,13 +30,13 @@
     </TabbedPage.ToolbarItems>
 
     <ContentPage Title="{res:Translate Details}" x:DataType="VM:AnimeSpecsViewModel">
-        <Grid Margin="5,5,5,0"  RowSpacing="3">
+        <Grid Margin="2,5,2,2" RowSpacing="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="45*"/>
                 <RowDefinition Height="55*"/>
             </Grid.RowDefinitions>
 
-            <Frame Padding="0,10,0,10">
+            <Frame >
                 <Grid ColumnSpacing="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="30*"/>
@@ -65,15 +65,15 @@
                                        IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}"
                                        IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
 
-                    <StackLayout Grid.Column="2" Orientation="Vertical" Spacing="0" HorizontalOptions="Center">
+                    <StackLayout Grid.Column="2" Orientation="Vertical" Spacing="0" HorizontalOptions="End">
                         <Label Text="{res:Translate Airing}" FontSize="19"/>
                         <Label Text="{Binding AnimeContext.Anime.Aired.From, Converter={StaticResource DateConverter}}" FontSize="18"/>
                         <Label x:Name="EndDateLabel" Text="{Binding AnimeContext.Anime.Aired.To, Converter={StaticResource DateConverter},
                             ConverterParameter={x:Reference EndDateLabel}}" FontSize="18"/>
                     </StackLayout>
 
-                    <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource FavoriteRoundedButtonStyle}" HorizontalOptions="Center"
-                            VerticalOptions="Center" Command="{Binding FavoriteCommand}">
+                    <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource FavoriteRoundedButtonStyle}" HorizontalOptions="End"
+                            VerticalOptions="End" Command="{Binding FavoriteCommand}" >
                         <Button.ImageSource>
                             <FontImageSource FontFamily="{StaticResource FontIcon}"
                                      Glyph="{StaticResource Star}"
@@ -84,7 +84,7 @@
                                 <Setter Property="ImageSource">
                                     <FontImageSource FontFamily="{StaticResource FontIcon}"
                                      Glyph="{StaticResource StarFill}"
-                                     Size="22"/>
+                                     Size="20"/>
                                 </Setter>
                             </DataTrigger>
                         </Button.Triggers>
@@ -130,7 +130,7 @@
     </ContentPage>
 
     <ContentPage Title="{res:Translate Episodes}">
-        <Grid Margin="5">
+        <Grid Margin="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
