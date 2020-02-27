@@ -100,6 +100,7 @@ namespace ANT.Modules
 
 
         //TODO: implementar o clique nos animes da animografia para ir ao anime
+        //problemas encontrados, descobrir como passar animes entre telas de AnimeSpecsView, ver como envelopar um tipo anime em um favoritedsubentry
 
         //TODO: https://github.com/JaoHundred/ANT/issues/20
         //implementar a parte dos Voice Actors na tela
