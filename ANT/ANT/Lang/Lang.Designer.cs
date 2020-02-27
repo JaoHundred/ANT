@@ -79,6 +79,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Animeography.
+        /// </summary>
+        public static string Animeography {
+            get {
+                return ResourceManager.GetString("Animeography", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to at.
         /// </summary>
         public static string At {
@@ -381,6 +390,15 @@ namespace ANT.Lang {
         public static string RemovedFromFavorite {
             get {
                 return ResourceManager.GetString("RemovedFromFavorite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        public static string Role {
+            get {
+                return ResourceManager.GetString("Role", resourceCulture);
             }
         }
         

@@ -29,6 +29,8 @@ namespace ANT.Modules
             var characterId = (long)param;
 
             IsLoading = true;
+            CanEnable = !IsLoading;
+            
             try
             {
                 await Task.Delay(TimeSpan.FromSeconds(4));
@@ -47,6 +49,7 @@ namespace ANT.Modules
             finally
             {
                 IsLoading = false;
+                CanEnable = !IsLoading;
             }
         }
 
@@ -56,6 +59,13 @@ namespace ANT.Modules
         {
             get { return _isLoading; }
             set { SetProperty(ref _isLoading, value); }
+        }
+
+        private bool _canEnable;
+        public bool CanEnable
+        {
+            get { return _canEnable; }
+            set { SetProperty(ref _canEnable, value); }
         }
 
         private Character _characterContext;
@@ -87,6 +97,9 @@ namespace ANT.Modules
             await Launcher.TryOpenAsync(picture.Large);
         }
         #endregion
+
+
+        //TODO: implementar o clique nos animes da animografia para ir ao anime
 
         //TODO: https://github.com/JaoHundred/ANT/issues/20
         //implementar a parte dos Voice Actors na tela

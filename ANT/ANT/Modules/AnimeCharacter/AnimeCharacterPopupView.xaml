@@ -47,21 +47,26 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
 
-                                <ffimage:CachedImage Grid.RowSpan="2" x:Name="CharacterCachedImage" Source="{Binding ImageURL}" 
+                                <ffimage:CachedImage Grid.RowSpan="3" x:Name="CharacterCachedImage" Source="{Binding ImageURL}" 
                                                      DownsampleHeight="200" HeightRequest="140" />
 
-                                <ActivityIndicator Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference CharacterCachedImage}}"
+                                <ActivityIndicator Grid.RowSpan="3" IsRunning="{Binding IsLoading, Source={x:Reference CharacterCachedImage}}"
                                                    IsVisible="{Binding IsLoading, Source={x:Reference CharacterCachedImage}}"/>
 
                                 <Label Grid.Column="1" Text="{Binding Name}" FontSize="Title" FontAttributes="Bold" 
                                        LineBreakMode="TailTruncation" >
                                     <Label.Behaviors>
-                                        <behavior:LabelLinesBehavior/>
+                                        <behavior:LabelLinesBehavior MaxLines="2"/>
                                     </Label.Behaviors>
                                 </Label>
-                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding VoiceActors, Converter={StaticResource VATOIndex}, ConverterParameter=0}"
+                                <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Vertical" Spacing="0">
+                                    <Label Text="{res:Translate Role}" FontSize="Body" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Role}" FontSize="Body"/>
+                                </StackLayout>
+                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding VoiceActors, Converter={StaticResource VATOIndex}, ConverterParameter=0}"
                                        FontSize="Body" FontAttributes="Bold" VerticalOptions="End"
                                        LineBreakMode="TailTruncation"/>
                             </Grid>

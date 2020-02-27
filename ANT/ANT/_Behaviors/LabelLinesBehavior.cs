@@ -8,6 +8,9 @@ namespace ANT._Behaviors
     /// </summary>
     public class LabelLinesBehavior : Behavior<Label>
     {
+
+        public int MaxLines { get; set; }
+
         protected override void OnAttachedTo(Label bindable)
         {
             bindable.PropertyChanged += Bindable_PropertyChanged;
@@ -24,7 +27,7 @@ namespace ANT._Behaviors
                 if (tx == null)
                     return;
 
-                bindable.MaxLines = tx.Length >= 11 && !tx.Contains(",") && !tx.Contains(" ") ? 1 : 2;
+                bindable.MaxLines = tx.Length >= 11 && !tx.Contains(",") && !tx.Contains(" ") ? 1 : MaxLines;
             }
         }
 

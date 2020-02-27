@@ -123,6 +123,9 @@
   <data name="Airing" xml:space="preserve">
     <value>Air Date</value>
   </data>
+  <data name="Animeography" xml:space="preserve">
+    <value>Animeography</value>
+  </data>
   <data name="At" xml:space="preserve">
     <value>at</value>
   </data>
@@ -224,6 +227,9 @@
   </data>
   <data name="RemovedFromFavorite" xml:space="preserve">
     <value>Removed from favorites</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Role</value>
   </data>
   <data name="Saturdays" xml:space="preserve">
     <value>Saturdays</value>

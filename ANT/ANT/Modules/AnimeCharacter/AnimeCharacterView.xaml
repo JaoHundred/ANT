@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,106 +8,138 @@
              xmlns:jikan="clr-namespace:JikanDotNet;assembly=JikanDotNet"
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:converter="clr-namespace:ANT.Converter"
+             xmlns:behavior="clr-namespace:ANT._Behaviors"
              x:DataType="vm:AnimeCharacterViewModel"
              mc:Ignorable="d"
              x:Class="ANT.Modules.AnimeCharacterView"
-             x:Name="Pageview">
-    
-    <ContentPage.Resources>
-        <converter:InversorConverter x:Key="InversorConverter"/>
-    </ContentPage.Resources>
+             x:Name="Pageview" 
+            Shell.FlyoutBehavior="Disabled" 
+            IsEnabled="{Binding CanEnable}">
 
-    <Grid Margin="3,3,3,0" RowSpacing="3">
-        <Frame>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+    <ContentPage Title="{res:Translate Details}">
+        <ContentPage.Resources>
+            <converter:InversorConverter x:Key="InversorConverter"/>
+        </ContentPage.Resources>
 
-                <StackLayout >
-                    <ScrollView Orientation="Horizontal">
-                        <Label  Text="{Binding CharacterContext.Name}" HorizontalOptions="Center"
+        <Grid Margin="2,5,2,2" RowSpacing="3">
+            <Frame>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <StackLayout >
+                        <ScrollView Orientation="Horizontal">
+                            <Label  Text="{Binding CharacterContext.Name}" HorizontalOptions="Center"
                                 FontSize="Title" d:Text="Name"/>
-                    </ScrollView>
-                    <ScrollView Orientation="Horizontal">
-                        <Label  Text="{Binding CharacterContext.NameKanji, StringFormat='({0})'}" HorizontalOptions="Center"
+                        </ScrollView>
+                        <ScrollView Orientation="Horizontal">
+                            <Label  Text="{Binding CharacterContext.NameKanji, StringFormat='({0})'}" HorizontalOptions="Center"
                                 FontSize="Title"/>
+                        </ScrollView>
+                    </StackLayout>
+
+                    <ScrollView Grid.Row="1" Orientation="Vertical" Margin="0,5,0,0">
+                        <Label Text="{Binding CharacterContext.About}" FontSize="Body" d:Text="About"/>
                     </ScrollView>
-                </StackLayout>
 
-                <ScrollView Grid.Row="1" Orientation="Vertical" Margin="0,5,0,0">
-                    <Label Text="{Binding CharacterContext.About}" FontSize="Body" d:Text="About"/>
-                </ScrollView>
-
-                <ffimage:CachedImage Grid.Column="1" Grid.RowSpan="2" x:Name="ChImage" 
+                    <ffimage:CachedImage Grid.Column="1" Grid.RowSpan="2" x:Name="ChImage" 
                                      Source="{Binding CharacterContext.ImageURL}"/>
-                <ActivityIndicator Grid.Column="1" Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference ChImage}}"
+                    <ActivityIndicator Grid.Column="1" Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference ChImage}}"
                                    IsVisible="{Binding IsLoading, Source={x:Reference ChImage}}"/>
-            </Grid>
-        </Frame>
-        <Button Style="{StaticResource FavoriteRoundedButtonStyle}" Command="{Binding FavoriteCommand}" 
+                </Grid>
+            </Frame>
+            <Button Style="{StaticResource FavoriteRoundedButtonStyle}" Command="{Binding FavoriteCommand}" 
                 HorizontalOptions="End" VerticalOptions="End" Margin="0,0,10,10"
                 IsVisible="{Binding IsLoading, Source={x:Reference ChImage}, Converter={StaticResource InversorConverter}}">
-            <Button.ImageSource>
-                <FontImageSource FontFamily="{StaticResource FontIcon}"
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="{StaticResource FontIcon}"
                                  Glyph="{StaticResource Star}"
                                  Size="20"/>
-            </Button.ImageSource>
-            <Button.Triggers>
-                <DataTrigger TargetType="Button" Binding="{Binding CharacterContext.IsFavorited}" Value="True">
-                    <Setter Property="ImageSource">
-                        <FontImageSource FontFamily="{StaticResource FontIcon}"
+                </Button.ImageSource>
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding CharacterContext.IsFavorited}" Value="True">
+                        <Setter Property="ImageSource">
+                            <FontImageSource FontFamily="{StaticResource FontIcon}"
                                          Glyph="{StaticResource StarFill}"
                                          Size="22"/>
-                    </Setter>
-                </DataTrigger>
-            </Button.Triggers>
-        </Button>
-        <Frame Grid.Row="1" Margin="0,0,0,3">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Label Text="{res:Translate Pictures}" d:Text="Pictures" FontSize="Title"/>
-                <Frame Grid.Row="1" Style="{StaticResource FrameGenreStyle}" BorderColor="Gray" >
-                    <CollectionView ItemsSource="{Binding CharacterPictures}">
-                        <CollectionView.EmptyView>
-                            <Grid>
-                                <Label Text="{res:Translate NoDataAvailable}" VerticalOptions="Center" 
-                                       HorizontalOptions="Center" FontSize="Body"/>
-                            </Grid>
-                        </CollectionView.EmptyView>
-
-                        <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Horizontal" />
-                        </CollectionView.ItemsLayout>
-
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="jikan:Picture">
+                        </Setter>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+            <Frame Grid.Row="1" Margin="0,0,0,3">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Text="{res:Translate Pictures}" d:Text="Pictures" FontSize="Title"/>
+                    <Frame Grid.Row="1" Style="{StaticResource FrameGenreStyle}" BorderColor="Gray" >
+                        <CollectionView ItemsSource="{Binding CharacterPictures}">
+                            <CollectionView.EmptyView>
                                 <Grid>
-                                    <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding BindingContext.OpenImageCommand, Source={x:Reference Pageview}}"
-                                                              CommandParameter="{Binding .}"/>
-                                    </Grid.GestureRecognizers>
-                                    <ffimage:CachedImage x:Name="img" Source="{Binding Small}" 
-                                                         WidthRequest="200"/>
-                                    <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
-                                                       IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
+                                    <Label Text="{res:Translate NoDataAvailable}" VerticalOptions="Center" 
+                                       HorizontalOptions="Center" FontSize="Body"/>
                                 </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </Frame>
-            </Grid>
-        </Frame>
+                            </CollectionView.EmptyView>
 
-        <Grid Grid.RowSpan="2" Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" />
+                            </CollectionView.ItemsLayout>
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="jikan:Picture">
+                                    <Grid>
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding BindingContext.OpenImageCommand, Source={x:Reference Pageview}}"
+                                                              CommandParameter="{Binding .}"/>
+                                        </Grid.GestureRecognizers>
+                                        <ffimage:CachedImage x:Name="img" Source="{Binding Small}" 
+                                                         WidthRequest="200"/>
+                                        <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
+                                                       IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Frame>
+                </Grid>
+            </Frame>
+            <Grid Grid.RowSpan="2" Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
               IsVisible="{Binding IsLoading}" d:IsVisible="False">
-            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
                                IsVisible="{Binding IsLoading}"/>
+            </Grid>
         </Grid>
-    </Grid>
-
-</ContentPage>
+    </ContentPage>
+    <ContentPage Title="{res:Translate Animeography}">
+            <CollectionView ItemsSource="{Binding CharacterContext.Animeography}" Margin="5"
+                            >
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="jikan:MALImageSubItem">
+                    <Frame>
+                        <Grid>
+                            <ffimage:CachedImage Source="{Binding ImageURL}"/>
+                            <Label Grid.Column="1" Text="{Binding Name}" LineBreakMode="TailTruncation"
+                                   FontSize="Title">
+                                <Label.Behaviors>
+                                    <behavior:LabelLinesBehavior MaxLines="2"/>
+                                </Label.Behaviors>
+                            </Label>
+                            <StackLayout Grid.Column="1" VerticalOptions="End" Orientation="Vertical">
+                                <Label Text="{res:Translate Role}" FontSize="Title"/>
+                                <Label Text="{Binding Role}" FontSize="Body"/>
+                            </StackLayout>
+                        </Grid>
+                    </Frame>
+                       
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        
+    </ContentPage>
+</TabbedPage>
