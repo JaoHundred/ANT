@@ -16,6 +16,19 @@ namespace ANT.Model
             Episodes = episodes;
         }
 
+        public FavoritedAnime(AnimeSubEntry anime)
+        {
+            Anime = new Anime
+            {
+                MalId = anime.MalId,
+                Title = anime.Title,
+                ImageURL = anime.ImageURL,
+            };
+        }
+
+        public FavoritedAnime()
+        {}
+
         private bool _isFavorited;
         public bool IsFavorited
         {

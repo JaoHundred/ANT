@@ -7,11 +7,14 @@
        xmlns:modules="clr-namespace:ANT.Modules"
        xmlns:res="clr-namespace:ANT.Lang"
        x:Class="ANT.Modules.AppShell"
-       x:DataType="modules:AppShell"
+       x:DataType="modules:AppShellViewModel"
        FlyoutHeaderBehavior="Fixed"
        BackgroundColor="{DynamicResource StatusBarColor}" 
-       FlyoutBackgroundColor="{DynamicResource HamburgerMenuBodyColor }">
+       FlyoutBackgroundColor="{DynamicResource HamburgerMenuBodyColor }"
+       x:Name="AppShellComponent">
     <!--para mudar a cor da status bar, só funciona se setar o backgroundColor direto na prop do shell-->
+
+    
 
     <Shell.Resources>
         <ResourceDictionary>

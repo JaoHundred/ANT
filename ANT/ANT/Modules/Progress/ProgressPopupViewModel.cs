@@ -18,7 +18,7 @@ namespace ANT.Modules
 {
     public class ProgressPopupViewModel : BaseViewModel, IAsyncInitialization
     {
-        public ProgressPopupViewModel(IList<FavoritedAnimeSubEntry> animes)
+        public ProgressPopupViewModel(IList<FavoritedAnime> animes)
         {
             _cancelationToken = new CancellationTokenSource();
             _animes = animes;
@@ -27,7 +27,7 @@ namespace ANT.Modules
         }
 
         private CancellationTokenSource _cancelationToken;
-        private IList<FavoritedAnimeSubEntry> _animes;
+        private IList<FavoritedAnime> _animes;
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
         {
@@ -50,17 +50,16 @@ namespace ANT.Modules
                     double result = (double)i / _animes.Count;
                     MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
 
-                    FavoritedAnimeSubEntry favoritedSubAnimeAnime = _animes[i];
-                    if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == favoritedSubAnimeAnime.FavoritedAnime.MalId))
+                    if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == _animes[i].Anime.MalId))
                         continue;
 
                     await Task.Delay(TimeSpan.FromSeconds(4));
-                    Anime anime = await App.Jikan.GetAnime(favoritedSubAnimeAnime.FavoritedAnime.MalId);
+                    Anime anime = await App.Jikan.GetAnime(_animes[i].Anime.MalId);
                     anime.RequestCached = true;
 
                     var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync());
                     favoritedAnime.IsFavorited = true;
-                    favoritedSubAnimeAnime.IsFavorited = true;
+                    _animes[i].IsFavorited = true;
 
                     App.FavoritedAnimes.Add(favoritedAnime);
                     finalAnimeCount++;

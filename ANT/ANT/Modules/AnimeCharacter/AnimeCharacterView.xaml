@@ -115,7 +115,8 @@
     </ContentPage>
     <ContentPage Title="{res:Translate Animeography}">
             <CollectionView ItemsSource="{Binding CharacterContext.Animeography}" Margin="5"
-                            >
+                            SelectionMode="Single" SelectionChangedCommand="{Binding SelectedAnimeCommand}"
+                            SelectionChangedCommandParameter="{Binding SelectedItem, Source={x:RelativeSource Mode=Self}}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
                 </CollectionView.ItemsLayout>

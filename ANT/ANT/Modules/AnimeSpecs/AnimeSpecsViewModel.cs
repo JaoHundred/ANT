@@ -18,11 +18,21 @@ namespace ANT.Modules
 {
     public class AnimeSpecsViewModel : BaseVMExtender, IAsyncInitialization
     {
-        public AnimeSpecsViewModel(FavoritedAnimeSubEntry favoritedAnimeSubEntry)
+        public AnimeSpecsViewModel(long malId, Func<Task> func)
         {
-            _favoritedAnimeSubEntry = favoritedAnimeSubEntry;
-            InitializeTask = LoadAsync(null);
+            OtherViewModelFunc = func;
+            InitializeTask = LoadAsync(malId);
+            InitCommands();
+        }
 
+        public AnimeSpecsViewModel(long malId)
+        {
+            InitializeTask = LoadAsync(malId);
+            InitCommands();
+        }
+
+        private void InitCommands()
+        {
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenImageInBrowserCommand = new magno.AsyncCommand(OnOpenImageInBrowser);
             CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
@@ -32,33 +42,36 @@ namespace ANT.Modules
         }
 
         public Task InitializeTask { get; }
-        private readonly FavoritedAnimeSubEntry _favoritedAnimeSubEntry;
+        private FavoritedAnime _favoritedAnime;
+        private Func<Task> OtherViewModelFunc;
         public async Task LoadAsync(object param)
         {
             IsLoading = true;
             CanEnable = false;
             try
             {
+                long id = (long)param;
+
+                _favoritedAnime = App.FavoritedAnimes.FirstOrDefault(p => p.Anime.MalId == id);
                 //TODO: criar no futuro uma rotina de checagem por atualizações dos animes alvos em favoritos(algo semelhante ao tachiyomi
                 //pode acontecer todo dia, semanalmente ou até mesmo no dia específico de cada anime), a rotina é chamada como background e atualiza
                 //a lista com dados novos se houver
-                FavoritedAnime favoritedAnime = App.FavoritedAnimes.FirstOrDefault(p => p.Anime.MalId == _favoritedAnimeSubEntry.FavoritedAnime.MalId);
 
-                if (favoritedAnime == null)
+                if (_favoritedAnime == null)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(4));
-                    Anime anime = await App.Jikan.GetAnime(_favoritedAnimeSubEntry.FavoritedAnime.MalId);
+                    Anime anime = await App.Jikan.GetAnime(id);
                     anime.RequestCached = true;
 
                     IsLoadingEpisodes = true;
 
-                    favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync());
+                    _favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync());
                 }
 
-                await AddOrUpdateRecentAnimeAsync(_favoritedAnimeSubEntry);
+                await AddOrUpdateRecentAnimeAsync(_favoritedAnime);
 
-                Episodes = favoritedAnime.Episodes;
-                AnimeContext = favoritedAnime;
+                Episodes = _favoritedAnime.Episodes;
+                AnimeContext = _favoritedAnime;
 
                 IsLoading = false;
                 IsLoadingEpisodes = false;
@@ -123,7 +136,7 @@ namespace ANT.Modules
             if (App.FavoritedAnimes.Contains(AnimeContext))
             {
                 AnimeContext.IsFavorited = false;
-                _favoritedAnimeSubEntry.IsFavorited = false;
+                _favoritedAnime.IsFavorited = false;
 
                 App.FavoritedAnimes.Remove(AnimeContext);
                 lang = Lang.Lang.RemovedFromFavorite;
@@ -131,11 +144,15 @@ namespace ANT.Modules
             else
             {
                 AnimeContext.IsFavorited = true;
-                _favoritedAnimeSubEntry.IsFavorited = true;
+                _favoritedAnime.IsFavorited = true;
 
                 App.FavoritedAnimes.Add(AnimeContext);
                 lang = Lang.Lang.AddedToFavorite;
             }
+
+            if (OtherViewModelFunc != null)
+                //atualiza a coleção observável de CatalogueViewModel
+               await OtherViewModelFunc.Invoke();
 
             await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             DependencyService.Get<IToast>().MakeToastMessageShort(lang);
@@ -170,7 +187,7 @@ namespace ANT.Modules
         {
             bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<AnimeCharacterPopupViewModel>();
 
-            if(canNavigate)
+            if (canNavigate)
                 await NavigationManager.NavigatePopUpAsync<AnimeCharacterPopupViewModel>(AnimeContext.Anime.MalId);
         }
 
@@ -190,12 +207,12 @@ namespace ANT.Modules
         #endregion
 
         #region métodos VM
-        private Task AddOrUpdateRecentAnimeAsync(FavoritedAnimeSubEntry recentFavoritedSubEntryAnime)
+        private Task AddOrUpdateRecentAnimeAsync(FavoritedAnime recentFavoritedAnime)
         {
             //TODO: devo precisar de um meio para atualizar a página de recentes(na hora que o usuário for voltar com o backbutton)
             return Task.Run(async () =>
             {
-                var favoritedSubEntry = App.RecentAnimes.FirstOrDefault(p => p.Anime.FavoritedAnime.MalId == recentFavoritedSubEntryAnime.FavoritedAnime.MalId);
+                var favoritedSubEntry = App.RecentAnimes.FirstOrDefault(p => p.FavoritedAnime.Anime.MalId == recentFavoritedAnime.Anime.MalId);
 
                 if (favoritedSubEntry != null)
                     favoritedSubEntry.Date = DateTimeOffset.Now;
@@ -207,10 +224,10 @@ namespace ANT.Modules
                         RecentVisualized mostAntiqueVisualized = App.RecentAnimes.First(p => p.Date == mostAntiqueDate);
 
                         App.RecentAnimes.Remove(mostAntiqueVisualized);
-                        App.RecentAnimes.Add(new RecentVisualized(recentFavoritedSubEntryAnime));
+                        App.RecentAnimes.Add(new RecentVisualized(recentFavoritedAnime));
                     }
                     else if (App.RecentAnimes.Count < 10)
-                        App.RecentAnimes.Add(new RecentVisualized(recentFavoritedSubEntryAnime));
+                        App.RecentAnimes.Add(new RecentVisualized(recentFavoritedAnime));
                 }
 
                 await JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);

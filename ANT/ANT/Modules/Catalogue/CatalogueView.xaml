@@ -79,7 +79,7 @@
 
                 <CollectionView.ItemTemplate>
 
-                    <DataTemplate x:DataType="favo:FavoritedAnimeSubEntry">
+                    <DataTemplate x:DataType="favo:FavoritedAnime">
                         <Frame>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -87,7 +87,7 @@
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
 
-                                <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding FavoritedAnime.ImageURL}" 
+                                <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}" 
                                                      DownsampleToViewSize="True"/>
 
                                 <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
@@ -102,7 +102,7 @@
                                 <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
                                                    IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
 
-                                <Label Grid.Row="1" Text="{Binding FavoritedAnime.Title}" 
+                                <Label Grid.Row="1" Text="{Binding Anime.Title}" 
                                        LineBreakMode="TailTruncation" MaxLines="1"
                                        Style="{StaticResource AnimeFrameLabelStyle}" />
                             </Grid>

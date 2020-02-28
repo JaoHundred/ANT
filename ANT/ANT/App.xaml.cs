@@ -31,11 +31,7 @@ namespace ANT
         {
             var settingsTask = JsonStorage.ReadDataAsync<SettingsPreferences>(StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
             var favoritedAnimesTask = JsonStorage.ReadDataAsync<List<FavoritedAnime>>(StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
-            var favoritedSubEntryAnimesTask = 
-                JsonStorage.ReadDataAsync<List<FavoritedAnimeSubEntry>>(StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             var recentTask = JsonStorage.ReadDataAsync<List<RecentVisualized>>(StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
-
-
 
             SettingsPreferences = await settingsTask ?? new SettingsPreferences();
             FavoritedAnimes = await favoritedAnimesTask ?? new List<FavoritedAnime>();

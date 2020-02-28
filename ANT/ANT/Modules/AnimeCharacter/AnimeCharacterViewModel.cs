@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Windows.Input;
 using Xamarin.Essentials;
+using ANT.Core;
 
 namespace ANT.Modules
 {
@@ -20,6 +21,7 @@ namespace ANT.Modules
 
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenImageCommand = new magno.AsyncCommand<Picture>(OnOpenImage);
+            SelectedAnimeCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedAnime);
         }
 
         public Task InitializeTask { get; }
@@ -96,11 +98,22 @@ namespace ANT.Modules
         {
             await Launcher.TryOpenAsync(picture.Large);
         }
+
+        public ICommand SelectedAnimeCommand { get; private set; }
+        private async Task OnSelectedAnime(MALImageSubItem item)
+        {
+            if(IsNotBusy)
+            {
+                IsBusy = true;
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(item.MalId);
+                IsBusy = false;
+            }
+        }
+
         #endregion
 
 
-        //TODO: implementar o clique nos animes da animografia para ir ao anime
-        //problemas encontrados, descobrir como passar animes entre telas de AnimeSpecsView, ver como envelopar um tipo anime em um favoritedsubentry
+        //TODO: estilizar o clique no anime da animografia para ficar com o comportamento igual ao da RecentView
 
         //TODO: https://github.com/JaoHundred/ANT/issues/20
         //implementar a parte dos Voice Actors na tela

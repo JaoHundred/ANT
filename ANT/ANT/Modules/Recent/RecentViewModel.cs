@@ -80,7 +80,7 @@ namespace ANT.Modules
             if (IsNotBusy && SelectedRecent != null)
             {
                 IsBusy = true;
-                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedRecent.Anime);
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedRecent.FavoritedAnime.Anime.MalId);
                 IsBusy = false;
             }
 

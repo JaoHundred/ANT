@@ -7,14 +7,14 @@ namespace ANT.Model
     public class RecentVisualized
     {
 
-        public RecentVisualized(FavoritedAnimeSubEntry anime)
+        public RecentVisualized(FavoritedAnime anime)
         {
             Date = DateTimeOffset.Now;
-            Anime = anime;
+            FavoritedAnime = anime;
         }
 
         public DateTimeOffset Date { get; set; }
 
-        public FavoritedAnimeSubEntry Anime { get; set; }
+        public FavoritedAnime FavoritedAnime { get; set; }
     }
 }

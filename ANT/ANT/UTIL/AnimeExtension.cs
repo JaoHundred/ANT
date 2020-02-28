@@ -62,15 +62,15 @@ namespace ANT.UTIL
             return episodeList;
         }
 
-        public static IList<FavoritedAnimeSubEntry> ConvertAnimesToFavoritedSubEntry(this ICollection<AnimeSubEntry> animeSubEntries)
+        public static IList<FavoritedAnime> ConvertAnimesToFavoritedSubEntry(this ICollection<AnimeSubEntry> animeSubEntries)
         {
             var animeSubs = animeSubEntries.ToList();
-            var favoritedAnimeSubsEntries = new List<FavoritedAnimeSubEntry>();
+            var favoritedAnimeSubsEntries = new List<FavoritedAnime>();
 
             for (int i = 0; i < animeSubs.Count; i++)
             {
                 var anime = animeSubs[i];
-                var animeSub = new FavoritedAnimeSubEntry(anime);
+                var animeSub = new FavoritedAnime(anime);
 
                 if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == anime.MalId))
                     animeSub.IsFavorited = true;

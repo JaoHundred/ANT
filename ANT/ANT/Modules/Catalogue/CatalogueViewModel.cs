@@ -39,8 +39,8 @@ namespace ANT.Modules
 
         private void InitializeDefaultProperties()
         {
-            _originalCollection = new List<FavoritedAnimeSubEntry>();
-            Animes = new ObservableRangeCollection<FavoritedAnimeSubEntry>();
+            _originalCollection = new List<FavoritedAnime>();
+            Animes = new ObservableRangeCollection<FavoritedAnime>();
 
             SelectionModeCommand = new magno.Command(OnSelectionMode);
             AddToFavoriteCommand = new magno.AsyncCommand(OnAddToFavorite);
@@ -49,6 +49,23 @@ namespace ANT.Modules
             SearchCommand = new magno.AsyncCommand(OnSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
+
+        }
+
+        public Task NavigationFrom()
+        {
+            return Task.Run(() =>
+            {
+                foreach (var observableAnime in Animes)
+                {
+                    var favorited = App.FavoritedAnimes.FirstOrDefault(p => p.Anime.MalId == observableAnime.Anime.MalId);
+
+                    if (favorited != null)
+                        Device.BeginInvokeOnMainThread(() => { observableAnime.IsFavorited = true; });
+                    else
+                        Device.BeginInvokeOnMainThread(() => { observableAnime.IsFavorited = false; });
+                }
+            });
         }
 
         private IMainPageAndroid _mainPageAndroid;
@@ -92,8 +109,8 @@ namespace ANT.Modules
             get { return _isRefreshing; }
             set { SetProperty(ref _isRefreshing, value); }
         }
-        private FavoritedAnimeSubEntry _selectedItem;
-        public FavoritedAnimeSubEntry SelectedItem
+        private FavoritedAnime _selectedItem;
+        public FavoritedAnime SelectedItem
         {
             get { return _selectedItem; }
             set { SetProperty(ref _selectedItem, value); }
@@ -106,9 +123,9 @@ namespace ANT.Modules
             set { SetProperty(ref _selectedItems, value); }
         }
 
-        private List<FavoritedAnimeSubEntry> _originalCollection;
-        private ObservableRangeCollection<FavoritedAnimeSubEntry> _animes;
-        public ObservableRangeCollection<FavoritedAnimeSubEntry> Animes
+        private List<FavoritedAnime> _originalCollection;
+        private ObservableRangeCollection<FavoritedAnime> _animes;
+        public ObservableRangeCollection<FavoritedAnime> Animes
         {
             get { return _animes; }
             set { SetProperty(ref _animes, value); }
@@ -265,7 +282,7 @@ namespace ANT.Modules
 
             if (canNavigate)
             {
-                var items = SelectedItems.Cast<FavoritedAnimeSubEntry>().ToList();
+                var items = SelectedItems.Cast<FavoritedAnime>().ToList();
                 await NavigationManager.NavigatePopUpAsync<ProgressPopupViewModel>(items);
             }
 
@@ -292,7 +309,7 @@ namespace ANT.Modules
         {
             var resultListTask = Task.Run(() =>
            {
-               return _originalCollection.Where(anime => anime.FavoritedAnime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant())).ToList();
+               return _originalCollection.Where(anime => anime.Anime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant())).ToList();
            });
 
             var resultList = await resultListTask;
@@ -307,7 +324,7 @@ namespace ANT.Modules
             if (!IsMultiSelect && SelectedItem != null && _canNavigate)
             {
                 _canNavigate = false;
-                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedItem);
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedItem.Anime.MalId, new Func<Task>(NavigationFrom));
                 SelectedItem = null;
                 _canNavigate = true;
             }
