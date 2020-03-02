@@ -67,7 +67,7 @@
                     </VisualStateGroupList>
                 </Setter>
             </Style>
-
+ 
             <Style TargetType="Frame" BasedOn="{StaticResource SelectedItemTemplateStyle}">
                 <Setter Property="BorderColor" Value="Gray"/>
                 <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueAnimeFrameColor}"/>
