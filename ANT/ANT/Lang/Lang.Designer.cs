@@ -286,6 +286,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last seen.
         /// </summary>
         public static string LastSeen {
@@ -498,6 +507,15 @@ namespace ANT.Lang {
         public static string UnknownDate {
             get {
                 return ResourceManager.GetString("UnknownDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Voice actors.
+        /// </summary>
+        public static string VoiceActors {
+            get {
+                return ResourceManager.GetString("VoiceActors", resourceCulture);
             }
         }
         

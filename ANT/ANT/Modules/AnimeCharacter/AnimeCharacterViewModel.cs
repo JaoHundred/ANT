@@ -22,6 +22,7 @@ namespace ANT.Modules
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenImageCommand = new magno.AsyncCommand<Picture>(OnOpenImage);
             SelectedAnimeCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedAnime);
+            SelectedSeiyuuCommand = new magno.AsyncCommand<VoiceActorEntry>(OnSelectedSeiyuu);
         }
 
         public Task InitializeTask { get; }
@@ -111,10 +112,18 @@ namespace ANT.Modules
             }
         }
 
+        public ICommand SelectedSeiyuuCommand { get; set; }
+        private async Task OnSelectedSeiyuu(VoiceActorEntry voiceActorEntry)
+        {
+            //TODO: passar o MalId para o navigation da tela dos seiyuu
+        }
+
         #endregion
 
 
-        //TODO: implementar seção de voice actors
+        //TODO: implementar comando de abrir página para voice actor
+        // na tela dos atores usar a combinação de GetPerson e https://github.com/Ervie/jikan.net/wiki/Person e https://github.com/Ervie/jikan.net/wiki/VoiceActingRole
+        // para pegar as informações referentes a animes e personagens que essa pessoa trabalhou
 
         //TODO: https://github.com/JaoHundred/ANT/issues/20
         //implementar a parte dos Voice Actors na tela

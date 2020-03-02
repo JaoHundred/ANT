@@ -192,6 +192,9 @@
   <data name="Home" xml:space="preserve">
     <value>Principal</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
   <data name="LastSeen" xml:space="preserve">
     <value>Visto pela última vez</value>
   </data>
@@ -263,6 +266,9 @@
   </data>
   <data name="UnknownDate" xml:space="preserve">
     <value>Transmissão desconhecida</value>
+  </data>
+  <data name="VoiceActors" xml:space="preserve">
+    <value>Dubladores</value>
   </data>
   <data name="Wednesdays" xml:space="preserve">
     <value>Quartas</value>
