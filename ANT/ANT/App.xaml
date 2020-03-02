@@ -68,24 +68,6 @@
                 </Setter>
             </Style>
 
-            <Style TargetType="ContentView" x:Key="SelectedItemTemplateStyleContentView">
-                <Setter Property="VisualStateManager.VisualStateGroups">
-                    <VisualStateGroupList>
-                        <VisualStateGroup x:Name="CommonStates">
-                            <VisualState x:Name="Normal"/>
-                            <VisualState x:Name="Selected">
-                                <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="{DynamicResource AppBackgroundColor}"/>
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateGroupList>
-                </Setter>
-            </Style>
-
-            <Style TargetType="ContentView" BasedOn="{StaticResource SelectedItemTemplateStyleContentView}">
-            </Style>
-
             <Style TargetType="Frame" BasedOn="{StaticResource SelectedItemTemplateStyle}">
                 <Setter Property="BorderColor" Value="Gray"/>
                 <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueAnimeFrameColor}"/>
@@ -111,7 +93,7 @@
 
             <Style TargetType="FFimage:CachedImage">
                 <Setter Property="HeightRequest" Value="200"/>
-                <Setter Property="IsOpaque" Value="True"/>
+                <!--<Setter Property="IsOpaque" Value="True"/>-->
             </Style>
 
             <!--#endregion-->

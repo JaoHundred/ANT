@@ -105,6 +105,7 @@ namespace ANT.Modules
             if(IsNotBusy)
             {
                 IsBusy = true;
+                NavigationManager.RemoveAllPagesExceptRootAndHierarquicalRoot();
                 await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(item.MalId);
                 IsBusy = false;
             }
@@ -113,7 +114,7 @@ namespace ANT.Modules
         #endregion
 
 
-        //TODO: estilizar o clique no anime da animografia para ficar com o comportamento igual ao da RecentView
+        //TODO: implementar seção de voice actors
 
         //TODO: https://github.com/JaoHundred/ANT/issues/20
         //implementar a parte dos Voice Actors na tela

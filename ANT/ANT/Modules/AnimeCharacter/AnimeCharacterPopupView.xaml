@@ -24,7 +24,7 @@
     </popup:PopupPage.Resources>
 
     <Grid Style="{StaticResource GridPopUpViewStyle}">
-        <CollectionView ItemsSource="{Binding Characters}">
+        <CollectionView ItemsSource="{Binding Characters}" Margin="5" >
             <CollectionView.EmptyView>
                 <Grid >
                     <Label Text="{res:Translate NoDataAvailable}" VerticalOptions="Center" 
@@ -35,10 +35,13 @@
                 </Grid>
             </CollectionView.EmptyView>
 
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
+
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="jikan:CharacterEntry">
-                    <ContentView>
-                        <Frame Style="{StaticResource FrameGenreStyle}" Margin="5" >
+                        <Frame Style="{StaticResource FrameGenreStyle}" >
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding BindingContext.OpenAnimeCharacterCommand, Source={x:Reference AnimeChView}}"
                                                       CommandParameter="{Binding .}"/>
@@ -71,7 +74,6 @@
                                        LineBreakMode="TailTruncation"/>
                             </Grid>
                         </Frame>
-                    </ContentView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

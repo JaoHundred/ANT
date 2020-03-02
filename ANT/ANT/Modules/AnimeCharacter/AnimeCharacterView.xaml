@@ -114,11 +114,11 @@
         </Grid>
     </ContentPage>
     <ContentPage Title="{res:Translate Animeography}">
-            <CollectionView ItemsSource="{Binding CharacterContext.Animeography}" Margin="5"
+            <CollectionView ItemsSource="{Binding CharacterContext.Animeography}" Margin="10,5,10,5"
                             SelectionMode="Single" SelectionChangedCommand="{Binding SelectedAnimeCommand}"
                             SelectionChangedCommandParameter="{Binding SelectedItem, Source={x:RelativeSource Mode=Self}}">
                 <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="jikan:MALImageSubItem">
