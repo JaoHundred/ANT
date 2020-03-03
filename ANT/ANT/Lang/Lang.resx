@@ -267,6 +267,9 @@
   <data name="UnknownDate" xml:space="preserve">
     <value>Unknown broadcast</value>
   </data>
+  <data name="VoiceActingRoles" xml:space="preserve">
+    <value>Voice acting roles</value>
+  </data>
   <data name="VoiceActors" xml:space="preserve">
     <value>Voice actors</value>
   </data>

@@ -511,6 +511,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Voice acting roles.
+        /// </summary>
+        public static string VoiceActingRoles {
+            get {
+                return ResourceManager.GetString("VoiceActingRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Voice actors.
         /// </summary>
         public static string VoiceActors {

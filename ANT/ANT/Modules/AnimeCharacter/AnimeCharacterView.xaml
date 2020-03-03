@@ -144,8 +144,9 @@
     </ContentPage>
     <ContentPage Title="{res:Translate VoiceActors}">
         <CollectionView ItemsSource="{Binding CharacterContext.VoiceActors}" Margin="5,5,10,5"
-                        SelectionMode="Single" SelectionChangedCommand="{Binding SelectedSeiyuuCommand}"
-                        SelectionChangedCommandParameter="{Binding SelectedItem, Source={x:RelativeSource Mode=Self}}">
+                        SelectionMode="Single" SelectionChangedCommand="{Binding SelectedVoiceActorCommand}"
+                        SelectionChangedCommandParameter="{Binding SelectedVoiceActor}"
+                        SelectedItem="{Binding SelectedVoiceActor}">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
             </CollectionView.ItemsLayout>

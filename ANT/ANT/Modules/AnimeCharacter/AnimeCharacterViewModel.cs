@@ -22,7 +22,7 @@ namespace ANT.Modules
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenImageCommand = new magno.AsyncCommand<Picture>(OnOpenImage);
             SelectedAnimeCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedAnime);
-            SelectedSeiyuuCommand = new magno.AsyncCommand<VoiceActorEntry>(OnSelectedSeiyuu);
+            SelectedVoiceActorCommand = new magno.AsyncCommand(OnSelectedVoiceActor);
         }
 
         public Task InitializeTask { get; }
@@ -33,7 +33,7 @@ namespace ANT.Modules
 
             IsLoading = true;
             CanEnable = !IsLoading;
-            
+
             try
             {
                 await Task.Delay(TimeSpan.FromSeconds(4));
@@ -84,6 +84,13 @@ namespace ANT.Modules
             get { return _characterPictures; }
             set { SetProperty(ref _characterPictures, value); }
         }
+
+        private VoiceActorEntry _selectedVoiceActor;
+        public VoiceActorEntry SelectedVoiceActor
+        {
+            get { return _selectedVoiceActor; }
+            set { SetProperty(ref _selectedVoiceActor, value); }
+        }
         #endregion
 
         #region commands
@@ -103,7 +110,7 @@ namespace ANT.Modules
         public ICommand SelectedAnimeCommand { get; private set; }
         private async Task OnSelectedAnime(MALImageSubItem item)
         {
-            if(IsNotBusy)
+            if (IsNotBusy)
             {
                 IsBusy = true;
                 NavigationManager.RemoveAllPagesExceptRootAndHierarquicalRoot();
@@ -112,20 +119,18 @@ namespace ANT.Modules
             }
         }
 
-        public ICommand SelectedSeiyuuCommand { get; set; }
-        private async Task OnSelectedSeiyuu(VoiceActorEntry voiceActorEntry)
+        public ICommand SelectedVoiceActorCommand { get; set; }
+        private async Task OnSelectedVoiceActor()
         {
-            //TODO: passar o MalId para o navigation da tela dos seiyuu
+            if (IsNotBusy && SelectedVoiceActor != null)
+            {
+                IsBusy = true;
+                await NavigationManager.NavigateShellAsync<VoiceActorViewModel>(SelectedVoiceActor.MalId);
+                IsBusy = false;
+                SelectedVoiceActor = null;
+            }
         }
 
         #endregion
-
-
-        //TODO: implementar comando de abrir página para voice actor
-        // na tela dos atores usar a combinação de GetPerson e https://github.com/Ervie/jikan.net/wiki/Person e https://github.com/Ervie/jikan.net/wiki/VoiceActingRole
-        // para pegar as informações referentes a animes e personagens que essa pessoa trabalhou
-
-        //TODO: https://github.com/JaoHundred/ANT/issues/20
-        //implementar a parte dos Voice Actors na tela
     }
 }

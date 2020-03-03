@@ -267,6 +267,9 @@
   <data name="UnknownDate" xml:space="preserve">
     <value>Transmissão desconhecida</value>
   </data>
+  <data name="VoiceActingRoles" xml:space="preserve">
+    <value>Papeis em dublagens</value>
+  </data>
   <data name="VoiceActors" xml:space="preserve">
     <value>Dubladores</value>
   </data>
