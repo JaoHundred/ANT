@@ -19,6 +19,7 @@
     <ContentPage Title="{res:Translate Details}">
         <ContentPage.Resources>
             <converter:InversorConverter x:Key="InversorConverter"/>
+            <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
         </ContentPage.Resources>
 
         <Grid Margin="2,5,2,2" RowSpacing="3">
@@ -34,7 +35,7 @@
                             <Label  Text="{Binding CharacterContext.Name}" HorizontalOptions="Center"
                                 FontSize="Title" d:Text="Name"/>
                         </ScrollView>
-                        <ScrollView Orientation="Horizontal">
+                        <ScrollView Orientation="Horizontal" IsVisible="{Binding CharacterContext.NameKanji, Converter={StaticResource EmptyTextToBoolConverter}}">
                             <Label  Text="{Binding CharacterContext.NameKanji, StringFormat='({0})'}" HorizontalOptions="Center"
                                 FontSize="Title"/>
                         </ScrollView>
