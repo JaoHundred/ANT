@@ -47,8 +47,12 @@
     <Color x:Key="GenresColor">#c1c1d9</Color>
 
     <!--65% preto opaco-->
-    <Color x:Key="OpaqueBlackColor">#A6000000</Color> 
+    <Color x:Key="OpaqueBlackColor">#A6000000</Color>
+
+    <!--escala de cinza misturado com amarelo-->
+    <Color x:Key="FrameSeparatorColor">#978f87</Color>
     
+
     <!--#endregion-->
 
 </ResourceDictionary>

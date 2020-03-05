@@ -8,6 +8,7 @@ using JikanDotNet;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using magno = MvvmHelpers.Commands;
+using ANT.Core;
 
 namespace ANT.Modules
 {
@@ -19,10 +20,9 @@ namespace ANT.Modules
 
             OpenImageCommand = new magno.AsyncCommand<Picture>(OnOpenImage);
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
+            SelectedAnimeCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedAnime);
+            SelectedCharacterCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedCharacter);
         }
-
-        //TODO: a view não consegue ser construída e gera uma exceção que não pode ser tratada ou vista, comentar a tela toda de VoiceActorView
-        // para descobrir o que é(o código dela foi copiado e ajustado de AnimeCharacterView)
 
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
@@ -42,19 +42,6 @@ namespace ANT.Modules
 
                 PersonContext = person;
                 PersonPictures = personPictures.Pictures;
-
-                //TODO: construir o data template da collectionview para carregar papeis de dublador,
-                //usar formato semelhante ao que está no MAL https://github.com/JaoHundred/ANT/issues/27
-                //o template deve ter comandos para navegar para o anime ou para o personagem(ambos devem estar em um mesmo template de anime)
-                //pensar o que fazer se existir mais de um personagem dublado por um mesmo ator em um mesmo anime(vai dar uma situação de 1 template
-                //para 1 registro de anime e 1 ou mais personagens deste anime) e ver como a api do jikan lida com isso
-                //aparentemente ele repete o registro do anime, voltando assim para 1 template que segura somente 1 anime e 1 personagem
-                //ver o exemplo em https://myanimelist.net/people/2/Tomokazu_Sugita no final da lista
-                //nos animes com letra Z
-
-                //TODO: implementar comando de abrir página para voice actor
-                // na tela dos atores usar a combinação de GetPerson e https://github.com/Ervie/jikan.net/wiki/Person e https://github.com/Ervie/jikan.net/wiki/VoiceActingRole
-                // para pegar as informações referentes a animes e personagens que essa pessoa trabalhou
             }
             catch (Exception ex)
             {
@@ -109,9 +96,32 @@ namespace ANT.Modules
         {
             await Task.Delay(TimeSpan.FromSeconds(4));
             //TODO: salvar o voice actor na lista de favoritos, se já estiver favoritado, desfavoritar
-        } 
-        #endregion
+        }
 
-       
+        public ICommand SelectedCharacterCommand { get; private set; }
+        private async Task OnSelectedCharacter(MALImageSubItem selectedCharacter)
+        {
+            if(IsNotBusy)
+            {
+                IsBusy = true;
+                await NavigationManager.NavigateShellAsync<AnimeCharacterViewModel>(selectedCharacter.MalId);
+                IsBusy = false;
+            }
+        }
+
+        public ICommand SelectedAnimeCommand { get; private set; }
+        private async Task OnSelectedAnime(MALImageSubItem selectedAnime)
+        {
+            if (IsNotBusy)
+            {
+                IsBusy = true;
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(selectedAnime.MalId);
+                IsBusy = false;
+            }
+        }
+
+        //TODO: https://github.com/JaoHundred/ANT/issues/27, acrescentar nos 3 pontos informação para ir para o site do MAL e por em um novo frame
+        //abaixo da parte de imagens o website do ator
+        #endregion
     }
 }

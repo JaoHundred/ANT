@@ -50,6 +50,9 @@
     <!--65% preto opaco-->
     <Color x:Key="OpaqueBlackColor">#A6000000</Color>
 
+    <!--cinza-->
+    <Color x:Key="FrameSeparatorColor">Gray</Color>
+
     <!--#endregion-->
 
 </ResourceDictionary>
