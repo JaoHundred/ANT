@@ -23,7 +23,7 @@
         </ContentPage.Resources>
 
         <Grid Margin="2,5,2,2" RowSpacing="3">
-            <Frame>
+            <Frame Padding="10,10,0,10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
