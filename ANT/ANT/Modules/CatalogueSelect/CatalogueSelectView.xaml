@@ -3,10 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="clr-namespace:ANT.Lang"
              mc:Ignorable="d"
              xmlns:modules="clr-namespace:ANT.Modules"
              x:DataType="modules:CatalogueSelectViewModel"
-             x:Class="ANT.Modules.CatalogueSelectView">
+             x:Class="ANT.Modules.CatalogueSelectView"
+             Title="{res:Translate CatalogueSelector}">
 
 
     <StackLayout>

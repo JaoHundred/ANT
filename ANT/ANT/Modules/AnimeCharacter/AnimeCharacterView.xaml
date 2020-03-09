@@ -14,7 +14,8 @@
              x:Class="ANT.Modules.AnimeCharacterView"
              x:Name="Pageview" 
             Shell.FlyoutBehavior="Disabled" 
-            IsEnabled="{Binding CanEnable}">
+            IsEnabled="{Binding CanEnable}"
+            Title="{res:Translate Character}">
 
     <ContentPage Title="{res:Translate Details}">
         <ContentPage.Resources>

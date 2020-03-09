@@ -13,7 +13,8 @@
              x:Class="ANT.Modules.VoiceActorView"
             x:Name="Pageview"
             Shell.FlyoutBehavior="Disabled" 
-            IsEnabled="{Binding CanEnable}">
+            IsEnabled="{Binding CanEnable}"
+            Title="{res:Translate VoiceActor}">
 
     <TabbedPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate MAL}"

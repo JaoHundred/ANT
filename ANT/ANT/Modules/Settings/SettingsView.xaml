@@ -6,7 +6,8 @@
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:convert="clr-namespace:ANT.Converter"
              mc:Ignorable="d"
-             x:Class="ANT.Modules.SettingsView">
+             x:Class="ANT.Modules.SettingsView"
+             Title="{res:Translate Settings}">
 
     <ContentPage.Resources>
         <convert:InversorConverter x:Key="InversorConv"/>

@@ -123,6 +123,9 @@
   <data name="Airing" xml:space="preserve">
     <value>Estreia</value>
   </data>
+  <data name="Anime" xml:space="preserve">
+    <value>Anime</value>
+  </data>
   <data name="Animeography" xml:space="preserve">
     <value>Animegrafia</value>
   </data>
@@ -141,11 +144,17 @@
   <data name="Catalogue" xml:space="preserve">
     <value>Catálogo</value>
   </data>
+  <data name="CatalogueSelector" xml:space="preserve">
+    <value>Seletor de catálogo</value>
+  </data>
   <data name="ChangeLanguage" xml:space="preserve">
     <value>Mudar o idioma</value>
   </data>
   <data name="ChangeTheme" xml:space="preserve">
     <value>Trocar tema</value>
+  </data>
+  <data name="Character" xml:space="preserve">
+    <value>Personagem</value>
   </data>
   <data name="Characters" xml:space="preserve">
     <value>Personagens</value>
@@ -225,6 +234,9 @@
   <data name="Rank" xml:space="preserve">
     <value>Rank</value>
   </data>
+  <data name="RecentlyViewed" xml:space="preserve">
+    <value>Vistos recentemente</value>
+  </data>
   <data name="Recents" xml:space="preserve">
     <value>Visto recentemente</value>
   </data>
@@ -269,6 +281,9 @@
   </data>
   <data name="VoiceActingRoles" xml:space="preserve">
     <value>Papeis em dublagens</value>
+  </data>
+  <data name="VoiceActor" xml:space="preserve">
+    <value>Dublador</value>
   </data>
   <data name="VoiceActors" xml:space="preserve">
     <value>Dubladores</value>

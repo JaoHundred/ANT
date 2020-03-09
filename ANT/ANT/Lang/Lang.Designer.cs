@@ -79,6 +79,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Anime.
+        /// </summary>
+        public static string Anime {
+            get {
+                return ResourceManager.GetString("Anime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Animeography.
         /// </summary>
         public static string Animeography {
@@ -133,6 +142,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Catalogue selector.
+        /// </summary>
+        public static string CatalogueSelector {
+            get {
+                return ResourceManager.GetString("CatalogueSelector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change language.
         /// </summary>
         public static string ChangeLanguage {
@@ -147,6 +165,15 @@ namespace ANT.Lang {
         public static string ChangeTheme {
             get {
                 return ResourceManager.GetString("ChangeTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Character.
+        /// </summary>
+        public static string Character {
+            get {
+                return ResourceManager.GetString("Character", resourceCulture);
             }
         }
         
@@ -385,6 +412,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recently viewed.
+        /// </summary>
+        public static string RecentlyViewed {
+            get {
+                return ResourceManager.GetString("RecentlyViewed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recently seen.
         /// </summary>
         public static string Recents {
@@ -516,6 +552,15 @@ namespace ANT.Lang {
         public static string VoiceActingRoles {
             get {
                 return ResourceManager.GetString("VoiceActingRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Voice actor.
+        /// </summary>
+        public static string VoiceActor {
+            get {
+                return ResourceManager.GetString("VoiceActor", resourceCulture);
             }
         }
         

@@ -13,7 +13,8 @@
              x:DataType="VM:AnimeSpecsViewModel"
             Shell.FlyoutBehavior="Disabled" 
             IsEnabled="{Binding CanEnable}"
-            x:Name="TabbedView">
+            x:Name="TabbedView"
+            Title="{res:Translate Anime}">
 
     <TabbedPage.Resources>
         <converter:DateConverter x:Key="DateConverter"/>
