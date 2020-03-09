@@ -18,10 +18,10 @@ namespace ANT.Modules
         {
             InitializeTask = LoadAsync(malId);
 
-            OpenImageCommand = new magno.AsyncCommand<Picture>(OnOpenImage);
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             SelectedAnimeCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedAnime);
             SelectedCharacterCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedCharacter);
+            OpenLinkCommand = new magno.AsyncCommand<string>(OpenLink);
         }
 
         public Task InitializeTask { get; }
@@ -85,12 +85,6 @@ namespace ANT.Modules
         #endregion
 
         #region commands
-        public ICommand OpenImageCommand { get; private set; }
-        private async Task OnOpenImage(Picture picture)
-        {
-            await Launcher.TryOpenAsync(picture.Large);
-        }
-
         public ICommand FavoriteCommand { get; private set; }
         private async Task OnFavorite()
         {
@@ -118,6 +112,12 @@ namespace ANT.Modules
                 await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(selectedAnime.MalId);
                 IsBusy = false;
             }
+        }
+
+        public ICommand OpenLinkCommand { get; private set; }
+        private async Task OpenLink(string link)
+        {
+            await Launcher.TryOpenAsync(link);
         }
 
         //TODO: https://github.com/JaoHundred/ANT/issues/27, acrescentar nos 3 pontos informação para ir para o site do MAL e por em um novo frame

@@ -15,12 +15,17 @@
             Shell.FlyoutBehavior="Disabled" 
             IsEnabled="{Binding CanEnable}">
 
+    <TabbedPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="{res:Translate MAL}"
+                     Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PersonContext.LinkCanonical}"/>
+    </TabbedPage.ToolbarItems>
+
     <TabbedPage.Resources>
         <converter:InversorConverter x:Key="InversorConverter"/>
     </TabbedPage.Resources>
 
     <ContentPage Title="{res:Translate Details}">
-        <Grid Margin="2,5,2,2" RowSpacing="3">
+        <Grid Margin="2,5,2,2"  RowSpacing="3">
             <Frame Padding="10,10,0,10">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -73,7 +78,7 @@
                             <CollectionView.EmptyView>
                                 <Grid>
                                     <Label Text="{res:Translate NoDataAvailable}" VerticalOptions="Center" 
-                                       HorizontalOptions="Center" FontSize="Body"/>
+                                           HorizontalOptions="Center" FontSize="Body"/>
                                 </Grid>
                             </CollectionView.EmptyView>
 
@@ -85,13 +90,13 @@
                                 <DataTemplate x:DataType="jikan:Picture">
                                     <Grid>
                                         <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding BindingContext.OpenImageCommand, Source={x:Reference Pageview}}"
-                                                              CommandParameter="{Binding .}"/>
+                                            <TapGestureRecognizer Command="{Binding BindingContext.OpenLinkCommand, Source={x:Reference Pageview}}" 
+                                                                  CommandParameter="{Binding .Large}"/>
                                         </Grid.GestureRecognizers>
                                         <ffimage:CachedImage x:Name="img" Source="{Binding Small}" 
-                                                         WidthRequest="200"/>
+                                                             WidthRequest="200"/>
                                         <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
-                                                       IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
+                                                           IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
                                     </Grid>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
@@ -102,9 +107,10 @@
             <Grid Grid.RowSpan="2" Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
               IsVisible="{Binding IsLoading}" d:IsVisible="False">
                 <ActivityIndicator IsRunning="{Binding IsLoading}"
-                               IsVisible="{Binding IsLoading}"/>
+                                   IsVisible="{Binding IsLoading}"/>
             </Grid>
         </Grid>
+
     </ContentPage>
     <ContentPage Title="{res:Translate VoiceActingRoles}">
         <CollectionView Margin="10,5,10,5" ItemsSource="{Binding PersonContext.VoiceActingRoles}">
