@@ -27,7 +27,8 @@
     </TabbedPage.Resources>
 
     <TabbedPage.ToolbarItems>
-        <ToolbarItem Order="Secondary" Text="{res:Translate MAL}" Command="{Binding OpenAnimeInBrowserCommand}"/>
+        <ToolbarItem Order="Secondary" Text="{res:Translate MAL}" Command="{Binding OpenLinkCommand}"
+                     CommandParameter="{Binding AnimeContext.Anime.LinkCanonical}"/>
     </TabbedPage.ToolbarItems>
 
     <ContentPage Title="{res:Translate Details}" x:DataType="VM:AnimeSpecsViewModel">
@@ -58,7 +59,8 @@
                     <FFimage:CachedImage Grid.RowSpan="2" Grid.Column="1" Source="{Binding AnimeContext.Anime.ImageURL}"
                                          x:Name="AnimeImage">
                         <FFimage:CachedImage.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding OpenImageInBrowserCommand}"/>
+                            <TapGestureRecognizer Command="{Binding OpenLinkCommand}"
+                                                  CommandParameter="{Binding AnimeContext.Anime.ImageURL}"/>
                         </FFimage:CachedImage.GestureRecognizers>
                     </FFimage:CachedImage>
 
@@ -170,7 +172,7 @@
                                    TextDecorations="Underline">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer x:DataType="VM:AnimeSpecsViewModel" 
-                                    Command="{Binding OpenAnimeInBrowserCommand}"/>
+                                    Command="{Binding OpenLinkCommand}" CommandParameter="{Binding AnimeContext.Anime.LinkCanonical}"/>
                                 </Label.GestureRecognizers>
                             </Label>
                         </CollectionView.EmptyView>
@@ -189,7 +191,7 @@
                                     <Label Grid.Column="2" Text="{StaticResource Forum}" FontFamily="{StaticResource FontIcon}"
                                            FontSize="20" VerticalOptions="Center">
                                         <Label.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding BindingContext.DiscussionsCommand, Source={x:Reference TabbedView}}"
+                                            <TapGestureRecognizer Command="{Binding BindingContext.OpenLinkCommand, Source={x:Reference TabbedView}}"
                                                                   CommandParameter="{Binding ForumUrl}"/>
                                         </Label.GestureRecognizers>
                                     </Label>

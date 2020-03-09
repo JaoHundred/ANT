@@ -95,7 +95,7 @@
                                     <Grid>
                                         <Grid.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding BindingContext.OpenImageCommand, Source={x:Reference Pageview}}"
-                                                              CommandParameter="{Binding .}"/>
+                                                              CommandParameter="{Binding .Large}"/>
                                         </Grid.GestureRecognizers>
                                         <ffimage:CachedImage x:Name="img" Source="{Binding Small}" 
                                                          WidthRequest="200"/>

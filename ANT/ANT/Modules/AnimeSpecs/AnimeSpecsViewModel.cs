@@ -34,11 +34,9 @@ namespace ANT.Modules
         private void InitCommands()
         {
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
-            OpenImageInBrowserCommand = new magno.AsyncCommand(OnOpenImageInBrowser);
+            OpenLinkCommand = new magno.AsyncCommand<string>(OnLink);
             CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
             CheckAnimeCharactersCommand = new magno.AsyncCommand(OnCheckAnimeCharacters);
-            OpenAnimeInBrowserCommand = new magno.AsyncCommand(OnOpenAnimeInBrowser);
-            DiscussionsCommand = new magno.AsyncCommand<string>(OnDiscussions);
         }
 
         public Task InitializeTask { get; }
@@ -166,10 +164,10 @@ namespace ANT.Modules
 #endif
         }
 
-        public ICommand OpenImageInBrowserCommand { get; private set; }
-        private async Task OnOpenImageInBrowser()
+        public ICommand OpenLinkCommand { get; private set; }
+        private async Task OnLink(string link)
         {
-            await Launcher.TryOpenAsync(AnimeContext.Anime.ImageURL);
+            await Launcher.TryOpenAsync(link);
         }
 
 
@@ -190,20 +188,6 @@ namespace ANT.Modules
             if (canNavigate)
                 await NavigationManager.NavigatePopUpAsync<AnimeCharacterPopupViewModel>(AnimeContext.Anime.MalId);
         }
-
-        public ICommand OpenAnimeInBrowserCommand { get; private set; }
-        private async Task OnOpenAnimeInBrowser()
-        {
-            if (AnimeContext != null)
-                await Launcher.TryOpenAsync(AnimeContext.Anime.LinkCanonical);
-        }
-
-        public ICommand DiscussionsCommand { get; private set; }
-        private async Task OnDiscussions(string forumLink)
-        {
-            await Launcher.TryOpenAsync(forumLink);
-        }
-
         #endregion
 
         #region métodos VM

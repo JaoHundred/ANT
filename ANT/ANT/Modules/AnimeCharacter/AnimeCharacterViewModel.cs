@@ -20,7 +20,7 @@ namespace ANT.Modules
             InitializeTask = LoadAsync(characterId);
 
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
-            OpenImageCommand = new magno.AsyncCommand<Picture>(OnOpenImage);
+            OpenImageCommand = new magno.AsyncCommand<string>(OnOpenImage);
             SelectedAnimeCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedAnime);
             SelectedVoiceActorCommand = new magno.AsyncCommand(OnSelectedVoiceActor);
         }
@@ -102,9 +102,9 @@ namespace ANT.Modules
         }
 
         public ICommand OpenImageCommand { get; private set; }
-        private async Task OnOpenImage(Picture picture)
+        private async Task OnOpenImage(string largePictureUrl)
         {
-            await Launcher.TryOpenAsync(picture.Large);
+            await Launcher.TryOpenAsync(largePictureUrl);
         }
 
         public ICommand SelectedAnimeCommand { get; private set; }
