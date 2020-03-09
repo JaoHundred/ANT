@@ -119,9 +119,7 @@ namespace ANT.Modules
         {
             await Launcher.TryOpenAsync(link);
         }
-
-        //TODO: https://github.com/JaoHundred/ANT/issues/27, acrescentar nos 3 pontos informação para ir para o site do MAL e por em um novo frame
-        //abaixo da parte de imagens o website do ator
+        
         #endregion
     }
 }
