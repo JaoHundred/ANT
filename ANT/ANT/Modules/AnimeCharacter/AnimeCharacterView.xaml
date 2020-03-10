@@ -33,21 +33,22 @@
 
                     <StackLayout >
                         <ScrollView Orientation="Horizontal">
-                            <Label  Text="{Binding CharacterContext.Name}" HorizontalOptions="Center"
+                            <Label  Text="{Binding CharacterContext.Character.Name}" HorizontalOptions="Center"
                                 FontSize="Title" d:Text="Name"/>
                         </ScrollView>
-                        <ScrollView Orientation="Horizontal" IsVisible="{Binding CharacterContext.NameKanji, Converter={StaticResource EmptyTextToBoolConverter}}">
-                            <Label  Text="{Binding CharacterContext.NameKanji, StringFormat='({0})'}" HorizontalOptions="Center"
+                        <ScrollView Orientation="Horizontal" 
+                                    IsVisible="{Binding CharacterContext.Character.NameKanji, Converter={StaticResource EmptyTextToBoolConverter}}">
+                            <Label  Text="{Binding CharacterContext.Character.NameKanji, StringFormat='({0})'}" HorizontalOptions="Center"
                                 FontSize="Title"/>
                         </ScrollView>
                     </StackLayout>
 
                     <ScrollView Grid.Row="1" Orientation="Vertical" Margin="0,5,0,0">
-                        <Label Text="{Binding CharacterContext.About}" FontSize="Body" d:Text="About"/>
+                        <Label Text="{Binding CharacterContext.Character.About}" FontSize="Body" d:Text="About"/>
                     </ScrollView>
 
                     <ffimage:CachedImage Grid.Column="1" Grid.RowSpan="2" x:Name="ChImage" 
-                                     Source="{Binding CharacterContext.ImageURL}"/>
+                                     Source="{Binding CharacterContext.Character.ImageURL}"/>
                     <ActivityIndicator Grid.Column="1" Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference ChImage}}"
                                    IsVisible="{Binding IsLoading, Source={x:Reference ChImage}}"/>
                 </Grid>
@@ -78,7 +79,7 @@
                     </Grid.RowDefinitions>
                     <Label Text="{res:Translate Pictures}" d:Text="Pictures" FontSize="Title"/>
                     <Frame Grid.Row="1" Style="{StaticResource FrameGenreStyle}" BorderColor="Gray" >
-                        <CollectionView ItemsSource="{Binding CharacterPictures}">
+                        <CollectionView ItemsSource="{Binding CharacterContext.CharacterPictures}">
                             <CollectionView.EmptyView>
                                 <Grid>
                                     <Label Text="{res:Translate NoDataAvailable}" VerticalOptions="Center" 
@@ -116,7 +117,7 @@
         </Grid>
     </ContentPage>
     <ContentPage Title="{res:Translate Animeography}">
-        <CollectionView ItemsSource="{Binding CharacterContext.Animeography}" Margin="10,5,10,5"
+        <CollectionView ItemsSource="{Binding CharacterContext.Character.Animeography}" Margin="10,5,10,5"
                             SelectionMode="Single" SelectionChangedCommand="{Binding SelectedAnimeCommand}"
                             SelectionChangedCommandParameter="{Binding SelectedItem, Source={x:RelativeSource Mode=Self}}">
             <CollectionView.ItemsLayout>
@@ -126,7 +127,9 @@
                 <DataTemplate x:DataType="jikan:MALImageSubItem">
                     <Frame>
                         <Grid>
-                            <ffimage:CachedImage Source="{Binding ImageURL}"/>
+                            <ffimage:CachedImage x:Name="img" Source="{Binding ImageURL}"/>
+                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
+                                               IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
                             <Label Grid.Column="1" Text="{Binding Name}" Style="{StaticResource TitleLabelStyle}">
                                 <Label.Behaviors>
                                     <behavior:LabelLinesBehavior MaxLines="2"/>
@@ -144,7 +147,7 @@
 
     </ContentPage>
     <ContentPage Title="{res:Translate VoiceActors}">
-        <CollectionView ItemsSource="{Binding CharacterContext.VoiceActors}" Margin="5,5,10,5"
+        <CollectionView ItemsSource="{Binding CharacterContext.Character.VoiceActors}" Margin="5,5,10,5"
                         SelectionMode="Single" SelectionChangedCommand="{Binding SelectedVoiceActorCommand}"
                         SelectionChangedCommandParameter="{Binding SelectedVoiceActor}"
                         SelectedItem="{Binding SelectedVoiceActor}">
@@ -155,7 +158,9 @@
                 <DataTemplate x:DataType="jikan:VoiceActorEntry">
                     <Frame>
                         <Grid>
-                            <ffimage:CachedImage Source="{Binding ImageURL}"/>
+                            <ffimage:CachedImage x:Name="img" Source="{Binding ImageURL}"/>
+                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
+                                               IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
                             <Label Grid.Column="1" Text="{Binding Name}" Style="{StaticResource TitleLabelStyle}">
                                 <Label.Behaviors>
                                     <behavior:LabelLinesBehavior MaxLines="2"/>

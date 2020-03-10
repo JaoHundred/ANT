@@ -144,7 +144,13 @@
                                 <Label Text="{Binding Character.Name}" 
                                        HorizontalOptions="Center"
                                        Style="{StaticResource TitleLabelStyle}"/>
-                                <ffimage:CachedImage Source="{Binding Character.ImageURL}" />
+                                <Grid>
+                                    <ffimage:CachedImage x:Name="img" Source="{Binding Character.ImageURL}" />
+                                    <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
+                                                   IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
+
+                                </Grid>
+                                
                             </StackLayout>
 
                             <BoxView Grid.Column="1" Grid.RowSpan="3" BackgroundColor="{DynamicResource FrameSeparatorColor}" 
@@ -158,7 +164,13 @@
 
                                 <Label Text="{Binding Anime.Name}" HorizontalOptions="Center"
                                        Style="{StaticResource TitleLabelStyle}"/>
-                                <ffimage:CachedImage Source="{Binding Anime.ImageURL}"/>
+
+                                <Grid>
+                                    <ffimage:CachedImage x:Name="img2" Source="{Binding Anime.ImageURL}"/>
+                                    <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img2}}"
+                                                   IsVisible="{Binding IsLoading, Source={x:Reference img2}}"/>
+                                </Grid>
+                                
                             </StackLayout>
 
                         </Grid>

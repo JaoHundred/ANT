@@ -10,6 +10,8 @@ using System.Linq;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using ANT.Core;
+using ANT.Model;
+using Xamarin.Forms;
 
 namespace ANT.Modules
 {
@@ -36,14 +38,20 @@ namespace ANT.Modules
 
             try
             {
-                await Task.Delay(TimeSpan.FromSeconds(4));
-                Character character = await App.Jikan.GetCharacter(characterId);
+                FavoritedAnimeCharacter animeCharacter = App.FavoritedAnimeCharacters.FirstOrDefault(p => p.Character.MalId == characterId);
 
-                await Task.Delay(TimeSpan.FromSeconds(4));
-                var characterPictures = await App.Jikan.GetCharacterPictures(characterId);
+                if (animeCharacter == null)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(4));
+                    Character character = await App.Jikan.GetCharacter(characterId);
 
-                CharacterContext = character;
-                CharacterPictures = characterPictures.Pictures.ToList();
+                    await Task.Delay(TimeSpan.FromSeconds(4));
+                    var characterPictures = await App.Jikan.GetCharacterPictures(characterId);
+
+                    animeCharacter = new FavoritedAnimeCharacter(character, characterPictures.Pictures.ToList());
+                }
+
+                CharacterContext = animeCharacter;
             }
             catch (Exception ex)
             {
@@ -71,18 +79,11 @@ namespace ANT.Modules
             set { SetProperty(ref _canEnable, value); }
         }
 
-        private Character _characterContext;
-        public Character CharacterContext
+        private FavoritedAnimeCharacter _characterContext;
+        public FavoritedAnimeCharacter CharacterContext
         {
             get { return _characterContext; }
             set { SetProperty(ref _characterContext, value); }
-        }
-
-        private IList<Picture> _characterPictures;
-        public IList<Picture> CharacterPictures
-        {
-            get { return _characterPictures; }
-            set { SetProperty(ref _characterPictures, value); }
         }
 
         private VoiceActorEntry _selectedVoiceActor;
@@ -97,8 +98,22 @@ namespace ANT.Modules
         public ICommand FavoriteCommand { get; private set; }
         public async Task OnFavorite()
         {
-            await Task.Delay(TimeSpan.FromSeconds(4));
-            //TODO: salvar o personagem na lista de favoritos, se já estiver favoritado, desfavoritar
+            if (CharacterContext.IsFavorited)
+            {
+                CharacterContext.IsFavorited = false;
+                App.FavoritedAnimeCharacters.Remove(CharacterContext);
+
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.RemovedFromFavorite);
+            }
+            else
+            {
+                CharacterContext.IsFavorited = true;
+                App.FavoritedAnimeCharacters.Add(CharacterContext);
+
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.AddedToFavorite);
+            }
+
+            await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesCharacterFileName);
         }
 
         public ICommand OpenImageCommand { get; private set; }
