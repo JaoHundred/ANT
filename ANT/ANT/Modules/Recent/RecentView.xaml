@@ -25,13 +25,9 @@
 
     <CollectionView x:Name="RecentCollectionView" ItemsSource="{Binding Recents}" 
                     SelectedItem="{Binding SelectedRecent, Mode=TwoWay}" SelectionMode="Single"
-                    SelectionChangedCommand="{Binding OpenAnimeCommand}" Margin="10,5,10,5">
-        <CollectionView.EmptyView>
-            <Grid>
-                <Label Text="{res:Translate NothingForNow}" FontSize="40" VerticalOptions="Center"
-                       HorizontalOptions="Center"/>
-            </Grid>
-        </CollectionView.EmptyView>
+                    SelectionChangedCommand="{Binding OpenAnimeCommand}" Margin="10,5,10,5"
+                    Style="{StaticResource FavoriteListRecentListStyle}">
+        
 
         <CollectionView.ItemsLayout>
             <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="10" />

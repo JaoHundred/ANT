@@ -7,6 +7,7 @@
              xmlns:Theme="clr-namespace:ANT.Themes"
              xmlns:Icon="clr-namespace:ANT.Icons"
              xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:res="clr-namespace:ANT.Lang"
              x:Class="ANT.App">
     <Application.Resources>
         <ResourceDictionary >
@@ -107,7 +108,7 @@
             <Style TargetType="Label" x:Key="TitleLabelStyle">
                 <Setter Property="FontSize" Value="Title"/>
                 <Setter Property="LineBreakMode" Value="TailTruncation"/>
-                
+
             </Style>
 
             <Style TargetType="Label" x:Key="ContentTitleLabelStyle">
@@ -170,6 +171,17 @@
                 <Setter Property="Text" Value="{StaticResource StarFill}"/>
                 <Setter Property="TextColor" Value="#ffff00"/>
                 <Setter Property="FontSize" Value="20"/>
+            </Style>
+
+            <Style TargetType="CollectionView" x:Key="FavoriteListRecentListStyle">
+                <Setter Property="EmptyView">
+                    <Setter.Value>
+                        <Grid>
+                            <Label Text="{res:Translate NothingForNow}" FontSize="40" VerticalOptions="Center"
+                                   HorizontalOptions="Center"/>
+                        </Grid>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
 

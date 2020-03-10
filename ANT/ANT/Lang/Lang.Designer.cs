@@ -205,6 +205,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear favorite list.
+        /// </summary>
+        public static string ClearFavoriteList {
+            get {
+                return ResourceManager.GetString("ClearFavoriteList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear recent list.
         /// </summary>
         public static string ClearRecentList {
@@ -273,6 +282,15 @@ namespace ANT.Lang {
         public static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorite characters.
+        /// </summary>
+        public static string FavoriteCharacters {
+            get {
+                return ResourceManager.GetString("FavoriteCharacters", resourceCulture);
             }
         }
         

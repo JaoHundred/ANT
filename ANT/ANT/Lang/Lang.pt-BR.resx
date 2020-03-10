@@ -165,6 +165,9 @@
   <data name="ClearCannotBeUndone" xml:space="preserve">
     <value>Tem certeza que deseja limpar a lista? Esta ação não pode ser desfeita.</value>
   </data>
+  <data name="ClearFavoriteList" xml:space="preserve">
+    <value>Limpar lista de favoritos</value>
+  </data>
   <data name="ClearRecentList" xml:space="preserve">
     <value>Limpar lista de recentes</value>
   </data>
@@ -188,6 +191,9 @@
   </data>
   <data name="Error" xml:space="preserve">
     <value>Algo deu errado, por favor entre novamente nessa página</value>
+  </data>
+  <data name="FavoriteCharacters" xml:space="preserve">
+    <value>Personagens favoritos</value>
   </data>
   <data name="Finalizing" xml:space="preserve">
     <value>Finalizando...</value>

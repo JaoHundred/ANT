@@ -165,6 +165,9 @@
   <data name="ClearCannotBeUndone" xml:space="preserve">
     <value>Are you sure you want clear the list? This action cannot be undone.</value>
   </data>
+  <data name="ClearFavoriteList" xml:space="preserve">
+    <value>Clear favorite list</value>
+  </data>
   <data name="ClearRecentList" xml:space="preserve">
     <value>Clear recent list</value>
   </data>
@@ -188,6 +191,9 @@
   </data>
   <data name="Error" xml:space="preserve">
     <value>Something went wrong, please reenter this page</value>
+  </data>
+  <data name="FavoriteCharacters" xml:space="preserve">
+    <value>Favorite characters</value>
   </data>
   <data name="Finalizing" xml:space="preserve">
     <value>Finalizing...</value>
