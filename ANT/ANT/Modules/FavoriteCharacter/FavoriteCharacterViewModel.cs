@@ -16,6 +16,7 @@ namespace ANT.Modules
         public FavoriteCharacterViewModel()
         {
             ClearAllRecentCommand = new magno.AsyncCommand(OnClearAllRecent);
+            OpenCharacterCommand = new magno.AsyncCommand(OnOpenCharacter);
 
             FavoritedCharacters = new ObservableRangeCollection<FavoritedAnimeCharacter>();
         }
@@ -34,6 +35,13 @@ namespace ANT.Modules
         {
             get { return _favoritedCharacters; }
             set { SetProperty(ref _favoritedCharacters, value); }
+        }
+
+        private FavoritedAnimeCharacter _selectedFavorite;
+        public FavoritedAnimeCharacter SelectedFavorite
+        {
+            get { return _selectedFavorite; }
+            set { SetProperty(ref _selectedFavorite, value); }
         }
         #endregion
 
@@ -62,7 +70,20 @@ namespace ANT.Modules
                 await NavigationManager.
                     NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.ClearFavoriteList, Lang.Lang.ClearCannotBeUndone, confirmDelegateAction);
             }
-        } 
+        }
+
+        public ICommand OpenCharacterCommand { get; private set; }
+        private async Task OnOpenCharacter()
+        {
+            if (IsNotBusy && SelectedFavorite != null)
+            {
+                IsBusy = true;
+                await NavigationManager.NavigateShellAsync<AnimeCharacterViewModel>(SelectedFavorite.Character.MalId);
+                IsBusy = false;
+            }
+
+            SelectedFavorite = null;
+        }
         #endregion
 
         //TODO: criar comando para deletar 1 por 1(pensar em como fazer isso, multiseleção ou seleção mais lixeira

@@ -17,6 +17,11 @@
             IsEnabled="{Binding CanEnable}"
             Title="{res:Translate Character}">
 
+    <TabbedPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="{res:Translate MAL}"
+                     Command="{Binding OpenLinkCommand}" CommandParameter="{Binding CharacterContext.Character.LinkCanonical}"/>
+    </TabbedPage.ToolbarItems>
+    
     <ContentPage Title="{res:Translate Details}">
         <ContentPage.Resources>
             <converter:InversorConverter x:Key="InversorConverter"/>
@@ -95,7 +100,7 @@
                                 <DataTemplate x:DataType="jikan:Picture">
                                     <Grid>
                                         <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding BindingContext.OpenImageCommand, Source={x:Reference Pageview}}"
+                                            <TapGestureRecognizer Command="{Binding BindingContext.OpenLinkCommand, Source={x:Reference Pageview}}"
                                                               CommandParameter="{Binding .Large}"/>
                                         </Grid.GestureRecognizers>
                                         <ffimage:CachedImage x:Name="img" Source="{Binding Small}" 

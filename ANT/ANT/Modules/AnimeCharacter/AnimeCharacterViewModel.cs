@@ -22,7 +22,7 @@ namespace ANT.Modules
             InitializeTask = LoadAsync(characterId);
 
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
-            OpenImageCommand = new magno.AsyncCommand<string>(OnOpenImage);
+            OpenLinkCommand = new magno.AsyncCommand<string>(OpenLink);
             SelectedAnimeCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedAnime);
             SelectedVoiceActorCommand = new magno.AsyncCommand(OnSelectedVoiceActor);
         }
@@ -116,12 +116,6 @@ namespace ANT.Modules
             await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesCharacterFileName);
         }
 
-        public ICommand OpenImageCommand { get; private set; }
-        private async Task OnOpenImage(string largePictureUrl)
-        {
-            await Launcher.TryOpenAsync(largePictureUrl);
-        }
-
         public ICommand SelectedAnimeCommand { get; private set; }
         private async Task OnSelectedAnime(MALImageSubItem item)
         {
@@ -144,6 +138,12 @@ namespace ANT.Modules
                 IsBusy = false;
                 SelectedVoiceActor = null;
             }
+        }
+
+        public ICommand OpenLinkCommand { get; private set; }
+        private async Task OpenLink(string link)
+        {
+            await Launcher.TryOpenAsync(link);
         }
 
         #endregion

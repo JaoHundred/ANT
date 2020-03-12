@@ -6,6 +6,8 @@
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:vm="clr-namespace:ANT.Modules"
              xmlns:model="clr-namespace:ANT.Model"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:behavior="clr-namespace:ANT._Behaviors"
              x:DataType="vm:FavoriteCharacterViewModel"
              mc:Ignorable="d"
              x:Class="ANT.Modules.FavoriteCharacterView"
@@ -17,16 +19,30 @@
                      Command="{Binding ClearAllRecentCommand}"/>
     </ContentPage.ToolbarItems>
 
-    <CollectionView ItemsSource="{Binding FavoritedCharacters}" Style="{StaticResource FavoriteListRecentListStyle}">
+    <CollectionView ItemsSource="{Binding FavoritedCharacters}" Style="{StaticResource FavoriteListRecentListStyle}"
+                    Margin="10,5,10,5"  SelectedItem="{Binding SelectedFavorite, Mode=TwoWay}" SelectionMode="Single"
+                    SelectionChangedCommand="{Binding OpenCharacterCommand}">
         <CollectionView.ItemsLayout>
             <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
         </CollectionView.ItemsLayout>
 
         <CollectionView.ItemTemplate>
             <DataTemplate x:DataType="model:FavoritedAnimeCharacter">
-                <Label Text="{Binding Character.Name}"/>
+                <Frame>
+                    <Grid>
+                    <ffimage:CachedImage x:Name="img" Source="{Binding Character.ImageURL}"/>
+                    <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
+                                       IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
+                    <Label Grid.Column="1" Text="{Binding Character.Name}" Style="{StaticResource TitleLabelStyle}">
+                        <Label.Behaviors>
+                            <behavior:LabelLinesBehavior MaxLines="2"/>
+                        </Label.Behaviors>
+                    </Label>
+                </Grid>
+                </Frame>
+                
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>
-    
+
 </ContentPage>
