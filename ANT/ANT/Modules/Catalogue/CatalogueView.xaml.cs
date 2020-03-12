@@ -19,8 +19,24 @@ namespace ANT.Modules
 
         private async void FavoriteButton_AnimationOnIsVisible(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == "IsVisible" && FavoriteButton.IsVisible)
+            if (e.PropertyName == "IsVisible" && FavoriteButton.IsVisible)
                 await FavoriteButton.Animate(new ShakeAnimation());
+        }
+
+        private void SearchLabelTapped(object sender, EventArgs e)
+        {
+            SearchControl.IsVisible = true;
+            SearchIconLabel.IsVisible = false;
+            EntrySearchField.Focus();
+
+            LabelTitle.IsVisible = false;
+        }
+
+        private void SearchFieldLostFocus(object sender, FocusEventArgs e)
+        {
+            SearchControl.IsVisible = false;
+            SearchIconLabel.IsVisible = true;
+            LabelTitle.IsVisible = true;
         }
     }
 }

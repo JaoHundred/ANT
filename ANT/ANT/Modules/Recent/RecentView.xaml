@@ -11,12 +11,22 @@
              mc:Ignorable="d"
              x:DataType="vm:RecentViewModel"
              x:Class="ANT.Modules.RecentView"
-             Appearing="ContentPage_Appearing"
-             Title="{res:Translate RecentlyViewed}">
+             Appearing="ContentPage_Appearing">
 
     <ContentPage.Resources>
         <converter:DateTimeOffSetFormatToDadeAndHoursConverter x:Key="DateTimeOffSetConverter"/>
     </ContentPage.Resources>
+
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="{res:Translate RecentlyViewed}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
+        </Grid>
+    </Shell.TitleView>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate ClearAll}"

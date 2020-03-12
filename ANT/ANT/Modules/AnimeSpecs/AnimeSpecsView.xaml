@@ -13,8 +13,7 @@
              x:DataType="VM:AnimeSpecsViewModel"
             Shell.FlyoutBehavior="Disabled" 
             IsEnabled="{Binding CanEnable}"
-            x:Name="TabbedView"
-            Title="{res:Translate Anime}">
+            x:Name="TabbedView">
 
     <TabbedPage.Resources>
         <converter:DateConverter x:Key="DateConverter"/>
@@ -25,6 +24,17 @@
         <converter:DurationFormatToShortConverter x:Key="DurationFormatToShortConverter"/>
         <converter:IsMovieToVisibleConverter x:Key="IsMovieToVisibleConverter"/>
     </TabbedPage.Resources>
+
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="{res:Translate Anime}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
+        </Grid>
+    </Shell.TitleView>
 
     <TabbedPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate MAL}" Command="{Binding OpenLinkCommand}"

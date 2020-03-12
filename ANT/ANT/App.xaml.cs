@@ -20,6 +20,11 @@ namespace ANT
         public App()
         {
             InitializeComponent();
+
+            //Device.SetFlags(new[] {
+            //    "SwipeView_Experimental"
+            //});
+
             MainPage = new AppShell();
         }
 

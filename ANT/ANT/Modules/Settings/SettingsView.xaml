@@ -13,6 +13,17 @@
         <convert:InversorConverter x:Key="InversorConv"/>
     </ContentPage.Resources>
 
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="{res:Translate Settings}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
+        </Grid>
+    </Shell.TitleView>
+
     <ContentPage.Content>
         <TableView Intent="Settings" HasUnevenRows="True" Margin="5" >
             <TableRoot>

@@ -8,11 +8,54 @@
              xmlns:model="clr-namespace:ANT.Model"
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:behavior="clr-namespace:ANT._Behaviors"
+             xmlns:converter="clr-namespace:ANT.Converter"
+             xmlns:comm="clr-namespace:ANT._Behaviors"
              x:DataType="vm:FavoriteCharacterViewModel"
              mc:Ignorable="d"
              x:Class="ANT.Modules.FavoriteCharacterView"
-             Title="{res:Translate FavoriteCharacters}"
-             Appearing="ContentPage_Appearing">
+             Appearing="ContentPage_Appearing"
+             x:Name="PageView">
+
+    <ContentPage.Resources>
+        <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
+    </ContentPage.Resources>
+    
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="{res:Translate FavoriteCharacters}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
+
+            <Grid Grid.ColumnSpan="2" x:Name="SearchControl" IsVisible="False">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntryStyle}" 
+                   Text="{Binding SearchQuery}" Unfocused="SearchFieldLostFocus" x:Name="EntrySearchField">
+                    <Entry.Behaviors>
+                        <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Label Grid.Column="1" Style="{StaticResource SearchCancelButtonStyle}"  
+                   IsVisible="{Binding SearchQuery, Converter={StaticResource EmptyTextToBoolConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearTextCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+            <Label Grid.Column="1" Style="{StaticResource SearchLabelStyle}" x:Name="SearchIconLabel"
+                   VerticalOptions="Center" Margin="0,0,2,0" TextColor="{DynamicResource TextTitleColor}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="SearchLabelTapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+    </Shell.TitleView>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate ClearAll}"
@@ -30,17 +73,17 @@
             <DataTemplate x:DataType="model:FavoritedAnimeCharacter">
                 <Frame>
                     <Grid>
-                    <ffimage:CachedImage x:Name="img" Source="{Binding Character.ImageURL}"/>
-                    <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
+                        <ffimage:CachedImage x:Name="img" Source="{Binding Character.ImageURL}"/>
+                        <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
                                        IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
-                    <Label Grid.Column="1" Text="{Binding Character.Name}" Style="{StaticResource TitleLabelStyle}">
-                        <Label.Behaviors>
-                            <behavior:LabelLinesBehavior MaxLines="2"/>
-                        </Label.Behaviors>
-                    </Label>
-                </Grid>
+                        <Label Grid.Column="1" Text="{Binding Character.Name}" Style="{StaticResource TitleLabelStyle}">
+                            <Label.Behaviors>
+                                <behavior:LabelLinesBehavior MaxLines="2"/>
+                            </Label.Behaviors>
+                        </Label>
+
+                    </Grid>
                 </Frame>
-                
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>

@@ -4,8 +4,17 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="ANT.Modules.HomeView" 
-             Title="Home">
+             x:Class="ANT.Modules.HomeView" >
 
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="Home" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
+        </Grid>
+    </Shell.TitleView>
     
 </ContentPage>

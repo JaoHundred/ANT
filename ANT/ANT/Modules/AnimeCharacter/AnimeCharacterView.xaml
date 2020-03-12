@@ -14,8 +14,18 @@
              x:Class="ANT.Modules.AnimeCharacterView"
              x:Name="Pageview" 
             Shell.FlyoutBehavior="Disabled" 
-            IsEnabled="{Binding CanEnable}"
-            Title="{res:Translate Character}">
+            IsEnabled="{Binding CanEnable}">
+
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="{res:Translate Character}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
+        </Grid>
+    </Shell.TitleView>
 
     <TabbedPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate MAL}"

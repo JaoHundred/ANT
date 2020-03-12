@@ -24,5 +24,21 @@ namespace ANT.Modules
             //a ViewModel
             await (BindingContext as FavoriteCharacterViewModel)?.LoadAsync(null);
         }
+
+        private void SearchLabelTapped(object sender, EventArgs e)
+        {
+            SearchControl.IsVisible = true;
+            SearchIconLabel.IsVisible = false;
+            EntrySearchField.Focus();
+
+            LabelTitle.IsVisible = false;
+        }
+
+        private void SearchFieldLostFocus(object sender, FocusEventArgs e)
+        {
+            SearchControl.IsVisible = false;
+            SearchIconLabel.IsVisible = true;
+            LabelTitle.IsVisible = true;
+        }
     }
 }

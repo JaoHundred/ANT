@@ -173,6 +173,19 @@
                 <Setter Property="FontSize" Value="20"/>
             </Style>
 
+            <Style TargetType="Label" x:Key="SearchLabelStyle">
+                <Setter Property="FontFamily" Value="{DynamicResource FontIcon}"/>
+                <Setter Property="Text" Value="{StaticResource Search}"/>
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+
+            <Style TargetType="Label" x:Key="NavigationBarTitleLabelStyle">
+                <Setter Property="TextColor" Value="{DynamicResource TextTitleColor}"/>
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+
             <Style TargetType="CollectionView" x:Key="FavoriteListRecentListStyle">
                 <Setter Property="EmptyView">
                     <Setter.Value>

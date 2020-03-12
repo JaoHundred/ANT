@@ -7,9 +7,19 @@
              mc:Ignorable="d"
              xmlns:modules="clr-namespace:ANT.Modules"
              x:DataType="modules:CatalogueSelectViewModel"
-             x:Class="ANT.Modules.CatalogueSelectView"
-             Title="{res:Translate CatalogueSelector}">
+             x:Class="ANT.Modules.CatalogueSelectView">
 
+
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="{res:Translate CatalogueSelector}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
+        </Grid>
+    </Shell.TitleView>
 
     <StackLayout>
         <Button Text="Placeholder catálogo da season atual" Command="{Binding OpenSeasonCatalogueCommand}"/>

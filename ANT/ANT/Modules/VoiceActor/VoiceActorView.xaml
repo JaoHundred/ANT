@@ -13,8 +13,7 @@
              x:Class="ANT.Modules.VoiceActorView"
             x:Name="Pageview"
             Shell.FlyoutBehavior="Disabled" 
-            IsEnabled="{Binding CanEnable}"
-            Title="{res:Translate VoiceActor}">
+            IsEnabled="{Binding CanEnable}">
 
     <TabbedPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate MAL}"
@@ -24,6 +23,17 @@
     <TabbedPage.Resources>
         <converter:InversorConverter x:Key="InversorConverter"/>
     </TabbedPage.Resources>
+
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="{res:Translate VoiceActor}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
+        </Grid>
+    </Shell.TitleView>
 
     <ContentPage Title="{res:Translate Details}">
         <Grid Margin="2,5,2,2"  RowSpacing="3">

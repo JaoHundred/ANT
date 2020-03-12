@@ -27,18 +27,32 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
+            <Label Text="{res:Translate Catalogue}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
 
-            <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntryStyle}" Text="{Binding SearchQuery}" 
-                   IsEnabled="{Binding IsLoadingOrRefreshing, Converter={StaticResource InversorConverter}}">
-                <Entry.Behaviors>
-                    <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
-                </Entry.Behaviors>
-            </Entry>
+            <Grid Grid.ColumnSpan="2" x:Name="SearchControl" IsVisible="False">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntryStyle}" 
+                   Text="{Binding SearchQuery}" Unfocused="SearchFieldLostFocus" x:Name="EntrySearchField">
+                    <Entry.Behaviors>
+                        <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
 
-            <Label Grid.Column="1" Style="{StaticResource SearchCancelButtonStyle}"  
+                <Label Grid.Column="1" Style="{StaticResource SearchCancelButtonStyle}"  
                    IsVisible="{Binding SearchQuery, Converter={StaticResource EmptyTextToBoolConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearTextCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+            <Label Grid.Column="1" Style="{StaticResource SearchLabelStyle}" x:Name="SearchIconLabel"
+                   VerticalOptions="Center" Margin="0,0,2,0" TextColor="{DynamicResource TextTitleColor}">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ClearTextCommand}"/>
+                    <TapGestureRecognizer Tapped="SearchLabelTapped"/>
                 </Label.GestureRecognizers>
             </Label>
         </Grid>

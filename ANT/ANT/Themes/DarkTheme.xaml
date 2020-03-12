@@ -13,6 +13,10 @@
     <!--whitegray-->
     <Color x:Key="TextColor">#d3d4d4</Color>
 
+    <!--cinza quase branco-->
+    <Color x:Key="TextTitleColor">#f6f6f6</Color>
+    
+
     <!--verde limão escuro-->
     <Color x:Key="TextMenuColor">#6ea503</Color>
 

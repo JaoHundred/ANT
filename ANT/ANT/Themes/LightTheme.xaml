@@ -13,6 +13,9 @@
     <!--blackgray-->
     <Color x:Key="TextColor">#26292B</Color>
 
+    <!--cinza quase branco-->
+    <Color x:Key="TextTitleColor">#f6f6f6</Color>
+
     <!--azul violeta-->
     <Color x:Key="TextMenuColor">#4d4dff</Color>
 
