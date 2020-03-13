@@ -85,7 +85,7 @@
                             ConverterParameter={x:Reference EndDateLabel}}" FontSize="18"/>
                     </StackLayout>
 
-                    <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource FavoriteRoundedButtonStyle}" HorizontalOptions="End"
+                    <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource RoundedButtonStyle}" HorizontalOptions="End"
                             VerticalOptions="End" Command="{Binding FavoriteCommand}" >
                         <Button.ImageSource>
                             <FontImageSource FontFamily="{StaticResource FontIcon}"

@@ -21,6 +21,6 @@
     <x:String x:Key="Forum">&#xE90A;</x:String>
     <x:String x:Key="Recent">&#xE823;</x:String>
     <x:String x:Key="FavoriteList">&#xE728;</x:String>
-    <x:String x:Key="Search">&#xE721;</x:String>
+    <x:String x:Key="Search">&#xF78B;</x:String> <!--F78B searchmedium-->  <!--E721 serch(small?)-->
 
 </ResourceDictionary>

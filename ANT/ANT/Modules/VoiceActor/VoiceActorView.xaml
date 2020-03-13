@@ -59,7 +59,7 @@
                                        IsVisible="{Binding IsLoading, Source={x:Reference ChImage}}"/>
                 </Grid>
             </Frame>
-            <Button Style="{StaticResource FavoriteRoundedButtonStyle}" Command="{Binding FavoriteCommand}" 
+            <Button Style="{StaticResource RoundedButtonStyle}" Command="{Binding FavoriteCommand}" 
                 HorizontalOptions="End" VerticalOptions="End" Margin="0,0,10,10"
                 IsVisible="{Binding IsLoading, Source={x:Reference ChImage}, Converter={StaticResource InversorConverter}}">
                 <Button.ImageSource>
