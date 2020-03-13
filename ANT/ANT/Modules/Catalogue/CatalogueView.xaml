@@ -130,7 +130,7 @@
                            IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
 
         <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
-                Style="{StaticResource FavoriteRoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
+                Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
 
             <Button.ImageSource>
                 <FontImageSource FontFamily="{StaticResource FontIcon}"

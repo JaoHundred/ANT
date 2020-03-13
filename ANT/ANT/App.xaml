@@ -144,7 +144,7 @@
                 <Setter Property="BackgroundColor" Value="{DynamicResource SecondaryColor}"/>
             </Style>
             
-            <Style TargetType="Button" x:Key="FavoriteRoundedButtonOverlayStyle" BasedOn="{StaticResource RoundedButtonStyle}">
+            <Style TargetType="Button" x:Key="RoundedButtonOverlayStyle" BasedOn="{StaticResource RoundedButtonStyle}">
                 <Setter Property="VerticalOptions" Value="End"/>
                 <Setter Property="HorizontalOptions" Value="End"/>
                 <Setter Property="Margin" Value="30"/>

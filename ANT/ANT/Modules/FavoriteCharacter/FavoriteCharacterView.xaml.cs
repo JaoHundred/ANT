@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamanimation;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -39,6 +39,12 @@ namespace ANT.Modules
             SearchControl.IsVisible = false;
             SearchIconLabel.IsVisible = true;
             LabelTitle.IsVisible = true;
+        }
+
+        private async void DeleteButton_AnimationOnIsVisible(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsVisible" && DeleteButton.IsVisible)
+                await DeleteButton.Animate(new ShakeAnimation());
         }
     }
 }

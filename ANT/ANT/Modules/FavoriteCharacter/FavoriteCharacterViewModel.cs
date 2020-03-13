@@ -10,6 +10,7 @@ using System.Windows.Input;
 using ANT.Core;
 using ANT.UTIL;
 using System.Linq;
+using Xamarin.Forms;
 
 namespace ANT.Modules
 {
@@ -19,14 +20,16 @@ namespace ANT.Modules
         {
             ClearAllRecentCommand = new magno.AsyncCommand(OnClearAllRecent);
             OpenCharacterCommand = new magno.AsyncCommand(OnOpenCharacter);
-            RemoveCharacterCommand = new magno.Command<FavoritedAnimeCharacter>(OnRemoveCharacter);
+            DeleteFavoriteCommand = new magno.AsyncCommand(OnDeleteFavorite);
             ClearTextCommand = new magno.Command(OnClearText);
             SearchCommand = new magno.AsyncCommand(OnSearch);
+            SelectionModeCommand = new magno.Command(OnSelectionMode);
 
             FavoritedCharacters = new ObservableRangeCollection<FavoritedAnimeCharacter>();
         }
 
         private List<FavoritedAnimeCharacter> _originalCollection;
+        private IMainPageAndroid _mainPageAndroid;
 
         public async Task LoadAsync(object param)
         {
@@ -35,6 +38,9 @@ namespace ANT.Modules
                 FavoritedCharacters.ReplaceRange(App.FavoritedAnimeCharacters);
                 _originalCollection = new List<FavoritedAnimeCharacter>(FavoritedCharacters);
             });
+
+            _mainPageAndroid = DependencyService.Get<IMainPageAndroid>();
+            _mainPageAndroid.OnBackPress(this);
         }
 
         #region propriedades
@@ -50,6 +56,13 @@ namespace ANT.Modules
         {
             get { return _selectedFavorite; }
             set { SetProperty(ref _selectedFavorite, value); }
+        }
+
+        private IList<object> _selectedFavorites;
+        public IList<object> SelectedFavorites
+        {
+            get { return _selectedFavorites; }
+            set { SetProperty(ref _selectedFavorites, value); }
         }
         #endregion
 
@@ -112,16 +125,46 @@ namespace ANT.Modules
             FavoritedCharacters.ReplaceRange(resultList);
         }
 
-        public ICommand RemoveCharacterCommand { get; private set; }
-        private void OnRemoveCharacter(FavoritedAnimeCharacter favoritedAnimeCharacter)
+        public ICommand SelectionModeCommand { get; private set; }
+        private void OnSelectionMode()
         {
-            FavoritedCharacters.Remove(favoritedAnimeCharacter);
+            if (IsMultiSelect)
+                SingleSelectionMode();
+            else
+                MultiSelectionMode();
         }
 
-        
+        public ICommand DeleteFavoriteCommand { get; private set; }
+        private async Task OnDeleteFavorite()
+        {
+            if (SelectedFavorites?.Count > 0)
+            {
+                bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ChoiceModalViewModel>();
+
+                if (canNavigate)
+                {
+                    var characters = SelectedFavorites.Cast<FavoritedAnimeCharacter>().ToList();
+                    var action = new Action(async () =>
+                    {
+                        FavoritedCharacters.RemoveRange(characters);
+
+                        foreach (var item in characters)
+                        {
+                            var itemToRemove = App.FavoritedAnimeCharacters.FirstOrDefault(p => p == item);
+
+                            if (itemToRemove != null)
+                                App.FavoritedAnimeCharacters.Remove(itemToRemove);
+                        }
+                        await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesCharacterFileName);
+                    });
+
+                    await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.ClearFavoriteList, Lang.Lang.ClearCannotBeUndone, action);
+                    SelectedFavorites = null;
+                }
+            }
+        }
         #endregion
 
-        //TODO: criar comando para deletar 1 por 1(pensar em como fazer isso, multiseleção ou seleção mais lixeira
         //TODO: personalizar o template dos personagens
     }
 }

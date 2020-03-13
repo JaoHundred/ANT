@@ -19,7 +19,7 @@
     <ContentPage.Resources>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
     </ContentPage.Resources>
-    
+
     <Shell.TitleView>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -60,32 +60,48 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate ClearAll}"
                      Command="{Binding ClearAllRecentCommand}"/>
+
+        <ToolbarItem Order="Secondary" Text="{res:Translate MultiSelect}"
+                     Command="{Binding SelectionModeCommand}"/>
     </ContentPage.ToolbarItems>
 
-    <CollectionView ItemsSource="{Binding FavoritedCharacters}" Style="{StaticResource FavoriteListRecentListStyle}"
-                    Margin="10,5,10,5"  SelectedItem="{Binding SelectedFavorite, Mode=TwoWay}" SelectionMode="Single"
-                    SelectionChangedCommand="{Binding OpenCharacterCommand}">
-        <CollectionView.ItemsLayout>
-            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
-        </CollectionView.ItemsLayout>
+    <Grid>
+        <CollectionView ItemsSource="{Binding FavoritedCharacters}" Style="{StaticResource FavoriteListRecentListStyle}"
+                        Margin="10,5,10,5" SelectedItem="{Binding SelectedFavorite, Mode=TwoWay}" 
+                        SelectedItems="{Binding SelectedFavorites, Mode=TwoWay}"
+                        SelectionChangedCommand="{Binding OpenCharacterCommand}"
+                        SelectionMode="{Binding SelectionMode}" x:Name="CharactersCollectionView">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
 
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="model:FavoritedAnimeCharacter">
-                <Frame>
-                    <Grid>
-                        <ffimage:CachedImage x:Name="img" Source="{Binding Character.ImageURL}"/>
-                        <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:FavoritedAnimeCharacter">
+                    <Frame>
+                        <Grid>
+                            <ffimage:CachedImage x:Name="img" Source="{Binding Character.ImageURL}"/>
+                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
                                        IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
-                        <Label Grid.Column="1" Text="{Binding Character.Name}" Style="{StaticResource TitleLabelStyle}">
-                            <Label.Behaviors>
-                                <behavior:LabelLinesBehavior MaxLines="2"/>
-                            </Label.Behaviors>
-                        </Label>
+                            <Label Grid.Column="1" Text="{Binding Character.Name}" Style="{StaticResource TitleLabelStyle}">
+                                <Label.Behaviors>
+                                    <behavior:LabelLinesBehavior MaxLines="2"/>
+                                </Label.Behaviors>
+                            </Label>
 
-                    </Grid>
-                </Frame>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
+        <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
+               
+                Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="DeleteButton_AnimationOnIsVisible">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                 Glyph="{StaticResource Delete}"
+                                 Size="22" />
+            </Button.ImageSource>
+        </Button>
+    </Grid>
 </ContentPage>
