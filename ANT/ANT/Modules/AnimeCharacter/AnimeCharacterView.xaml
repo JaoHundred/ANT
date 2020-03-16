@@ -36,6 +36,7 @@
         <ContentPage.Resources>
             <converter:InversorConverter x:Key="InversorConverter"/>
             <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
+            <converter:RemoveSpecifiedSubStringAndReturnNewLineConverter x:Key="NewLineConverter"/>
         </ContentPage.Resources>
 
         <Grid Margin="2,5,2,2" RowSpacing="3">
@@ -59,7 +60,8 @@
                     </StackLayout>
 
                     <ScrollView Grid.Row="1" Orientation="Vertical" Margin="0,5,0,0">
-                        <Label Text="{Binding CharacterContext.Character.About}" FontSize="Body" d:Text="About"/>
+                        <Label Text="{Binding CharacterContext.Character.About, Converter={StaticResource NewLineConverter}, ConverterParameter=\\n}" 
+                               FontSize="Body" d:Text="About"/>
                     </ScrollView>
 
                     <ffimage:CachedImage Grid.Column="1" Grid.RowSpan="2" x:Name="ChImage" 

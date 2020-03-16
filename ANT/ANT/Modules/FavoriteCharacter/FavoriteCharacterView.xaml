@@ -18,6 +18,7 @@
 
     <ContentPage.Resources>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
+        <converter:RemoveSpecifiedSubStringConverter x:Key="RemoveSubStringConverter"/>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -77,14 +78,27 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:FavoritedAnimeCharacter">
-                    <Frame>
+                    <Frame >
                         <Grid>
-                            <ffimage:CachedImage x:Name="img" Source="{Binding Character.ImageURL}"/>
-                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}"
+                            <ffimage:CachedImage Grid.RowSpan="2" x:Name="img" Source="{Binding Character.ImageURL}"/>
+                            <ActivityIndicator Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference img}}"
                                        IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
-                            <Label Grid.Column="1" Text="{Binding Character.Name}" Style="{StaticResource TitleLabelStyle}">
+
+                            <StackLayout Grid.Column="1" Orientation="Vertical">
+                                <Label Text="{Binding Character.Name}" Style="{StaticResource TitleLabelStyle}">
+                                    <Label.Behaviors>
+                                        <behavior:LabelLinesBehavior MaxLines="2"/>
+                                    </Label.Behaviors>
+                                </Label>
+
+                                <Label Text="{Binding Character.NameKanji}" Style="{StaticResource TitleLabelStyle}"
+                                       LineBreakMode="TailTruncation"/>
+                            </StackLayout>
+
+                            <Label Grid.Column="1" Grid.Row="1" Style="{StaticResource ContentBodyLabelStyle}" LineBreakMode="TailTruncation"
+                                   Text="{Binding Character.About, Converter={StaticResource RemoveSubStringConverter}, ConverterParameter=\\n}">
                                 <Label.Behaviors>
-                                    <behavior:LabelLinesBehavior MaxLines="2"/>
+                                    <behavior:LabelLinesBehavior MaxLines="5"/>
                                 </Label.Behaviors>
                             </Label>
 
@@ -95,7 +109,6 @@
         </CollectionView>
 
         <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
-               
                 Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="DeleteButton_AnimationOnIsVisible">
             <Button.ImageSource>
                 <FontImageSource FontFamily="{StaticResource FontIcon}"
