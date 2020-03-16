@@ -57,7 +57,7 @@ namespace ANT.Modules
 
                 if (_favoritedAnime == null)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(4));
+                    await App.DelayRequest();
                     Anime anime = await App.Jikan.GetAnime(id);
                     anime.RequestCached = true;
 
@@ -193,7 +193,6 @@ namespace ANT.Modules
         #region métodos VM
         private Task AddOrUpdateRecentAnimeAsync(FavoritedAnime recentFavoritedAnime)
         {
-            //TODO: devo precisar de um meio para atualizar a página de recentes(na hora que o usuário for voltar com o backbutton)
             return Task.Run(async () =>
             {
                 var favoritedSubEntry = App.RecentAnimes.FirstOrDefault(p => p.FavoritedAnime.Anime.MalId == recentFavoritedAnime.Anime.MalId);
@@ -219,8 +218,9 @@ namespace ANT.Modules
         }
         #endregion
 
+        //TODO: https://github.com/JaoHundred/ANT/issues/25
+
         //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página(deixar pro futuro)
-        //TODO: estilizar o template dos episódios, ver quais dados eu posso exibir a cerca dos episódios e ver o que mostrar
         //TODO: trocar de idioma via configurações do android nesta página resulta em uma exception de fragment, provavel de estar relacionado ao tabbedpage
     }
 }

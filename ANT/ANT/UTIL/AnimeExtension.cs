@@ -46,14 +46,14 @@ namespace ANT.UTIL
         /// <returns></returns>
         public static async Task<IList<AnimeEpisode>> GetAllEpisodesAsync(this Anime anime)
         {
-            await Task.Delay(TimeSpan.FromSeconds(4));
+            await App.DelayRequest(2);
             AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(anime.MalId);
 
             var episodeList = new List<AnimeEpisode>();
 
             for (int j = 0; j < episodes.EpisodesLastPage; j++)
             {
-                await Task.Delay(TimeSpan.FromSeconds(4));
+                await App.DelayRequest(4);
                 var epiList = await App.Jikan.GetAnimeEpisodes(anime.MalId, j + 1);
 
                 episodeList.AddRange(epiList.EpisodeCollection);

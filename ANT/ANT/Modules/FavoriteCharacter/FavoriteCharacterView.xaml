@@ -78,7 +78,7 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:FavoritedAnimeCharacter">
-                    <Frame >
+                    <Frame HeightRequest="200">
                         <Grid>
                             <ffimage:CachedImage Grid.RowSpan="2" x:Name="img" Source="{Binding Character.ImageURL}"/>
                             <ActivityIndicator Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference img}}"

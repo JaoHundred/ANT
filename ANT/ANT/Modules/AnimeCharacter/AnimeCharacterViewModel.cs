@@ -42,10 +42,10 @@ namespace ANT.Modules
 
                 if (animeCharacter == null)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(4));
+                    await App.DelayRequest();
                     Character character = await App.Jikan.GetCharacter(characterId);
 
-                    await Task.Delay(TimeSpan.FromSeconds(4));
+                    await App.DelayRequest();
                     var characterPictures = await App.Jikan.GetCharacterPictures(characterId);
 
                     animeCharacter = new FavoritedAnimeCharacter(character, characterPictures.Pictures.ToList());

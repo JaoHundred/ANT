@@ -164,7 +164,5 @@ namespace ANT.Modules
             }
         }
         #endregion
-
-        //TODO: personalizar o template dos personagens
     }
 }

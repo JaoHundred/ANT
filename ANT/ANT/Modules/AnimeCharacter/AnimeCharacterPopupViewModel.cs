@@ -30,7 +30,7 @@ namespace ANT.Modules
             {
                 long animeId = (long)param;
                 IsLoading = true;
-                await Task.Delay(TimeSpan.FromSeconds(4));
+                await App.DelayRequest();
                 AnimeCharactersStaff animeCharactersStaff = await App.Jikan.GetAnimeCharactersStaff(animeId);
                 var characterEntrys = animeCharactersStaff.Characters;
 

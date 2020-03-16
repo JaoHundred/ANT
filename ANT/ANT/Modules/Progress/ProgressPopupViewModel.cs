@@ -53,7 +53,7 @@ namespace ANT.Modules
                     if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == _animes[i].Anime.MalId))
                         continue;
 
-                    await Task.Delay(TimeSpan.FromSeconds(4));
+                    await App.DelayRequest(4);
                     Anime anime = await App.Jikan.GetAnime(_animes[i].Anime.MalId);
                     anime.RequestCached = true;
 
@@ -71,7 +71,7 @@ namespace ANT.Modules
 
             MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, 1);
             //necessário para não bugar o comportamento da popup, abrir e fechar muito rápido causa efeitos não esperados e mantém a popup aberta para sempre
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await App.DelayRequest(2);
             await NavigationManager.PopPopUpPageAsync();
         }
 

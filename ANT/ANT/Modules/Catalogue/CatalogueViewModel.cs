@@ -207,7 +207,7 @@ namespace ANT.Modules
                 //https://github.com/xamarin/Xamarin.Forms/issues/8700
                 // solução momentânea foi simular um footer de overlay com activity indicator, quando estiver corrigido, usar o footer
 
-                await Task.Delay(TimeSpan.FromSeconds(4));
+                await App.DelayRequest();
 
                 AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount);
 
@@ -244,7 +244,7 @@ namespace ANT.Modules
                     _pageCount++;
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(4));
+                await App.DelayRequest();
             }
             catch (Exception ex)
             {

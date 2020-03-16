@@ -39,5 +39,7 @@ namespace ANT.Model
         public Anime Anime { get; set; }
 
         public IList<AnimeEpisode> Episodes { get; set; }
+
+        public RelatedAnimes RelatedAnime { get; set; }
     }
 }
