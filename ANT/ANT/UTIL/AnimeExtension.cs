@@ -80,5 +80,19 @@ namespace ANT.UTIL
 
             return favoritedAnimeSubsEntries;
         }
+
+        public static IList<ANT.Model.RelatedAnime> ConvertMalSubItemToRelatedAnime(this ICollection<MALSubItem> subItems, string groupName)
+        {
+            var relatedAnimes = new List<ANT.Model.RelatedAnime>();
+
+            foreach (var item in subItems)
+            {
+                var related = new ANT.Model.RelatedAnime(item);
+                related.GroupName = groupName;
+                relatedAnimes.Add(related);
+            }
+
+            return relatedAnimes;
+        }
     }
 }

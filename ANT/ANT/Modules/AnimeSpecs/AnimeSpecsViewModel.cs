@@ -13,6 +13,7 @@ using ANT.Core;
 using ANT.UTIL;
 using magno = MvvmHelpers.Commands;
 using ANT.Model;
+using System.Threading;
 
 namespace ANT.Modules
 {
@@ -37,6 +38,7 @@ namespace ANT.Modules
             OpenLinkCommand = new magno.AsyncCommand<string>(OnLink);
             CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
             CheckAnimeCharactersCommand = new magno.AsyncCommand(OnCheckAnimeCharacters);
+            OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
         }
 
         public Task InitializeTask { get; }
@@ -74,6 +76,64 @@ namespace ANT.Modules
                 IsLoading = false;
                 IsLoadingEpisodes = false;
                 CanEnable = true;
+
+                var groupedList = Task.Run(() =>
+                     {
+                         var relatedAnimes = new List<Model.RelatedAnime>();
+
+                         if (_favoritedAnime.Anime.Related.ParentStories != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.ParentStories
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Parent));
+
+                         if (_favoritedAnime.Anime.Related.Prequels != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Prequels
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Prequels));
+
+                         if (_favoritedAnime.Anime.Related.Sequels != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Sequels
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Sequels));
+
+                         if (_favoritedAnime.Anime.Related.SpinOffs != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SpinOffs
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.SpinOffs));
+
+                         if (_favoritedAnime.Anime.Related.SideStories != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SideStories
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.SideStory));
+
+                         //TODO: por aqui todos os outros dados que estão dentro de Anime.Related
+
+                         _favoritedAnime.RelatedAnimes = relatedAnimes;
+
+                         var groupedRelatedAnime = new List<GroupedRelatedAnime>();
+                         foreach (var item in _favoritedAnime.RelatedAnimes.GroupBy(p => p.GroupName))
+                             groupedRelatedAnime.Add(new GroupedRelatedAnime(item.Key, item.ToList()));
+
+                         return groupedRelatedAnime;
+                     });
+
+                GroupedRelatedAnimeList = await groupedList;
+
+                await Task.Run(async () =>
+                {
+                    foreach (var group in GroupedRelatedAnimeList)
+                    {
+                        foreach (var relatedAnime in group)
+                        {
+                            foreach (var item in _favoritedAnime.RelatedAnimes)
+                            {
+                                if (relatedAnime.Anime.MalId == item.Anime.MalId)
+                                {
+                                    await App.DelayRequest(4);
+                                    var anime = await App.Jikan.GetAnime(item.Anime.MalId);
+                                    anime.RequestCached = true;
+
+                                    relatedAnime.ImageURL = anime.ImageURL;
+                                }
+                            }
+                        }
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -122,6 +182,20 @@ namespace ANT.Modules
             get { return _episodes; }
             set { SetProperty(ref _episodes, value); }
         }
+
+        private Model.RelatedAnime _selectedAnime;
+        public Model.RelatedAnime SelectedAnime
+        {
+            get { return _selectedAnime; }
+            set { SetProperty(ref _selectedAnime, value); }
+        }
+
+        private List<GroupedRelatedAnime> _groupedRelatedAnimeList;
+        public List<GroupedRelatedAnime> GroupedRelatedAnimeList
+        {
+            get { return _groupedRelatedAnimeList; }
+            set { SetProperty(ref _groupedRelatedAnimeList, value); }
+        }
         #endregion
 
         #region commands
@@ -150,7 +224,7 @@ namespace ANT.Modules
 
             if (OtherViewModelFunc != null)
                 //atualiza a coleção observável de CatalogueViewModel
-               await OtherViewModelFunc.Invoke();
+                await OtherViewModelFunc.Invoke();
 
             await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             DependencyService.Get<IToast>().MakeToastMessageShort(lang);
@@ -188,6 +262,19 @@ namespace ANT.Modules
             if (canNavigate)
                 await NavigationManager.NavigatePopUpAsync<AnimeCharacterPopupViewModel>(AnimeContext.Anime.MalId);
         }
+
+        public ICommand OpenAnimeCommand { get; private set; }
+        private async Task OnOpenAnime()
+        {
+            if (IsNotBusy && SelectedAnime != null)
+            {
+                IsBusy = true;
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedAnime.Anime.MalId);
+                IsBusy = false;
+            }
+
+            SelectedAnime = null;
+        }
         #endregion
 
         #region métodos VM
@@ -216,6 +303,7 @@ namespace ANT.Modules
                 await JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
             });
         }
+
         #endregion
 
         //TODO: https://github.com/JaoHundred/ANT/issues/25

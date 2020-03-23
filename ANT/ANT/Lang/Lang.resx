@@ -231,11 +231,17 @@
   <data name="NothingForNow" xml:space="preserve">
     <value>Nothing for now</value>
   </data>
+  <data name="Parent" xml:space="preserve">
+    <value>Parent</value>
+  </data>
   <data name="Pictures" xml:space="preserve">
     <value>Pictures</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Please wait</value>
+  </data>
+  <data name="Prequels" xml:space="preserve">
+    <value>Prequels</value>
   </data>
   <data name="Rank" xml:space="preserve">
     <value>Rank</value>
@@ -245,6 +251,9 @@
   </data>
   <data name="Recents" xml:space="preserve">
     <value>Recently seen</value>
+  </data>
+  <data name="Related" xml:space="preserve">
+    <value>Related</value>
   </data>
   <data name="RemovedFromFavorite" xml:space="preserve">
     <value>Removed from favorites</value>
@@ -267,8 +276,17 @@
   <data name="SelectAppTheme" xml:space="preserve">
     <value>Select app theme</value>
   </data>
+  <data name="Sequels" xml:space="preserve">
+    <value>Sequels</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="SideStory" xml:space="preserve">
+    <value>Side story</value>
+  </data>
+  <data name="SpinOffs" xml:space="preserve">
+    <value>Spin offs</value>
   </data>
   <data name="Sundays" xml:space="preserve">
     <value>Sundays</value>

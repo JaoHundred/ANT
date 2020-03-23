@@ -403,6 +403,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parent.
+        /// </summary>
+        public static string Parent {
+            get {
+                return ResourceManager.GetString("Parent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pictures.
         /// </summary>
         public static string Pictures {
@@ -417,6 +426,15 @@ namespace ANT.Lang {
         public static string PleaseWait {
             get {
                 return ResourceManager.GetString("PleaseWait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prequels.
+        /// </summary>
+        public static string Prequels {
+            get {
+                return ResourceManager.GetString("Prequels", resourceCulture);
             }
         }
         
@@ -444,6 +462,15 @@ namespace ANT.Lang {
         public static string Recents {
             get {
                 return ResourceManager.GetString("Recents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Related.
+        /// </summary>
+        public static string Related {
+            get {
+                return ResourceManager.GetString("Related", resourceCulture);
             }
         }
         
@@ -511,11 +538,38 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sequels.
+        /// </summary>
+        public static string Sequels {
+            get {
+                return ResourceManager.GetString("Sequels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Side story.
+        /// </summary>
+        public static string SideStory {
+            get {
+                return ResourceManager.GetString("SideStory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spin offs.
+        /// </summary>
+        public static string SpinOffs {
+            get {
+                return ResourceManager.GetString("SpinOffs", resourceCulture);
             }
         }
         
