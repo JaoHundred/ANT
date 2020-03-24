@@ -81,6 +81,11 @@
                 <Setter Property="CornerRadius" Value="5"/>
             </Style>
 
+            <Style TargetType="Frame" x:Key="HeaderFrameStyle" BasedOn="{StaticResource FrameGenreStyle}">
+                <Setter Property="BackgroundColor" Value="{DynamicResource HeaderFrameColor}"/>
+                <Setter Property="Padding" Value="5"/>
+            </Style>
+
             <Style TargetType="Frame" x:Key="OuterFrameGenreStyle">
                 <Setter Property="BackgroundColor" Value="Transparent"/>
                 <Setter Property="BorderColor" Value="Transparent"/>
@@ -109,6 +114,14 @@
                 <Setter Property="FontSize" Value="Title"/>
                 <Setter Property="LineBreakMode" Value="TailTruncation"/>
 
+            </Style>
+
+            <Style TargetType="Label" x:Key="HeaderFrameLabel">
+                <Setter Property="TextColor" Value="#f6f6f6"/> <!--cinza quase branco-->
+                <Setter Property="FontSize" Value="Title"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
 
             <Style TargetType="Label" x:Key="ContentTitleLabelStyle">

@@ -123,6 +123,9 @@
   <data name="Airing" xml:space="preserve">
     <value>Estreia</value>
   </data>
+  <data name="AlternativeVersions" xml:space="preserve">
+    <value>Versões alternativas</value>
+  </data>
   <data name="Anime" xml:space="preserve">
     <value>Anime</value>
   </data>
@@ -230,6 +233,9 @@
   </data>
   <data name="NothingForNow" xml:space="preserve">
     <value>Nada por enquanto</value>
+  </data>
+  <data name="Others" xml:space="preserve">
+    <value>Outros</value>
   </data>
   <data name="Parent" xml:space="preserve">
     <value>Principal</value>

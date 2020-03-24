@@ -57,6 +57,9 @@
     <!--cinza-->
     <Color x:Key="FrameSeparatorColor">Gray</Color>
 
+    <!--violeta saturado escuro-->
+    <Color x:Key="HeaderFrameColor">#68689a</Color>
+
     <!--#endregion-->
 
 </ResourceDictionary>

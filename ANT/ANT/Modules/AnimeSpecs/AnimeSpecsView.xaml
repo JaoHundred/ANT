@@ -227,9 +227,8 @@
 
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="model:GroupedRelatedAnime">
-                    <Frame Padding="5" Style="{StaticResource FrameGenreStyle}">
-                        <Label Text="{Binding GroupName}" Style="{StaticResource TitleLabelStyle}"
-                               FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                    <Frame Style="{StaticResource HeaderFrameStyle}">
+                        <Label Text="{Binding GroupName}" Style="{StaticResource HeaderFrameLabel}"/>
                     </Frame>
                 </DataTemplate>
             </CollectionView.GroupHeaderTemplate>

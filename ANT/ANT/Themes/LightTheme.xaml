@@ -54,7 +54,9 @@
 
     <!--escala de cinza misturado com amarelo-->
     <Color x:Key="FrameSeparatorColor">#978f87</Color>
-    
+
+    <!--verde saturado desbotado escuro-->
+    <Color x:Key="HeaderFrameColor">#5C8C75</Color>
 
     <!--#endregion-->
 

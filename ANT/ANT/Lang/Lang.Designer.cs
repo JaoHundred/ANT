@@ -79,6 +79,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alternative versions.
+        /// </summary>
+        public static string AlternativeVersions {
+            get {
+                return ResourceManager.GetString("AlternativeVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Anime.
         /// </summary>
         public static string Anime {
@@ -399,6 +408,15 @@ namespace ANT.Lang {
         public static string NothingForNow {
             get {
                 return ResourceManager.GetString("NothingForNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Others.
+        /// </summary>
+        public static string Others {
+            get {
+                return ResourceManager.GetString("Others", resourceCulture);
             }
         }
         

@@ -93,14 +93,21 @@ namespace ANT.Modules
                              relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Sequels
                                  .ConvertMalSubItemToRelatedAnime(Lang.Lang.Sequels));
 
+                         if (_favoritedAnime.Anime.Related.SideStories != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SideStories
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.SideStory));
+
                          if (_favoritedAnime.Anime.Related.SpinOffs != null)
                              relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SpinOffs
                                  .ConvertMalSubItemToRelatedAnime(Lang.Lang.SpinOffs));
 
                          if (_favoritedAnime.Anime.Related.SideStories != null)
-                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SideStories
-                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.SideStory));
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Others
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Others));
 
+                         if (_favoritedAnime.Anime.Related.SideStories != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.AlternativeVersions
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.AlternativeVersions));
                          //TODO: por aqui todos os outros dados que estão dentro de Anime.Related
 
                          _favoritedAnime.RelatedAnimes = relatedAnimes;
