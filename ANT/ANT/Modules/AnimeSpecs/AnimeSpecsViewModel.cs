@@ -14,25 +14,33 @@ using ANT.UTIL;
 using magno = MvvmHelpers.Commands;
 using ANT.Model;
 using System.Threading;
+using JikanDotNet.Exceptions;
 
 namespace ANT.Modules
 {
-    public class AnimeSpecsViewModel : BaseVMExtender, IAsyncInitialization
+    public class AnimeSpecsViewModel : BaseVMExtender, IAsyncInitialization, IDisposable
     {
+
+        //TODO: achar um meio de interromper as task quando essa VM sair da pilha de navegação
+        //https://github.com/JaoHundred/ANT/issues/30
+        //https://theconfuzedsourcecode.wordpress.com/2017/03/12/lets-override-navigation-bar-back-button-click-in-xamarin-forms/
+
         public AnimeSpecsViewModel(long malId, Func<Task> func)
         {
+            _cancellationToken = new CancellationTokenSource();
             OtherViewModelFunc = func;
             InitializeTask = LoadAsync(malId);
-            InitCommands();
+            Init();
         }
 
         public AnimeSpecsViewModel(long malId)
         {
+            _cancellationToken = new CancellationTokenSource();
             InitializeTask = LoadAsync(malId);
-            InitCommands();
+            Init();
         }
 
-        private void InitCommands()
+        private void Init()
         {
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenLinkCommand = new magno.AsyncCommand<string>(OnLink);
@@ -44,6 +52,7 @@ namespace ANT.Modules
         public Task InitializeTask { get; }
         private FavoritedAnime _favoritedAnime;
         private Func<Task> OtherViewModelFunc;
+        private CancellationTokenSource _cancellationToken;
         public async Task LoadAsync(object param)
         {
             IsLoading = true;
@@ -65,7 +74,7 @@ namespace ANT.Modules
 
                     IsLoadingEpisodes = true;
 
-                    _favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync());
+                    _favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancellationToken));
                 }
 
                 await AddOrUpdateRecentAnimeAsync(_favoritedAnime);
@@ -101,11 +110,11 @@ namespace ANT.Modules
                              relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SpinOffs
                                  .ConvertMalSubItemToRelatedAnime(Lang.Lang.SpinOffs));
 
-                         if (_favoritedAnime.Anime.Related.SideStories != null)
+                         if (_favoritedAnime.Anime.Related.Others != null)
                              relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Others
                                  .ConvertMalSubItemToRelatedAnime(Lang.Lang.Others));
 
-                         if (_favoritedAnime.Anime.Related.SideStories != null)
+                         if (_favoritedAnime.Anime.Related.AlternativeVersions != null)
                              relatedAnimes.AddRange(_favoritedAnime.Anime.Related.AlternativeVersions
                                  .ConvertMalSubItemToRelatedAnime(Lang.Lang.AlternativeVersions));
                          //TODO: por aqui todos os outros dados que estão dentro de Anime.Related
@@ -131,21 +140,29 @@ namespace ANT.Modules
                             {
                                 if (relatedAnime.Anime.MalId == item.Anime.MalId)
                                 {
+                                    if (_cancellationToken.IsCancellationRequested)
+                                        _cancellationToken.Token.ThrowIfCancellationRequested();
+
                                     await App.DelayRequest(4);
                                     var anime = await App.Jikan.GetAnime(item.Anime.MalId);
-                                    anime.RequestCached = true;
 
                                     relatedAnime.ImageURL = anime.ImageURL;
                                 }
                             }
                         }
                     }
-                });
+                }, _cancellationToken.Token);
+            }
+            catch (JikanRequestException ex)
+            {
+                Console.WriteLine($"Problema encontrado em :{ex.Message}");
+                _cancellationToken.Cancel();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Problema encontrado em :{ex.Message}");
                 DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
+                _cancellationToken.Cancel();
             }
             finally
             {
@@ -307,13 +324,19 @@ namespace ANT.Modules
                         App.RecentAnimes.Add(new RecentVisualized(recentFavoritedAnime));
                 }
 
+                if (_cancellationToken.IsCancellationRequested)
+                    _cancellationToken.Token.ThrowIfCancellationRequested();
+
                 await JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
-            });
+
+            }, _cancellationToken.Token);
         }
 
+        public void Dispose()
+        {
+            _cancellationToken.Cancel();
+        }
         #endregion
-
-        //TODO: https://github.com/JaoHundred/ANT/issues/25
 
         //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página(deixar pro futuro)
         //TODO: trocar de idioma via configurações do android nesta página resulta em uma exception de fragment, provavel de estar relacionado ao tabbedpage

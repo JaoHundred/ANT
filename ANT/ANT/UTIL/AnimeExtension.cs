@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Threading.Tasks;
 using ANT.Model;
+using System.Threading;
+using JikanDotNet.Exceptions;
 
 namespace ANT.UTIL
 {
@@ -44,7 +46,7 @@ namespace ANT.UTIL
         /// </summary>
         /// <param name="anime"></param>
         /// <returns></returns>
-        public static async Task<IList<AnimeEpisode>> GetAllEpisodesAsync(this Anime anime)
+        public static async Task<IList<AnimeEpisode>> GetAllEpisodesAsync(this Anime anime, CancellationTokenSource cancellationToken = null)
         {
             await App.DelayRequest(2);
             AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(anime.MalId);
@@ -54,6 +56,10 @@ namespace ANT.UTIL
             for (int j = 0; j < episodes.EpisodesLastPage; j++)
             {
                 await App.DelayRequest(4);
+
+                if (cancellationToken != null && cancellationToken.IsCancellationRequested)
+                    cancellationToken.Token.ThrowIfCancellationRequested();
+
                 var epiList = await App.Jikan.GetAnimeEpisodes(anime.MalId, j + 1);
 
                 episodeList.AddRange(epiList.EpisodeCollection);

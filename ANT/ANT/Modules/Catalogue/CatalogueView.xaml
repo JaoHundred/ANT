@@ -69,7 +69,7 @@
     </ContentPage.ToolbarItems>
 
 
-    <Grid>
+    <Grid Margin="0,3,0,3">
         <RefreshView Command="{Binding RefreshCommand}" 
                      IsRefreshing="{Binding IsRefreshing}" 
                      IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
@@ -85,6 +85,10 @@
                         <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
                     </Grid>
                 </CollectionView.EmptyView>
+
+                <CollectionView.Footer>
+                    <Label/> <!--necessário para evitar que o último item fique no tamanho errado-->
+                </CollectionView.Footer>
 
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" 
