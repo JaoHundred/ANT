@@ -13,6 +13,7 @@ using ANT.Modules;
 using ANT.Interfaces;
 using MvvmHelpers;
 using ANT.UTIL;
+using System.Linq;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ANT.Droid.MainActivity))]
 namespace ANT.Droid
@@ -38,6 +39,14 @@ namespace ANT.Droid
         }
 
         private readonly string _rootRoute = "Home";
+
+        private static Page GetCurrentPage()
+        {
+            return (Page)
+                            Xamarin.Forms.Application.
+                            Current.MainPage.Navigation.
+                            NavigationStack.LastOrDefault();
+        }
 
         public override async void OnBackPressed()
         {
@@ -68,15 +77,20 @@ namespace ANT.Droid
                     if (stackCount == 1 && route != _rootRoute)// estou na raiz da pilha e não estou na home
                         await Shell.Current.GoToAsync($"///{_rootRoute}", animate: true);
                     else if (stackCount > 1) // estou em qualquer página hierárquica
+                    {
+                        Page currentpage = GetCurrentPage();
+
+                        if (currentpage is AnimeSpecsView specsView)
+                            ((AnimeSpecsViewModel)specsView.BindingContext).BackButtonCommand.Execute(BackButtonOriginEnum.Hardware);
                         //TODO:xamarin forms está com bug no retorno da animação
                         //quando corrigirem, usar somente o base.OnBackPressed e fungir os 2 else if "else if("stackCount == 1 && route == _rootRoute ||stackCount > 1)
                         await NavigationManager.PopShellPageAsync(animated: false);
+                    }
 
                     //TODO: quando isso é chamado em páginas hierárquicas o retorno da uma leve engasgada
                     //, descobrir o que pode ser, não dá pra usar async await nessa linha
                     else if (stackCount == 1 && route == _rootRoute) // estou na home
                         base.OnBackPressed();
-
                 }
             }
         }

@@ -18,7 +18,7 @@ using JikanDotNet.Exceptions;
 
 namespace ANT.Modules
 {
-    public class AnimeSpecsViewModel : BaseVMExtender, IAsyncInitialization, IDisposable
+    public class AnimeSpecsViewModel : BaseVMExtender, IAsyncInitialization
     {
 
         //TODO: achar um meio de interromper as task quando essa VM sair da pilha de navegação
@@ -47,6 +47,7 @@ namespace ANT.Modules
             CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
             CheckAnimeCharactersCommand = new magno.AsyncCommand(OnCheckAnimeCharacters);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
+            BackButtonCommand = new magno.AsyncCommand<BackButtonOriginEnum>(OnBackButton);
         }
 
         public Task InitializeTask { get; }
@@ -157,6 +158,11 @@ namespace ANT.Modules
             {
                 Console.WriteLine($"Problema encontrado em :{ex.Message}");
                 _cancellationToken.Cancel();
+            }
+            catch (OperationCanceledException ex)
+            {
+                Console.WriteLine($"Tasks canceladas {Environment.NewLine} " +
+                    $"{ex.Message}");
             }
             catch (Exception ex)
             {
@@ -299,6 +305,15 @@ namespace ANT.Modules
 
             SelectedAnime = null;
         }
+
+        public ICommand BackButtonCommand { get; private set; }
+        private async Task OnBackButton(BackButtonOriginEnum origin)
+        {
+            _cancellationToken.Cancel();
+
+            if (origin == BackButtonOriginEnum.NavigationBar)
+                await NavigationManager.PopShellPageAsync();
+        }
         #endregion
 
         #region métodos VM
@@ -330,11 +345,6 @@ namespace ANT.Modules
                 await JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
 
             }, _cancellationToken.Token);
-        }
-
-        public void Dispose()
-        {
-            _cancellationToken.Cancel();
         }
         #endregion
 

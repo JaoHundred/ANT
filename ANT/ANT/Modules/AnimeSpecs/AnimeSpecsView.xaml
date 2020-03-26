@@ -7,6 +7,7 @@
              xmlns:VM="clr-namespace:ANT.Modules"
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:converter="clr-namespace:ANT.Converter"
+            xmlns:Util="clr-namespace:ANT.UTIL"
             xmlns:model="clr-namespace:ANT.Model"
             xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
             xmlns:behavior="clr-namespace:ANT._Behaviors"
@@ -38,6 +39,11 @@
                    x:Name="LabelTitle" />
         </Grid>
     </Shell.TitleView>
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackButtonCommand}"
+                            CommandParameter="{x:Static Util:BackButtonOriginEnum.NavigationBar}"/>
+    </Shell.BackButtonBehavior>
 
     <TabbedPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate MAL}" Command="{Binding OpenLinkCommand}"

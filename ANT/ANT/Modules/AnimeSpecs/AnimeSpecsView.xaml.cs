@@ -17,16 +17,6 @@ namespace ANT.Modules
         public AnimeSpecsView()
         {
             InitializeComponent();
-
-        }
-
-        private void AnimeSpecsView_Popped(object sender, NavigationEventArgs e)
-        {
-            if (sender is AnimeSpecsView view && view == this)
-            {
-                (view.BindingContext as AnimeSpecsViewModel).Dispose();
-                ((Xamarin.Forms.NavigationPage)App.Current.MainPage).Popped -= AnimeSpecsView_Popped;
-            }
         }
     }
 }
