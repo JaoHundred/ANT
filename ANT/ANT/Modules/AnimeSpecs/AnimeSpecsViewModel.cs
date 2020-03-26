@@ -20,11 +20,6 @@ namespace ANT.Modules
 {
     public class AnimeSpecsViewModel : BaseVMExtender, IAsyncInitialization
     {
-
-        //TODO: achar um meio de interromper as task quando essa VM sair da pilha de navegação
-        //https://github.com/JaoHundred/ANT/issues/30
-        //https://theconfuzedsourcecode.wordpress.com/2017/03/12/lets-override-navigation-bar-back-button-click-in-xamarin-forms/
-
         public AnimeSpecsViewModel(long malId, Func<Task> func)
         {
             _cancellationToken = new CancellationTokenSource();
