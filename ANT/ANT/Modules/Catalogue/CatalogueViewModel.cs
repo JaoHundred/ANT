@@ -68,7 +68,6 @@ namespace ANT.Modules
             });
         }
 
-        private IMainPageAndroid _mainPageAndroid;
         private int _pageCount = 1;
         private readonly GenreSearch? _currentGenre;
         private readonly SemaphoreSlim loc = new SemaphoreSlim(1);
@@ -82,9 +81,6 @@ namespace ANT.Modules
             await LoadCatalogueAsync();
 
             IsLoadingOrRefreshing = IsLoading = false;
-
-            _mainPageAndroid = DependencyService.Get<IMainPageAndroid>();
-            _mainPageAndroid.OnBackPress(this);
         }
 
         #region proriedades

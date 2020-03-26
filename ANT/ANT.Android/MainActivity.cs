@@ -20,7 +20,7 @@ namespace ANT.Droid
 {
     [Activity(Label = "ANT", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation,
         ScreenOrientation = ScreenOrientation.Portrait)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, IMainPageAndroid
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -58,12 +58,14 @@ namespace ANT.Droid
             }
             else if (!Rg.Plugins.Popup.Popup.SendBackPressed())//se não é um modal, posso voltar, o botão de retorno dos modais são lidados direto dos PopUpPage
             {
-                if (_currentVm is BaseVMExtender vm && vm.IsMultiSelect) // se estou com a multi seleção ativa, fecho
+                var page = GetCurrentPage();
+
+                if (page?.BindingContext is BaseVMExtender vm && vm.IsMultiSelect) // se estou com a multi seleção ativa, fecho
                 {
                     vm.SingleSelectionMode();
                     return;
                 }
-                if (_currentVm is BaseVMExtender vmm && vmm.SearchQuery?.Length > 0)//se a barra de pesquisa na navigation tiver preenchida, apague o texto
+                if (page?.BindingContext is BaseVMExtender vmm && vmm.SearchQuery?.Length > 0)//se a barra de pesquisa na navigation tiver preenchida, apague o texto
                 {
                     vmm.SearchQuery = string.Empty;
                     return;
@@ -94,11 +96,6 @@ namespace ANT.Droid
                 }
             }
         }
-
-        private static BaseViewModel _currentVm;
-        public void OnBackPress(BaseViewModel vm)
-            => _currentVm = vm;
-
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

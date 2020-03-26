@@ -29,7 +29,6 @@ namespace ANT.Modules
         }
 
         private List<FavoritedAnimeCharacter> _originalCollection;
-        private IMainPageAndroid _mainPageAndroid;
 
         public async Task LoadAsync(object param)
         {
@@ -38,9 +37,6 @@ namespace ANT.Modules
                 FavoritedCharacters.ReplaceRange(App.FavoritedAnimeCharacters);
                 _originalCollection = new List<FavoritedAnimeCharacter>(FavoritedCharacters);
             });
-
-            _mainPageAndroid = DependencyService.Get<IMainPageAndroid>();
-            _mainPageAndroid.OnBackPress(this);
         }
 
         #region propriedades
