@@ -75,10 +75,11 @@ namespace ANT.Modules
             {
                 var confirmDelegateAction = new Action(async () =>
                 {
-                    await Task.Run(() =>
+                    await Task.Run(async() =>
                     {
                         App.FavoritedAnimeCharacters.Clear();
-                        JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
+                        await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder
+                            , StorageConsts.FavoritedAnimesCharacterFileName);
                     });
 
                     FavoritedCharacters.Clear();
