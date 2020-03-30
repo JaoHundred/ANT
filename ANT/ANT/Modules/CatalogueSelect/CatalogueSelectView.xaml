@@ -9,6 +9,27 @@
              x:DataType="modules:CatalogueSelectViewModel"
              x:Class="ANT.Modules.CatalogueSelectView">
 
+    <ContentPage.Resources>
+        <Style TargetType="BoxView" x:Key="LeftBoxViewStyle">
+            <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueGridButtonLeftColor}"/>
+            <Setter Property="CornerRadius" Value="20"/>
+        </Style>
+        <Style TargetType="BoxView" x:Key="RightBoxViewStyle">
+            <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueGridButtonRightColor}"/>
+            <Setter Property="CornerRadius" Value="5"/>
+        </Style>
+        <Style TargetType="Image">
+            <Setter Property="Scale" Value="0.5"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            <Setter Property="VerticalTextAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="Medium"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+            <Setter Property="TextColor" Value="{DynamicResource TextTitleColor}"/>
+        </Style>
+    </ContentPage.Resources>
+
 
     <Shell.TitleView>
         <Grid>
@@ -21,7 +42,54 @@
         </Grid>
     </Shell.TitleView>
 
-    <StackLayout>
-        <Button Text="Placeholder catálogo da season atual" Command="{Binding OpenSeasonCatalogueCommand}"/>
-    </StackLayout>
+    <ScrollView Orientation="Vertical">
+        <StackLayout Margin="10,30,10,10" Spacing="20">
+
+            <Grid ColumnSpacing="0" HeightRequest="50">
+                
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" 
+                                          Command="{Binding OpenSeasonCatalogueCommand}"/>
+                </Grid.GestureRecognizers>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <BoxView Style="{StaticResource LeftBoxViewStyle}" Grid.ColumnSpan="2" />
+                <Image >
+                    <Image.Source>
+                        <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                         Glyph="{StaticResource SeasonCalendar}"/>
+                    </Image.Source>
+                </Image>
+                <BoxView  Grid.Column="1" Style="{StaticResource RightBoxViewStyle}"/>
+                <Label Grid.Column="1" Text="{res:Translate Season}" />
+            </Grid>
+
+            <Grid ColumnSpacing="0" HeightRequest="50">
+
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" 
+                                          Command="{Binding OpenGlobalCatalogueCommand}"/>
+                </Grid.GestureRecognizers>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <BoxView Style="{StaticResource LeftBoxViewStyle}" Grid.ColumnSpan="2" />
+                <Image >
+                    <Image.Source>
+                        <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                         Glyph="{StaticResource GlobalSearch}"/>
+                    </Image.Source>
+                </Image>
+                <BoxView  Grid.Column="1" Style="{StaticResource RightBoxViewStyle}"/>
+                <Label Grid.Column="1" Text="{res:Translate GlobalSearch}" />
+            </Grid>
+
+        </StackLayout>
+    </ScrollView>
+    
 </ContentPage>

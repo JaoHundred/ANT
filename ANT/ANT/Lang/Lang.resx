@@ -207,6 +207,9 @@
   <data name="Genre" xml:space="preserve">
     <value>Genre</value>
   </data>
+  <data name="GlobalSearch" xml:space="preserve">
+    <value>Global search</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
@@ -275,6 +278,9 @@
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
+  </data>
+  <data name="Season" xml:space="preserve">
+    <value>Season</value>
   </data>
   <data name="SelectAppLang" xml:space="preserve">
     <value>Select language</value>

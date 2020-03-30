@@ -58,6 +58,11 @@
     <!--verde saturado desbotado escuro-->
     <Color x:Key="HeaderFrameColor">#5C8C75</Color>
 
+    <!--azul roxeado-->
+    <Color x:Key="CatalogueGridButtonLeftColor">#5E8EFF</Color>
+    <!--azul escuro saturado-->
+    <Color x:Key="CatalogueGridButtonRightColor">#4E74D3</Color>
+
     <!--#endregion-->
 
 </ResourceDictionary>

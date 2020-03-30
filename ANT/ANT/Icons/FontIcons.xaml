@@ -23,5 +23,7 @@
     <x:String x:Key="FavoriteList">&#xE728;</x:String>
     <x:String x:Key="Search">&#xF78B;</x:String> <!--F78B searchmedium-->  <!--E721 serch(small?)-->
     <x:String x:Key="Delete">&#xE74D;</x:String>
+    <x:String x:Key="SeasonCalendar">&#xE787;</x:String>
+    <x:String x:Key="GlobalSearch">&#xF49A;</x:String>
 
 </ResourceDictionary>

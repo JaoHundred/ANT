@@ -60,6 +60,11 @@
     <!--violeta saturado escuro-->
     <Color x:Key="HeaderFrameColor">#68689a</Color>
 
+    <!--azul roxeado escurecido-->
+    <Color x:Key="CatalogueGridButtonLeftColor">#517ADB</Color>
+    <!--azul escuro saturado escurecido-->
+    <Color x:Key="CatalogueGridButtonRightColor">#4060AD</Color>
+
     <!--#endregion-->
 
 </ResourceDictionary>
