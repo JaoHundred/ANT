@@ -10,6 +10,7 @@
              xmlns:comm="clr-namespace:ANT._Behaviors"
              xmlns:favo="clr-namespace:ANT.Model"
              xmlns:VM="clr-namespace:ANT.Modules"
+             xmlns:Util="clr-namespace:ANT.UTIL"
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
@@ -59,6 +60,11 @@
 
 
     </Shell.TitleView>
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackButtonCommand}"
+                            CommandParameter="{x:Static Util:BackButtonOriginEnum.NavigationBar}"/>
+    </Shell.BackButtonBehavior>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{res:Translate MultiSelect}" Command="{Binding SelectionModeCommand}" Order="Secondary">

@@ -84,6 +84,9 @@ namespace ANT.Droid
 
                         if (currentpage is AnimeSpecsView specsView)
                             ((AnimeSpecsViewModel)specsView.BindingContext).BackButtonCommand.Execute(BackButtonOriginEnum.Hardware);
+
+                        if(currentpage is CatalogueView catalogueView)
+                            ((CatalogueViewModel)catalogueView.BindingContext).BackButtonCommand.Execute(BackButtonOriginEnum.Hardware);
                         //TODO:xamarin forms está com bug no retorno da animação
                         //quando corrigirem, usar somente o base.OnBackPressed e fungir os 2 else if "else if("stackCount == 1 && route == _rootRoute ||stackCount > 1)
                         await NavigationManager.PopShellPageAsync(animated: false);

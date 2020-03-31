@@ -87,6 +87,25 @@ namespace ANT.UTIL
             return favoritedAnimeSubsEntries;
         }
 
+        public static IList<AnimeSubEntry> ConvertTopAnimesToAnimeSubEntry(this ICollection<AnimeTopEntry> animeTops)
+        {
+            var tops = animeTops.ToList();
+            var subs = new List<AnimeSubEntry>();
+
+            foreach (var top in tops)
+            {
+                var sub = new AnimeSubEntry();
+
+                sub.MalId = top.MalId;
+                sub.ImageURL = top.ImageURL;
+                sub.Title = top.Title;
+
+                subs.Add(sub);
+            }
+
+            return subs;
+        }
+
         public static IList<ANT.Model.RelatedAnime> ConvertMalSubItemToRelatedAnime(this ICollection<MALSubItem> subItems, string groupName)
         {
             var relatedAnimes = new List<ANT.Model.RelatedAnime>();

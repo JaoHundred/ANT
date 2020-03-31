@@ -50,7 +50,7 @@ namespace ANT.Modules
             SearchCommand = new magno.AsyncCommand(OnSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
-
+            BackButtonCommand = new magno.AsyncCommand<BackButtonOriginEnum>(OnBackButton);
         }
 
         public Task NavigationFrom()
@@ -73,6 +73,8 @@ namespace ANT.Modules
         private readonly CatalogueModeEnum? _catalogueMode;
         private readonly GenreSearch? _currentGenre;
         private readonly SemaphoreSlim loc = new SemaphoreSlim(1);
+        private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
+        private readonly Dictionary<string, Task> _taskDictionary = new Dictionary<string, Task>();
         private bool _firstLoad = true;
 
         public Task InitializeTask { get; }
@@ -178,9 +180,37 @@ namespace ANT.Modules
             }
         }
 
-        private async Task LoadGlobalCatalogueAsync()
+
+        private Task LoadGlobalCatalogueAsync()
         {
             //TODO: carregar TODOS os animes de todos os tempos
+            //ainda não está o ideal(ele vai carregar indefinidamente a cada 4 segundos até carregar tudo que existe, mudar para carregar
+            //quando o usuário chegar no fim da rolagem na lista), tentar ver como usar o comando LoadMore para fazer essa tarefa
+            // pausar o processamento toda vez que o usuário for digitar na barra de pesquisa ou aplicar filtros
+            return Task.Run(async () =>
+           {
+
+               for (int i = 0; ; i++)
+               {
+                   if (_cancellationToken.IsCancellationRequested)
+                       _cancellationToken.Token.ThrowIfCancellationRequested();
+
+                   await App.DelayRequest(4);
+
+                   AnimeTop anime = await App.Jikan.GetAnimeTop(i + 1);
+
+                   if (anime != null)
+                   {
+                       IList<FavoritedAnime> animes = anime.Top.ConvertTopAnimesToAnimeSubEntry().ConvertAnimesToFavoritedSubEntry();
+
+                       _originalCollection.AddRange(animes);
+                       Animes.AddRange(animes);
+                   }
+                   else
+                       break;
+               }
+
+           }, _cancellationToken.Token);
         }
 
         private void ClearTextQuery() => SearchQuery = string.Empty;
@@ -191,6 +221,10 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
+            //TODO: tentar refatorar este comando para ele não ser preso a nenhum dado específico
+            //ele apenas vai pegar novos dados(do global ou por gênero), talvez tenha que passar algum parâmetro para fazer isso acontecer
+            //estudar a viabilidade
+
             if (_currentGenre == null || SearchQuery?.Length > 0 || RemainingAnimeCount < 0 || IsBusy)
                 return;
 
@@ -328,6 +362,15 @@ namespace ANT.Modules
                 SelectedItem = null;
                 _canNavigate = true;
             }
+        }
+
+        public ICommand BackButtonCommand { get; private set; }
+        private async Task OnBackButton(BackButtonOriginEnum origin)
+        {
+            _cancellationToken.Cancel();
+
+            if (origin == BackButtonOriginEnum.NavigationBar)
+                await NavigationManager.PopShellPageAsync();
         }
 
         #endregion
