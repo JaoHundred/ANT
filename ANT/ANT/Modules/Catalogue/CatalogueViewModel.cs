@@ -21,8 +21,9 @@ namespace ANT.Modules
 {
     public class CatalogueViewModel : BaseVMExtender, IAsyncInitialization
     {
-        public CatalogueViewModel()
+        public CatalogueViewModel(CatalogueModeEnum catalogueMode)
         {
+            _catalogueMode = catalogueMode;
             InitializeDefaultProperties();
 
             InitializeTask = LoadAsync(null);
@@ -69,6 +70,7 @@ namespace ANT.Modules
         }
 
         private int _pageCount = 1;
+        private readonly CatalogueModeEnum? _catalogueMode;
         private readonly GenreSearch? _currentGenre;
         private readonly SemaphoreSlim loc = new SemaphoreSlim(1);
         private bool _firstLoad = true;
@@ -78,7 +80,27 @@ namespace ANT.Modules
         {
             IsLoadingOrRefreshing = IsLoading = true;
 
-            await LoadCatalogueAsync();
+            if (SearchQuery?.Length > 0)
+                ClearTextQuery();
+
+            if (_currentGenre != null)
+            {
+                IsBusy = false;
+                await OnLoadMore();
+            }
+            else
+            {
+                switch (_catalogueMode)
+                {
+                    case CatalogueModeEnum.Season:
+                        await LoadSeasonCatalogueAsync();
+                        break;
+
+                    case CatalogueModeEnum.Global:
+                        await LoadGlobalCatalogueAsync();
+                        break;
+                }
+            }
 
             IsLoadingOrRefreshing = IsLoading = false;
         }
@@ -138,43 +160,27 @@ namespace ANT.Modules
         #endregion
 
         #region métodos da VM
-        private async Task LoadCatalogueAsync()
+        private async Task LoadSeasonCatalogueAsync()
         {
-            if (SearchQuery?.Length > 0)
-                ClearTextQuery();
-
             try
             {
-                if (_currentGenre != null)
-                {
-                    IsBusy = false;
-                    await OnLoadMore();
-                }
-                else
-                {
-                    var results = await App.Jikan.GetSeason();
-                    results.RequestCached = true;
-                    //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 
-                    //que seleciona os filtros e repassa para cá
-                    /*
-                     * .Where(
-                        anime => anime.R18 == false &&
-                        anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
-                        )
-                    */
+                var results = await App.Jikan.GetSeason();
+                results.RequestCached = true;
 
-
-                    var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavoritedSubEntry();
-                    _originalCollection = favoritedEntries.ToList();
-                    Animes.ReplaceRange(_originalCollection);
-                }
-
+                var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavoritedSubEntry();
+                _originalCollection = favoritedEntries.ToList();
+                Animes.ReplaceRange(_originalCollection);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 //TODO:capturar aqui possíveis erros de conexão
             }
+        }
+
+        private async Task LoadGlobalCatalogueAsync()
+        {
+            //TODO: carregar TODOS os animes de todos os tempos
         }
 
         private void ClearTextQuery() => SearchQuery = string.Empty;
@@ -185,8 +191,6 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
-
-
             if (_currentGenre == null || SearchQuery?.Length > 0 || RemainingAnimeCount < 0 || IsBusy)
                 return;
 
@@ -289,7 +293,7 @@ namespace ANT.Modules
         private async Task OnRefresh()
         {
             IsLoadingOrRefreshing = true;
-            await LoadCatalogueAsync();
+            await LoadSeasonCatalogueAsync();
             IsLoadingOrRefreshing = IsRefreshing = false;
         }
 
@@ -329,5 +333,13 @@ namespace ANT.Modules
         #endregion
 
         //TODO: botão de filtro entre os 3 pontos e o campo de pesquisa(abrir um modal com opções de filtro)
+        //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 
+        //que seleciona os filtros e repassa para cá
+        /*
+         * .Where(
+            anime => anime.R18 == false &&
+            anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
+            )
+        */
     }
 }

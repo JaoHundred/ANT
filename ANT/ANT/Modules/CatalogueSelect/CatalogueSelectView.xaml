@@ -6,6 +6,7 @@
              xmlns:res="clr-namespace:ANT.Lang"
              mc:Ignorable="d"
              xmlns:modules="clr-namespace:ANT.Modules"
+             xmlns:util="clr-namespace:ANT.UTIL"
              x:DataType="modules:CatalogueSelectViewModel"
              x:Class="ANT.Modules.CatalogueSelectView">
 
@@ -49,7 +50,8 @@
                 
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" 
-                                          Command="{Binding OpenSeasonCatalogueCommand}"/>
+                                          Command="{Binding OpenCatalogueCommand}"
+                                          CommandParameter="{x:Static util:CatalogueModeEnum.Season}"/>
                 </Grid.GestureRecognizers>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.2*"/>
@@ -71,7 +73,8 @@
 
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" 
-                                          Command="{Binding OpenGlobalCatalogueCommand}"/>
+                                          Command="{Binding OpenCatalogueCommand}"
+                                          CommandParameter="{x:Static util:CatalogueModeEnum.Global}"/>
                 </Grid.GestureRecognizers>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.2*"/>

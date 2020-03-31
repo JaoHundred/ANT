@@ -15,31 +15,23 @@ namespace ANT.Modules
     {
         public CatalogueSelectViewModel()
         {
-            OpenSeasonCatalogueCommand = new AsyncCommand(OnOpenSeasonCatalogue);
-            OpenGlobalCatalogueCommand = new AsyncCommand(OnOpenGlobalCatalogue);
+            OpenCatalogueCommand = new AsyncCommand<CatalogueModeEnum>(OnOpenCatalogue);
         }
 
         #region comandos
-        public ICommand OpenSeasonCatalogueCommand { get; private set; }
-        private async Task OnOpenSeasonCatalogue()
+        public ICommand OpenCatalogueCommand { get; private set; }
+        private async Task OnOpenCatalogue(CatalogueModeEnum catalogueMode)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(500)); // necessário para não atropelar a animação do botão
+
             if (IsNotBusy)
             {
                 IsBusy = true;
-                await NavigationManager.NavigateShellAsync<CatalogueViewModel>();
+                await NavigationManager.NavigateShellAsync<CatalogueViewModel>(catalogueMode);
                 IsBusy = false;
             }
         }
 
-        public ICommand OpenGlobalCatalogueCommand { get; private set; }
-        private async Task OnOpenGlobalCatalogue()
-        {
-            await App.DelayRequest(); // só para simular alguma coisa por hora, remover depois que tiver funcionalidade
-
-            //TODO: passar para catalogueview com um mecanismo indicando que é pra carregar TODOS os animes de todos os tempos
-            //(ele vai precisar ter o mesmo funcionamento que os animes por gênero indo de AnimeSpecs para Catalogue ao clicar em um gênero)
-        }
         #endregion
     }
 }
