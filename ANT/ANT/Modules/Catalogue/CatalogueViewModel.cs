@@ -45,12 +45,10 @@ namespace ANT.Modules
 
             SelectionModeCommand = new magno.Command(OnSelectionMode);
             AddToFavoriteCommand = new magno.AsyncCommand(OnAddToFavorite);
-            RefreshCommand = new magno.AsyncCommand(OnRefresh);
             ClearTextCommand = new magno.Command(OnClearText);
             SearchCommand = new magno.AsyncCommand(OnSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
-            BackButtonCommand = new magno.AsyncCommand<BackButtonOriginEnum>(OnBackButton);
         }
 
         public Task NavigationFrom()
@@ -72,39 +70,33 @@ namespace ANT.Modules
         private int _pageCount = 1;
         private readonly CatalogueModeEnum? _catalogueMode;
         private readonly GenreSearch? _currentGenre;
-        private readonly SemaphoreSlim loc = new SemaphoreSlim(1);
-        private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
-        private readonly Dictionary<string, Task> _taskDictionary = new Dictionary<string, Task>();
-        private bool _firstLoad = true;
 
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
         {
-            IsLoadingOrRefreshing = IsLoading = true;
-
             if (SearchQuery?.Length > 0)
                 ClearTextQuery();
 
             if (_currentGenre != null)
             {
-                IsBusy = false;
-                await OnLoadMore();
+                RemainingAnimeCount = 0;
+                await LoadByGenreAsync();
             }
             else
             {
                 switch (_catalogueMode)
                 {
                     case CatalogueModeEnum.Season:
+                        RemainingAnimeCount = -1;
                         await LoadSeasonCatalogueAsync();
                         break;
 
                     case CatalogueModeEnum.Global:
+                        RemainingAnimeCount = 0;
                         await LoadGlobalCatalogueAsync();
                         break;
                 }
             }
-
-            IsLoadingOrRefreshing = IsLoading = false;
         }
 
         #region proriedades
@@ -116,19 +108,6 @@ namespace ANT.Modules
             set { SetProperty(ref _isLoading, value); }
         }
 
-        private bool _isLoadingOrRefreshing;
-        public bool IsLoadingOrRefreshing
-        {
-            get { return _isLoadingOrRefreshing; }
-            set { SetProperty(ref _isLoadingOrRefreshing, value); }
-        }
-
-        private bool _isRefreshing;
-        public bool IsRefreshing
-        {
-            get { return _isRefreshing; }
-            set { SetProperty(ref _isRefreshing, value); }
-        }
         private FavoritedAnime _selectedItem;
         public FavoritedAnime SelectedItem
         {
@@ -151,8 +130,9 @@ namespace ANT.Modules
             set { SetProperty(ref _animes, value); }
         }
 
+        //com o valor zero itens novos são carregados somente quando a collectionview chegar no fim da lista
+        //com -1 é parado por completo as chamadas para LoadMore
         private long _remainingAnimeCount;
-
         public long RemainingAnimeCount
         {
             get { return _remainingAnimeCount; }
@@ -164,53 +144,63 @@ namespace ANT.Modules
         #region métodos da VM
         private async Task LoadSeasonCatalogueAsync()
         {
-            try
-            {
-                var results = await App.Jikan.GetSeason();
-                results.RequestCached = true;
+            IsLoading = true;
+            await App.DelayRequest();
+            var results = await App.Jikan.GetSeason();
+            results.RequestCached = true;
 
-                var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavoritedSubEntry();
-                _originalCollection = favoritedEntries.ToList();
-                Animes.ReplaceRange(_originalCollection);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                //TODO:capturar aqui possíveis erros de conexão
-            }
+            var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavorited();
+            _originalCollection = favoritedEntries.ToList();
+            Animes.AddRange(_originalCollection);
+
+            IsLoading = false;;
         }
 
 
-        private Task LoadGlobalCatalogueAsync()
+        private async Task LoadGlobalCatalogueAsync()
         {
-            //TODO: carregar TODOS os animes de todos os tempos
-            //ainda não está o ideal(ele vai carregar indefinidamente a cada 4 segundos até carregar tudo que existe, mudar para carregar
-            //quando o usuário chegar no fim da rolagem na lista), tentar ver como usar o comando LoadMore para fazer essa tarefa
-            // pausar o processamento toda vez que o usuário for digitar na barra de pesquisa ou aplicar filtros
-            return Task.Run(async () =>
-           {
+            IsLoading = true;
 
-               for (int i = 0; ; i++)
-               {
-                   if (_cancellationToken.IsCancellationRequested)
-                       _cancellationToken.Token.ThrowIfCancellationRequested();
+            await App.DelayRequest(4);
 
-                   await App.DelayRequest(4);
+            AnimeTop anime = await App.Jikan.GetAnimeTop(_pageCount++);
 
-                   AnimeTop anime = await App.Jikan.GetAnimeTop(i + 1);
+            if (anime != null)
+            {
+                anime.RequestCached = true;
 
-                   if (anime != null)
-                   {
-                       IList<FavoritedAnime> animes = anime.Top.ConvertTopAnimesToAnimeSubEntry().ConvertAnimesToFavoritedSubEntry();
+                IList<FavoritedAnime> animes = anime.Top.ConvertTopAnimesToAnimeSubEntry().ConvertAnimesToFavorited();
 
-                       _originalCollection.AddRange(animes);
-                       Animes.AddRange(animes);
-                   }
-                   else
-                       break;
-               }
+                _originalCollection.AddRange(animes);
+                Animes.AddRange(animes);
+            }
+            else
+                RemainingAnimeCount = -1;
 
-           }, _cancellationToken.Token);
+            IsLoading = false;
+        }
+
+        private async Task LoadByGenreAsync()
+        {
+            IsLoading = true;
+
+            await App.DelayRequest(4);
+
+            AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount++);
+
+            if (animeGenre != null)
+            {
+                animeGenre.RequestCached = true;
+
+                IList<FavoritedAnime> favoritedSubEntries = animeGenre.Anime.ConvertAnimesToFavorited();
+
+                _originalCollection.AddRange(favoritedSubEntries);
+                Animes.AddRange(favoritedSubEntries);
+            }
+            else
+                RemainingAnimeCount = -1;
+
+            IsLoading = false;
         }
 
         private void ClearTextQuery() => SearchQuery = string.Empty;
@@ -221,76 +211,37 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
-            //TODO: tentar refatorar este comando para ele não ser preso a nenhum dado específico
-            //ele apenas vai pegar novos dados(do global ou por gênero), talvez tenha que passar algum parâmetro para fazer isso acontecer
-            //estudar a viabilidade
-
-            if (_currentGenre == null || SearchQuery?.Length > 0 || RemainingAnimeCount < 0 || IsBusy)
+            if (SearchQuery?.Length > 0 || IsLoading || _currentGenre == null)
+            {
+                Console.WriteLine("Não executou o OnLoadMore");
                 return;
+            }
 
-            // semáforo, usado para permitir que somente um apanhado de thread/task passe por vez
-            //parece ser um lock melhorado
-            await loc.WaitAsync();
 
-            if (!_firstLoad)
-                IsLoadingOrRefreshing = IsBusy = true;
+            //TODO: depois que eu pesquiso ao menos uma vez, indo até o final dos resultados da busca e 
+            //zerando a busca(sem itens para a pesquisa feita)
+            //a propriedade abaixo sempre fica falsa mesmo depois de ter recebido true
+            IsLoading= true;
 
             try
             {
-                //TODO: conflitos no footer da collectionview, ele nunca esconde o activityindicator
-                //https://github.com/xamarin/Xamarin.Forms/issues/8700
-                // solução momentânea foi simular um footer de overlay com activity indicator, quando estiver corrigido, usar o footer
+                if (_currentGenre != null)
+                    await LoadByGenreAsync();
 
-                await App.DelayRequest();
-
-                AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount);
-
-                if (animeGenre != null)
-                {
-                    animeGenre.RequestCached = true;
-
-                    if (RemainingAnimeCount == 0)
-                        RemainingAnimeCount = animeGenre.TotalCount;
-
-                    var favoritedSubEntries = animeGenre.Anime.ConvertAnimesToFavoritedSubEntry();
-
-                    if (RemainingAnimeCount <= animeGenre.TotalCount)
-                        RemainingAnimeCount -= favoritedSubEntries.Count;
-
-                    if (_pageCount == 1)
-                    {
-                        _originalCollection = favoritedSubEntries.ToList();
-                        Animes.ReplaceRange(_originalCollection);
-                    }
-
-                    else if (_pageCount > 1)
-                    {
-                        _originalCollection.AddRange(favoritedSubEntries);
-                        Animes.AddRange(favoritedSubEntries);
-                    }
-
-                    if (RemainingAnimeCount == 0) // usado para desativar a chamada da collectionview para este método
-                    {
-                        RemainingAnimeCount = -1;
-                        return;
-                    }
-
-                    _pageCount++;
-                }
-
-                await App.DelayRequest();
+                else if (_currentGenre == null && _catalogueMode != null)
+                    await LoadGlobalCatalogueAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Problema encontrado: {ex.Message}, valor errado em : {RemainingAnimeCount}");
+                Console.WriteLine($"Erro encontrado em {ex.Message}");
             }
             finally
             {
-                Console.WriteLine($"Animes restantes: {RemainingAnimeCount}");
-                Console.WriteLine($"Animes da categoria {_currentGenre.Value} adicionados na lista : {Animes.Count}");
-                IsLoadingOrRefreshing = IsBusy = false;
-                _firstLoad = false;
-                loc.Release();
+                Console.WriteLine($"{Animes.Count} Animes na lista ");
+
+
+                //TODO: pegar aqui os possíveis duplicados da lista de animes e exibir quais foram
+                //atualmente fazendo os testes com o gênero military que tem 555 animes na data de hoje 02/04/2020
             }
         }
 
@@ -323,14 +274,6 @@ namespace ANT.Modules
             SingleSelectionMode();
         }
 
-        public ICommand RefreshCommand { get; private set; }
-        private async Task OnRefresh()
-        {
-            IsLoadingOrRefreshing = true;
-            await LoadSeasonCatalogueAsync();
-            IsLoadingOrRefreshing = IsRefreshing = false;
-        }
-
         public ICommand ClearTextCommand { get; private set; }
         private void OnClearText()
         {
@@ -341,6 +284,11 @@ namespace ANT.Modules
         public ICommand SearchCommand { get; private set; }
         private async Task OnSearch()
         {
+            //TODO: preparar a busca para o modo global, vai ser necessário retornar qualquer anime dentro da substring que o usuário inseriu na pesquisa
+            //checar antes se o anime já está carregado na lista, se estiver não precisa fazer requisição para o jikan, do contrário fazer a requisição e mostrar
+            // nos resultados, nesse caso retornar para a situação original antes da busca(o anime que veio por requisição e está agora nos resultados da busca deve
+            // sair também da propriedade observável de animes
+
             var resultListTask = Task.Run(() =>
            {
                return _originalCollection.Where(anime => anime.Anime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant())).ToList();
@@ -362,15 +310,6 @@ namespace ANT.Modules
                 SelectedItem = null;
                 _canNavigate = true;
             }
-        }
-
-        public ICommand BackButtonCommand { get; private set; }
-        private async Task OnBackButton(BackButtonOriginEnum origin)
-        {
-            _cancellationToken.Cancel();
-
-            if (origin == BackButtonOriginEnum.NavigationBar)
-                await NavigationManager.PopShellPageAsync();
         }
 
         #endregion

@@ -68,7 +68,7 @@ namespace ANT.UTIL
             return episodeList;
         }
 
-        public static IList<FavoritedAnime> ConvertAnimesToFavoritedSubEntry(this ICollection<AnimeSubEntry> animeSubEntries)
+        public static IList<FavoritedAnime> ConvertAnimesToFavorited(this ICollection<AnimeSubEntry> animeSubEntries)
         {
             var animeSubs = animeSubEntries.ToList();
             var favoritedAnimeSubsEntries = new List<FavoritedAnime>();

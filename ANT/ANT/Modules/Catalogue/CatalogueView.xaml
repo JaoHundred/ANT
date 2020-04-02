@@ -10,7 +10,6 @@
              xmlns:comm="clr-namespace:ANT._Behaviors"
              xmlns:favo="clr-namespace:ANT.Model"
              xmlns:VM="clr-namespace:ANT.Modules"
-             xmlns:Util="clr-namespace:ANT.UTIL"
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
@@ -61,11 +60,6 @@
 
     </Shell.TitleView>
 
-    <Shell.BackButtonBehavior>
-        <BackButtonBehavior Command="{Binding BackButtonCommand}"
-                            CommandParameter="{x:Static Util:BackButtonOriginEnum.NavigationBar}"/>
-    </Shell.BackButtonBehavior>
-
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{res:Translate MultiSelect}" Command="{Binding SelectionModeCommand}" Order="Secondary">
             <ToolbarItem.IconImageSource>
@@ -76,68 +70,64 @@
 
 
     <Grid Margin="0,3,0,3">
-        <RefreshView Command="{Binding RefreshCommand}" 
-                     IsRefreshing="{Binding IsRefreshing}" 
-                     IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
 
-            <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
+        <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                             SelectionChangedCommand="{Binding OpenAnimeCommand}"
                             RemainingItemsThreshold="{Binding RemainingAnimeCount}"
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
-                <CollectionView.EmptyView>
-                    <Grid>
-                        <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
-                    </Grid>
-                </CollectionView.EmptyView>
+            <CollectionView.EmptyView>
+                <Grid>
+                    <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
+                </Grid>
+            </CollectionView.EmptyView>
 
-                <CollectionView.Footer>
-                    <Label/> <!--necessário para evitar que o último item fique no tamanho errado-->
-                </CollectionView.Footer>
+            <CollectionView.Footer>
+                <!--a presença de um footer também mantém os itens da lista nos tamanhos corretos(o fim dela)-->
+                <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="Center"
+                                       IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
+            </CollectionView.Footer>
 
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" 
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" 
                                      Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
-                </CollectionView.ItemsLayout>
+            </CollectionView.ItemsLayout>
 
-                <CollectionView.ItemTemplate>
+            <CollectionView.ItemTemplate>
 
-                    <DataTemplate x:DataType="favo:FavoritedAnime">
-                        <Frame>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
+                <DataTemplate x:DataType="favo:FavoritedAnime">
+                    <Frame>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
 
-                                <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}" 
+                            <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}" 
                                                      DownsampleToViewSize="True"/>
 
-                                <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
-                                    <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
+                            <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
+                                <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
                                              IsVisible="{Binding IsFavorited}"/>
 
-                                    <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
+                                <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
                                            IsVisible="{Binding IsFavorited}"
                                            HorizontalOptions="Center" VerticalOptions="Center"/>
-                                </Grid>
+                            </Grid>
 
-                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
+                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
                                                    IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
 
-                                <Label Grid.Row="1" Text="{Binding Anime.Title}" 
+                            <Label Grid.Row="1" Text="{Binding Anime.Title}" 
                                        LineBreakMode="TailTruncation" MaxLines="1"
                                        Style="{StaticResource AnimeFrameLabelStyle}" />
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
 
-            </CollectionView>
-        </RefreshView>
-        <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="End" Margin="3"
-                           IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
+        </CollectionView>
 
         <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
                 Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
