@@ -74,6 +74,9 @@ namespace ANT.Modules
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
         {
+
+            IsFirstLoading = true;
+
             if (SearchQuery?.Length > 0)
                 ClearTextQuery();
 
@@ -97,15 +100,17 @@ namespace ANT.Modules
                         break;
                 }
             }
+
+            IsFirstLoading = false;
         }
 
         #region proriedades
 
-        private bool _isLoading;
-        public bool IsLoading
+        private bool _isFirstLoading;
+        public bool IsFirstLoading
         {
-            get { return _isLoading; }
-            set { SetProperty(ref _isLoading, value); }
+            get { return _isFirstLoading; }
+            set { SetProperty(ref _isFirstLoading, value); }
         }
 
         private FavoritedAnime _selectedItem;
@@ -144,7 +149,6 @@ namespace ANT.Modules
         #region métodos da VM
         private async Task LoadSeasonCatalogueAsync()
         {
-            IsLoading = true;
             await App.DelayRequest();
             var results = await App.Jikan.GetSeason();
             results.RequestCached = true;
@@ -152,14 +156,13 @@ namespace ANT.Modules
             var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavorited();
             _originalCollection = favoritedEntries.ToList();
             Animes.AddRange(_originalCollection);
-
-            IsLoading = false;;
         }
 
 
         private async Task LoadGlobalCatalogueAsync()
         {
-            IsLoading = true;
+            if (!IsFirstLoading)
+                IsBusy = true;
 
             await App.DelayRequest(4);
 
@@ -177,12 +180,13 @@ namespace ANT.Modules
             else
                 RemainingAnimeCount = -1;
 
-            IsLoading = false;
+            IsBusy = false;
         }
 
         private async Task LoadByGenreAsync()
         {
-            IsLoading = true;
+            if (!IsFirstLoading)
+                IsBusy = true;
 
             await App.DelayRequest(4);
 
@@ -200,7 +204,7 @@ namespace ANT.Modules
             else
                 RemainingAnimeCount = -1;
 
-            IsLoading = false;
+            IsBusy = false;
         }
 
         private void ClearTextQuery() => SearchQuery = string.Empty;
@@ -211,17 +215,13 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
-            if (SearchQuery?.Length > 0 || IsLoading || _currentGenre == null)
+            if (SearchQuery?.Length > 0 || IsBusy || _currentGenre == null)
             {
                 Console.WriteLine("Não executou o OnLoadMore");
                 return;
             }
 
-
-            //TODO: depois que eu pesquiso ao menos uma vez, indo até o final dos resultados da busca e 
-            //zerando a busca(sem itens para a pesquisa feita)
-            //a propriedade abaixo sempre fica falsa mesmo depois de ter recebido true
-            IsLoading= true;
+            IsBusy = true;
 
             try
             {
@@ -313,6 +313,8 @@ namespace ANT.Modules
         }
 
         #endregion
+
+        //TODO: o footer ainda não está se comportando conforme deveria
 
         //TODO: botão de filtro entre os 3 pontos e o campo de pesquisa(abrir um modal com opções de filtro)
         //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 

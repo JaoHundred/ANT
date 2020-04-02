@@ -79,14 +79,13 @@
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
             <CollectionView.EmptyView>
                 <Grid>
-                    <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
+                    <ActivityIndicator IsVisible="{Binding IsFirstLoading}" IsRunning="{Binding IsFirstLoading}"/>
                 </Grid>
             </CollectionView.EmptyView>
 
             <CollectionView.Footer>
                 <!--a presença de um footer também mantém os itens da lista nos tamanhos corretos(o fim dela)-->
-                <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="Center"
-                                       IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
+                <Label HeightRequest="50"/>
             </CollectionView.Footer>
 
             <CollectionView.ItemsLayout>
@@ -128,6 +127,9 @@
             </CollectionView.ItemTemplate>
 
         </CollectionView>
+
+        <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="End" 
+                           IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
 
         <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
                 Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
