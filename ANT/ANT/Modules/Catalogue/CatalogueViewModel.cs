@@ -159,11 +159,8 @@ namespace ANT.Modules
         }
 
 
-        private async Task LoadGlobalCatalogueAsync()
+        private async Task<bool> LoadGlobalCatalogueAsync()
         {
-            if (!IsFirstLoading)
-                IsBusy = true;
-
             await App.DelayRequest(4);
 
             AnimeTop anime = await App.Jikan.GetAnimeTop(_pageCount++);
@@ -176,18 +173,18 @@ namespace ANT.Modules
 
                 _originalCollection.AddRange(animes);
                 Animes.AddRange(animes);
+
+                return false;
             }
             else
+            {
                 RemainingAnimeCount = -1;
-
-            IsBusy = false;
+                return true;
+            }
         }
 
-        private async Task LoadByGenreAsync()
+        private async Task<bool> LoadByGenreAsync()
         {
-            if (!IsFirstLoading)
-                IsBusy = true;
-
             await App.DelayRequest(4);
 
             AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount++);
@@ -200,11 +197,14 @@ namespace ANT.Modules
 
                 _originalCollection.AddRange(favoritedSubEntries);
                 Animes.AddRange(favoritedSubEntries);
+
+                return false;
             }
             else
+            {
                 RemainingAnimeCount = -1;
-
-            IsBusy = false;
+                return true;
+            }
         }
 
         private void ClearTextQuery() => SearchQuery = string.Empty;
@@ -215,21 +215,23 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
-            if (SearchQuery?.Length > 0 || IsBusy)
-            {
-                Console.WriteLine("Não executou o OnLoadMore");
-                return;
-            }
+            //TODO: fazer o teste com o semaphore https://docs.microsoft.com/pt-br/dotnet/standard/threading/semaphore-and-semaphoreslim
+            //para evitar chamadas paralelas a este método(não parece ser problema de sincronização mas da própria API, testar com semaphore mesmo assim
+            //se ainda acontecer testar com remoção de itens duplicados da lista original e observável de animes
 
+            RemainingAnimeCount = -1;
             IsBusy = true;
+
+            Console.WriteLine("Executou OnLoadMore");
+            bool hasFinishedLoading = false;
 
             try
             {
                 if (_currentGenre != null)
-                    await LoadByGenreAsync();
+                    hasFinishedLoading = await LoadByGenreAsync();
 
                 else if (_currentGenre == null && _catalogueMode != null)
-                    await LoadGlobalCatalogueAsync();
+                    hasFinishedLoading = await LoadGlobalCatalogueAsync();
             }
             catch (Exception ex)
             {
@@ -237,16 +239,29 @@ namespace ANT.Modules
             }
             finally
             {
+                RemainingAnimeCount = 0;
+                IsBusy = false;
+
+                if (hasFinishedLoading)
+                    RemainingAnimeCount = -1;
+
                 Console.WriteLine($"{Animes.Count} Animes na lista ");
 
-                var dupeList = Animes.GroupBy(p => p.Anime.MalId).Where(p => p.Count() > 1).Select(p => p.First().Anime).ToList();
-
-                if (dupeList.Count > 0)
+                try
                 {
-                    Console.WriteLine($"Animes duplicados {Environment.NewLine} ");
+                    var dupeList = Animes.GroupBy(p => p.Anime.MalId).Where(p => p.Count() > 1).Select(p => p.First().Anime).ToList();
 
-                    foreach (var item in dupeList.Select((Anime, ID) => new { Anime.Title, Anime.MalId }))
-                        Console.WriteLine($"Anime : {item.Title} {Environment.NewLine} ID : {item.MalId}");
+                    if (dupeList.Count > 0)
+                    {
+                        Console.WriteLine($"Animes duplicados {Environment.NewLine} ");
+
+                        foreach (var item in dupeList.Select((Anime, ID) => new { Anime.Title, Anime.MalId }))
+                            Console.WriteLine($"Anime : {item.Title} {Environment.NewLine} ID : {item.MalId}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ocorreu um erro no teste de duplicados {Environment.NewLine} {ex.Message}");
                 }
             }
         }
@@ -294,6 +309,12 @@ namespace ANT.Modules
             //checar antes se o anime já está carregado na lista, se estiver não precisa fazer requisição para o jikan, do contrário fazer a requisição e mostrar
             // nos resultados, nesse caso retornar para a situação original antes da busca(o anime que veio por requisição e está agora nos resultados da busca deve
             // sair também da propriedade observável de animes
+
+            if (SearchQuery?.Length > 0)
+                RemainingAnimeCount = -1;
+
+            else if (SearchQuery?.Length == 0)
+                RemainingAnimeCount = 0;
 
             var resultListTask = Task.Run(() =>
            {

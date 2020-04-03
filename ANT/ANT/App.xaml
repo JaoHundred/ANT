@@ -100,6 +100,7 @@
             <Style TargetType="FFimage:CachedImage">
                 <Setter Property="HeightRequest" Value="200"/>
                 <Setter Property="IsOpaque" Value="True"/>
+                <Setter Property="DownsampleToViewSize" Value="True"/>
             </Style>
 
             <!--#endregion-->

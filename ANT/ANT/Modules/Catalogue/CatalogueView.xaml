@@ -103,8 +103,7 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
 
-                            <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}" 
-                                                     DownsampleToViewSize="True"/>
+                            <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}"/>
 
                             <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
                                 <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
