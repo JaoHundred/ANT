@@ -215,7 +215,7 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
-            if (SearchQuery?.Length > 0 || IsBusy || _currentGenre == null)
+            if (SearchQuery?.Length > 0 || IsBusy)
             {
                 Console.WriteLine("Não executou o OnLoadMore");
                 return;
@@ -239,9 +239,15 @@ namespace ANT.Modules
             {
                 Console.WriteLine($"{Animes.Count} Animes na lista ");
 
+                var dupeList = Animes.GroupBy(p => p.Anime.MalId).Where(p => p.Count() > 1).Select(p => p.First().Anime).ToList();
 
-                //TODO: pegar aqui os possíveis duplicados da lista de animes e exibir quais foram
-                //atualmente fazendo os testes com o gênero military que tem 555 animes na data de hoje 02/04/2020
+                if (dupeList.Count > 0)
+                {
+                    Console.WriteLine($"Animes duplicados {Environment.NewLine} ");
+
+                    foreach (var item in dupeList.Select((Anime, ID) => new { Anime.Title, Anime.MalId }))
+                        Console.WriteLine($"Anime : {item.Title} {Environment.NewLine} ID : {item.MalId}");
+                }
             }
         }
 
@@ -269,7 +275,7 @@ namespace ANT.Modules
             {
                 var items = SelectedItems.Cast<FavoritedAnime>().ToList();
                 await NavigationManager.NavigatePopUpAsync<ProgressPopupViewModel>(items);
-            }
+            };
 
             SingleSelectionMode();
         }
