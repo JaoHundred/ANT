@@ -40,6 +40,7 @@ namespace ANT.Modules
 
         private void InitializeDefaultProperties()
         {
+            _semaphore = new Semaphore(1, 1, "loading");
             _originalCollection = new List<FavoritedAnime>();
             Animes = new ObservableRangeCollection<FavoritedAnime>();
 
@@ -68,6 +69,7 @@ namespace ANT.Modules
         }
 
         private int _pageCount = 1;
+        private Semaphore _semaphore;
         private readonly CatalogueModeEnum? _catalogueMode;
         private readonly GenreSearch? _currentGenre;
 
@@ -161,25 +163,35 @@ namespace ANT.Modules
 
         private async Task<bool> LoadGlobalCatalogueAsync()
         {
+            _semaphore.WaitOne();
             await App.DelayRequest(4);
 
-            AnimeTop anime = await App.Jikan.GetAnimeTop(_pageCount++);
-
-            if (anime != null)
+            try
             {
-                anime.RequestCached = true;
+                Console.WriteLine($"Page count {_pageCount}");
 
-                IList<FavoritedAnime> animes = anime.Top.ConvertTopAnimesToAnimeSubEntry().ConvertAnimesToFavorited();
+                AnimeTop anime = await App.Jikan.GetAnimeTop(_pageCount++);
 
-                _originalCollection.AddRange(animes);
-                Animes.AddRange(animes);
+                if (anime != null)
+                {
+                    anime.RequestCached = true;
 
-                return false;
+                    IList<FavoritedAnime> animes = anime.Top.ConvertTopAnimesToAnimeSubEntry().ConvertAnimesToFavorited();
+
+                    _originalCollection.AddRange(animes);
+                    Animes.AddRange(animes);
+
+                    return false;
+                }
+                else
+                {
+                    RemainingAnimeCount = -1;
+                    return true;
+                }
             }
-            else
+            finally
             {
-                RemainingAnimeCount = -1;
-                return true;
+                _semaphore.Release();
             }
         }
 
@@ -219,6 +231,7 @@ namespace ANT.Modules
             //para evitar chamadas paralelas a este método(não parece ser problema de sincronização mas da própria API, testar com semaphore mesmo assim
             //se ainda acontecer testar com remoção de itens duplicados da lista original e observável de animes
 
+
             RemainingAnimeCount = -1;
             IsBusy = true;
 
@@ -245,24 +258,40 @@ namespace ANT.Modules
                 if (hasFinishedLoading)
                     RemainingAnimeCount = -1;
 
-                Console.WriteLine($"{Animes.Count} Animes na lista ");
-
                 try
                 {
-                    var dupeList = Animes.GroupBy(p => p.Anime.MalId).Where(p => p.Count() > 1).Select(p => p.First().Anime).ToList();
+                    var dupeList = Animes.GroupBy(p => p.Anime.MalId).Where(p => p.Count() > 1).Select(p => p.First()).ToList();
 
                     if (dupeList.Count > 0)
                     {
+                        //TODO: duplicados tem aparecido quando o MAL tem tido problemas de servidor, investigar mais a fundo quand o MAL
+                        //estiver com problemas mínimos no servidor para descobrir se o problema é do lado deles ou da API jikan(se for do jikan, abrir uma issue)
+                        //os duplicados aparecem nos limites das páginas(anime no final da página e no começo)
+                        //https://github.com/JaoHundred/ANT/issues/35
+
                         Console.WriteLine($"Animes duplicados {Environment.NewLine} ");
 
-                        foreach (var item in dupeList.Select((Anime, ID) => new { Anime.Title, Anime.MalId }))
+                        foreach (var item in dupeList.Select((Anime, ID) => new { Anime.Anime.Title, Anime.Anime.MalId }))
                             Console.WriteLine($"Anime : {item.Title} {Environment.NewLine} ID : {item.MalId}");
+
+                        Console.WriteLine("Remoção de duplicados");
+                        Animes.RemoveRange(dupeList);
+
+                        foreach (var item in dupeList)
+                        {
+                            var anime = _originalCollection.FirstOrDefault(p => p.Anime.MalId == item.Anime.MalId);
+
+                            if (anime != null)
+                                _originalCollection.Remove(anime);
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Ocorreu um erro no teste de duplicados {Environment.NewLine} {ex.Message}");
                 }
+
+                Console.WriteLine($"{Animes.Count} Animes na lista ");
             }
         }
 
