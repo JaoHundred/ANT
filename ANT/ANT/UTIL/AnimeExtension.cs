@@ -94,11 +94,12 @@ namespace ANT.UTIL
 
             foreach (var top in tops)
             {
-                var sub = new AnimeSubEntry();
-
-                sub.MalId = top.MalId;
-                sub.ImageURL = top.ImageURL;
-                sub.Title = top.Title;
+                var sub = new AnimeSubEntry
+                {
+                    MalId = top.MalId,
+                    ImageURL = top.ImageURL,
+                    Title = top.Title,
+                };
 
                 subs.Add(sub);
             }

@@ -24,7 +24,16 @@ namespace ANT.Model
                 MalId = anime.MalId,
                 Title = anime.Title,
                 ImageURL = anime.ImageURL,
+                Genres = anime.Genres,
+                LinkCanonical = anime.URL,
+                Score = anime.Score,
+                Aired = new TimePeriod() 
+                {
+                    From = anime.AiringStart,
+                },
             };
+
+            IsR18 = anime.R18;
         }
 
         public FavoritedAnime()
@@ -38,6 +47,8 @@ namespace ANT.Model
         }
 
         public Anime Anime { get; set; }
+
+        public bool? IsR18 { get; set; }
 
         public IList<AnimeEpisode> Episodes { get; set; }
 
