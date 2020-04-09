@@ -17,27 +17,7 @@ namespace ANT.Model
             Episodes = episodes;
         }
 
-        public FavoritedAnime(AnimeSubEntry anime)
-        {
-            Anime = new Anime
-            {
-                MalId = anime.MalId,
-                Title = anime.Title,
-                ImageURL = anime.ImageURL,
-                Genres = anime.Genres,
-                LinkCanonical = anime.URL,
-                Score = anime.Score,
-                Aired = new TimePeriod() 
-                {
-                    From = anime.AiringStart,
-                },
-            };
-
-            IsR18 = anime.R18;
-        }
-
-        public FavoritedAnime()
-        { }
+        public FavoritedAnime(){ }
 
         private bool _isFavorited;
         public bool IsFavorited

@@ -76,7 +76,24 @@ namespace ANT.UTIL
             for (int i = 0; i < animeSubs.Count; i++)
             {
                 var anime = animeSubs[i];
-                var animeSub = new FavoritedAnime(anime);
+                var animeSub = new FavoritedAnime
+                {
+                    Anime = new Anime
+                    {
+                        MalId = anime.MalId,
+                        Title = anime.Title,
+                        ImageURL = anime.ImageURL,
+                        Genres = anime.Genres,
+                        LinkCanonical = anime.URL,
+                        Score = anime.Score,
+                        Aired = new TimePeriod()
+                        {
+                            From = anime.AiringStart,
+                        },
+                    },
+
+                IsR18 = anime.R18,
+            };
 
                 if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == anime.MalId))
                     animeSub.IsFavorited = true;
@@ -87,18 +104,20 @@ namespace ANT.UTIL
             return favoritedAnimeSubsEntries;
         }
 
-        public static IList<AnimeSubEntry> ConvertTopAnimesToAnimeSubEntry(this ICollection<AnimeTopEntry> animeTops)
+        public static IList<AnimeSubEntry> ConvertAnimeSearchEntryToAnimeSubEntry(this ICollection<AnimeSearchEntry> animeSearch)
         {
-            var tops = animeTops.ToList();
+            var searchs = animeSearch.ToList();
             var subs = new List<AnimeSubEntry>();
 
-            foreach (var top in tops)
+            foreach (var search in searchs)
             {
                 var sub = new AnimeSubEntry
                 {
-                    MalId = top.MalId,
-                    ImageURL = top.ImageURL,
-                    Title = top.Title,
+                    MalId = search.MalId,
+                    ImageURL = search.ImageURL,
+                    Title = search.Title,
+                    AiringStart = search.StartDate,
+                    Score = search.Score,
                 };
 
                 subs.Add(sub);

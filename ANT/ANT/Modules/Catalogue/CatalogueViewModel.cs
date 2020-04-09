@@ -40,7 +40,6 @@ namespace ANT.Modules
 
         private void InitializeDefaultProperties()
         {
-            _semaphore = new Semaphore(1, 1, "loading");
             _originalCollection = new List<FavoritedAnime>();
             Animes = new ObservableRangeCollection<FavoritedAnime>();
 
@@ -69,7 +68,6 @@ namespace ANT.Modules
         }
 
         private int _pageCount = 1;
-        private Semaphore _semaphore;
         private readonly CatalogueModeEnum? _catalogueMode;
         private readonly GenreSearch? _currentGenre;
 
@@ -160,39 +158,41 @@ namespace ANT.Modules
             Animes.AddRange(_originalCollection);
         }
 
-
         private async Task<bool> LoadGlobalCatalogueAsync()
         {
-            _semaphore.WaitOne();
             await App.DelayRequest(4);
 
             try
             {
+                var config = new AnimeSearchConfig
+                {
+                   OrderBy = AnimeSearchSortable.Title,
+                };
+
+                //TODO: o caminho parece ser pelo search anime já que ele me dá acesso a diversos filtros avançados
+                //mas na data de hoje 09/04/2020 o método não tem funcionado além da primeira página(ele retorna os mesmos 50 itens da primeira página)
+                //foi aberto uma issue para isso em https://github.com/Ervie/jikan.net/issues/12
+
+                //TODO: após a issue ser respondida, testar e verificar se as coisas estão carregando conforme devem(itens distintos de cada página)
+
+                AnimeSearchResult anime = await App.Jikan.SearchAnime("", _pageCount++, config);
                 Console.WriteLine($"Page count {_pageCount}");
 
-                AnimeTop anime = await App.Jikan.GetAnimeTop(_pageCount++);
-
-                if (anime != null)
+                if (anime?.Results != null)
                 {
                     anime.RequestCached = true;
 
-                    IList<FavoritedAnime> animes = anime.Top.ConvertTopAnimesToAnimeSubEntry().ConvertAnimesToFavorited();
+                    IList<FavoritedAnime> animes = anime.Results.ConvertAnimeSearchEntryToAnimeSubEntry().ConvertAnimesToFavorited();
 
                     _originalCollection.AddRange(animes);
                     Animes.AddRange(animes);
 
                     return false;
                 }
-                else
-                {
-                    RemainingAnimeCount = -1;
-                    return true;
-                }
             }
-            finally
-            {
-                _semaphore.Release();
-            }
+            catch { }
+
+            return true;
         }
 
         private async Task<bool> LoadByGenreAsync()
