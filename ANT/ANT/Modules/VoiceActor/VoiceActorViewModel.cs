@@ -34,10 +34,10 @@ namespace ANT.Modules
 
             try
             {
-                await Task.Delay(TimeSpan.FromSeconds(4));
+                await App.DelayRequest();
                 Person person = await App.Jikan.GetPerson(id);
 
-                await Task.Delay(TimeSpan.FromSeconds(4));
+                await App.DelayRequest();
                 PersonPictures personPictures = await App.Jikan.GetPersonPictures(id);
 
                 PersonContext = person;
@@ -88,7 +88,7 @@ namespace ANT.Modules
         public ICommand FavoriteCommand { get; private set; }
         private async Task OnFavorite()
         {
-            await Task.Delay(TimeSpan.FromSeconds(4));
+            await App.DelayRequest();
             //TODO: salvar o voice actor na lista de favoritos, se já estiver favoritado, desfavoritar
         }
 

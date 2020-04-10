@@ -21,20 +21,16 @@ namespace ANT.Core
     {
 
         public static int PageStackCount
-        {
-            get
-            {
-                return Shell.Current.Navigation.NavigationStack.Count;
-            }
-        }
+            => Shell.Current.Navigation.NavigationStack.Count;
 
         public static int PopUpPageStackCount
-        {
-            get
-            {
-                return Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.Count;
-            }
-        }
+            => Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.Count;
+
+        public static IReadOnlyList<Page> PageStack
+            => Shell.Current.Navigation.NavigationStack;
+
+        public static IReadOnlyList<PopupPage> PopUpPageStack
+            => Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack;
 
         #region Métodos de navegação
 

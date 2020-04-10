@@ -21,8 +21,9 @@ namespace ANT.Modules
 {
     public class CatalogueViewModel : BaseVMExtender, IAsyncInitialization
     {
-        public CatalogueViewModel()
+        public CatalogueViewModel(CatalogueModeEnum catalogueMode)
         {
+            _catalogueMode = catalogueMode;
             InitializeDefaultProperties();
 
             InitializeTask = LoadAsync(null);
@@ -44,12 +45,10 @@ namespace ANT.Modules
 
             SelectionModeCommand = new magno.Command(OnSelectionMode);
             AddToFavoriteCommand = new magno.AsyncCommand(OnAddToFavorite);
-            RefreshCommand = new magno.AsyncCommand(OnRefresh);
             ClearTextCommand = new magno.Command(OnClearText);
             SearchCommand = new magno.AsyncCommand(OnSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
-
         }
 
         public Task NavigationFrom()
@@ -68,47 +67,52 @@ namespace ANT.Modules
             });
         }
 
-        private IMainPageAndroid _mainPageAndroid;
         private int _pageCount = 1;
+        private readonly CatalogueModeEnum? _catalogueMode;
         private readonly GenreSearch? _currentGenre;
-        private readonly SemaphoreSlim loc = new SemaphoreSlim(1);
-        private bool _firstLoad = true;
 
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
         {
-            IsLoadingOrRefreshing = IsLoading = true;
 
-            await LoadCatalogueAsync();
+            IsFirstLoading = true;
 
-            IsLoadingOrRefreshing = IsLoading = false;
+            if (SearchQuery?.Length > 0)
+                ClearTextQuery();
 
-            _mainPageAndroid = DependencyService.Get<IMainPageAndroid>();
-            _mainPageAndroid.OnBackPress(this);
+            if (_currentGenre != null)
+            {
+                RemainingAnimeCount = 0;
+                await LoadByGenreAsync();
+            }
+            else
+            {
+                switch (_catalogueMode)
+                {
+                    case CatalogueModeEnum.Season:
+                        RemainingAnimeCount = -1;
+                        await LoadSeasonCatalogueAsync();
+                        break;
+
+                    case CatalogueModeEnum.Global:
+                        RemainingAnimeCount = 0;
+                        await LoadGlobalCatalogueAsync();
+                        break;
+                }
+            }
+
+            IsFirstLoading = false;
         }
 
         #region proriedades
 
-        private bool _isLoading;
-        public bool IsLoading
+        private bool _isFirstLoading;
+        public bool IsFirstLoading
         {
-            get { return _isLoading; }
-            set { SetProperty(ref _isLoading, value); }
+            get { return _isFirstLoading; }
+            set { SetProperty(ref _isFirstLoading, value); }
         }
 
-        private bool _isLoadingOrRefreshing;
-        public bool IsLoadingOrRefreshing
-        {
-            get { return _isLoadingOrRefreshing; }
-            set { SetProperty(ref _isLoadingOrRefreshing, value); }
-        }
-
-        private bool _isRefreshing;
-        public bool IsRefreshing
-        {
-            get { return _isRefreshing; }
-            set { SetProperty(ref _isRefreshing, value); }
-        }
         private FavoritedAnime _selectedItem;
         public FavoritedAnime SelectedItem
         {
@@ -131,8 +135,9 @@ namespace ANT.Modules
             set { SetProperty(ref _animes, value); }
         }
 
+        //com o valor zero itens novos são carregados somente quando a collectionview chegar no fim da lista
+        //com -1 é parado por completo as chamadas para LoadMore
         private long _remainingAnimeCount;
-
         public long RemainingAnimeCount
         {
             get { return _remainingAnimeCount; }
@@ -142,42 +147,75 @@ namespace ANT.Modules
         #endregion
 
         #region métodos da VM
-        private async Task LoadCatalogueAsync()
+        private async Task LoadSeasonCatalogueAsync()
         {
-            if (SearchQuery?.Length > 0)
-                ClearTextQuery();
+            await App.DelayRequest();
+            var results = await App.Jikan.GetSeason();
+            results.RequestCached = true;
+
+            var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavorited();
+            _originalCollection = favoritedEntries.ToList();
+            Animes.AddRange(_originalCollection);
+        }
+
+        private async Task<bool> LoadGlobalCatalogueAsync()
+        {
+            await App.DelayRequest(4);
 
             try
             {
-                if (_currentGenre != null)
+                var config = new AnimeSearchConfig
                 {
-                    IsBusy = false;
-                    await OnLoadMore();
-                }
-                else
+                   OrderBy = AnimeSearchSortable.Title,
+                };
+
+                //TODO: o caminho parece ser pelo search anime já que ele me dá acesso a diversos filtros avançados
+                //mas na data de hoje 09/04/2020 o método não tem funcionado além da primeira página(ele retorna os mesmos 50 itens da primeira página)
+                //foi aberto uma issue para isso em https://github.com/Ervie/jikan.net/issues/12
+
+                //TODO: após a issue ser respondida, testar e verificar se as coisas estão carregando conforme devem(itens distintos de cada página)
+
+                AnimeSearchResult anime = await App.Jikan.SearchAnime("", _pageCount++, config);
+                Console.WriteLine($"Page count {_pageCount}");
+
+                if (anime?.Results != null)
                 {
-                    var results = await App.Jikan.GetSeason();
-                    results.RequestCached = true;
-                    //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 
-                    //que seleciona os filtros e repassa para cá
-                    /*
-                     * .Where(
-                        anime => anime.R18 == false &&
-                        anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
-                        )
-                    */
+                    anime.RequestCached = true;
 
+                    IList<FavoritedAnime> animes = anime.Results.ConvertAnimeSearchEntryToAnimeSubEntry().ConvertAnimesToFavorited();
 
-                    var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavoritedSubEntry();
-                    _originalCollection = favoritedEntries.ToList();
-                    Animes.ReplaceRange(_originalCollection);
+                    _originalCollection.AddRange(animes);
+                    Animes.AddRange(animes);
+
+                    return false;
                 }
-
             }
-            catch (Exception ex)
+            catch { }
+
+            return true;
+        }
+
+        private async Task<bool> LoadByGenreAsync()
+        {
+            await App.DelayRequest(4);
+
+            AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount++);
+
+            if (animeGenre != null)
             {
-                Console.WriteLine(ex.Message);
-                //TODO:capturar aqui possíveis erros de conexão
+                animeGenre.RequestCached = true;
+
+                IList<FavoritedAnime> favoritedSubEntries = animeGenre.Anime.ConvertAnimesToFavorited();
+
+                _originalCollection.AddRange(favoritedSubEntries);
+                Animes.AddRange(favoritedSubEntries);
+
+                return false;
+            }
+            else
+            {
+                RemainingAnimeCount = -1;
+                return true;
             }
         }
 
@@ -189,74 +227,71 @@ namespace ANT.Modules
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
         {
+            //TODO: fazer o teste com o semaphore https://docs.microsoft.com/pt-br/dotnet/standard/threading/semaphore-and-semaphoreslim
+            //para evitar chamadas paralelas a este método(não parece ser problema de sincronização mas da própria API, testar com semaphore mesmo assim
+            //se ainda acontecer testar com remoção de itens duplicados da lista original e observável de animes
 
 
-            if (_currentGenre == null || SearchQuery?.Length > 0 || RemainingAnimeCount < 0 || IsBusy)
-                return;
+            RemainingAnimeCount = -1;
+            IsBusy = true;
 
-            // semáforo, usado para permitir que somente um apanhado de thread/task passe por vez
-            //parece ser um lock melhorado
-            await loc.WaitAsync();
-
-            if (!_firstLoad)
-                IsLoadingOrRefreshing = IsBusy = true;
+            Console.WriteLine("Executou OnLoadMore");
+            bool hasFinishedLoading = false;
 
             try
             {
-                //TODO: conflitos no footer da collectionview, ele nunca esconde o activityindicator
-                //https://github.com/xamarin/Xamarin.Forms/issues/8700
-                // solução momentânea foi simular um footer de overlay com activity indicator, quando estiver corrigido, usar o footer
+                if (_currentGenre != null)
+                    hasFinishedLoading = await LoadByGenreAsync();
 
-                await Task.Delay(TimeSpan.FromSeconds(4));
-
-                AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount);
-
-                if (animeGenre != null)
-                {
-                    animeGenre.RequestCached = true;
-
-                    if (RemainingAnimeCount == 0)
-                        RemainingAnimeCount = animeGenre.TotalCount;
-
-                    var favoritedSubEntries = animeGenre.Anime.ConvertAnimesToFavoritedSubEntry();
-
-                    if (RemainingAnimeCount <= animeGenre.TotalCount)
-                        RemainingAnimeCount -= favoritedSubEntries.Count;
-
-                    if (_pageCount == 1)
-                    {
-                        _originalCollection = favoritedSubEntries.ToList();
-                        Animes.ReplaceRange(_originalCollection);
-                    }
-
-                    else if (_pageCount > 1)
-                    {
-                        _originalCollection.AddRange(favoritedSubEntries);
-                        Animes.AddRange(favoritedSubEntries);
-                    }
-
-                    if (RemainingAnimeCount == 0) // usado para desativar a chamada da collectionview para este método
-                    {
-                        RemainingAnimeCount = -1;
-                        return;
-                    }
-
-                    _pageCount++;
-                }
-
-                await Task.Delay(TimeSpan.FromSeconds(4));
+                else if (_currentGenre == null && _catalogueMode != null)
+                    hasFinishedLoading = await LoadGlobalCatalogueAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Problema encontrado: {ex.Message}, valor errado em : {RemainingAnimeCount}");
+                Console.WriteLine($"Erro encontrado em {ex.Message}");
             }
             finally
             {
-                Console.WriteLine($"Animes restantes: {RemainingAnimeCount}");
-                Console.WriteLine($"Animes da categoria {_currentGenre.Value} adicionados na lista : {Animes.Count}");
-                IsLoadingOrRefreshing = IsBusy = false;
-                _firstLoad = false;
-                loc.Release();
+                RemainingAnimeCount = 0;
+                IsBusy = false;
+
+                if (hasFinishedLoading)
+                    RemainingAnimeCount = -1;
+
+                try
+                {
+                    var dupeList = Animes.GroupBy(p => p.Anime.MalId).Where(p => p.Count() > 1).Select(p => p.First()).ToList();
+
+                    if (dupeList.Count > 0)
+                    {
+                        //TODO: duplicados tem aparecido quando o MAL tem tido problemas de servidor, investigar mais a fundo quand o MAL
+                        //estiver com problemas mínimos no servidor para descobrir se o problema é do lado deles ou da API jikan(se for do jikan, abrir uma issue)
+                        //os duplicados aparecem nos limites das páginas(anime no final da página e no começo)
+                        //https://github.com/JaoHundred/ANT/issues/35
+
+                        Console.WriteLine($"Animes duplicados {Environment.NewLine} ");
+
+                        foreach (var item in dupeList.Select((Anime, ID) => new { Anime.Anime.Title, Anime.Anime.MalId }))
+                            Console.WriteLine($"Anime : {item.Title} {Environment.NewLine} ID : {item.MalId}");
+
+                        Console.WriteLine("Remoção de duplicados");
+                        Animes.RemoveRange(dupeList);
+
+                        foreach (var item in dupeList)
+                        {
+                            var anime = _originalCollection.FirstOrDefault(p => p.Anime.MalId == item.Anime.MalId);
+
+                            if (anime != null)
+                                _originalCollection.Remove(anime);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ocorreu um erro no teste de duplicados {Environment.NewLine} {ex.Message}");
+                }
+
+                Console.WriteLine($"{Animes.Count} Animes na lista ");
             }
         }
 
@@ -284,17 +319,9 @@ namespace ANT.Modules
             {
                 var items = SelectedItems.Cast<FavoritedAnime>().ToList();
                 await NavigationManager.NavigatePopUpAsync<ProgressPopupViewModel>(items);
-            }
+            };
 
             SingleSelectionMode();
-        }
-
-        public ICommand RefreshCommand { get; private set; }
-        private async Task OnRefresh()
-        {
-            IsLoadingOrRefreshing = true;
-            await LoadCatalogueAsync();
-            IsLoadingOrRefreshing = IsRefreshing = false;
         }
 
         public ICommand ClearTextCommand { get; private set; }
@@ -307,6 +334,17 @@ namespace ANT.Modules
         public ICommand SearchCommand { get; private set; }
         private async Task OnSearch()
         {
+            //TODO: preparar a busca para o modo global, vai ser necessário retornar qualquer anime dentro da substring que o usuário inseriu na pesquisa
+            //checar antes se o anime já está carregado na lista, se estiver não precisa fazer requisição para o jikan, do contrário fazer a requisição e mostrar
+            // nos resultados, nesse caso retornar para a situação original antes da busca(o anime que veio por requisição e está agora nos resultados da busca deve
+            // sair também da propriedade observável de animes
+
+            if (SearchQuery?.Length > 0)
+                RemainingAnimeCount = -1;
+
+            else if (SearchQuery?.Length == 0)
+                RemainingAnimeCount = 0;
+
             var resultListTask = Task.Run(() =>
            {
                return _originalCollection.Where(anime => anime.Anime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant())).ToList();
@@ -332,6 +370,16 @@ namespace ANT.Modules
 
         #endregion
 
+        //TODO: o footer ainda não está se comportando conforme deveria
+
         //TODO: botão de filtro entre os 3 pontos e o campo de pesquisa(abrir um modal com opções de filtro)
+        //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 
+        //que seleciona os filtros e repassa para cá
+        /*
+         * .Where(
+            anime => anime.R18 == false &&
+            anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
+            )
+        */
     }
 }

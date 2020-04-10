@@ -13,6 +13,8 @@ using ANT.Core;
 using ANT.UTIL;
 using magno = MvvmHelpers.Commands;
 using ANT.Model;
+using System.Threading;
+using JikanDotNet.Exceptions;
 
 namespace ANT.Modules
 {
@@ -20,28 +22,33 @@ namespace ANT.Modules
     {
         public AnimeSpecsViewModel(long malId, Func<Task> func)
         {
+            _cancellationToken = new CancellationTokenSource();
             OtherViewModelFunc = func;
             InitializeTask = LoadAsync(malId);
-            InitCommands();
+            Init();
         }
 
         public AnimeSpecsViewModel(long malId)
         {
+            _cancellationToken = new CancellationTokenSource();
             InitializeTask = LoadAsync(malId);
-            InitCommands();
+            Init();
         }
 
-        private void InitCommands()
+        private void Init()
         {
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenLinkCommand = new magno.AsyncCommand<string>(OnLink);
             CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
             CheckAnimeCharactersCommand = new magno.AsyncCommand(OnCheckAnimeCharacters);
+            OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
+            BackButtonCommand = new magno.AsyncCommand<BackButtonOriginEnum>(OnBackButton);
         }
 
         public Task InitializeTask { get; }
         private FavoritedAnime _favoritedAnime;
         private Func<Task> OtherViewModelFunc;
+        private CancellationTokenSource _cancellationToken;
         public async Task LoadAsync(object param)
         {
             IsLoading = true;
@@ -57,13 +64,13 @@ namespace ANT.Modules
 
                 if (_favoritedAnime == null)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(4));
+                    await App.DelayRequest();
                     Anime anime = await App.Jikan.GetAnime(id);
                     anime.RequestCached = true;
 
                     IsLoadingEpisodes = true;
 
-                    _favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync());
+                    _favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancellationToken));
                 }
 
                 await AddOrUpdateRecentAnimeAsync(_favoritedAnime);
@@ -74,11 +81,89 @@ namespace ANT.Modules
                 IsLoading = false;
                 IsLoadingEpisodes = false;
                 CanEnable = true;
+
+                var groupedList = Task.Run(() =>
+                     {
+                         var relatedAnimes = new List<Model.RelatedAnime>();
+
+                         if (_favoritedAnime.Anime.Related.ParentStories != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.ParentStories
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Parent));
+
+                         if (_favoritedAnime.Anime.Related.Prequels != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Prequels
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Prequels));
+
+                         if (_favoritedAnime.Anime.Related.Sequels != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Sequels
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Sequels));
+
+                         if (_favoritedAnime.Anime.Related.SideStories != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SideStories
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.SideStory));
+
+                         if (_favoritedAnime.Anime.Related.SpinOffs != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SpinOffs
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.SpinOffs));
+
+                         if (_favoritedAnime.Anime.Related.Others != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Others
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Others));
+
+                         if (_favoritedAnime.Anime.Related.AlternativeVersions != null)
+                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.AlternativeVersions
+                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.AlternativeVersions));
+                         //TODO: por aqui todos os outros dados que estão dentro de Anime.Related
+
+                         _favoritedAnime.RelatedAnimes = relatedAnimes;
+
+                         var groupedRelatedAnime = new List<GroupedRelatedAnime>();
+                         foreach (var item in _favoritedAnime.RelatedAnimes.GroupBy(p => p.GroupName))
+                             groupedRelatedAnime.Add(new GroupedRelatedAnime(item.Key, item.ToList()));
+
+                         return groupedRelatedAnime;
+                     });
+
+                GroupedRelatedAnimeList = await groupedList;
+
+                await Task.Run(async () =>
+                {
+                    foreach (var group in GroupedRelatedAnimeList)
+                    {
+                        foreach (var relatedAnime in group)
+                        {
+                            foreach (var item in _favoritedAnime.RelatedAnimes)
+                            {
+                                if (relatedAnime.Anime.MalId == item.Anime.MalId)
+                                {
+                                    if (_cancellationToken.IsCancellationRequested)
+                                        _cancellationToken.Token.ThrowIfCancellationRequested();
+
+                                    await App.DelayRequest(4);
+                                    var anime = await App.Jikan.GetAnime(item.Anime.MalId);
+
+                                    relatedAnime.ImageURL = anime.ImageURL;
+                                }
+                            }
+                        }
+                    }
+                }, _cancellationToken.Token);
+            }
+            catch (JikanRequestException ex)
+            {
+                Console.WriteLine($"Problema encontrado em :{ex.Message}");
+                _cancellationToken.Cancel();
+            }
+            catch (OperationCanceledException ex)
+            {
+                Console.WriteLine($"Tasks canceladas {Environment.NewLine} " +
+                    $"{ex.Message}");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Problema encontrado em :{ex.Message}");
                 DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
+                _cancellationToken.Cancel();
             }
             finally
             {
@@ -122,6 +207,20 @@ namespace ANT.Modules
             get { return _episodes; }
             set { SetProperty(ref _episodes, value); }
         }
+
+        private Model.RelatedAnime _selectedAnime;
+        public Model.RelatedAnime SelectedAnime
+        {
+            get { return _selectedAnime; }
+            set { SetProperty(ref _selectedAnime, value); }
+        }
+
+        private List<GroupedRelatedAnime> _groupedRelatedAnimeList;
+        public List<GroupedRelatedAnime> GroupedRelatedAnimeList
+        {
+            get { return _groupedRelatedAnimeList; }
+            set { SetProperty(ref _groupedRelatedAnimeList, value); }
+        }
         #endregion
 
         #region commands
@@ -150,7 +249,7 @@ namespace ANT.Modules
 
             if (OtherViewModelFunc != null)
                 //atualiza a coleção observável de CatalogueViewModel
-               await OtherViewModelFunc.Invoke();
+                await OtherViewModelFunc.Invoke();
 
             await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             DependencyService.Get<IToast>().MakeToastMessageShort(lang);
@@ -188,12 +287,33 @@ namespace ANT.Modules
             if (canNavigate)
                 await NavigationManager.NavigatePopUpAsync<AnimeCharacterPopupViewModel>(AnimeContext.Anime.MalId);
         }
+
+        public ICommand OpenAnimeCommand { get; private set; }
+        private async Task OnOpenAnime()
+        {
+            if (IsNotBusy && SelectedAnime != null)
+            {
+                IsBusy = true;
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedAnime.Anime.MalId);
+                IsBusy = false;
+            }
+
+            SelectedAnime = null;
+        }
+
+        public ICommand BackButtonCommand { get; private set; }
+        private async Task OnBackButton(BackButtonOriginEnum origin)
+        {
+            _cancellationToken.Cancel();
+
+            if (origin == BackButtonOriginEnum.NavigationBar)
+                await NavigationManager.PopShellPageAsync();
+        }
         #endregion
 
         #region métodos VM
         private Task AddOrUpdateRecentAnimeAsync(FavoritedAnime recentFavoritedAnime)
         {
-            //TODO: devo precisar de um meio para atualizar a página de recentes(na hora que o usuário for voltar com o backbutton)
             return Task.Run(async () =>
             {
                 var favoritedSubEntry = App.RecentAnimes.FirstOrDefault(p => p.FavoritedAnime.Anime.MalId == recentFavoritedAnime.Anime.MalId);
@@ -214,13 +334,16 @@ namespace ANT.Modules
                         App.RecentAnimes.Add(new RecentVisualized(recentFavoritedAnime));
                 }
 
+                if (_cancellationToken.IsCancellationRequested)
+                    _cancellationToken.Token.ThrowIfCancellationRequested();
+
                 await JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
-            });
+
+            }, _cancellationToken.Token);
         }
         #endregion
 
         //TODO:descobrir como tirar a sombra/linha do navigation bar para esta página(deixar pro futuro)
-        //TODO: estilizar o template dos episódios, ver quais dados eu posso exibir a cerca dos episódios e ver o que mostrar
         //TODO: trocar de idioma via configurações do android nesta página resulta em uma exception de fragment, provavel de estar relacionado ao tabbedpage
     }
 }

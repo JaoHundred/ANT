@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Threading.Tasks;
 using ANT.Model;
+using System.Threading;
+using JikanDotNet.Exceptions;
 
 namespace ANT.UTIL
 {
@@ -44,16 +46,20 @@ namespace ANT.UTIL
         /// </summary>
         /// <param name="anime"></param>
         /// <returns></returns>
-        public static async Task<IList<AnimeEpisode>> GetAllEpisodesAsync(this Anime anime)
+        public static async Task<IList<AnimeEpisode>> GetAllEpisodesAsync(this Anime anime, CancellationTokenSource cancellationToken = null)
         {
-            await Task.Delay(TimeSpan.FromSeconds(4));
+            await App.DelayRequest(2);
             AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(anime.MalId);
 
             var episodeList = new List<AnimeEpisode>();
 
             for (int j = 0; j < episodes.EpisodesLastPage; j++)
             {
-                await Task.Delay(TimeSpan.FromSeconds(4));
+                await App.DelayRequest(4);
+
+                if (cancellationToken != null && cancellationToken.IsCancellationRequested)
+                    cancellationToken.Token.ThrowIfCancellationRequested();
+
                 var epiList = await App.Jikan.GetAnimeEpisodes(anime.MalId, j + 1);
 
                 episodeList.AddRange(epiList.EpisodeCollection);
@@ -62,7 +68,7 @@ namespace ANT.UTIL
             return episodeList;
         }
 
-        public static IList<FavoritedAnime> ConvertAnimesToFavoritedSubEntry(this ICollection<AnimeSubEntry> animeSubEntries)
+        public static IList<FavoritedAnime> ConvertAnimesToFavorited(this ICollection<AnimeSubEntry> animeSubEntries)
         {
             var animeSubs = animeSubEntries.ToList();
             var favoritedAnimeSubsEntries = new List<FavoritedAnime>();
@@ -70,7 +76,24 @@ namespace ANT.UTIL
             for (int i = 0; i < animeSubs.Count; i++)
             {
                 var anime = animeSubs[i];
-                var animeSub = new FavoritedAnime(anime);
+                var animeSub = new FavoritedAnime
+                {
+                    Anime = new Anime
+                    {
+                        MalId = anime.MalId,
+                        Title = anime.Title,
+                        ImageURL = anime.ImageURL,
+                        Genres = anime.Genres,
+                        LinkCanonical = anime.URL,
+                        Score = anime.Score,
+                        Aired = new TimePeriod()
+                        {
+                            From = anime.AiringStart,
+                        },
+                    },
+
+                IsR18 = anime.R18,
+            };
 
                 if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == anime.MalId))
                     animeSub.IsFavorited = true;
@@ -79,6 +102,42 @@ namespace ANT.UTIL
             }
 
             return favoritedAnimeSubsEntries;
+        }
+
+        public static IList<AnimeSubEntry> ConvertAnimeSearchEntryToAnimeSubEntry(this ICollection<AnimeSearchEntry> animeSearch)
+        {
+            var searchs = animeSearch.ToList();
+            var subs = new List<AnimeSubEntry>();
+
+            foreach (var search in searchs)
+            {
+                var sub = new AnimeSubEntry
+                {
+                    MalId = search.MalId,
+                    ImageURL = search.ImageURL,
+                    Title = search.Title,
+                    AiringStart = search.StartDate,
+                    Score = search.Score,
+                };
+
+                subs.Add(sub);
+            }
+
+            return subs;
+        }
+
+        public static IList<ANT.Model.RelatedAnime> ConvertMalSubItemToRelatedAnime(this ICollection<MALSubItem> subItems, string groupName)
+        {
+            var relatedAnimes = new List<ANT.Model.RelatedAnime>();
+
+            foreach (var item in subItems)
+            {
+                var related = new ANT.Model.RelatedAnime(item);
+                related.GroupName = groupName;
+                relatedAnimes.Add(related);
+            }
+
+            return relatedAnimes;
         }
     }
 }

@@ -27,18 +27,32 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
+            <Label Text="{res:Translate Catalogue}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
 
-            <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntryStyle}" Text="{Binding SearchQuery}" 
-                   IsEnabled="{Binding IsLoadingOrRefreshing, Converter={StaticResource InversorConverter}}">
-                <Entry.Behaviors>
-                    <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
-                </Entry.Behaviors>
-            </Entry>
+            <Grid Grid.ColumnSpan="2" x:Name="SearchControl" IsVisible="False">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntryStyle}" 
+                   Text="{Binding SearchQuery}" Unfocused="SearchFieldLostFocus" x:Name="EntrySearchField">
+                    <Entry.Behaviors>
+                        <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
 
-            <Label Grid.Column="1" Style="{StaticResource SearchCancelButtonStyle}"  
+                <Label Grid.Column="1" Style="{StaticResource SearchCancelButtonStyle}"  
                    IsVisible="{Binding SearchQuery, Converter={StaticResource EmptyTextToBoolConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearTextCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+            <Label Grid.Column="1" Style="{StaticResource SearchLabelStyle}" x:Name="SearchIconLabel"
+                   VerticalOptions="Center" Margin="0,0,2,0" TextColor="{DynamicResource TextTitleColor}">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ClearTextCommand}"/>
+                    <TapGestureRecognizer Tapped="SearchLabelTapped"/>
                 </Label.GestureRecognizers>
             </Label>
         </Grid>
@@ -55,68 +69,69 @@
     </ContentPage.ToolbarItems>
 
 
-    <Grid>
-        <RefreshView Command="{Binding RefreshCommand}" 
-                     IsRefreshing="{Binding IsRefreshing}" 
-                     IsEnabled="{Binding IsLoading, Converter={StaticResource InversorConverter}}">
+    <Grid Margin="0,3,0,3">
 
-            <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
+        <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                             SelectionChangedCommand="{Binding OpenAnimeCommand}"
                             RemainingItemsThreshold="{Binding RemainingAnimeCount}"
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
-                <CollectionView.EmptyView>
-                    <Grid>
-                        <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
-                    </Grid>
-                </CollectionView.EmptyView>
+            <CollectionView.EmptyView>
+                <Grid>
+                    <ActivityIndicator IsVisible="{Binding IsFirstLoading}" IsRunning="{Binding IsFirstLoading}"/>
+                </Grid>
+            </CollectionView.EmptyView>
 
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" 
+            <CollectionView.Footer>
+                <!--a presença de um footer também mantém os itens da lista nos tamanhos corretos(o fim dela)-->
+                <Label HeightRequest="50"/>
+            </CollectionView.Footer>
+
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" 
                                      Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
-                </CollectionView.ItemsLayout>
+            </CollectionView.ItemsLayout>
 
-                <CollectionView.ItemTemplate>
+            <CollectionView.ItemTemplate>
 
-                    <DataTemplate x:DataType="favo:FavoritedAnime">
-                        <Frame>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
+                <DataTemplate x:DataType="favo:FavoritedAnime">
+                    <Frame>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
 
-                                <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}" 
-                                                     DownsampleToViewSize="True"/>
+                            <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}"/>
 
-                                <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
-                                    <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
+                            <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
+                                <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
                                              IsVisible="{Binding IsFavorited}"/>
 
-                                    <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
+                                <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
                                            IsVisible="{Binding IsFavorited}"
                                            HorizontalOptions="Center" VerticalOptions="Center"/>
-                                </Grid>
+                            </Grid>
 
-                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
+                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
                                                    IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
 
-                                <Label Grid.Row="1" Text="{Binding Anime.Title}" 
+                            <Label Grid.Row="1" Text="{Binding Anime.Title}" 
                                        LineBreakMode="TailTruncation" MaxLines="1"
                                        Style="{StaticResource AnimeFrameLabelStyle}" />
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
 
-            </CollectionView>
-        </RefreshView>
-        <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="End" Margin="3"
+        </CollectionView>
+
+        <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="End" 
                            IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
 
         <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
-                Style="{StaticResource FavoriteRoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
+                Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
 
             <Button.ImageSource>
                 <FontImageSource FontFamily="{StaticResource FontIcon}"

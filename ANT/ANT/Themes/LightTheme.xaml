@@ -13,6 +13,9 @@
     <!--blackgray-->
     <Color x:Key="TextColor">#26292B</Color>
 
+    <!--cinza quase branco-->
+    <Color x:Key="TextTitleColor">#f6f6f6</Color>
+
     <!--azul violeta-->
     <Color x:Key="TextMenuColor">#4d4dff</Color>
 
@@ -51,7 +54,14 @@
 
     <!--escala de cinza misturado com amarelo-->
     <Color x:Key="FrameSeparatorColor">#978f87</Color>
-    
+
+    <!--verde saturado desbotado escuro-->
+    <Color x:Key="HeaderFrameColor">#5C8C75</Color>
+
+    <!--azul roxeado-->
+    <Color x:Key="CatalogueGridButtonLeftColor">#5E8EFF</Color>
+    <!--azul escuro saturado-->
+    <Color x:Key="CatalogueGridButtonRightColor">#4E74D3</Color>
 
     <!--#endregion-->
 

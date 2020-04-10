@@ -13,8 +13,7 @@
              x:Class="ANT.Modules.VoiceActorView"
             x:Name="Pageview"
             Shell.FlyoutBehavior="Disabled" 
-            IsEnabled="{Binding CanEnable}"
-            Title="{res:Translate VoiceActor}">
+            IsEnabled="{Binding CanEnable}">
 
     <TabbedPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate MAL}"
@@ -23,7 +22,19 @@
 
     <TabbedPage.Resources>
         <converter:InversorConverter x:Key="InversorConverter"/>
+        <converter:RemoveSpecifiedSubStringAndReturnNewLineConverter x:Key="NewLineConverter"/>
     </TabbedPage.Resources>
+
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="{res:Translate VoiceActor}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
+        </Grid>
+    </Shell.TitleView>
 
     <ContentPage Title="{res:Translate Details}">
         <Grid Margin="2,5,2,2"  RowSpacing="3">
@@ -35,12 +46,14 @@
                     </Grid.RowDefinitions>
 
                     <ScrollView Orientation="Horizontal">
-                        <Label  Text="{Binding PersonContext.Name}" HorizontalOptions="Center"
+                        <Label  Text="{Binding PersonContext.Name}" 
+                                HorizontalOptions="Center"
                                 Style="{StaticResource ContentTitleLabelStyle}" d:Text="Name"/>
                     </ScrollView>
 
                     <ScrollView Grid.Row="1" Orientation="Vertical" Margin="0,5,0,0">
-                        <Label Text="{Binding PersonContext.More}" Style="{StaticResource ContentBodyLabelStyle}" d:Text="About"/>
+                        <Label Text="{Binding PersonContext.More, Converter={StaticResource NewLineConverter}, ConverterParameter=\\n}" 
+                               Style="{StaticResource ContentBodyLabelStyle}" d:Text="About"/>
                     </ScrollView>
 
                     <ffimage:CachedImage Grid.Column="1" Grid.RowSpan="2" x:Name="ChImage" 
@@ -49,7 +62,7 @@
                                        IsVisible="{Binding IsLoading, Source={x:Reference ChImage}}"/>
                 </Grid>
             </Frame>
-            <Button Style="{StaticResource FavoriteRoundedButtonStyle}" Command="{Binding FavoriteCommand}" 
+            <Button Style="{StaticResource RoundedButtonStyle}" Command="{Binding FavoriteCommand}" 
                 HorizontalOptions="End" VerticalOptions="End" Margin="0,0,10,10"
                 IsVisible="{Binding IsLoading, Source={x:Reference ChImage}, Converter={StaticResource InversorConverter}}">
                 <Button.ImageSource>

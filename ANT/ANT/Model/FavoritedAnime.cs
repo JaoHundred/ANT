@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using JikanDotNet;
 using MvvmHelpers;
+using Newtonsoft.Json;
 
 namespace ANT.Model
 {
@@ -16,18 +17,7 @@ namespace ANT.Model
             Episodes = episodes;
         }
 
-        public FavoritedAnime(AnimeSubEntry anime)
-        {
-            Anime = new Anime
-            {
-                MalId = anime.MalId,
-                Title = anime.Title,
-                ImageURL = anime.ImageURL,
-            };
-        }
-
-        public FavoritedAnime()
-        {}
+        public FavoritedAnime(){ }
 
         private bool _isFavorited;
         public bool IsFavorited
@@ -38,6 +28,10 @@ namespace ANT.Model
 
         public Anime Anime { get; set; }
 
+        public bool? IsR18 { get; set; }
+
         public IList<AnimeEpisode> Episodes { get; set; }
+
+        public IList<RelatedAnime> RelatedAnimes { get; set; }
     }
 }

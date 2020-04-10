@@ -123,6 +123,9 @@
   <data name="Airing" xml:space="preserve">
     <value>Air Date</value>
   </data>
+  <data name="AlternativeVersions" xml:space="preserve">
+    <value>Alternative versions</value>
+  </data>
   <data name="Anime" xml:space="preserve">
     <value>Anime</value>
   </data>
@@ -204,6 +207,9 @@
   <data name="Genre" xml:space="preserve">
     <value>Genre</value>
   </data>
+  <data name="GlobalSearch" xml:space="preserve">
+    <value>Global search</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
@@ -231,11 +237,20 @@
   <data name="NothingForNow" xml:space="preserve">
     <value>Nothing for now</value>
   </data>
+  <data name="Others" xml:space="preserve">
+    <value>Others</value>
+  </data>
+  <data name="Parent" xml:space="preserve">
+    <value>Parent</value>
+  </data>
   <data name="Pictures" xml:space="preserve">
     <value>Pictures</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Please wait</value>
+  </data>
+  <data name="Prequels" xml:space="preserve">
+    <value>Prequels</value>
   </data>
   <data name="Rank" xml:space="preserve">
     <value>Rank</value>
@@ -245,6 +260,9 @@
   </data>
   <data name="Recents" xml:space="preserve">
     <value>Recently seen</value>
+  </data>
+  <data name="Related" xml:space="preserve">
+    <value>Related</value>
   </data>
   <data name="RemovedFromFavorite" xml:space="preserve">
     <value>Removed from favorites</value>
@@ -261,14 +279,26 @@
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>
+  <data name="Season" xml:space="preserve">
+    <value>Season</value>
+  </data>
   <data name="SelectAppLang" xml:space="preserve">
     <value>Select language</value>
   </data>
   <data name="SelectAppTheme" xml:space="preserve">
     <value>Select app theme</value>
   </data>
+  <data name="Sequels" xml:space="preserve">
+    <value>Sequels</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="SideStory" xml:space="preserve">
+    <value>Side story</value>
+  </data>
+  <data name="SpinOffs" xml:space="preserve">
+    <value>Spin offs</value>
   </data>
   <data name="Sundays" xml:space="preserve">
     <value>Sundays</value>

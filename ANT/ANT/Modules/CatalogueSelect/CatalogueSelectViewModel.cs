@@ -15,22 +15,23 @@ namespace ANT.Modules
     {
         public CatalogueSelectViewModel()
         {
-            OpenSeasonCatalogueCommand = new AsyncCommand(OnOpenSeasonCatalogue);
+            OpenCatalogueCommand = new AsyncCommand<CatalogueModeEnum>(OnOpenCatalogue);
         }
 
-
         #region comandos
-        public ICommand OpenSeasonCatalogueCommand { get; private set; }
-        private async Task OnOpenSeasonCatalogue()
+        public ICommand OpenCatalogueCommand { get; private set; }
+        private async Task OnOpenCatalogue(CatalogueModeEnum catalogueMode)
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(500)); // necessário para não atropelar a animação do botão
 
             if (IsNotBusy)
             {
                 IsBusy = true;
-                await NavigationManager.NavigateShellAsync<CatalogueViewModel>();
+                await NavigationManager.NavigateShellAsync<CatalogueViewModel>(catalogueMode);
                 IsBusy = false;
             }
         }
+
         #endregion
     }
 }

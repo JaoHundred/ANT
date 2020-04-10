@@ -123,6 +123,9 @@
   <data name="Airing" xml:space="preserve">
     <value>Estreia</value>
   </data>
+  <data name="AlternativeVersions" xml:space="preserve">
+    <value>Versões alternativas</value>
+  </data>
   <data name="Anime" xml:space="preserve">
     <value>Anime</value>
   </data>
@@ -204,6 +207,9 @@
   <data name="Genre" xml:space="preserve">
     <value>Gênero</value>
   </data>
+  <data name="GlobalSearch" xml:space="preserve">
+    <value>Pesquisa global</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Principal</value>
   </data>
@@ -231,11 +237,20 @@
   <data name="NothingForNow" xml:space="preserve">
     <value>Nada por enquanto</value>
   </data>
+  <data name="Others" xml:space="preserve">
+    <value>Outros</value>
+  </data>
+  <data name="Parent" xml:space="preserve">
+    <value>Principal</value>
+  </data>
   <data name="Pictures" xml:space="preserve">
     <value>Imagens</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Por favor, aguarde</value>
+  </data>
+  <data name="Prequels" xml:space="preserve">
+    <value>Anteriores</value>
   </data>
   <data name="Rank" xml:space="preserve">
     <value>Rank</value>
@@ -245,6 +260,9 @@
   </data>
   <data name="Recents" xml:space="preserve">
     <value>Visto recentemente</value>
+  </data>
+  <data name="Related" xml:space="preserve">
+    <value>Relacionados</value>
   </data>
   <data name="RemovedFromFavorite" xml:space="preserve">
     <value>Removido dos favoritos</value>
@@ -261,14 +279,26 @@
   <data name="Search" xml:space="preserve">
     <value>Pesquisar</value>
   </data>
+  <data name="Season" xml:space="preserve">
+    <value>Temporada</value>
+  </data>
   <data name="SelectAppLang" xml:space="preserve">
     <value>Selecione o idioma</value>
   </data>
   <data name="SelectAppTheme" xml:space="preserve">
     <value>Selecionar tema do aplicativo</value>
   </data>
+  <data name="Sequels" xml:space="preserve">
+    <value>Continuações</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>Configurações</value>
+  </data>
+  <data name="SideStory" xml:space="preserve">
+    <value>Paralelos</value>
+  </data>
+  <data name="SpinOffs" xml:space="preserve">
+    <value>Spin offs</value>
   </data>
   <data name="Sundays" xml:space="preserve">
     <value>Domingos</value>

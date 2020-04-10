@@ -1,4 +1,5 @@
-﻿using JikanDotNet;
+﻿using ANT.Core;
+using JikanDotNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;

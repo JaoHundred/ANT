@@ -7,6 +7,7 @@ using MvvmHelpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -20,6 +21,11 @@ namespace ANT
         public App()
         {
             InitializeComponent();
+
+            //Device.SetFlags(new[] {
+            //    "SwipeView_Experimental"
+            //});
+
             MainPage = new AppShell();
         }
 
@@ -60,6 +66,19 @@ namespace ANT
         protected override void OnResume()
         {
             // Handle when your app resumes
+        }
+
+        /// <summary>
+        /// Usado para acrescentar um tempo antes da chamada a API jikan, use para não floodar jikan com requisições
+        /// </summary>
+        /// <param name="seconds">usado para ajustar em segundos o tempo do delay, não usar tempo menor que 2 segundos</param>
+        /// <returns></returns>
+        public static Task DelayRequest(int seconds = 2)
+        {
+            if (seconds < 2)
+                throw new Exception("Usar tempo menor que 2 vai prejudicar a API jikan e o MAL");
+
+            return Task.Delay(TimeSpan.FromSeconds(seconds));
         }
 
     }
