@@ -172,10 +172,12 @@ namespace ANT.Modules
                 //TODO: o caminho parece ser pelo search anime já que ele me dá acesso a diversos filtros avançados
                 //mas na data de hoje 09/04/2020 o método não tem funcionado além da primeira página(ele retorna os mesmos 50 itens da primeira página)
                 //foi aberto uma issue para isso em https://github.com/Ervie/jikan.net/issues/12
+                //já foi respondido, aguardar para ver o que vai ser feito
 
                 //TODO: após a issue ser respondida, testar e verificar se as coisas estão carregando conforme devem(itens distintos de cada página)
 
                 AnimeSearchResult anime = await App.Jikan.SearchAnime("", _pageCount++, config);
+                
                 Console.WriteLine($"Page count {_pageCount}");
 
                 if (anime?.Results != null)
