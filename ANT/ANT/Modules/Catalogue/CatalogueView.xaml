@@ -14,7 +14,7 @@
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
              x:DataType="VM:CatalogueViewModel"
-             x:Name="_Page" >
+             x:Name="_Page">
 
     <ContentPage.Resources>
         <converter:InversorConverter x:Key="InversorConverter"/>
@@ -22,15 +22,16 @@
     </ContentPage.Resources>
 
     <Shell.TitleView>
-        <Grid>
+        <Grid ColumnSpacing="20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Label Text="{res:Translate Catalogue}" Style="{StaticResource NavigationBarTitleLabelStyle}"
                    x:Name="LabelTitle" />
 
-            <Grid Grid.ColumnSpan="2" x:Name="SearchControl" IsVisible="False">
+            <Grid Grid.ColumnSpan="3" x:Name="SearchControl" IsVisible="False">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="auto"/>
@@ -50,9 +51,15 @@
                 </Label>
             </Grid>
             <Label Grid.Column="1" Style="{StaticResource SearchLabelStyle}" x:Name="SearchIconLabel"
-                   VerticalOptions="Center" Margin="0,0,2,0" TextColor="{DynamicResource TextTitleColor}">
+                   VerticalOptions="Center" TextColor="{DynamicResource TextTitleColor}">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="SearchLabelTapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Grid.Column="2" x:Name="FilterControl" Style="{StaticResource FilterLabelStyle}"
+                   VerticalOptions="Center" TextColor="{DynamicResource TextTitleColor}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="FilterTapped"/>
                 </Label.GestureRecognizers>
             </Label>
         </Grid>
@@ -71,7 +78,7 @@
 
     <Grid Margin="0,3,0,3">
 
-        <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection"
+        <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection" 
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                             SelectionChangedCommand="{Binding OpenAnimeCommand}"
@@ -139,5 +146,13 @@
                                  Size="22" />
             </Button.ImageSource>
         </Button>
+
+        <Grid x:Name="SlideMenu" IsVisible="False" BackgroundColor="{DynamicResource AppBackgroundColor}">
+            <Label Text="X" VerticalOptions="Start" HorizontalOptions="End" FontSize="25" Margin="0,5,30,0">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="CloseSlideMenuTapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
     </Grid>
 </ContentPage>

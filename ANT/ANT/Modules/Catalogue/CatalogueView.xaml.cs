@@ -17,6 +17,8 @@ namespace ANT.Modules
             InitializeComponent();
         }
 
+        private bool _firstPageLoad = true;
+
         private async void FavoriteButton_AnimationOnIsVisible(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsVisible" && FavoriteButton.IsVisible)
@@ -27,6 +29,7 @@ namespace ANT.Modules
         {
             SearchControl.IsVisible = true;
             SearchIconLabel.IsVisible = false;
+            FilterControl.IsVisible = false;
             EntrySearchField.Focus();
 
             LabelTitle.IsVisible = false;
@@ -36,7 +39,29 @@ namespace ANT.Modules
         {
             SearchControl.IsVisible = false;
             SearchIconLabel.IsVisible = true;
+            FilterControl.IsVisible = true;
             LabelTitle.IsVisible = true;
         }
+
+        private async void CloseSlideMenuTapped(object sender, EventArgs e)
+        {
+            await SlideMenu.TranslateTo(_Page.Bounds.Right, 1, easing: Easing.Linear);
+        }
+
+        private async void FilterTapped(object sender, EventArgs e)
+        {
+            if (_firstPageLoad)
+            {
+                await SlideMenu.TranslateTo(_Page.Bounds.Right, 1, easing: Easing.Linear);
+                SlideMenu.IsVisible = true;
+            }
+
+            await SlideMenu.TranslateTo(_Page.Bounds.Left, 1, easing: Easing.Linear);
+            _firstPageLoad = false;
+        }
+
+        //TODO: escolher uma cor nova no modo claro e escuro para o e 
+        //personalizar o slidemenu(por checkboxes dos gêneros e um botão para confirmar mudanças e outro para resetar o padrão)
+
     }
 }

@@ -25,5 +25,6 @@
     <x:String x:Key="Delete">&#xE74D;</x:String>
     <x:String x:Key="SeasonCalendar">&#xE787;</x:String>
     <x:String x:Key="GlobalSearch">&#xF49A;</x:String>
-
+    <x:String x:Key="Filter">&#xE71C;</x:String>
+    
 </ResourceDictionary>
