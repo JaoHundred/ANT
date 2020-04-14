@@ -132,6 +132,9 @@
   <data name="Animeography" xml:space="preserve">
     <value>Animegrafia</value>
   </data>
+  <data name="ApplyFilter" xml:space="preserve">
+    <value>Aplicar filtro</value>
+  </data>
   <data name="At" xml:space="preserve">
     <value>às</value>
   </data>
@@ -267,6 +270,9 @@
   <data name="RemovedFromFavorite" xml:space="preserve">
     <value>Removido dos favoritos</value>
   </data>
+  <data name="ResetFilter" xml:space="preserve">
+    <value>Resetar filtro</value>
+  </data>
   <data name="Role" xml:space="preserve">
     <value>Papel</value>
   </data>
@@ -278,6 +284,9 @@
   </data>
   <data name="Search" xml:space="preserve">
     <value>Pesquisar</value>
+  </data>
+  <data name="SearchFilters" xml:space="preserve">
+    <value>Filtros de pesquisa</value>
   </data>
   <data name="Season" xml:space="preserve">
     <value>Temporada</value>

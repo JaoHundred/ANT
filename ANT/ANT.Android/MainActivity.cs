@@ -83,9 +83,13 @@ namespace ANT.Droid
                         Page currentpage = GetCurrentPage();
 
                         if (currentpage is AnimeSpecsView specsView)
+                        {
                             ((AnimeSpecsViewModel)specsView.BindingContext).BackButtonCommand.Execute(BackButtonOriginEnum.Hardware);
+                            await NavigationManager.PopShellPageAsync();
+                        }
 
-                        await NavigationManager.PopShellPageAsync();
+                        if (currentpage is CatalogueView catalogueView)
+                            ((CatalogueViewModel)catalogueView.BindingContext).BackButtonCommand.Execute(catalogueView);
                     }
 
                     else if (stackCount == 1 && route == _rootRoute) // estou na home

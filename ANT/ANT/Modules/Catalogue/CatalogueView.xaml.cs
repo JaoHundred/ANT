@@ -15,8 +15,13 @@ namespace ANT.Modules
         public CatalogueView()
         {
             InitializeComponent();
-        }
 
+            MessagingCenter.Subscribe<CatalogueViewModel>(this, "CloseFilterView",  (sender) => 
+            {
+                CloseSlideMenuTapped(null, null);
+            });
+        }
+        
         private bool _firstPageLoad = true;
 
         private async void FavoriteButton_AnimationOnIsVisible(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -60,8 +65,7 @@ namespace ANT.Modules
             _firstPageLoad = false;
         }
 
-        //TODO: escolher uma cor nova no modo claro e escuro para o e 
-        //personalizar o slidemenu(por checkboxes dos gêneros e um botão para confirmar mudanças e outro para resetar o padrão)
+        //TODO: escolher uma cor para a linha onde fica o título de "Search filters"
 
     }
 }

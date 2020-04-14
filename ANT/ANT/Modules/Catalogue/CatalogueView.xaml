@@ -8,8 +8,10 @@
              xmlns:animate="clr-namespace:Xamanimation;assembly=Xamanimation"
              xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:comm="clr-namespace:ANT._Behaviors"
+             xmlns:lang="clr-namespace:ANT.Lang"
              xmlns:favo="clr-namespace:ANT.Model"
              xmlns:VM="clr-namespace:ANT.Modules"
+             xmlns:back="clr-namespace:ANT.UTIL"
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
@@ -57,7 +59,8 @@
                 </Label.GestureRecognizers>
             </Label>
             <Label Grid.Column="2" x:Name="FilterControl" Style="{StaticResource FilterLabelStyle}"
-                   VerticalOptions="Center" TextColor="{DynamicResource TextTitleColor}">
+                   VerticalOptions="Center" TextColor="{DynamicResource TextTitleColor}"
+                   IsVisible="{Binding Loading, Converter={StaticResource InversorConverter}}">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="FilterTapped"/>
                 </Label.GestureRecognizers>
@@ -66,6 +69,11 @@
 
 
     </Shell.TitleView>
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackButtonCommand}"
+                            CommandParameter="{Binding ., Source={x:Reference _Page}}"/>
+    </Shell.BackButtonBehavior>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{res:Translate MultiSelect}" Command="{Binding SelectionModeCommand}" Order="Secondary">
@@ -86,7 +94,7 @@
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
             <CollectionView.EmptyView>
                 <Grid>
-                    <ActivityIndicator IsVisible="{Binding IsFirstLoading}" IsRunning="{Binding IsFirstLoading}"/>
+                    <ActivityIndicator IsVisible="{Binding Loading}" IsRunning="{Binding Loading}"/>
                 </Grid>
             </CollectionView.EmptyView>
 
@@ -147,12 +155,47 @@
             </Button.ImageSource>
         </Button>
 
-        <Grid x:Name="SlideMenu" IsVisible="False" BackgroundColor="{DynamicResource AppBackgroundColor}">
-            <Label Text="X" VerticalOptions="Start" HorizontalOptions="End" FontSize="25" Margin="0,5,30,0">
+        <Grid x:Name="SlideMenu" IsVisible="False" BackgroundColor="{DynamicResource AppBackgroundColor}"
+              RowSpacing="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Text="{res:Translate SearchFilters}" Grid.ColumnSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
+                   FontSize="Title"/>
+
+            <Label Text="X" HorizontalOptions="End" FontSize="25" Margin="0,5,30,0"
+                   Grid.ColumnSpan="2">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="CloseSlideMenuTapped"/>
                 </Label.GestureRecognizers>
             </Label>
+
+            <CollectionView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Genres}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="2"/>
+                </CollectionView.ItemsLayout>
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="favo:GenreData">
+                        <StackLayout Orientation="Horizontal">
+                            <StackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.GenreCheckedCommand, Source={x:Reference _Page}}"
+                                                      CommandParameter="{Binding .}"/>
+                            </StackLayout.GestureRecognizers>
+                            <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
+                            <Label Text="{Binding Genre}" VerticalOptions="Center"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Grid.Row="2" Text="{lang:Translate ApplyFilter}" Command="{Binding ApplyFilterCommand}"
+                    Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
+            <Button Grid.Row="2" Grid.Column="1" Text="{lang:Translate ResetFilter}"
+                    Command="{Binding ResetFilterCommand}" Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
         </Grid>
     </Grid>
 </ContentPage>

@@ -41,6 +41,13 @@ namespace ANT.Modules
         private void InitializeDefaultProperties()
         {
             _originalCollection = new List<FavoritedAnime>();
+
+            _animeSearchConfig = new AnimeSearchConfig()
+            {
+                OrderBy = AnimeSearchSortable.Score,
+                SortDirection = SortDirection.Descending,
+            };
+
             Animes = new ObservableRangeCollection<FavoritedAnime>();
 
             SelectionModeCommand = new magno.Command(OnSelectionMode);
@@ -49,6 +56,10 @@ namespace ANT.Modules
             SearchCommand = new magno.AsyncCommand(OnSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
+            GenreCheckedCommand = new magno.Command<GenreData>(OnGenreCheck);
+            ApplyFilterCommand = new magno.AsyncCommand(OnApplyFilter);
+            ResetFilterCommand = new magno.AsyncCommand(OnResetFilter);
+            BackButtonCommand = new magno.AsyncCommand<CatalogueView>(OnBackButton);
         }
 
         public Task NavigationFrom()
@@ -70,12 +81,14 @@ namespace ANT.Modules
         private int _pageCount = 1;
         private readonly CatalogueModeEnum? _catalogueMode;
         private readonly GenreSearch? _currentGenre;
+        private AnimeSearchConfig _animeSearchConfig;
 
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
         {
+            Loading = true;
 
-            IsFirstLoading = true;
+            Genres = ANT.UTIL.AnimeExtension.FillGenres(true); //TODO: deixar true por hora(até ver como vou integrar o sistema de
 
             if (SearchQuery?.Length > 0)
                 ClearTextQuery();
@@ -101,17 +114,19 @@ namespace ANT.Modules
                 }
             }
 
-            IsFirstLoading = false;
+            Loading = false;
         }
 
         #region proriedades
 
-        private bool _isFirstLoading;
-        public bool IsFirstLoading
+        private bool _loading;
+        public bool Loading
         {
-            get { return _isFirstLoading; }
-            set { SetProperty(ref _isFirstLoading, value); }
+            get { return _loading; }
+            set { SetProperty(ref _loading, value); }
         }
+
+        public IList<GenreData> Genres { get; set; }
 
         private FavoritedAnime _selectedItem;
         public FavoritedAnime SelectedItem
@@ -164,15 +179,10 @@ namespace ANT.Modules
 
             try
             {
-                var config = new AnimeSearchConfig
-                {
-                   OrderBy = AnimeSearchSortable.Title,
-                };
-
                 //TODO: https://github.com/JaoHundred/ANT/issues/32
 
-                AnimeSearchResult anime = await App.Jikan.SearchAnime(config, _pageCount++);
-                
+                AnimeSearchResult anime = await App.Jikan.SearchAnime(_animeSearchConfig, _pageCount++);
+
                 Console.WriteLine($"Page count {_pageCount}");
 
                 if (anime?.Results != null)
@@ -220,6 +230,13 @@ namespace ANT.Modules
         #endregion
 
         #region commands
+
+        public ICommand BackButtonCommand { get; private set; }
+        private async Task OnBackButton(CatalogueView catalogueView)
+        {
+            MessagingCenter.Unsubscribe<CatalogueViewModel>(catalogueView, "CloseFilterView");
+            await NavigationManager.PopShellPageAsync();
+        }
 
         public ICommand LoadMoreCommand { get; private set; }
         private async Task OnLoadMore()
@@ -353,7 +370,7 @@ namespace ANT.Modules
 
         bool _canNavigate = true;
         public ICommand OpenAnimeCommand { get; private set; }
-        public async Task OnOpenAnime()
+        private async Task OnOpenAnime()
         {
 
             if (!IsMultiSelect && SelectedItem != null && _canNavigate)
@@ -365,13 +382,78 @@ namespace ANT.Modules
             }
         }
 
+        public ICommand GenreCheckedCommand { get; private set; }
+        private void OnGenreCheck(GenreData genreData)
+        {
+            genreData.IsChecked = !genreData.IsChecked;
+        }
+
+        //TODO: os métodos de aplicar e resetar filtros ou o método de transladar a grid tem dado conflitos na carga da collectionview de animes
+        //se eu abro os filtros imediatamente após ter terminado de carregar os animes, existe uma chance deles não carregarem(e a coleção visual ter parte dela comida)
+        //ou podem carregar mas sem remover a coleção antiga, não tenho ideia de qual pode ser o problema, tentar mover as linhas de
+        // clear das coleções para depois do Loading = true e ver se resolve
+        public ICommand ApplyFilterCommand { get; private set; }
+        private async Task OnApplyFilter()
+        {
+            var checkedGenres = Genres.Where(p => p.IsChecked);
+            _animeSearchConfig.Genres = checkedGenres.Select(p => p.Genre).ToList();
+
+            MessagingCenter.Send(this, "CloseFilterView");
+            switch (_catalogueMode)
+            {
+                case CatalogueModeEnum.Season:
+                    //TODO: fazer o tratamento especial para a season(não vai ser requisitado nada para o jikan, vai apenas ser filtrado da lista que já existe)
+                    break;
+                case CatalogueModeEnum.Global:
+                    _pageCount = 1;
+                    ClearTextQuery();
+                    _originalCollection.Clear();
+                    Animes.Clear();
+                    Loading = true;
+                    await LoadGlobalCatalogueAsync();
+                    Loading = false;
+                    break;
+            }
+        }
+
+        public ICommand ResetFilterCommand { get; private set; }
+        private async Task OnResetFilter()
+        {
+            var checkeds = Genres.Where(p => p.IsChecked);
+
+            foreach (var item in checkeds)
+                item.IsChecked = false;
+
+            MessagingCenter.Send(this, "CloseFilterView");
+            switch (_catalogueMode)
+            {
+                case CatalogueModeEnum.Season:
+                    //TODO: fazer o tratamento especial para a season(não vai ser requisitado nada para o jikan, vai apenas ser filtrado da lista que já existe)
+                    break;
+                case CatalogueModeEnum.Global:
+
+                    _animeSearchConfig = new AnimeSearchConfig()
+                    {
+                        OrderBy = AnimeSearchSortable.Score,
+                        SortDirection = SortDirection.Descending,
+                    };
+
+                    _pageCount = 1;
+                    ClearTextQuery();
+                    _originalCollection.Clear();
+                    Animes.Clear();
+                    Loading = true;
+                    await LoadGlobalCatalogueAsync();
+                    Loading = false;
+                    break;
+            }
+        }
+
         #endregion
 
         //TODO: o footer ainda não está se comportando conforme deveria
 
-        //TODO: botão de filtro entre os 3 pontos e o campo de pesquisa(abrir um modal com opções de filtro)
-        //TODO: temporário criar meios de filtros especializados no futuro, possivelmente por uma outra view e viewmodel 
-        //que seleciona os filtros e repassa para cá
+        //TODO: os filtros no catálogo de season devem ser nesse formato abaixo(não fazem requisições via internet para jikan)
         /*
          * .Where(
             anime => anime.R18 == false &&

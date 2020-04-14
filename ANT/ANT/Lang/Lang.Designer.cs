@@ -106,6 +106,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply filter.
+        /// </summary>
+        public static string ApplyFilter {
+            get {
+                return ResourceManager.GetString("ApplyFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to at.
         /// </summary>
         public static string At {
@@ -511,6 +520,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset filter.
+        /// </summary>
+        public static string ResetFilter {
+            get {
+                return ResourceManager.GetString("ResetFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Role.
         /// </summary>
         public static string Role {
@@ -543,6 +561,15 @@ namespace ANT.Lang {
         public static string Search {
             get {
                 return ResourceManager.GetString("Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search filters.
+        /// </summary>
+        public static string SearchFilters {
+            get {
+                return ResourceManager.GetString("SearchFilters", resourceCulture);
             }
         }
         
