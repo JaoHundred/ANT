@@ -84,9 +84,8 @@
     </ContentPage.ToolbarItems>
 
 
-    <Grid Margin="0,3,0,3">
-
-        <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection" 
+    <Grid>
+        <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection" Margin="3,3,3,0"
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                             SelectionChangedCommand="{Binding OpenAnimeCommand}"
@@ -155,29 +154,37 @@
             </Button.ImageSource>
         </Button>
 
-        <Grid x:Name="SlideMenu" IsVisible="False" BackgroundColor="{DynamicResource AppBackgroundColor}"
-              RowSpacing="10">
+        <Grid x:Name="SlideMenu" BackgroundColor="{DynamicResource AppBackgroundColor}"
+              RowSpacing="10" TranslationY="{Binding Height, Source={x:Reference _Page}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
+            <BoxView Grid.ColumnSpan="2" BackgroundColor="{DynamicResource BoxViewFilterHeaderColor}"/>
             <Label Text="{res:Translate SearchFilters}" Grid.ColumnSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
                    FontSize="Title"/>
 
-            <Label Text="X" HorizontalOptions="End" FontSize="25" Margin="0,5,30,0"
-                   Grid.ColumnSpan="2">
-                <Label.GestureRecognizers>
+            <Grid Grid.ColumnSpan="2" HorizontalOptions="End" VerticalOptions="Center"
+                  Margin="0,0,0,10">
+                <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="CloseSlideMenuTapped"/>
-                </Label.GestureRecognizers>
-            </Label>
+                </Grid.GestureRecognizers>
+
+                <AbsoluteLayout>
+                    <BoxView BackgroundColor="{DynamicResource BoxViewFilterCloseBoxButtonColor}" HeightRequest="5"/>
+                    <BoxView BackgroundColor="{DynamicResource BoxViewFilterCloseBoxButtonColor}" CornerRadius="5"/>
+                </AbsoluteLayout>
+                
+                <Label Text="X" FontSize="25" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            </Grid>
 
             <CollectionView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Genres}">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="2"/>
                 </CollectionView.ItemsLayout>
-                
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="favo:GenreData">
                         <StackLayout Orientation="Horizontal">

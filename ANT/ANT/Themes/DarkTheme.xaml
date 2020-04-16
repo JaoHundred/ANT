@@ -65,6 +65,13 @@
     <!--azul escuro saturado escurecido-->
     <Color x:Key="CatalogueGridButtonRightColor">#4060AD</Color>
 
+    <!--azul petróleo desbotado-->
+    <Color x:Key="BoxViewFilterHeaderColor">#677072</Color>
+
+    <!--vermelho desbotado com saturação mediana-->
+    <Color x:Key="BoxViewFilterCloseBoxButtonColor">#D14949</Color>
+    
+
     <!--#endregion-->
 
 </ResourceDictionary>

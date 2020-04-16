@@ -88,7 +88,8 @@ namespace ANT.Modules
         {
             Loading = true;
 
-            Genres = ANT.UTIL.AnimeExtension.FillGenres(true); //TODO: deixar true por hora(até ver como vou integrar o sistema de
+            //TODO: deixar assim por hora até ver como vai ser a integração do sistema de escolha do usuário para o que ele não quer exibir
+            Genres = ANT.UTIL.AnimeExtension.FillGenres(showNSFWGenres: false); 
 
             if (SearchQuery?.Length > 0)
                 ClearTextQuery();
@@ -395,8 +396,7 @@ namespace ANT.Modules
         public ICommand ApplyFilterCommand { get; private set; }
         private async Task OnApplyFilter()
         {
-            var checkedGenres = Genres.Where(p => p.IsChecked);
-            _animeSearchConfig.Genres = checkedGenres.Select(p => p.Genre).ToList();
+            _animeSearchConfig.Genres = Genres.Where(p => p.IsChecked).Select(p => p.Genre).ToList();
 
             MessagingCenter.Send(this, "CloseFilterView");
             switch (_catalogueMode)
@@ -405,15 +405,21 @@ namespace ANT.Modules
                     //TODO: fazer o tratamento especial para a season(não vai ser requisitado nada para o jikan, vai apenas ser filtrado da lista que já existe)
                     break;
                 case CatalogueModeEnum.Global:
-                    _pageCount = 1;
-                    ClearTextQuery();
-                    _originalCollection.Clear();
-                    Animes.Clear();
-                    Loading = true;
-                    await LoadGlobalCatalogueAsync();
-                    Loading = false;
+                    await ResetAndLoadGlobalAsync();
                     break;
             }
+        }
+
+        private async Task ResetAndLoadGlobalAsync()
+        {
+            _originalCollection.Clear();
+            Animes.Clear();
+            _pageCount = 1;
+            ClearTextQuery();
+            RemainingAnimeCount = 0;
+            Loading = true;
+            await LoadGlobalCatalogueAsync();
+            Loading = false;
         }
 
         public ICommand ResetFilterCommand { get; private set; }
@@ -438,13 +444,8 @@ namespace ANT.Modules
                         SortDirection = SortDirection.Descending,
                     };
 
-                    _pageCount = 1;
-                    ClearTextQuery();
-                    _originalCollection.Clear();
-                    Animes.Clear();
-                    Loading = true;
-                    await LoadGlobalCatalogueAsync();
-                    Loading = false;
+                    await ResetAndLoadGlobalAsync();
+                    
                     break;
             }
         }

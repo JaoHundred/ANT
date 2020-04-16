@@ -92,8 +92,8 @@ namespace ANT.UTIL
                         },
                     },
 
-                IsR18 = anime.R18,
-            };
+                    IsR18 = anime.R18,
+                };
 
                 if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == anime.MalId))
                     animeSub.IsFavorited = true;
@@ -140,10 +140,9 @@ namespace ANT.UTIL
             return relatedAnimes;
         }
 
-        public static IList<GenreData> FillGenres(bool excludeSexualGenres = false)
+        public static IList<GenreData> FillGenres(bool showNSFWGenres = true)
         {
-            if(!excludeSexualGenres)
-                return new List<GenreData>
+            var genres = new List<GenreData>()
             {
                 new GenreData(GenreSearch.Action),
                 new GenreData(GenreSearch.Adventure),
@@ -192,50 +191,22 @@ namespace ANT.UTIL
                 new GenreData(GenreSearch.Yuri),
             };
 
-            else
-                return new List<GenreData>
+            if (!showNSFWGenres)
             {
-                new GenreData(GenreSearch.Action),
-                new GenreData(GenreSearch.Adventure),
-                new GenreData(GenreSearch.Cars),
-                new GenreData(GenreSearch.Comedy),
-                new GenreData(GenreSearch.Dementia),
-                new GenreData(GenreSearch.Demons),
-                new GenreData(GenreSearch.Drama),
-                new GenreData(GenreSearch.Fantasy),
-                new GenreData(GenreSearch.Game),
-                new GenreData(GenreSearch.GenderBender),
-                new GenreData(GenreSearch.Historical),
-                new GenreData(GenreSearch.Horror),
-                new GenreData(GenreSearch.Josei),
-                new GenreData(GenreSearch.Kids),
-                new GenreData(GenreSearch.Magic),
-                new GenreData(GenreSearch.MartialArts),
-                new GenreData(GenreSearch.Mecha),
-                new GenreData(GenreSearch.Military),
-                new GenreData(GenreSearch.Music),
-                new GenreData(GenreSearch.Mystery),
-                new GenreData(GenreSearch.Parody),
-                new GenreData(GenreSearch.Police),
-                new GenreData(GenreSearch.Psychological),
-                new GenreData(GenreSearch.Romance),
-                new GenreData(GenreSearch.Samurai),
-                new GenreData(GenreSearch.School),
-                new GenreData(GenreSearch.SciFi),
-                new GenreData(GenreSearch.Seinen),
-                new GenreData(GenreSearch.Shoujo),
-                new GenreData(GenreSearch.ShoujoAi),
-                new GenreData(GenreSearch.Shounen),
-                new GenreData(GenreSearch.ShounenAi),
-                new GenreData(GenreSearch.SliceOfLife),
-                new GenreData(GenreSearch.Space),
-                new GenreData(GenreSearch.Sports),
-                new GenreData(GenreSearch.Supernatural),
-                new GenreData(GenreSearch.SuperPower),
-                new GenreData(GenreSearch.Thriller),
-                new GenreData(GenreSearch.Vampire),
-            };
+                var toRemove = new List<GenreData>
+                {
+                    new GenreData(GenreSearch.Doujinshi),
+                    new GenreData(GenreSearch.Ecchi),
+                    new GenreData(GenreSearch.Harem),
+                    new GenreData(GenreSearch.Hentai),
+                    new GenreData(GenreSearch.Yaoi),
+                    new GenreData(GenreSearch.Yuri),
+                };
 
+                genres = genres.Except(toRemove, new EqualityGenreData()).ToList();
+            }
+
+            return genres;
         }
     }
 }

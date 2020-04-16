@@ -22,4 +22,20 @@ namespace ANT.Model
 
         public GenreSearch Genre { get; set; }
     }
+
+    public class EqualityGenreData : IEqualityComparer<GenreData>
+    {
+        public bool Equals(GenreData x, GenreData y)
+        {
+            return x.Genre == x.Genre;
+        }
+
+        public int GetHashCode(GenreData obj)
+        {
+            int hashCode = -193460375;
+            hashCode = hashCode * -1521134295 + obj.IsChecked.GetHashCode();
+            hashCode = hashCode * -1521134295 + obj.Genre.GetHashCode();
+            return hashCode;
+        }
+    }
 }

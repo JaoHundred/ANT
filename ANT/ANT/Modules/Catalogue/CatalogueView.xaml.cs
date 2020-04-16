@@ -16,13 +16,11 @@ namespace ANT.Modules
         {
             InitializeComponent();
 
-            MessagingCenter.Subscribe<CatalogueViewModel>(this, "CloseFilterView",  (sender) => 
-            {
-                CloseSlideMenuTapped(null, null);
-            });
+            MessagingCenter.Subscribe<CatalogueViewModel>(this, "CloseFilterView", (sender) =>
+           {
+               CloseSlideMenuTapped(null, null);
+           });
         }
-        
-        private bool _firstPageLoad = true;
 
         private async void FavoriteButton_AnimationOnIsVisible(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -50,19 +48,12 @@ namespace ANT.Modules
 
         private async void CloseSlideMenuTapped(object sender, EventArgs e)
         {
-            await SlideMenu.TranslateTo(_Page.Bounds.Right, 1, easing: Easing.Linear);
+            await SlideMenu.TranslateTo(0, _Page.Bounds.Bottom, easing: Easing.Linear);
         }
 
         private async void FilterTapped(object sender, EventArgs e)
         {
-            if (_firstPageLoad)
-            {
-                await SlideMenu.TranslateTo(_Page.Bounds.Right, 1, easing: Easing.Linear);
-                SlideMenu.IsVisible = true;
-            }
-
-            await SlideMenu.TranslateTo(_Page.Bounds.Left, 1, easing: Easing.Linear);
-            _firstPageLoad = false;
+            await SlideMenu.TranslateTo(0, _Page.Bounds.Top, easing: Easing.Linear);
         }
 
         //TODO: escolher uma cor para a linha onde fica o título de "Search filters"
