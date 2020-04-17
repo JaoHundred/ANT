@@ -55,8 +55,5 @@ namespace ANT.Modules
         {
             await SlideMenu.TranslateTo(0, _Page.Bounds.Top, easing: Easing.Linear);
         }
-
-        //TODO: escolher uma cor para a linha onde fica o título de "Search filters"
-
     }
 }

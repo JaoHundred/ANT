@@ -193,7 +193,7 @@
                                                       CommandParameter="{Binding .}"/>
                             </StackLayout.GestureRecognizers>
                             <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
-                            <Label Text="{Binding Genre}" VerticalOptions="Center"/>
+                            <Label Text="{Binding Genre}" VerticalTextAlignment="Center"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

@@ -82,14 +82,21 @@ namespace ANT.Droid
                     {
                         Page currentpage = GetCurrentPage();
 
-                        if (currentpage is AnimeSpecsView specsView)
+                        switch (currentpage)
                         {
-                            ((AnimeSpecsViewModel)specsView.BindingContext).BackButtonCommand.Execute(BackButtonOriginEnum.Hardware);
-                            await NavigationManager.PopShellPageAsync();
-                        }
+                            case AnimeSpecsView specsView:
+                                ((AnimeSpecsViewModel)specsView.BindingContext).BackButtonCommand.Execute(BackButtonOriginEnum.Hardware);
+                                await NavigationManager.PopShellPageAsync();
+                                break;
 
-                        if (currentpage is CatalogueView catalogueView)
-                            ((CatalogueViewModel)catalogueView.BindingContext).BackButtonCommand.Execute(catalogueView);
+                            case CatalogueView catalogueView:
+                                ((CatalogueViewModel)catalogueView.BindingContext).BackButtonCommand.Execute(catalogueView);
+                                break;
+
+                            default:
+                                await NavigationManager.PopShellPageAsync();
+                                break;
+                        }
                     }
 
                     else if (stackCount == 1 && route == _rootRoute) // estou na home
