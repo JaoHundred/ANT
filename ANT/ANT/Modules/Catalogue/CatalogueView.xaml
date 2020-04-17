@@ -180,7 +180,7 @@
                 <Label Text="X" FontSize="25" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             </Grid>
 
-            <CollectionView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Genres}">
+            <CollectionView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding FilterData.Genres}">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="2"/>
                 </CollectionView.ItemsLayout>

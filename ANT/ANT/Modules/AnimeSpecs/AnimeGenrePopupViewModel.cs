@@ -44,7 +44,7 @@ namespace ANT.Modules
             if (IsNotBusy)
             {
                 IsBusy = true;
-                string formatedString = await RemoveOcurrencesFromStringAsync(genreName, new char[] { '-', ' ' });
+                string formatedString = await genreName.RemoveOcurrencesFromStringAsync(new char[] { '-', ' ' });
                 GenreSearch genre = (GenreSearch)Enum.Parse(typeof(GenreSearch), formatedString, true);
 
                 await NavigationManager.PopPopUpPageAsync();
@@ -55,26 +55,5 @@ namespace ANT.Modules
             }
         }
         #endregion
-
-
-        //já que o trim não funcionava, fiz meu próprio formatador de string que remove caracteres escolhidos
-        private Task<string> RemoveOcurrencesFromStringAsync(string originalString, params char[] ocurrences)
-        {
-            return Task.Run(() =>
-            {
-                var builder = new StringBuilder();
-                string stringList = originalString;
-
-                for (int i = 0; i < stringList.Length; i++)
-                {
-                    char c = stringList[i];
-
-                    if (!ocurrences.Contains(c))
-                        builder.Append(c);
-                }
-
-                return builder.ToString();
-            });
-        }
     }
 }

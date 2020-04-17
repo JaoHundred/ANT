@@ -89,7 +89,10 @@ namespace ANT.Modules
             Loading = true;
 
             //TODO: deixar assim por hora até ver como vai ser a integração do sistema de escolha do usuário para o que ele não quer exibir
-            Genres = ANT.UTIL.AnimeExtension.FillGenres(showNSFWGenres: false); 
+            FilterData = new FilterData
+            {
+                Genres = ANT.UTIL.AnimeExtension.FillGenres(showNSFWGenres: false),
+            };
 
             if (SearchQuery?.Length > 0)
                 ClearTextQuery();
@@ -127,7 +130,7 @@ namespace ANT.Modules
             set { SetProperty(ref _loading, value); }
         }
 
-        public IList<GenreData> Genres { get; set; }
+        public FilterData FilterData { get; set; }
 
         private FavoritedAnime _selectedItem;
         public FavoritedAnime SelectedItem
@@ -143,6 +146,7 @@ namespace ANT.Modules
             set { SetProperty(ref _selectedItems, value); }
         }
 
+        private List<FavoritedAnime> _animesWithSpecifiedFilters;
         private List<FavoritedAnime> _originalCollection;
         private ObservableRangeCollection<FavoritedAnime> _animes;
         public ObservableRangeCollection<FavoritedAnime> Animes
@@ -207,6 +211,8 @@ namespace ANT.Modules
         {
             await App.DelayRequest(4);
 
+            //TODO: entradas por aqui de gêneros como super power são convertidas para supernatural(o valor não muda, mas o MAL me manda os gêneros errados pra esse tipo)
+            //ficar de olho e ver se é apenas mais um problema no MAL
             AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount++);
 
             if (animeGenre != null)
@@ -349,24 +355,48 @@ namespace ANT.Modules
         public ICommand SearchCommand { get; private set; }
         private async Task OnSearch()
         {
-            //TODO: preparar a busca para o modo global, vai ser necessário retornar qualquer anime dentro da substring que o usuário inseriu na pesquisa
-            //checar antes se o anime já está carregado na lista, se estiver não precisa fazer requisição para o jikan, do contrário fazer a requisição e mostrar
-            // nos resultados, nesse caso retornar para a situação original antes da busca(o anime que veio por requisição e está agora nos resultados da busca deve
-            // sair também da propriedade observável de animes
-
             if (SearchQuery?.Length > 0)
                 RemainingAnimeCount = -1;
 
-            else if (SearchQuery?.Length == 0)
+            else if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Season)
+                RemainingAnimeCount = -1;
+
+            else if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Global)
+                RemainingAnimeCount = 0;
+
+            else if (SearchQuery?.Length == 0 && _currentGenre != null)
                 RemainingAnimeCount = 0;
 
             var resultListTask = Task.Run(() =>
            {
-               return _originalCollection.Where(anime => anime.Anime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant())).ToList();
+               IList<FavoritedAnime> result = null;
+
+               switch (_catalogueMode)
+               {
+                   case CatalogueModeEnum.Season:
+
+                       if (_animesWithSpecifiedFilters != null)
+                           result = _animesWithSpecifiedFilters.Where(anime => anime.Anime.Title.ToLowerInvariant()
+                           .Contains(SearchQuery.ToLowerInvariant())).ToList();
+
+                       else
+                           result = _originalCollection.Where(anime => anime.Anime.Title.ToLowerInvariant()
+                           .Contains(SearchQuery.ToLowerInvariant())).ToList();
+
+                       break;
+
+                   case CatalogueModeEnum.Global:
+
+                       result = _originalCollection.Where(anime => anime.Anime.Title.ToLowerInvariant()
+                        .Contains(SearchQuery.ToLowerInvariant())).ToList();
+
+                       break;
+               }
+
+               return result;
            });
 
-            var resultList = await resultListTask;
-            Animes.ReplaceRange(resultList);
+            Animes.ReplaceRange(await resultListTask);
         }
 
         bool _canNavigate = true;
@@ -396,13 +426,33 @@ namespace ANT.Modules
         public ICommand ApplyFilterCommand { get; private set; }
         private async Task OnApplyFilter()
         {
-            _animeSearchConfig.Genres = Genres.Where(p => p.IsChecked).Select(p => p.Genre).ToList();
+            _animeSearchConfig.Genres = FilterData.Genres.Where(p => p.IsChecked).Select(p => p.Genre).ToList();
 
             MessagingCenter.Send(this, "CloseFilterView");
             switch (_catalogueMode)
             {
                 case CatalogueModeEnum.Season:
                     //TODO: fazer o tratamento especial para a season(não vai ser requisitado nada para o jikan, vai apenas ser filtrado da lista que já existe)
+                    Loading = true;
+
+                    _animesWithSpecifiedFilters = new List<FavoritedAnime>();
+                    foreach (FavoritedAnime favoritedAnime in _originalCollection)
+                    {
+                        bool hasAllGenres = false;
+
+                        hasAllGenres = await favoritedAnime.HasAllSpecifiedGenresAsync(_animeSearchConfig.Genres.ToArray());
+
+                        if (hasAllGenres)
+                            _animesWithSpecifiedFilters.Add(favoritedAnime);
+                    }
+
+                    if (_animeSearchConfig.Genres.Count > 0)
+                        Animes.ReplaceRange(_animesWithSpecifiedFilters);
+                    else
+                        Animes.ReplaceRange(_originalCollection);
+
+                    Loading = false;
+
                     break;
                 case CatalogueModeEnum.Global:
                     await ResetAndLoadGlobalAsync();
@@ -425,7 +475,7 @@ namespace ANT.Modules
         public ICommand ResetFilterCommand { get; private set; }
         private async Task OnResetFilter()
         {
-            var checkeds = Genres.Where(p => p.IsChecked);
+            var checkeds = FilterData.Genres.Where(p => p.IsChecked);
 
             foreach (var item in checkeds)
                 item.IsChecked = false;
@@ -434,8 +484,14 @@ namespace ANT.Modules
             switch (_catalogueMode)
             {
                 case CatalogueModeEnum.Season:
-                    //TODO: fazer o tratamento especial para a season(não vai ser requisitado nada para o jikan, vai apenas ser filtrado da lista que já existe)
+
+                    Loading = true;
+                    _animesWithSpecifiedFilters = null;
+                    Animes.ReplaceRange(_originalCollection);
+                    Loading = false;
+
                     break;
+
                 case CatalogueModeEnum.Global:
 
                     _animeSearchConfig = new AnimeSearchConfig()
@@ -445,7 +501,7 @@ namespace ANT.Modules
                     };
 
                     await ResetAndLoadGlobalAsync();
-                    
+
                     break;
             }
         }

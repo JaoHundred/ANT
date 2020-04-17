@@ -14,17 +14,12 @@ namespace ANT.UTIL
 {
     public static class AnimeExtension
     {
-        public static bool HasAllSpecifiedGenres(this AnimeSubEntry anime, params GenreSearch[] genres)
+        public static async Task<bool> HasAllSpecifiedGenresAsync(this FavoritedAnime favoriteAnime, params GenreSearch[] genres)
         {
             bool hasAllGenres = false;
-            foreach (var genre in genres)
-            {
-                string genreId = GetDescription(genre);
-                hasAllGenres = anime.Genres.Any(p => p.MalId == int.Parse(genreId));
 
-                if (!hasAllGenres)
-                    break;
-            }
+           //TODO: corrigir essa porra, fazer a interseção das listas pelos nomes de gênero após remover espaços, traços e caixa alta
+
             return hasAllGenres;
         }
 
@@ -150,12 +145,10 @@ namespace ANT.UTIL
                 new GenreData(GenreSearch.Comedy),
                 new GenreData(GenreSearch.Dementia),
                 new GenreData(GenreSearch.Demons),
-                new GenreData(GenreSearch.Doujinshi),
                 new GenreData(GenreSearch.Drama),
                 new GenreData(GenreSearch.Ecchi),
                 new GenreData(GenreSearch.Fantasy),
                 new GenreData(GenreSearch.Game),
-                new GenreData(GenreSearch.GenderBender),
                 new GenreData(GenreSearch.Harem),
                 new GenreData(GenreSearch.Hentai),
                 new GenreData(GenreSearch.Historical),
@@ -195,7 +188,6 @@ namespace ANT.UTIL
             {
                 var toRemove = new List<GenreData>
                 {
-                    new GenreData(GenreSearch.Doujinshi),
                     new GenreData(GenreSearch.Ecchi),
                     new GenreData(GenreSearch.Harem),
                     new GenreData(GenreSearch.Hentai),
