@@ -419,10 +419,6 @@ namespace ANT.Modules
             genreData.IsChecked = !genreData.IsChecked;
         }
 
-        //TODO: os métodos de aplicar e resetar filtros ou o método de transladar a grid tem dado conflitos na carga da collectionview de animes
-        //se eu abro os filtros imediatamente após ter terminado de carregar os animes, existe uma chance deles não carregarem(e a coleção visual ter parte dela comida)
-        //ou podem carregar mas sem remover a coleção antiga, não tenho ideia de qual pode ser o problema, tentar mover as linhas de
-        // clear das coleções para depois do Loading = true e ver se resolve
         public ICommand ApplyFilterCommand { get; private set; }
         private async Task OnApplyFilter()
         {
@@ -432,15 +428,13 @@ namespace ANT.Modules
             switch (_catalogueMode)
             {
                 case CatalogueModeEnum.Season:
-                    //TODO: fazer o tratamento especial para a season(não vai ser requisitado nada para o jikan, vai apenas ser filtrado da lista que já existe)
+                    
                     Loading = true;
 
                     _animesWithSpecifiedFilters = new List<FavoritedAnime>();
                     foreach (FavoritedAnime favoritedAnime in _originalCollection)
                     {
-                        bool hasAllGenres = false;
-
-                        hasAllGenres = await favoritedAnime.HasAllSpecifiedGenresAsync(_animeSearchConfig.Genres.ToArray());
+                        bool hasAllGenres = await favoritedAnime.HasAllSpecifiedGenresAsync(_animeSearchConfig.Genres.ToArray());
 
                         if (hasAllGenres)
                             _animesWithSpecifiedFilters.Add(favoritedAnime);

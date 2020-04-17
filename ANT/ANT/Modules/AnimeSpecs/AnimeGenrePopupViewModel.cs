@@ -44,7 +44,7 @@ namespace ANT.Modules
             if (IsNotBusy)
             {
                 IsBusy = true;
-                string formatedString = await genreName.RemoveOcurrencesFromStringAsync(new char[] { '-', ' ' });
+                string formatedString = genreName.RemoveOcurrencesFromString(new char[] { '-', ' ' });
                 GenreSearch genre = (GenreSearch)Enum.Parse(typeof(GenreSearch), formatedString, true);
 
                 await NavigationManager.PopPopUpPageAsync();

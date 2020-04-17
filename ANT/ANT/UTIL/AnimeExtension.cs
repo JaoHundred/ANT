@@ -14,13 +14,22 @@ namespace ANT.UTIL
 {
     public static class AnimeExtension
     {
-        public static async Task<bool> HasAllSpecifiedGenresAsync(this FavoritedAnime favoriteAnime, params GenreSearch[] genres)
+        public static Task<bool> HasAllSpecifiedGenresAsync(this FavoritedAnime favoriteAnime, params GenreSearch[] genres)
         {
-            bool hasAllGenres = false;
+            return Task.Run(() =>
+            {
+                List<bool> hasAllGenres = new List<bool>();
 
-           //TODO: corrigir essa porra, fazer a interseção das listas pelos nomes de gênero após remover espaços, traços e caixa alta
+                foreach (var genre in genres)
+                {
+                    bool result = favoriteAnime.Anime.Genres.Any(p => p.Name.ToLowerInvariant().RemoveOcurrencesFromString(new[] { '-', ' ' })
+                     == genre.ToString().ToLowerInvariant().RemoveOcurrencesFromString(new[] { '-', ' ' }));
 
-            return hasAllGenres;
+                    hasAllGenres.Add(result);
+                }
+
+                return !hasAllGenres.Any(p => p == false);
+            });
         }
 
         public static string GetDescription(Enum value)
