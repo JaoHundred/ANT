@@ -70,10 +70,7 @@ namespace ANT.Modules
                 {
                     var favorited = App.FavoritedAnimes.FirstOrDefault(p => p.Anime.MalId == observableAnime.Anime.MalId);
 
-                    if (favorited != null)
-                        Device.BeginInvokeOnMainThread(() => { observableAnime.IsFavorited = true; });
-                    else
-                        Device.BeginInvokeOnMainThread(() => { observableAnime.IsFavorited = false; });
+                    observableAnime.IsFavorited = favorited != null;
                 }
             });
         }
@@ -428,7 +425,7 @@ namespace ANT.Modules
             switch (_catalogueMode)
             {
                 case CatalogueModeEnum.Season:
-                    
+
                     Loading = true;
 
                     _animesWithSpecifiedFilters = new List<FavoritedAnime>();
