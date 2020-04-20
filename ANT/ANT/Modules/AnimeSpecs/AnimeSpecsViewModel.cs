@@ -61,70 +61,72 @@ namespace ANT.Modules
                 //TODO: criar no futuro uma rotina de checagem por atualizações dos animes alvos em favoritos(algo semelhante ao tachiyomi
                 //pode acontecer todo dia, semanalmente ou até mesmo no dia específico de cada anime), a rotina é chamada como background e atualiza
                 //a lista com dados novos se houver
-
+                
                 if (_favoritedAnime == null)
                 {
                     await App.DelayRequest();
-                    Anime anime = await App.Jikan.GetAnime(id);
+                   var anime = await App.Jikan.GetAnime(id);
                     anime.RequestCached = true;
 
-                    IsLoadingEpisodes = true;
-
-                    _favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancellationToken));
+                    _favoritedAnime = new FavoritedAnime(anime );
                 }
 
                 await AddOrUpdateRecentAnimeAsync(_favoritedAnime);
-
-                Episodes = _favoritedAnime.Episodes;
                 AnimeContext = _favoritedAnime;
-
-                IsLoading = false;
-                IsLoadingEpisodes = false;
                 CanEnable = true;
+                IsLoading = false;
 
                 var groupedList = Task.Run(() =>
-                     {
-                         var relatedAnimes = new List<Model.RelatedAnime>();
+                {
+                    var relatedAnimes = new List<Model.RelatedAnime>();
 
-                         if (_favoritedAnime.Anime.Related.ParentStories != null)
-                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.ParentStories
-                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Parent));
+                    if (_favoritedAnime.Anime.Related.ParentStories != null)
+                        relatedAnimes.AddRange(_favoritedAnime.Anime.Related.ParentStories
+                            .ConvertMalSubItemToRelatedAnime(Lang.Lang.Parent));
 
-                         if (_favoritedAnime.Anime.Related.Prequels != null)
-                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Prequels
-                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Prequels));
+                    if (_favoritedAnime.Anime.Related.Prequels != null)
+                        relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Prequels
+                            .ConvertMalSubItemToRelatedAnime(Lang.Lang.Prequels));
 
-                         if (_favoritedAnime.Anime.Related.Sequels != null)
-                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Sequels
-                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Sequels));
+                    if (_favoritedAnime.Anime.Related.Sequels != null)
+                        relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Sequels
+                            .ConvertMalSubItemToRelatedAnime(Lang.Lang.Sequels));
 
-                         if (_favoritedAnime.Anime.Related.SideStories != null)
-                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SideStories
-                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.SideStory));
+                    if (_favoritedAnime.Anime.Related.SideStories != null)
+                        relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SideStories
+                            .ConvertMalSubItemToRelatedAnime(Lang.Lang.SideStory));
 
-                         if (_favoritedAnime.Anime.Related.SpinOffs != null)
-                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SpinOffs
-                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.SpinOffs));
+                    if (_favoritedAnime.Anime.Related.SpinOffs != null)
+                        relatedAnimes.AddRange(_favoritedAnime.Anime.Related.SpinOffs
+                            .ConvertMalSubItemToRelatedAnime(Lang.Lang.SpinOffs));
 
-                         if (_favoritedAnime.Anime.Related.Others != null)
-                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Others
-                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.Others));
+                    if (_favoritedAnime.Anime.Related.Others != null)
+                        relatedAnimes.AddRange(_favoritedAnime.Anime.Related.Others
+                            .ConvertMalSubItemToRelatedAnime(Lang.Lang.Others));
 
-                         if (_favoritedAnime.Anime.Related.AlternativeVersions != null)
-                             relatedAnimes.AddRange(_favoritedAnime.Anime.Related.AlternativeVersions
-                                 .ConvertMalSubItemToRelatedAnime(Lang.Lang.AlternativeVersions));
-                         //TODO: por aqui todos os outros dados que estão dentro de Anime.Related
+                    if (_favoritedAnime.Anime.Related.AlternativeVersions != null)
+                        relatedAnimes.AddRange(_favoritedAnime.Anime.Related.AlternativeVersions
+                            .ConvertMalSubItemToRelatedAnime(Lang.Lang.AlternativeVersions));
+                    //TODO: por aqui todos os outros dados que estão dentro de Anime.Related
 
-                         _favoritedAnime.RelatedAnimes = relatedAnimes;
+                    _favoritedAnime.RelatedAnimes = relatedAnimes;
 
-                         var groupedRelatedAnime = new List<GroupedRelatedAnime>();
-                         foreach (var item in _favoritedAnime.RelatedAnimes.GroupBy(p => p.GroupName))
-                             groupedRelatedAnime.Add(new GroupedRelatedAnime(item.Key, item.ToList()));
+                    var groupedRelatedAnime = new List<GroupedRelatedAnime>();
+                    foreach (var item in _favoritedAnime.RelatedAnimes.GroupBy(p => p.GroupName))
+                        groupedRelatedAnime.Add(new GroupedRelatedAnime(item.Key, item.ToList()));
 
-                         return groupedRelatedAnime;
-                     });
-
+                    return groupedRelatedAnime;
+                });
                 GroupedRelatedAnimeList = await groupedList;
+
+                if (_favoritedAnime.Episodes == null)
+                {
+                    IsLoadingEpisodes = true;
+                    _favoritedAnime.Episodes = await _favoritedAnime.Anime.GetAllEpisodesAsync(_cancellationToken);
+                }
+
+                Episodes = _favoritedAnime.Episodes;
+                IsLoadingEpisodes = false;
 
                 await Task.Run(async () =>
                 {

@@ -17,6 +17,11 @@ namespace ANT.Model
             Episodes = episodes;
         }
 
+        public FavoritedAnime(Anime anime)
+        {
+            Anime = anime;
+        }
+
         public FavoritedAnime(){ }
 
         private bool _isFavorited;
