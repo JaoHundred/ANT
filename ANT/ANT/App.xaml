@@ -36,6 +36,10 @@
                 <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
             </Style>
 
+            <Style TargetType="RadioButton">
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
+            </Style>
+
             <Style TargetType="ActivityIndicator">
                 <Setter Property="Color" Value="{DynamicResource ProgressIndicatorColor}"/>
                 <Setter Property="HorizontalOptions" Value="Center"/>

@@ -135,6 +135,9 @@
   <data name="ApplyFilter" xml:space="preserve">
     <value>Aplicar filtro</value>
   </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>Crescente</value>
+  </data>
   <data name="At" xml:space="preserve">
     <value>às</value>
   </data>
@@ -179,6 +182,9 @@
   </data>
   <data name="Confirm" xml:space="preserve">
     <value>Confirmar</value>
+  </data>
+  <data name="Descending" xml:space="preserve">
+    <value>Decrescente</value>
   </data>
   <data name="Deselect" xml:space="preserve">
     <value>Tirar seleção</value>
