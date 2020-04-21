@@ -21,6 +21,7 @@
     <ContentPage.Resources>
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
+        <converter:GenreEnumToSeparateWordConverter x:Key="GenreToStringConverter"/>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -193,7 +194,7 @@
                                                       CommandParameter="{Binding .}"/>
                             </StackLayout.GestureRecognizers>
                             <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
-                            <Label Text="{Binding Genre}" VerticalTextAlignment="Center"/>
+                            <Label Text="{Binding Genre, Converter={StaticResource GenreToStringConverter}}" VerticalTextAlignment="Center"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
