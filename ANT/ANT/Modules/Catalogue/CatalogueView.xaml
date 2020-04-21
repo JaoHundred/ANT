@@ -8,7 +8,6 @@
              xmlns:animate="clr-namespace:Xamanimation;assembly=Xamanimation"
              xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:comm="clr-namespace:ANT._Behaviors"
-             xmlns:lang="clr-namespace:ANT.Lang"
              xmlns:favo="clr-namespace:ANT.Model"
              xmlns:VM="clr-namespace:ANT.Modules"
              xmlns:back="clr-namespace:ANT.UTIL"
@@ -159,7 +158,9 @@
               RowSpacing="10" TranslationY="{Binding Height, Source={x:Reference _Page}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
-                <RowDefinition/>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
@@ -177,11 +178,43 @@
                     <BoxView BackgroundColor="{DynamicResource BoxViewFilterCloseBoxButtonColor}" HeightRequest="5"/>
                     <BoxView BackgroundColor="{DynamicResource BoxViewFilterCloseBoxButtonColor}" CornerRadius="5"/>
                 </AbsoluteLayout>
-                
+
                 <Label Text="X" FontSize="25" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             </Grid>
 
-            <CollectionView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding FilterData.Genres}">
+            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="5">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Text="{res:Translate SortOrder}" FontSize="Subtitle"/>
+                <RadioButton Grid.Row="1" Text="{res:Translate Descending}" GroupName="SortDirection" IsChecked="True"
+                             Command="{Binding SelectSortDirectionCommand}" CommandParameter="{Binding IsChecked, Source={x:RelativeSource Mode=Self} }"/>
+                <RadioButton Grid.Row="2"  Text="{res:Translate Ascending}" GroupName="SortDirection" 
+                             Command="{Binding SelectSortDirectionCommand}" CommandParameter="{Binding IsChecked, Source={x:RelativeSource Mode=Self} }"/>
+
+                <Label Grid.Row="3" Text="{res:Translate TypeOfSort}" FontSize="Subtitle"/>
+                <CollectionView Grid.Row="4" Grid.ColumnSpan="2" ItemsSource="{Binding FilterData.Orders}" >
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Span="2" Orientation="Vertical"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="favo:OrderData">
+                            <RadioButton Text="{Binding OrderBy}" GroupName="SearchSortable" IsChecked="{Binding IsChecked}"
+                                         Command="{Binding BindingContext.SelectSortTypeCommand, Source={x:Reference _Page}}"
+                                         CommandParameter="{Binding .}"/>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+
+            <Label Grid.Row="2" Text="{res:Translate Genres}" FontSize="Subtitle" Margin="5,0,0,0"/>
+
+            <CollectionView Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding FilterData.Genres}">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="2"/>
                 </CollectionView.ItemsLayout>
@@ -200,9 +233,9 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Button Grid.Row="2" Text="{lang:Translate ApplyFilter}" Command="{Binding ApplyFilterCommand}"
+            <Button Grid.Row="4" Text="{res:Translate ApplyFilter}" Command="{Binding ApplyFilterCommand}"
                     Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
-            <Button Grid.Row="2" Grid.Column="1" Text="{lang:Translate ResetFilter}"
+            <Button Grid.Row="4" Grid.Column="1" Text="{res:Translate ResetFilter}"
                     Command="{Binding ResetFilterCommand}" Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
         </Grid>
     </Grid>

@@ -209,5 +209,16 @@ namespace ANT.UTIL
 
             return genres;
         }
+
+        public static IList<OrderData> FillOrderData()
+        {
+            return new List<OrderData> 
+            {
+               new OrderData( AnimeSearchSortable.Score, true),
+               new OrderData( AnimeSearchSortable.Title),
+               new OrderData( AnimeSearchSortable.StartDate),
+               new OrderData( AnimeSearchSortable.EndDate),
+            };
+        }
     }
 }

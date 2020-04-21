@@ -48,6 +48,10 @@
                 <Setter Property="WidthRequest" Value="50"/>
             </Style>
 
+            <Style TargetType="CollectionView">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+            </Style>
+
             <Style TargetType="RefreshView">
                 <Setter Property="RefreshColor" Value="{DynamicResource ProgressIndicatorColor}"/>
                 <Setter Property="BackgroundColor" Value="WhiteSmoke"/>

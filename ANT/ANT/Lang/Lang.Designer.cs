@@ -358,6 +358,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Genres.
+        /// </summary>
+        public static string Genres {
+            get {
+                return ResourceManager.GetString("Genres", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Global search.
         /// </summary>
         public static string GlobalSearch {
@@ -646,6 +655,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sort order.
+        /// </summary>
+        public static string SortOrder {
+            get {
+                return ResourceManager.GetString("SortOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spin offs.
         /// </summary>
         public static string SpinOffs {
@@ -687,6 +705,15 @@ namespace ANT.Lang {
         public static string Tuesdays {
             get {
                 return ResourceManager.GetString("Tuesdays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type of sort.
+        /// </summary>
+        public static string TypeOfSort {
+            get {
+                return ResourceManager.GetString("TypeOfSort", resourceCulture);
             }
         }
         

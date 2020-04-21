@@ -216,6 +216,9 @@
   <data name="Genre" xml:space="preserve">
     <value>Genre</value>
   </data>
+  <data name="Genres" xml:space="preserve">
+    <value>Genres</value>
+  </data>
   <data name="GlobalSearch" xml:space="preserve">
     <value>Global search</value>
   </data>
@@ -312,6 +315,9 @@
   <data name="SideStory" xml:space="preserve">
     <value>Side story</value>
   </data>
+  <data name="SortOrder" xml:space="preserve">
+    <value>Sort order</value>
+  </data>
   <data name="SpinOffs" xml:space="preserve">
     <value>Spin offs</value>
   </data>
@@ -326,6 +332,9 @@
   </data>
   <data name="Tuesdays" xml:space="preserve">
     <value>Tuesdays</value>
+  </data>
+  <data name="TypeOfSort" xml:space="preserve">
+    <value>Type of sort</value>
   </data>
   <data name="UnknownDate" xml:space="preserve">
     <value>Unknown broadcast</value>
