@@ -9,6 +9,7 @@
              xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:comm="clr-namespace:ANT._Behaviors"
              xmlns:favo="clr-namespace:ANT.Model"
+             xmlns:ji="clr-namespace:JikanDotNet;assembly=JikanDotNet"
              xmlns:VM="clr-namespace:ANT.Modules"
              xmlns:back="clr-namespace:ANT.UTIL"
              mc:Ignorable="d"
@@ -21,6 +22,7 @@
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
         <converter:GenreEnumToSeparateWordConverter x:Key="GenreToStringConverter"/>
+        <converter:TranslateEnumConverter x:Key="TranslateEnumConverter"/>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -186,19 +188,27 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition />
                     <RowDefinition Height="auto"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="{res:Translate SortOrder}" FontSize="Subtitle"/>
-                <RadioButton Grid.Row="1" Text="{res:Translate Descending}" GroupName="SortDirection" IsChecked="True"
-                             Command="{Binding SelectSortDirectionCommand}" CommandParameter="{Binding IsChecked, Source={x:RelativeSource Mode=Self} }"/>
-                <RadioButton Grid.Row="2"  Text="{res:Translate Ascending}" GroupName="SortDirection" 
-                             Command="{Binding SelectSortDirectionCommand}" CommandParameter="{Binding IsChecked, Source={x:RelativeSource Mode=Self} }"/>
+                <CollectionView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding FilterData.SortDirections}">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="95"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="favo:SortDirectionData">
+                            <RadioButton Grid.Row="1" Text="{Binding SortDirection, Converter={StaticResource TranslateEnumConverter}}" 
+                                         GroupName="SortDirection" IsChecked="{Binding IsChecked}"
+                                         Command="{Binding BindingContext.SelectSortDirectionCommand, Source={x:Reference _Page}}"
+                                         CommandParameter="{Binding .}"/>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-                <Label Grid.Row="3" Text="{res:Translate TypeOfSort}" FontSize="Subtitle"/>
-                <CollectionView Grid.Row="4" Grid.ColumnSpan="2" ItemsSource="{Binding FilterData.Orders}" >
+                <Label Grid.Row="2" Text="{res:Translate TypeOfSort}" FontSize="Subtitle"/>
+                <CollectionView Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding FilterData.Orders}" >
                     <CollectionView.ItemsLayout>
                         <GridItemsLayout Span="2" Orientation="Vertical"/>
                     </CollectionView.ItemsLayout>

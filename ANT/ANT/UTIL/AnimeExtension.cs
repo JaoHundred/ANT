@@ -220,5 +220,14 @@ namespace ANT.UTIL
                new OrderData( AnimeSearchSortable.EndDate),
             };
         }
+
+        public static IList<SortDirectionData> FillSortDirectionData()
+        {
+            return new List<SortDirectionData>
+            {
+                new SortDirectionData(SortDirection.Descending, true),
+                new SortDirectionData(SortDirection.Ascending),
+            };
+        }
     }
 }

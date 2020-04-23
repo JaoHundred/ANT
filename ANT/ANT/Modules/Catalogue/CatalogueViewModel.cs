@@ -60,7 +60,7 @@ namespace ANT.Modules
             ApplyFilterCommand = new magno.AsyncCommand(OnApplyFilter);
             ResetFilterCommand = new magno.AsyncCommand(OnResetFilter);
             BackButtonCommand = new magno.AsyncCommand<CatalogueView>(OnBackButton);
-            SelectSortDirectionCommand = new magno.Command<bool>(OnChangeSortDirection);
+            SelectSortDirectionCommand = new magno.Command<SortDirectionData>(OnChangeSortDirection);
             SelectSortTypeCommand = new magno.Command<OrderData>(OnSelectSortType);
         }
 
@@ -91,6 +91,7 @@ namespace ANT.Modules
             FilterData = new FilterData
             {
                 Genres = ANT.UTIL.AnimeExtension.FillGenres(showNSFWGenres: false),
+                SortDirections = UTIL.AnimeExtension.FillSortDirectionData(),
                 Orders = UTIL.AnimeExtension.FillOrderData(),
             };
 
@@ -502,19 +503,18 @@ namespace ANT.Modules
 
 
         public ICommand SelectSortDirectionCommand { get; private set; }
-        private void OnChangeSortDirection(bool isDescending)
-        {
-            _animeSearchConfig.SortDirection = isDescending ? SortDirection.Descending : SortDirection.Ascending;
-        }
+        private void OnChangeSortDirection(SortDirectionData sortDirectionData)
+            => _animeSearchConfig.SortDirection = sortDirectionData.SortDirection;
 
         public ICommand SelectSortTypeCommand { get; private set; }
         private void OnSelectSortType(OrderData orderData)
         {
-            
-            //TODO: fazer a ligação com o _animeSearchConfig
+
             //TODO: startDate e endDate tem tanto opção para ordenar via eles(com os radio button) quanto opção para
             //inserir um intervalo de datas, decidir o que fazer a respeito desses 2 casos
             //TODO: traduzir via converter os nomes dos filtros
+
+            _animeSearchConfig.OrderBy = orderData.OrderBy;
         }
 
         #endregion

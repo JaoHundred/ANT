@@ -12,7 +12,7 @@ namespace ANT.Model
 
         public IList<OrderData> Orders { get; set; }
 
-        public IList<SortDirection> SortDirections { get; set; }
+        public IList<SortDirectionData> SortDirections { get; set; }
 
         //TODO: quando tiver mais opções de filtros, acrescentar aqui
     }
