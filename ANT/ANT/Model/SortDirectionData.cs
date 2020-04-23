@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using JikanDotNet;
+using MvvmHelpers;
 
 namespace ANT.Model
 {
-    public class SortDirectionData
+    public class SortDirectionData : ObservableObject
     {
         public SortDirectionData(SortDirection sortDirection, bool isChecked = false)
         {
@@ -15,7 +16,11 @@ namespace ANT.Model
 
         public SortDirection SortDirection { get; set; }
 
-        public bool IsChecked { get; set; }
-
+        private bool _isChecked;
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set { SetProperty(ref _isChecked, value); }
+        }
     }
 }

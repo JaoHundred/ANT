@@ -87,7 +87,8 @@ namespace ANT.Modules
         {
             Loading = true;
 
-            //TODO: deixar assim por hora até ver como vai ser a integração do sistema de escolha do usuário para o que ele não quer exibir
+            //TODO: deixar assim a parte do "fillgenres" por hora até ver como vai ser a 
+            //integração do sistema de escolha do usuário para o que ele não quer exibir
             FilterData = new FilterData
             {
                 Genres = ANT.UTIL.AnimeExtension.FillGenres(showNSFWGenres: false),
@@ -429,6 +430,8 @@ namespace ANT.Modules
             switch (_catalogueMode)
             {
                 case CatalogueModeEnum.Season:
+                    //TODO: traduzir os filtros de orderby via o converter que já existe
+                    //TODO: fazer ligação com os filtros dedirectionsort e orderby(AnimeSearchSortable)
 
                     Loading = true;
 
@@ -471,6 +474,8 @@ namespace ANT.Modules
         private async Task OnResetFilter()
         {
             var checkeds = FilterData.Genres.Where(p => p.IsChecked);
+            FilterData.SortDirections[0].IsChecked = true;
+            FilterData.Orders[0].IsChecked = true;
 
             foreach (var item in checkeds)
                 item.IsChecked = false;

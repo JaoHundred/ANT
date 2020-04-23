@@ -157,14 +157,13 @@
         </Button>
 
         <Grid x:Name="SlideMenu" BackgroundColor="{DynamicResource AppBackgroundColor}"
-              RowSpacing="10" TranslationY="{Binding Height, Source={x:Reference _Page}}">
+             TranslationY="{Binding Height, Source={x:Reference _Page}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition />
                 <RowDefinition Height="auto"/>
-                <RowDefinition />
-                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
+
 
             <BoxView Grid.ColumnSpan="2" BackgroundColor="{DynamicResource BoxViewFilterHeaderColor}"/>
             <Label Text="{res:Translate SearchFilters}" Grid.ColumnSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
@@ -184,68 +183,74 @@
                 <Label Text="X" FontSize="25" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             </Grid>
 
-            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="5">
-
+            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition />
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="100"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <Label Text="{res:Translate SortOrder}" FontSize="Subtitle"/>
-                <CollectionView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding FilterData.SortDirections}">
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="95"/>
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="favo:SortDirectionData">
-                            <RadioButton Grid.Row="1" Text="{Binding SortDirection, Converter={StaticResource TranslateEnumConverter}}" 
-                                         GroupName="SortDirection" IsChecked="{Binding IsChecked}"
+                
+                <StackLayout Orientation="Vertical" Grid.ColumnSpan="2" >
+                    <Label Text="{res:Translate SortOrder}" FontSize="Subtitle"/>
+                    <CollectionView ItemsSource="{Binding FilterData.SortDirections}"
+                                HeightRequest="50">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="2"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="favo:SortDirectionData">
+                                <RadioButton Grid.Row="1" Text="{Binding SortDirection, Converter={StaticResource TranslateEnumConverter}}" 
+                                         GroupName="SortDirection" IsChecked="{Binding IsChecked, Mode=TwoWay}"
                                          Command="{Binding BindingContext.SelectSortDirectionCommand, Source={x:Reference _Page}}"
                                          CommandParameter="{Binding .}"/>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-                <Label Grid.Row="2" Text="{res:Translate TypeOfSort}" FontSize="Subtitle"/>
-                <CollectionView Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding FilterData.Orders}" >
-                    <CollectionView.ItemsLayout>
-                        <GridItemsLayout Span="2" Orientation="Vertical"/>
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="favo:OrderData">
-                            <RadioButton Text="{Binding OrderBy}" GroupName="SearchSortable" IsChecked="{Binding IsChecked}"
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+                
+                <StackLayout Orientation="Vertical" Grid.Row="1" Grid.ColumnSpan="2">
+                    <Label Text="{res:Translate TypeOfSort}" FontSize="Subtitle"/>
+                    <CollectionView ItemsSource="{Binding FilterData.Orders}" >
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="2"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="favo:OrderData">
+                                <RadioButton Text="{Binding OrderBy}" GroupName="SearchSortable" 
+                                         IsChecked="{Binding IsChecked, Mode=TwoWay}"
                                          Command="{Binding BindingContext.SelectSortTypeCommand, Source={x:Reference _Page}}"
                                          CommandParameter="{Binding .}"/>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+                
+                <StackLayout Orientation="Vertical" Grid.Row="2" Grid.ColumnSpan="2">
+                    <Label Text="{res:Translate Genres}" FontSize="Subtitle"/>
+                    <CollectionView ItemsSource="{Binding FilterData.Genres}">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="2"/>
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="favo:GenreData">
+                                <StackLayout Orientation="Horizontal">
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.GenreCheckedCommand, Source={x:Reference _Page}}"
+                                                      CommandParameter="{Binding .}"/>
+                                    </StackLayout.GestureRecognizers>
+                                    <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
+                                    <Label Text="{Binding Genre, Converter={StaticResource GenreToStringConverter}}" VerticalTextAlignment="Center"/>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
             </Grid>
 
-            <Label Grid.Row="2" Text="{res:Translate Genres}" FontSize="Subtitle" Margin="5,0,0,0"/>
-
-            <CollectionView Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding FilterData.Genres}">
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" Span="2"/>
-                </CollectionView.ItemsLayout>
-
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="favo:GenreData">
-                        <StackLayout Orientation="Horizontal">
-                            <StackLayout.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BindingContext.GenreCheckedCommand, Source={x:Reference _Page}}"
-                                                      CommandParameter="{Binding .}"/>
-                            </StackLayout.GestureRecognizers>
-                            <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
-                            <Label Text="{Binding Genre, Converter={StaticResource GenreToStringConverter}}" VerticalTextAlignment="Center"/>
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <Button Grid.Row="4" Text="{res:Translate ApplyFilter}" Command="{Binding ApplyFilterCommand}"
+            <Button Grid.Row="2" Text="{res:Translate ApplyFilter}" Command="{Binding ApplyFilterCommand}"
                     Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
-            <Button Grid.Row="4" Grid.Column="1" Text="{res:Translate ResetFilter}"
+            <Button Grid.Row="2" Grid.Column="1" Text="{res:Translate ResetFilter}"
                     Command="{Binding ResetFilterCommand}" Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
         </Grid>
     </Grid>

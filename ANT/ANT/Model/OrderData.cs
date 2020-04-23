@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using JikanDotNet;
+using MvvmHelpers;
 
 namespace ANT.Model
 {
-    public class OrderData
+    public class OrderData : ObservableObject
     {
 
         public OrderData(AnimeSearchSortable animeSearchSortable, bool isChecked = false)
@@ -16,6 +17,12 @@ namespace ANT.Model
 
         public AnimeSearchSortable OrderBy { get; set; }
 
-        public bool IsChecked { get; set; }
+        private bool _isChecked;
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set { SetProperty(ref _isChecked, value); }
+        }
+
     }
 }
