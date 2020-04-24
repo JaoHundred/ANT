@@ -216,7 +216,7 @@
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="favo:OrderData">
-                                <RadioButton Text="{Binding OrderBy}" GroupName="SearchSortable" 
+                                <RadioButton Text="{Binding OrderBy, Converter={StaticResource TranslateEnumConverter}}" GroupName="SearchSortable" 
                                          IsChecked="{Binding IsChecked, Mode=TwoWay}"
                                          Command="{Binding BindingContext.SelectSortTypeCommand, Source={x:Reference _Page}}"
                                          CommandParameter="{Binding .}"/>

@@ -430,7 +430,6 @@ namespace ANT.Modules
             switch (_catalogueMode)
             {
                 case CatalogueModeEnum.Season:
-                    //TODO: traduzir os filtros de orderby via o converter que já existe
                     //TODO: fazer ligação com os filtros dedirectionsort e orderby(AnimeSearchSortable)
 
                     Loading = true;

@@ -195,6 +195,9 @@
   <data name="DurationPerEpisode" xml:space="preserve">
     <value>Duration per episode:</value>
   </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>End date</value>
+  </data>
   <data name="EpisodeData" xml:space="preserve">
     <value>No data available, how about contribute?</value>
   </data>
@@ -321,11 +324,17 @@
   <data name="SpinOffs" xml:space="preserve">
     <value>Spin offs</value>
   </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>Start date</value>
+  </data>
   <data name="Sundays" xml:space="preserve">
     <value>Sundays</value>
   </data>
   <data name="Thursdays" xml:space="preserve">
     <value>Thursdays</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
   </data>
   <data name="TotalEpisodes" xml:space="preserve">
     <value>Episodes amount:</value>
