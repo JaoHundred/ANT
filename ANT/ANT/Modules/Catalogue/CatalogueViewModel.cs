@@ -93,7 +93,7 @@ namespace ANT.Modules
             {
                 Genres = ANT.UTIL.AnimeExtension.FillGenres(showNSFWGenres: false),
                 SortDirections = UTIL.AnimeExtension.FillSortDirectionData(),
-                Orders = UTIL.AnimeExtension.FillOrderData(),
+                Orders = new ObservableRangeCollection<OrderData>(UTIL.AnimeExtension.FillOrderData()),
             };
 
             if (SearchQuery?.Length > 0)
@@ -171,12 +171,15 @@ namespace ANT.Modules
         #region métodos da VM
         private async Task LoadSeasonCatalogueAsync()
         {
+            //remove EndDate, essa informação não existe nos animes da temporada
+            FilterData.Orders.RemoveAt(FilterData.Orders.Count - 1);
+
             await App.DelayRequest();
             var results = await App.Jikan.GetSeason();
             results.RequestCached = true;
 
             var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavorited();
-            _originalCollection = favoritedEntries.ToList();
+            _originalCollection = favoritedEntries.OrderByDescending(p => p.Anime.Score).ToList();
             Animes.AddRange(_originalCollection);
         }
 
@@ -430,23 +433,57 @@ namespace ANT.Modules
             switch (_catalogueMode)
             {
                 case CatalogueModeEnum.Season:
-                    //TODO: fazer ligação com os filtros dedirectionsort e orderby(AnimeSearchSortable)
 
                     Loading = true;
+                    await Task.Delay(TimeSpan.FromMilliseconds(500)); // usado para impedir que seja visto um leve engasto na filtragem
 
                     _animesWithSpecifiedFilters = new List<FavoritedAnime>();
-                    foreach (FavoritedAnime favoritedAnime in _originalCollection)
-                    {
-                        bool hasAllGenres = await favoritedAnime.HasAllSpecifiedGenresAsync(_animeSearchConfig.Genres.ToArray());
 
-                        if (hasAllGenres)
-                            _animesWithSpecifiedFilters.Add(favoritedAnime);
+                    switch (_animeSearchConfig.OrderBy)
+                    {
+                        case AnimeSearchSortable.Title:
+
+                            if (_animeSearchConfig.SortDirection == SortDirection.Ascending)
+                                _animesWithSpecifiedFilters.AddRange(_originalCollection.OrderBy(p => p.Anime.Title));
+                            else
+                                _animesWithSpecifiedFilters.AddRange(_originalCollection.OrderByDescending(p => p.Anime.Title));
+
+                            break;
+                        case AnimeSearchSortable.StartDate:
+                            //TODO: existem alguns animes da temporada que não estão refletindo corretamente a data crescente, investigar e tentar descobrir
+                            //o que pode ser
+                            if (_animeSearchConfig.SortDirection == SortDirection.Ascending)
+                                _animesWithSpecifiedFilters.AddRange(_originalCollection.OrderBy(p => p.Anime.Aired.From));
+                            else
+                                _animesWithSpecifiedFilters.AddRange(_originalCollection.OrderByDescending(p => p.Anime.Aired.From));
+
+                            break;
+                        case AnimeSearchSortable.Score:
+
+                            if (_animeSearchConfig.SortDirection == SortDirection.Ascending)
+                                _animesWithSpecifiedFilters.AddRange(_originalCollection.OrderBy(p => p.Anime.Score));
+                            else
+                                _animesWithSpecifiedFilters.AddRange(_originalCollection.OrderByDescending(p => p.Anime.Score));
+
+                            break;
                     }
 
-                    if (_animeSearchConfig.Genres.Count > 0)
-                        Animes.ReplaceRange(_animesWithSpecifiedFilters);
-                    else
-                        Animes.ReplaceRange(_originalCollection);
+                    var animeToRemove = new List<FavoritedAnime>();
+                    for (int i = 0; i < _animesWithSpecifiedFilters.Count; i++)
+                    {
+                        FavoritedAnime favoritedAnime = _animesWithSpecifiedFilters[i];
+
+                        bool hasAllGenres = await favoritedAnime.HasAllSpecifiedGenresAsync(_animeSearchConfig.Genres.ToArray());
+
+                        if (!hasAllGenres)
+                            animeToRemove.Add(favoritedAnime);
+                    }
+
+                    if (animeToRemove.Count > 0)
+                        foreach (var item in animeToRemove)
+                            _animesWithSpecifiedFilters.Remove(item);
+
+                    Animes.ReplaceRange(_animesWithSpecifiedFilters);
 
                     Loading = false;
 
