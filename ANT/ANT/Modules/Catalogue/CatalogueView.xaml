@@ -189,7 +189,7 @@
                     <RowDefinition Height="100"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                
+
                 <StackLayout Orientation="Vertical" Grid.ColumnSpan="2" >
                     <Label Text="{res:Translate SortOrder}" FontSize="Subtitle"/>
                     <CollectionView ItemsSource="{Binding FilterData.SortDirections}"
@@ -207,7 +207,7 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </StackLayout>
-                
+
                 <StackLayout Orientation="Vertical" Grid.Row="1" Grid.ColumnSpan="2">
                     <Label Text="{res:Translate TypeOfSort}" FontSize="Subtitle"/>
                     <CollectionView ItemsSource="{Binding FilterData.Orders}" >
@@ -224,7 +224,7 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </StackLayout>
-                
+
                 <StackLayout Orientation="Vertical" Grid.Row="2" Grid.ColumnSpan="2">
                     <Label Text="{res:Translate Genres}" FontSize="Subtitle"/>
                     <CollectionView ItemsSource="{Binding FilterData.Genres}">
