@@ -85,77 +85,77 @@
         </ToolbarItem>
     </ContentPage.ToolbarItems>
 
-
     <Grid>
-        <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection" Margin="3,3,3,0"
+        <Grid>
+            <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection" Margin="3,3,3,0"
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                             SelectionChangedCommand="{Binding OpenAnimeCommand}"
                             RemainingItemsThreshold="{Binding RemainingAnimeCount}"
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
-            <CollectionView.EmptyView>
-                <Grid>
-                    <ActivityIndicator IsVisible="{Binding Loading}" IsRunning="{Binding Loading}"/>
-                </Grid>
-            </CollectionView.EmptyView>
+                <CollectionView.EmptyView>
+                    <Grid>
+                        <ActivityIndicator IsVisible="{Binding Loading}" IsRunning="{Binding Loading}"/>
+                    </Grid>
+                </CollectionView.EmptyView>
 
-            <CollectionView.Footer>
-                <!--a presença de um footer também mantém os itens da lista nos tamanhos corretos(o fim dela)-->
-                <Label HeightRequest="50"/>
-            </CollectionView.Footer>
+                <CollectionView.Footer>
+                    <!--a presença de um footer também mantém os itens da lista nos tamanhos corretos(o fim dela)-->
+                    <Label HeightRequest="50"/>
+                </CollectionView.Footer>
 
-            <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical" 
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" 
                                      Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
-            </CollectionView.ItemsLayout>
+                </CollectionView.ItemsLayout>
 
-            <CollectionView.ItemTemplate>
+                <CollectionView.ItemTemplate>
 
-                <DataTemplate x:DataType="favo:FavoritedAnime">
-                    <Frame>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
+                    <DataTemplate x:DataType="favo:FavoritedAnime">
+                        <Frame>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
 
-                            <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}"/>
+                                <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}"/>
 
-                            <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
-                                <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
+                                <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
+                                    <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
                                              IsVisible="{Binding IsFavorited}"/>
 
-                                <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
+                                    <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
                                            IsVisible="{Binding IsFavorited}"
                                            HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Grid>
+                                </Grid>
 
-                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
+                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
                                                    IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
 
-                            <Label Grid.Row="1" Text="{Binding Anime.Title}" 
+                                <Label Grid.Row="1" Text="{Binding Anime.Title}" 
                                        LineBreakMode="TailTruncation" MaxLines="1"
                                        Style="{StaticResource AnimeFrameLabelStyle}" />
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
 
-        </CollectionView>
+            </CollectionView>
 
-        <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="End" 
+            <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="End" 
                            IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
 
-        <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
+            <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
                 Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
 
-            <Button.ImageSource>
-                <FontImageSource FontFamily="{StaticResource FontIcon}"
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="{StaticResource FontIcon}"
                                  Glyph="{StaticResource StarFill}"
                                  Size="22" />
-            </Button.ImageSource>
-        </Button>
-
+                </Button.ImageSource>
+            </Button>
+        </Grid>
         <Grid x:Name="SlideMenu" BackgroundColor="{DynamicResource AppBackgroundColor}"
              TranslationY="{Binding Height, Source={x:Reference _Page}}">
             <Grid.RowDefinitions>
@@ -254,4 +254,5 @@
                     Command="{Binding ResetFilterCommand}" Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
         </Grid>
     </Grid>
+
 </ContentPage>
