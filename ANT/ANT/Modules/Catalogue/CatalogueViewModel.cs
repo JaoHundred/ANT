@@ -23,7 +23,7 @@ namespace ANT.Modules
     {
         //TODO: impedir de abrir a janela de filtros se eu tiver chegado nessa tela a partir da seleção de 1 gênero em AnimeSpecs
         //https://github.com/JaoHundred/ANT/issues/42
-
+         
         public CatalogueViewModel(CatalogueModeEnum catalogueMode)
         {
             _catalogueMode = catalogueMode;

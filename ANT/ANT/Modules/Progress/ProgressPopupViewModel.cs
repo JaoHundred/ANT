@@ -18,7 +18,6 @@ namespace ANT.Modules
 {
     public class ProgressPopupViewModel : BaseViewModel, IAsyncInitialization
     {
-
         public ProgressPopupViewModel(IList<FavoritedAnime> animes)
         {
             _cancelationToken = new CancellationTokenSource();
@@ -35,8 +34,10 @@ namespace ANT.Modules
             int initialAnimeCount = App.FavoritedAnimes.Count;
             int finalAnimeCount = initialAnimeCount;
 
-            await Task.Run(async () =>
+            try
             {
+                await Task.Run(async () =>
+                {
                     for (int i = 0; i < _animes.Count; i++)
                     {
                         if (_cancelationToken.IsCancellationRequested)
@@ -67,8 +68,20 @@ namespace ANT.Modules
                     }
                 }, _cancelationToken.Token);
 
-            if (finalAnimeCount > initialAnimeCount)
-                await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+                if (finalAnimeCount > initialAnimeCount)
+                    await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+            }
+            catch (OperationCanceledException ex)
+            {
+                await App.DelayRequest(2);
+                await NavigationManager.PopPopUpPageAsync();
+                return;
+            }
+            catch (Exception ex)
+            {
+                await App.DelayRequest(2);
+                await NavigationManager.PopPopUpPageAsync();
+            }
 
             MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, 1);
             //necessário para não bugar o comportamento da popup, abrir e fechar muito rápido causa efeitos não esperados e mantém a popup aberta para sempre

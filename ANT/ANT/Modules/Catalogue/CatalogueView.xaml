@@ -16,7 +16,7 @@
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
              x:DataType="VM:CatalogueViewModel"
-             x:Name="_Page" >
+             x:Name="_Page"  >
 
     <ContentPage.Resources>
         <converter:InversorConverter x:Key="InversorConverter"/>
