@@ -24,9 +24,6 @@ namespace ANT.Modules
         //TODO: impedir de abrir a janela de filtros se eu tiver chegado nessa tela a partir da seleção de 1 gênero em AnimeSpecs
         //https://github.com/JaoHundred/ANT/issues/42
 
-        //TODO; verificar porque o botão de favoritar fica por cima da janela de filtros
-        //https://github.com/JaoHundred/ANT/issues/43
-
         public CatalogueViewModel(CatalogueModeEnum catalogueMode)
         {
             _catalogueMode = catalogueMode;
