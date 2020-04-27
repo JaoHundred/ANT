@@ -38,39 +38,39 @@ namespace ANT.Modules
             try
             {
                 await Task.Run(async () =>
-            {
-                for (int i = 0; i < _animes.Count; i++)
                 {
-                    if (_cancelationToken.IsCancellationRequested)
+                    for (int i = 0; i < _animes.Count; i++)
                     {
-                        if (finalAnimeCount > initialAnimeCount)
-                            await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+                        if (_cancelationToken.IsCancellationRequested)
+                        {
+                            if (finalAnimeCount > initialAnimeCount)
+                                await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
 
-                        await NavigationManager.PopPopUpPageAsync();
-                        _cancelationToken.Token.ThrowIfCancellationRequested();
+                            await NavigationManager.PopPopUpPageAsync();
+                            _cancelationToken.Token.ThrowIfCancellationRequested();
+                        }
+
+                        double result = (double)i / _animes.Count;
+                        MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
+
+                        if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == _animes[i].Anime.MalId))
+                            continue;
+
+                        await App.DelayRequest(4);
+                        Anime anime = await App.Jikan.GetAnime(_animes[i].Anime.MalId);
+                        anime.RequestCached = true;
+
+                        var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
+                        favoritedAnime.IsFavorited = true;
+                        _animes[i].IsFavorited = true;
+
+                        App.FavoritedAnimes.Add(favoritedAnime);
+                        finalAnimeCount++;
                     }
+                }, _cancelationToken.Token);
 
-                    double result = (double)i / _animes.Count;
-                    MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
-
-                    if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == _animes[i].Anime.MalId))
-                        continue;
-
-                    await App.DelayRequest(4);
-                    Anime anime = await App.Jikan.GetAnime(_animes[i].Anime.MalId);
-                    anime.RequestCached = true;
-
-                    var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
-                    favoritedAnime.IsFavorited = true;
-                    _animes[i].IsFavorited = true;
-
-                    App.FavoritedAnimes.Add(favoritedAnime);
-                    finalAnimeCount++;
-                }
-            }, _cancelationToken.Token);
-
-            if (finalAnimeCount > initialAnimeCount)
-                await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+                if (finalAnimeCount > initialAnimeCount)
+                    await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             }
             catch (OperationCanceledException ex)
             {
