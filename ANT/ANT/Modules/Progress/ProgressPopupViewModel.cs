@@ -35,10 +35,8 @@ namespace ANT.Modules
             int initialAnimeCount = App.FavoritedAnimes.Count;
             int finalAnimeCount = initialAnimeCount;
 
-            try
+            await Task.Run(async () =>
             {
-                await Task.Run(async () =>
-                {
                     for (int i = 0; i < _animes.Count; i++)
                     {
                         if (_cancelationToken.IsCancellationRequested)
@@ -69,20 +67,8 @@ namespace ANT.Modules
                     }
                 }, _cancelationToken.Token);
 
-                if (finalAnimeCount > initialAnimeCount)
-                    await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
-            }
-            catch (OperationCanceledException ex)
-            {
-                await App.DelayRequest(2);
-                await NavigationManager.PopPopUpPageAsync();
-                return;
-            }
-            catch (Exception ex)
-            {
-                await App.DelayRequest(2);
-                await NavigationManager.PopPopUpPageAsync();
-            }
+            if (finalAnimeCount > initialAnimeCount)
+                await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
 
             MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, 1);
             //necessário para não bugar o comportamento da popup, abrir e fechar muito rápido causa efeitos não esperados e mantém a popup aberta para sempre

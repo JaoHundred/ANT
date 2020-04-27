@@ -85,6 +85,7 @@
         </ToolbarItem>
     </ContentPage.ToolbarItems>
 
+
     <Grid>
         <Grid>
             <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection" Margin="3,3,3,0"
@@ -155,6 +156,8 @@
                                  Size="22" />
                 </Button.ImageSource>
             </Button>
+
+            
         </Grid>
         <Grid x:Name="SlideMenu" BackgroundColor="{DynamicResource AppBackgroundColor}"
              TranslationY="{Binding Height, Source={x:Reference _Page}}">
@@ -254,5 +257,4 @@
                     Command="{Binding ResetFilterCommand}" Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
         </Grid>
     </Grid>
-    
 </ContentPage>
