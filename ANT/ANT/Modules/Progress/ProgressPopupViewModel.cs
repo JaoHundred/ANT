@@ -34,54 +34,40 @@ namespace ANT.Modules
             int initialAnimeCount = App.FavoritedAnimes.Count;
             int finalAnimeCount = initialAnimeCount;
 
-            try
+            await Task.Run(async () =>
             {
-                await Task.Run(async () =>
+                for (int i = 0; i < _animes.Count; i++)
+                {
+                    if (_cancelationToken.IsCancellationRequested)
                     {
-                        for (int i = 0; i < _animes.Count; i++)
-                        {
-                            if (_cancelationToken.IsCancellationRequested)
-                            {
-                                if (finalAnimeCount > initialAnimeCount)
-                                    await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+                        if (finalAnimeCount > initialAnimeCount)
+                            await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
 
-                                await NavigationManager.PopPopUpPageAsync();
-                                _cancelationToken.Token.ThrowIfCancellationRequested();
-                            }
+                        await NavigationManager.PopPopUpPageAsync();
+                        _cancelationToken.Token.ThrowIfCancellationRequested();
+                    }
 
-                            double result = (double)i / _animes.Count;
-                            MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
+                    double result = (double)i / _animes.Count;
+                    MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
 
-                            if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == _animes[i].Anime.MalId))
-                                continue;
+                    if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == _animes[i].Anime.MalId))
+                        continue;
 
-                            await App.DelayRequest(4);
-                            Anime anime = await App.Jikan.GetAnime(_animes[i].Anime.MalId);
-                            anime.RequestCached = true;
+                    await App.DelayRequest(4);
+                    Anime anime = await App.Jikan.GetAnime(_animes[i].Anime.MalId);
+                    anime.RequestCached = true;
 
-                            var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
-                            favoritedAnime.IsFavorited = true;
-                            _animes[i].IsFavorited = true;
+                    var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync());
+                    favoritedAnime.IsFavorited = true;
+                    _animes[i].IsFavorited = true;
 
-                            App.FavoritedAnimes.Add(favoritedAnime);
-                            finalAnimeCount++;
-                        }
-                    }, _cancelationToken.Token);
+                    App.FavoritedAnimes.Add(favoritedAnime);
+                    finalAnimeCount++;
+                }
+            }, _cancelationToken.Token);
 
-                if (finalAnimeCount > initialAnimeCount)
-                    await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
-            }
-            catch (OperationCanceledException ex)
-            {
-                await App.DelayRequest(2);
-                await NavigationManager.PopPopUpPageAsync();
-                return;
-            }
-            catch (Exception ex)
-            {
-                await App.DelayRequest(2);
-                await NavigationManager.PopPopUpPageAsync();
-            }
+            if (finalAnimeCount > initialAnimeCount)
+                await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
 
             MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, 1);
             //necessário para não bugar o comportamento da popup, abrir e fechar muito rápido causa efeitos não esperados e mantém a popup aberta para sempre
