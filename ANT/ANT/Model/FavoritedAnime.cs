@@ -33,6 +33,10 @@ namespace ANT.Model
 
         public Anime Anime { get; set; }
 
+        public DateTime LastUpdateDate { get; set; }
+
+        public DateTime StreamDate { get; set; }
+
         public bool? IsR18 { get; set; }
 
         public IList<AnimeEpisode> Episodes { get; set; }

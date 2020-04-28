@@ -230,6 +230,9 @@ namespace ANT.Modules
         public ICommand FavoriteCommand { get; private set; }
         private async Task OnFavorite()
         {
+            //TODO: nesse método vai ser necessário chamar o serviço de criação de notificação, por padrão ele vem ativado
+            // é a propriedade StreamDate
+            //mas o usuário pode escolher desativar pela tela de FavoritedView
             string lang = default;
 
             if (App.FavoritedAnimes.Contains(AnimeContext))
@@ -244,6 +247,7 @@ namespace ANT.Modules
             {
                 AnimeContext.IsFavorited = true;
                 _favoritedAnime.IsFavorited = true;
+                AnimeContext.LastUpdateDate = DateTime.Now;
 
                 App.FavoritedAnimes.Add(AnimeContext);
                 lang = Lang.Lang.AddedToFavorite;
