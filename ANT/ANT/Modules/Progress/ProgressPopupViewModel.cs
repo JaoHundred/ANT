@@ -62,8 +62,10 @@ namespace ANT.Modules
                         var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
                         favoritedAnime.IsFavorited = true;
                         favoritedAnime.LastUpdateDate = DateTime.Now;
-                        //TODO:preencher aqui a StreamData, ela via vir via o serviço de notificação
                         _animes[i].IsFavorited = true;
+
+                        
+                        await NotificationManager.CreateNotificationAsync(favoritedAnime);
 
                         App.FavoritedAnimes.Add(favoritedAnime);
                         finalAnimeCount++;

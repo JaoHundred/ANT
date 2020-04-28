@@ -22,7 +22,8 @@ namespace ANT.Model
             Anime = anime;
         }
 
-        public FavoritedAnime(){ }
+        public FavoritedAnime()
+        { }
 
         private bool _isFavorited;
         public bool IsFavorited
@@ -36,6 +37,8 @@ namespace ANT.Model
         public DateTime LastUpdateDate { get; set; }
 
         public DateTime StreamDate { get; set; }
+
+        public int UniqueNotificationID { get; set; }
 
         public bool? IsR18 { get; set; }
 

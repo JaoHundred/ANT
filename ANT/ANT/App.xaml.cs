@@ -4,6 +4,7 @@ using ANT.Model;
 using ANT.Modules;
 using JikanDotNet;
 using MvvmHelpers;
+using Plugin.LocalNotification;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +26,7 @@ namespace ANT
             //Device.SetFlags(new[] {
             //    "SwipeView_Experimental"
             //});
+            NotificationCenter.Current.NotificationTapped += Current_NotificationTapped;
 
             MainPage = new AppShell();
         }
@@ -50,10 +52,17 @@ namespace ANT
 
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
-            
+
             //await CultureManager.LoadCultureAsync();
 
             Jikan = new Jikan(useHttps: true);
+        }
+
+        private async void Current_NotificationTapped(NotificationTappedEventArgs e)
+        {
+            //TODO: a chamada ao clicar na notificação não funciona, descobrir o que pode ser
+            int malId = int.Parse(e.Data);
+            await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(malId);
         }
 
         //TODO: resolução(talvez) da seleção de idioma https://forums.xamarin.com/discussion/79379/update-language-translation-on-the-fly-using-translateextension

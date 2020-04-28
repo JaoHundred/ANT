@@ -235,28 +235,36 @@ namespace ANT.Modules
             //mas o usuário pode escolher desativar pela tela de FavoritedView
             string lang = default;
 
-            if (App.FavoritedAnimes.Contains(AnimeContext))
+            var taskResult = Task.Run(async() => 
             {
-                AnimeContext.IsFavorited = false;
-                _favoritedAnime.IsFavorited = false;
+                if (App.FavoritedAnimes.Contains(AnimeContext))
+                {
+                    AnimeContext.IsFavorited = false;
+                    _favoritedAnime.IsFavorited = false;
+                    await NotificationManager.CancelNotificationAsync(AnimeContext);
 
-                App.FavoritedAnimes.Remove(AnimeContext);
-                lang = Lang.Lang.RemovedFromFavorite;
-            }
-            else
-            {
-                AnimeContext.IsFavorited = true;
-                _favoritedAnime.IsFavorited = true;
-                AnimeContext.LastUpdateDate = DateTime.Now;
 
-                App.FavoritedAnimes.Add(AnimeContext);
-                lang = Lang.Lang.AddedToFavorite;
-            }
+                    App.FavoritedAnimes.Remove(AnimeContext);
+                    lang = Lang.Lang.RemovedFromFavorite;
+                }
+                else
+                {
+                    AnimeContext.IsFavorited = true;
+                    _favoritedAnime.IsFavorited = true;
+                    AnimeContext.LastUpdateDate = DateTime.Now;
+                    await NotificationManager.CreateNotificationAsync(AnimeContext);
 
-            if (OtherViewModelFunc != null)
-                //atualiza a coleção observável de CatalogueViewModel
-                await OtherViewModelFunc.Invoke();
+                    App.FavoritedAnimes.Add(AnimeContext);
+                    lang = Lang.Lang.AddedToFavorite;
+                }
 
+                if (OtherViewModelFunc != null)
+                    //atualiza a coleção observável de CatalogueViewModel
+                    await OtherViewModelFunc.Invoke();
+            });
+
+
+            await taskResult;
             await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             DependencyService.Get<IToast>().MakeToastMessageShort(lang);
 

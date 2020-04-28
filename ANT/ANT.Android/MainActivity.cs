@@ -14,6 +14,7 @@ using ANT.Interfaces;
 using MvvmHelpers;
 using ANT.UTIL;
 using System.Linq;
+using Plugin.LocalNotification;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ANT.Droid.MainActivity))]
 namespace ANT.Droid
@@ -34,6 +35,7 @@ namespace ANT.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+            NotificationCenter.CreateNotificationChannel();
 
             LoadApplication(new App());
         }
