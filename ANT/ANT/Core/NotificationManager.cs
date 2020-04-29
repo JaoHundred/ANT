@@ -46,9 +46,6 @@ namespace ANT.Core
             });
         }
 
-        //TODO:baixar o framework 10 do android para poder usar agrupamento de notificações
-        //https://github.com/thudugala/Plugin.LocalNotification/wiki/%5BAndroid%5D-How-to-group-notifications
-
         public static Task CancelNotificationAsync(FavoritedAnime favoritedAnime)
         {
             return Task.Run(() =>
