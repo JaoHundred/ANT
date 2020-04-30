@@ -23,9 +23,10 @@ namespace ANT
         {
             InitializeComponent();
 
-            //Device.SetFlags(new[] {
-            //    "SwipeView_Experimental"
-            //});
+            Device.SetFlags(new[] 
+            { 
+                "RadioButton_Experimental", "Expander_Experimental" , //"SwipeView_Experimental"
+            });
             NotificationCenter.Current.NotificationTapped += Current_NotificationTapped;
 
             MainPage = new AppShell();

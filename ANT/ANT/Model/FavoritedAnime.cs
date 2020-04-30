@@ -38,6 +38,8 @@ namespace ANT.Model
 
         public DateTime StreamDate { get; set; }
 
+        public float LastEpisodeSeen { get; set; }
+
         public int UniqueNotificationID { get; set; }
 
         public bool? IsR18 { get; set; }

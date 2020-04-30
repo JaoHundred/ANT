@@ -322,6 +322,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New episode today.
+        /// </summary>
+        public static string EpisodeToday {
+            get {
+                return ResourceManager.GetString("EpisodeToday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Something went wrong, please reenter this page.
         /// </summary>
         public static string Error {
