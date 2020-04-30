@@ -49,13 +49,15 @@ namespace ANT.Core
             });
         }
 
+        /// <summary>
+        /// Retorna a data do próximo dia de semana que o anime irá passar, se não houver data, retorna null
+        /// </summary>
+        /// <param name="favoritedAnime"></param>
+        /// <returns></returns>
         private static Task<DateTime?> NextEpisodeDateAsync(FavoritedAnime favoritedAnime)
         {
-
             return Task.Run(() =>
             {
-                //TODO: extrair a string do dia da semana que passa, converter o dia da semana para datetime.dayofweek, e ver qual é o próximo dia(em data) que acontece
-                //esse dia da semana, esse é o resultado que precisa ser retornado, se não houver nada para retornar, retorne nulo
                 var daysOfWeek = Enum.GetNames(typeof(DayOfWeek)).Select(p => new string(p.Append('s').ToArray()).ToString().ToLowerInvariant()).ToList();
                 DayOfWeek? nextEpisodeDay = null;
 
@@ -102,6 +104,10 @@ namespace ANT.Core
                 return nextEpisodeDate;
             });
         }
+
+
+        //TODO: criar método de checagem pelo status do anime(olhar no MAL como é a composição das strings para animes terminados e em andamento)
+        //animes terminados não devem gerar notificação
 
         public static Task CancelNotificationAsync(FavoritedAnime favoritedAnime)
         {
