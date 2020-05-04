@@ -38,6 +38,17 @@ namespace ANT.Model
 
         public DateTime? NextStreamDate { get; set; }
 
+        
+        private bool _canGenerateNotifications = true;
+        /// <summary>
+        /// O usuário liga ou desliga a exibição de notificações para este anime, por padrão vem ligado(true)
+        /// </summary>
+        public bool CanGenerateNotifications
+        {
+            get { return _canGenerateNotifications; }
+            set { SetProperty(ref _canGenerateNotifications, value); }
+        }
+
         public float LastEpisodeSeen { get; set; }
 
         public int UniqueNotificationID { get; set; }

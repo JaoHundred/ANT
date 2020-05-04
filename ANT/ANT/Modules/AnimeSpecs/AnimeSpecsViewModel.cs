@@ -61,14 +61,14 @@ namespace ANT.Modules
                 //TODO: criar no futuro uma rotina de checagem por atualizações dos animes alvos em favoritos(algo semelhante ao tachiyomi
                 //pode acontecer todo dia, semanalmente ou até mesmo no dia específico de cada anime), a rotina é chamada como background e atualiza
                 //a lista com dados novos se houver
-                
+
                 if (_favoritedAnime == null)
                 {
                     await App.DelayRequest();
-                   var anime = await App.Jikan.GetAnime(id);
+                    var anime = await App.Jikan.GetAnime(id);
                     anime.RequestCached = true;
 
-                    _favoritedAnime = new FavoritedAnime(anime );
+                    _favoritedAnime = new FavoritedAnime(anime);
                 }
 
                 await AddOrUpdateRecentAnimeAsync(_favoritedAnime);
@@ -230,12 +230,10 @@ namespace ANT.Modules
         public ICommand FavoriteCommand { get; private set; }
         private async Task OnFavorite()
         {
-            //TODO: nesse método vai ser necessário chamar o serviço de criação de notificação, por padrão ele vem ativado
-            // é a propriedade StreamDate
-            //mas o usuário pode escolher desativar pela tela de FavoritedView
+            //TODO: o usuário pode escolher desativar pela tela de FavoritedView e AnimeSpecsView as notificações
             string lang = default;
 
-            var taskResult = Task.Run(async() => 
+            var taskResult = Task.Run(async () =>
             {
                 if (App.FavoritedAnimes.Contains(AnimeContext))
                 {
@@ -252,7 +250,9 @@ namespace ANT.Modules
                     AnimeContext.IsFavorited = true;
                     _favoritedAnime.IsFavorited = true;
                     AnimeContext.LastUpdateDate = DateTime.Now;
-                    await NotificationManager.CreateNotificationAsync(AnimeContext);
+
+                    if (AnimeContext.CanGenerateNotifications)
+                        await NotificationManager.CreateNotificationAsync(AnimeContext);
 
                     App.FavoritedAnimes.Add(AnimeContext);
                     lang = Lang.Lang.AddedToFavorite;
