@@ -14,11 +14,15 @@ namespace ANT.Core
         {
             return Task.Run(async () =>
             {
+                if (!favoritedAnime.Anime.Airing && !IsTVSeries(favoritedAnime))
+                    return;
 
                 DateTime? nextEpisode = await NextEpisodeDateAsync(favoritedAnime);
 
                 if (nextEpisode == null)
                     return;
+
+                favoritedAnime.NextStreamDate = nextEpisode;
 
                 FavoritedAnime lastFavorited = App.FavoritedAnimes.LastOrDefault();
 
@@ -97,17 +101,28 @@ namespace ANT.Core
 
                 if (nextEpisodeDay == null)
                     return null;
+                
+                int daysToSchedule = 0;
 
-                int daysToSchedule = ((int)nextEpisodeDay + 7) - (int)DateTime.Today.DayOfWeek;
+                if (nextEpisodeDay > DateTime.Today.DayOfWeek)
+                    daysToSchedule = (int)nextEpisodeDay - (int)DateTime.Today.DayOfWeek;
+
+                else if (nextEpisodeDay < DateTime.Today.DayOfWeek)
+                    daysToSchedule = ((int)nextEpisodeDay + 7) - (int)DateTime.Today.DayOfWeek;
+                else 
+                    return null; // TODO: ficar de olho nessa condição, suspeito que se acontecer do dia de atualização coincidir com o mesmo dia que passa o anime, nenhuma notificação será gerada para a próxima semana
+
                 DateTime? nextEpisodeDate = DateTime.Today.AddDays(daysToSchedule).AddHours(12);
-                //TODO: testar aqui e vê se a matématica está dando certo(parece que está certo, ficar de olho)
+                
                 return nextEpisodeDate;
             });
         }
 
 
-        //TODO: criar método de checagem pelo status do anime(olhar no MAL como é a composição das strings para animes terminados e em andamento)
-        //animes terminados não devem gerar notificação
+        private static bool IsTVSeries(FavoritedAnime favoritedAnime)
+        {
+            return favoritedAnime.Anime.Type == "TV";
+        }
 
         public static Task CancelNotificationAsync(FavoritedAnime favoritedAnime)
         {
@@ -116,8 +131,5 @@ namespace ANT.Core
                 NotificationCenter.Current.Cancel(favoritedAnime.UniqueNotificationID);
             });
         }
-
-        //TODO: só deve ser criado notificação para animes que estão em andamento, não criar para os que já estão terminados
-        //TODO:preencher aqui a StreamData, ela via vir via o serviço de notificação, criar método para isso
     }
 }

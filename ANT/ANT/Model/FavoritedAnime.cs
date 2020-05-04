@@ -36,7 +36,7 @@ namespace ANT.Model
 
         public DateTime LastUpdateDate { get; set; }
 
-        public DateTime StreamDate { get; set; }
+        public DateTime? NextStreamDate { get; set; }
 
         public float LastEpisodeSeen { get; set; }
 
