@@ -340,6 +340,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Favorite animes.
+        /// </summary>
+        public static string FavoriteAnimes {
+            get {
+                return ResourceManager.GetString("FavoriteAnimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Favorite characters.
         /// </summary>
         public static string FavoriteCharacters {

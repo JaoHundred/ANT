@@ -210,6 +210,9 @@
   <data name="Error" xml:space="preserve">
     <value>Something went wrong, please reenter this page</value>
   </data>
+  <data name="FavoriteAnimes" xml:space="preserve">
+    <value>Favorite animes</value>
+  </data>
   <data name="FavoriteCharacters" xml:space="preserve">
     <value>Favorite characters</value>
   </data>

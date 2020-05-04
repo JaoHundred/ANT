@@ -90,6 +90,16 @@
         </FlyoutItem.Icon>
         <ShellContent ContentTemplate="{DataTemplate modules:CatalogueSelectView}"/>
     </FlyoutItem>
+
+    <FlyoutItem Title="{res:Translate FavoriteAnimes}" Route="FavoriteAnimes">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="{StaticResource FontIcon}"
+                             Glyph="{StaticResource FavoriteList}"
+                             Color="{DynamicResource TextColor}"/>
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate modules:FavoriteAnimeView}"/>
+    </FlyoutItem>
+
     <FlyoutItem Title="{res:Translate FavoriteCharacters}" Route="FavoriteCharacters">
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="{StaticResource FontIcon}"
