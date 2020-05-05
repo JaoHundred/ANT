@@ -6,13 +6,17 @@
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:comm="clr-namespace:ANT._Behaviors"
              xmlns:modules="clr-namespace:ANT.Modules"
+             xmlns:model="clr-namespace:ANT.Model"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
              xmlns:converter="clr-namespace:ANT.Converter"
              x:DataType="modules:FavoriteAnimeViewModel"
              mc:Ignorable="d"
-             x:Class="ANT.Modules.FavoriteAnimeView">
+             x:Class="ANT.Modules.FavoriteAnimeView"
+             Appearing="ContentPage_Appearing">
 
     <ContentPage.Resources>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
+        <converter:TranslateEnumConverter x:Key="TranslateEnumConverter"/>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -54,13 +58,35 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate ClearAll}"
-                     Command="{Binding ClearAllRecentCommand}"/>
+                     Command="{Binding ClearAllCommand}"/>
 
         <ToolbarItem Order="Secondary" Text="{res:Translate MultiSelect}"
                      Command="{Binding SelectionModeCommand}"/>
     </ContentPage.ToolbarItems>
+    
 
     <Grid>
+
+        <CollectionView ItemsSource="{Binding GroupedFavoriteByWeekList}" IsGrouped="True">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="model:GroupedFavoriteAnimeByWeekDay">
+                    <Frame Style="{StaticResource FrameGenreStyle}">
+                        <Label Text="{Binding GroupName}" Style="{StaticResource ContentTitleLabelStyle}"
+                               HorizontalTextAlignment="Center"/>
+                    </Frame>
+                    
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:FavoritedAnime">
+                    <Label Text="{Binding Anime.Title}"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            
+        </CollectionView>
+        
+        
         <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
                 Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="DeleteButton_AnimationOnIsVisible">
             <Button.ImageSource>
