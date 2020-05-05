@@ -219,6 +219,9 @@
   <data name="Finalizing" xml:space="preserve">
     <value>Finalizando...</value>
   </data>
+  <data name="Friday" xml:space="preserve">
+    <value>Sexta</value>
+  </data>
   <data name="Fridays" xml:space="preserve">
     <value>Sextas</value>
   </data>
@@ -245,6 +248,9 @@
   </data>
   <data name="MAL" xml:space="preserve">
     <value>Ver no MAL</value>
+  </data>
+  <data name="Monday" xml:space="preserve">
+    <value>Segunda</value>
   </data>
   <data name="Mondays" xml:space="preserve">
     <value>Segundas</value>
@@ -294,6 +300,9 @@
   <data name="Role" xml:space="preserve">
     <value>Papel</value>
   </data>
+  <data name="Saturday" xml:space="preserve">
+    <value>Sábado</value>
+  </data>
   <data name="Saturdays" xml:space="preserve">
     <value>Sábados</value>
   </data>
@@ -333,8 +342,14 @@
   <data name="StartDate" xml:space="preserve">
     <value>Data de início</value>
   </data>
+  <data name="Sunday" xml:space="preserve">
+    <value>Domingo</value>
+  </data>
   <data name="Sundays" xml:space="preserve">
     <value>Domingos</value>
+  </data>
+  <data name="Thursday" xml:space="preserve">
+    <value>Quinta</value>
   </data>
   <data name="Thursdays" xml:space="preserve">
     <value>Quintas</value>
@@ -344,6 +359,9 @@
   </data>
   <data name="TotalEpisodes" xml:space="preserve">
     <value>Total de episódios:</value>
+  </data>
+  <data name="Tuesday" xml:space="preserve">
+    <value>Terça</value>
   </data>
   <data name="Tuesdays" xml:space="preserve">
     <value>Terças</value>
@@ -362,6 +380,9 @@
   </data>
   <data name="VoiceActors" xml:space="preserve">
     <value>Dubladores</value>
+  </data>
+  <data name="Wednesday" xml:space="preserve">
+    <value>Quarta</value>
   </data>
   <data name="Wednesdays" xml:space="preserve">
     <value>Quartas</value>

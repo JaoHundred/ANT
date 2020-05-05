@@ -113,10 +113,9 @@ namespace ANT.Core
                 if (nextEpisodeDay > DateTime.Today.DayOfWeek)
                     daysToSchedule = (int)nextEpisodeDay - (int)DateTime.Today.DayOfWeek;
 
-                else if (nextEpisodeDay < DateTime.Today.DayOfWeek)
+                else if (nextEpisodeDay <= DateTime.Today.DayOfWeek)
                     daysToSchedule = ((int)nextEpisodeDay + 7) - (int)DateTime.Today.DayOfWeek;
-                else
-                    return null; // TODO: ficar de olho nessa condição, suspeito que se acontecer do dia de atualização coincidir com o mesmo dia que passa o anime, nenhuma notificação será gerada para a próxima semana
+                // TODO: ficar de olho nessa condição, suspeito que se acontecer do dia de atualização coincidir com o mesmo dia que passa o anime, nenhuma notificação será gerada para a próxima semana
 
                 DateTime? nextEpisodeDate = DateTime.Today.AddDays(daysToSchedule).AddHours(12);
 
