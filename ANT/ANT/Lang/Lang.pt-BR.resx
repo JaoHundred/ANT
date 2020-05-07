@@ -264,6 +264,15 @@
   <data name="NothingForNow" xml:space="preserve">
     <value>Nada por enquanto</value>
   </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notificações</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Desligado</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>Ligado</value>
+  </data>
   <data name="Others" xml:space="preserve">
     <value>Outros</value>
   </data>

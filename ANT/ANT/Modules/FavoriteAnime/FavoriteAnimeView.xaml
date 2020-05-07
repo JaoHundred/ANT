@@ -7,12 +7,14 @@
              xmlns:comm="clr-namespace:ANT._Behaviors"
              xmlns:modules="clr-namespace:ANT.Modules"
              xmlns:model="clr-namespace:ANT.Model"
-             xmlns:sys="clr-namespace:System;assembly=netstandard"
+             xmlns:behavior="clr-namespace:ANT._Behaviors"
+             xmlns:ffimg="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:converter="clr-namespace:ANT.Converter"
              x:DataType="modules:FavoriteAnimeViewModel"
              mc:Ignorable="d"
              x:Class="ANT.Modules.FavoriteAnimeView"
-             Appearing="ContentPage_Appearing">
+             Appearing="ContentPage_Appearing"
+             x:Name="_page">
 
     <ContentPage.Resources>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
@@ -70,7 +72,7 @@
         <CollectionView ItemsSource="{Binding GroupedFavoriteByWeekList}" IsGrouped="True">
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="model:GroupedFavoriteAnimeByWeekDay">
-                    <Frame Style="{StaticResource FrameGenreStyle}">
+                    <Frame Style="{StaticResource HeaderFrameStyle}">
                         <Label Text="{Binding GroupName}" Style="{StaticResource ContentTitleLabelStyle}"
                                HorizontalTextAlignment="Center"/>
                     </Frame>
@@ -78,9 +80,33 @@
                 </DataTemplate>
             </CollectionView.GroupHeaderTemplate>
 
+            <CollectionView.Footer>
+                <Label IsVisible="False"/>
+            </CollectionView.Footer>
+
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Span="2" Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
+
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:FavoritedAnime">
-                    <Label Text="{Binding Anime.Title}"/>
+                    <Frame Scale="0.98">
+                        <Grid x:Name="favoritedAnimeGrid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                        <ffimg:CachedImage x:Name="img" Source="{Binding Anime.ImageURL}"/>
+                        <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}" 
+                                           IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
+                        <Label Grid.Row="1" Text="{Binding Anime.Title}" Style="{StaticResource TitleLabelStyle}"/>
+                            <Grid Grid.Row="2">
+                                <Label Text="{Binding NotificationStatus}" />
+                                <Switch Grid.Column="1" VerticalOptions="Start" IsToggled="{Binding CanGenerateNotifications, Mode=TwoWay}"/>
+                            </Grid>
+                    </Grid>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             

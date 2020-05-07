@@ -4,6 +4,7 @@ using System.Text;
 using JikanDotNet;
 using MvvmHelpers;
 using Newtonsoft.Json;
+using ANT.Core;
 
 namespace ANT.Model
 {
@@ -38,7 +39,13 @@ namespace ANT.Model
 
         public DateTime? NextStreamDate { get; set; }
 
-        
+
+        private string _notificationStatus = Lang.Lang.On;
+        public string NotificationStatus
+        {
+            get { return _notificationStatus; }
+            set { SetProperty(ref _notificationStatus, value); }
+        }
         private bool _canGenerateNotifications = true;
         /// <summary>
         /// O usuário liga ou desliga a exibição de notificações para este anime, por padrão vem ligado(true)
@@ -46,7 +53,13 @@ namespace ANT.Model
         public bool CanGenerateNotifications
         {
             get { return _canGenerateNotifications; }
-            set { SetProperty(ref _canGenerateNotifications, value); }
+            set
+            {
+                //TODO: implementar aqui o que acontece quando o switch dos animes favoritos são marcados ou desmarcados
+                //usar as propriedades CanGenerateNotifications e NotificationStatus
+                //
+                SetProperty(ref _canGenerateNotifications, value);
+            }
         }
 
         public float LastEpisodeSeen { get; set; }
