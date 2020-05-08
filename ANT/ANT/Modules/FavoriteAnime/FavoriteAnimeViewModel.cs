@@ -12,6 +12,7 @@ using ANT.Core;
 using System.Linq;
 using System.Resources;
 
+
 namespace ANT.Modules
 {
     public class FavoriteAnimeViewModel : BaseVMExtender
@@ -25,8 +26,7 @@ namespace ANT.Modules
             SelectionModeCommand = new magno.Command(OnSelectionModeChanged);
         }
 
-        //TODO: implementar esta VM e sua View(implementar o template da coleção, e mecanismo de switch para ativar ou desativar as notificações
-        //animes que não estão exibindo ou não tem data da semana não vão ter essa opção do switch
+        
         public async Task LoadAsync(object param)
         {
             var groupTask = Task.Run(() =>
@@ -37,30 +37,52 @@ namespace ANT.Modules
                 var group = new List<GroupedFavoriteAnimeByWeekDay>();
 
                 var favorited = App.FavoritedAnimes.Where(p => p.NextStreamDate != null);
-                var favoritedNullDate = App.FavoritedAnimes.Where(p => p.NextStreamDate == null).GroupBy(p => p.NextStreamDate);
+                var groupedFavoritedNullDate = App.FavoritedAnimes.Where(p => p.NextStreamDate == null).GroupBy(p => p.NextStreamDate);
 
-                var sortedDaysOfWeek = favorited?.OrderBy(p => p.NextStreamDate.Value.DayOfWeek).GroupBy(p => p.NextStreamDate.Value.DayOfWeek).ToList();
+                var groupedFavoriteAnimes = favorited?.GroupBy(p => p.NextStreamDate.Value.DayOfWeek).ToList();
                 var todayAnimes = favorited?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.DayOfWeek)
                 .GroupBy(p => p.NextStreamDate.Value.DayOfWeek);
 
-                if (todayAnimes != null)
+                var today = todayAnimes.LastOrDefault();
+
+                if (today != null)
                 {
-                    sortedDaysOfWeek.RemoveAll(p => p.Key == DateTime.Today.DayOfWeek);
-                    foreach (var item in todayAnimes)
-                        group.Add(new GroupedFavoriteAnimeByWeekDay(resMgr.Value.GetString(DateTime.Today.DayOfWeek.ToString())
-                        , item.ToList()));
+                    groupedFavoriteAnimes.RemoveAll(p => p.Key == today.Key);
+
+                    string groupName = resMgr.Value.GetString(DateTime.Today.DayOfWeek.ToString());
+                    string todayString = $"{groupName} ({Lang.Lang.TodayAnimes})";
+
+                    group.Add(new GroupedFavoriteAnimeByWeekDay(todayString
+                        , today.ToList()));
                 }
-               
-                foreach (var anime in sortedDaysOfWeek)
-                    group.Add(new GroupedFavoriteAnimeByWeekDay(resMgr.Value.GetString(anime.Key.ToString()), anime.ToList()));
-                
-                if (favoritedNullDate != null)
-                    foreach (var item in favoritedNullDate)
+
+                IList<DayOfWeek> daysOfWeek = AnimeExtension.FillDayOfWeek();
+
+                int nextDay = (int)DateTime.Today.DayOfWeek;
+                foreach (var days in daysOfWeek)
+                {
+                    nextDay += 1;
+
+                    if (nextDay > 6)
+                        nextDay = 0;
+
+                    IGrouping<DayOfWeek, FavoritedAnime> nextGroupDay;
+
+                    nextGroupDay = groupedFavoriteAnimes.FirstOrDefault(p => p.Key == (DayOfWeek)nextDay);
+
+                    if (nextGroupDay == null)
+                        continue;
+
+                    group.Add(new GroupedFavoriteAnimeByWeekDay(resMgr.Value.GetString(nextGroupDay.Key.ToString()), nextGroupDay.ToList()));
+
+                }
+
+                if (groupedFavoritedNullDate != null)
+                    foreach (var item in groupedFavoritedNullDate)
                         group.Add(new GroupedFavoriteAnimeByWeekDay(Lang.Lang.UnknownDate, item.ToList()));
 
                 return group;
             });
-
 
             GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(await groupTask);
         }
@@ -130,5 +152,8 @@ namespace ANT.Modules
         }
         #endregion
 
+
+        //TODO: implementar esta VM e sua View(implementar o template da coleção, e mecanismo de switch para ativar ou desativar as notificações
+        //animes que não estão exibindo ou não tem data da semana não vão ter essa opção do switch
     }
 }

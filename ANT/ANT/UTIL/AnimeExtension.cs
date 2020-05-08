@@ -212,12 +212,26 @@ namespace ANT.UTIL
 
         public static IList<OrderData> FillOrderData()
         {
-            return new List<OrderData> 
+            return new List<OrderData>
             {
                new OrderData( AnimeSearchSortable.Score, true),
                new OrderData( AnimeSearchSortable.Title),
                new OrderData( AnimeSearchSortable.StartDate),
                new OrderData( AnimeSearchSortable.EndDate),
+            };
+        }
+
+        public static IList<DayOfWeek> FillDayOfWeek()
+        {
+            return new List<DayOfWeek>
+            {
+                    DayOfWeek.Sunday,
+                    DayOfWeek.Monday,
+                    DayOfWeek.Tuesday,
+                    DayOfWeek.Wednesday,
+                    DayOfWeek.Thursday,
+                    DayOfWeek.Friday,
+                    DayOfWeek.Saturday,
             };
         }
 
