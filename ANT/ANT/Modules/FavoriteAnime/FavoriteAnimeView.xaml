@@ -72,7 +72,8 @@
         <CollectionView ItemsSource="{Binding GroupedFavoriteByWeekList}" IsGrouped="True"
                         SelectionMode="{Binding SelectionMode}"
                         SelectionChangedCommand="{Binding OpenAnimeCommand}"
-                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                        SelectedItems="{Binding SelectedItems, Mode=TwoWay}">
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="model:GroupedFavoriteAnimeByWeekDay">
                     <Frame Style="{StaticResource HeaderFrameStyle}">

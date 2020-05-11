@@ -11,7 +11,7 @@ using ANT.Model;
 using ANT.Core;
 using System.Linq;
 using System.Resources;
-
+using Xamarin.Forms;
 
 namespace ANT.Modules
 {
@@ -23,16 +23,21 @@ namespace ANT.Modules
             ClearTextCommand = new magno.AsyncCommand(OnClearText);
             DeleteFavoriteCommand = new magno.AsyncCommand(OnDeleteFavoriteCommand);
             ClearAllCommand = new magno.AsyncCommand(OnClearAll);
-            SelectionModeCommand = new magno.Command(OnSelectionModeChanged);
+            SelectionModeCommand = new magno.Command(OnSelectionMode);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
         }
 
         public async Task LoadAsync(object param)
         {
-            var groupTask = Task.Run(() =>
+            GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(await ConstructGroupedCollectionAsync());
+        }
+
+        private static Task<List<GroupedFavoriteAnimeByWeekDay>> ConstructGroupedCollectionAsync()
+        {
+            return Task.Run(() =>
             {
                 Lazy<ResourceManager> resMgr = new Lazy<ResourceManager>(
-                    () => new ResourceManager(typeof(Lang.Lang)));
+                                    () => new ResourceManager(typeof(Lang.Lang)));
 
                 var group = new List<GroupedFavoriteAnimeByWeekDay>();
 
@@ -83,8 +88,6 @@ namespace ANT.Modules
 
                 return group;
             });
-
-            GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(await groupTask);
         }
 
         #region Propriedades
@@ -100,6 +103,13 @@ namespace ANT.Modules
         {
             get { return _selectedItem; }
             set { SetProperty(ref _selectedItem, value); }
+        }
+
+        private IList<object> _selectedItems;
+        public IList<object> SelectedItems
+        {
+            get { return _selectedItems; }
+            set { SetProperty(ref _selectedItems, value); }
         }
 
         #endregion
@@ -123,7 +133,19 @@ namespace ANT.Modules
 
         private async Task OnDeleteFavoriteCommand()
         {
-            await App.DelayRequest();
+            var items = SelectedItems.Cast<FavoritedAnime>();
+
+            foreach (var item in items)
+            {
+                App.FavoritedAnimes.Remove(item);
+                await NotificationManager.CancelNotificationAsync(item);
+            }
+
+            var constructTask = ConstructGroupedCollectionAsync();
+            var jsonStorageTask = JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
+
+            GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(await constructTask);
+            await jsonStorageTask;
         }
 
         public ICommand ClearAllCommand { get; private set; }
@@ -140,9 +162,13 @@ namespace ANT.Modules
                 {
                     await Task.Run(async () =>
                     {
+                        foreach (var item in App.FavoritedAnimes)
+                            await NotificationManager.CancelNotificationAsync(item);
+                        
                         App.FavoritedAnimes.Clear();
                         await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder
                             , StorageConsts.FavoritedAnimesFileName);
+
                     });
 
                     GroupedFavoriteByWeekList.Clear();
@@ -153,10 +179,16 @@ namespace ANT.Modules
             }
         }
 
-        public ICommand SelectionModeCommand { get; set; }
-        private void OnSelectionModeChanged()
+        public ICommand SelectionModeCommand { get; private set; }
+        private void OnSelectionMode()
         {
-            IsMultiSelect = !IsMultiSelect;
+            if (SelectionMode == SelectionMode.Multiple)
+                SingleSelectionMode();
+            else
+            {
+                MultiSelectionMode();
+                SelectedItems = null;
+            }
         }
 
         bool _canNavigate = true;
