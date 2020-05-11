@@ -69,7 +69,10 @@
 
     <Grid>
 
-        <CollectionView ItemsSource="{Binding GroupedFavoriteByWeekList}" IsGrouped="True">
+        <CollectionView ItemsSource="{Binding GroupedFavoriteByWeekList}" IsGrouped="True"
+                        SelectionMode="{Binding SelectionMode}"
+                        SelectionChangedCommand="{Binding OpenAnimeCommand}"
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="model:GroupedFavoriteAnimeByWeekDay">
                     <Frame Style="{StaticResource HeaderFrameStyle}">
@@ -90,7 +93,7 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:FavoritedAnime">
-                    <Frame Scale="0.98">
+                    <Frame Scale="0.98" >
                         <Grid x:Name="favoritedAnimeGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
@@ -102,8 +105,16 @@
                                            IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
                         <Label Grid.Row="1" Text="{Binding Anime.Title}" Style="{StaticResource TitleLabelStyle}"/>
                             <Grid Grid.Row="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Label Text="{res:Translate Notifications}"/>
+                                <StackLayout Orientation="Horizontal" Grid.Row="1" Margin="10,0,0,0">
+                                    
                                 <Label Text="{Binding NotificationStatus}" />
                                 <Switch Grid.Column="1" VerticalOptions="Start" IsToggled="{Binding CanGenerateNotifications, Mode=TwoWay}"/>
+                                </StackLayout>
                             </Grid>
                     </Grid>
                     </Frame>

@@ -24,9 +24,9 @@ namespace ANT.Modules
             DeleteFavoriteCommand = new magno.AsyncCommand(OnDeleteFavoriteCommand);
             ClearAllCommand = new magno.AsyncCommand(OnClearAll);
             SelectionModeCommand = new magno.Command(OnSelectionModeChanged);
+            OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
         }
 
-        
         public async Task LoadAsync(object param)
         {
             var groupTask = Task.Run(() =>
@@ -94,6 +94,14 @@ namespace ANT.Modules
             get { return _groupedFavoriteByWeekList; }
             set { SetProperty(ref _groupedFavoriteByWeekList, value); }
         }
+
+        private FavoritedAnime _selectedItem;
+        public FavoritedAnime SelectedItem
+        {
+            get { return _selectedItem; }
+            set { SetProperty(ref _selectedItem, value); }
+        }
+
         #endregion
 
 
@@ -149,6 +157,20 @@ namespace ANT.Modules
         private void OnSelectionModeChanged()
         {
             IsMultiSelect = !IsMultiSelect;
+        }
+
+        bool _canNavigate = true;
+        public ICommand OpenAnimeCommand { get; private set; }
+        private async Task OnOpenAnime()
+        {
+
+            if (!IsMultiSelect && SelectedItem != null && _canNavigate)
+            {
+                _canNavigate = false;
+                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(SelectedItem.Anime.MalId);
+                SelectedItem = null;
+                _canNavigate = true;
+            }
         }
         #endregion
 
