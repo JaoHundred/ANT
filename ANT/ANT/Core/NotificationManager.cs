@@ -40,6 +40,7 @@ namespace ANT.Core
                     NotificationId = favoritedAnime.UniqueNotificationID,
                     Title = favoritedAnime.Anime.Title,
                     Description = Lang.Lang.EpisodeToday,
+                    Repeats = NotificationRepeat.Weekly,
                     //Android = 
                     //{
                     //    IconName= "nome_da_imagem_sem_extensao"

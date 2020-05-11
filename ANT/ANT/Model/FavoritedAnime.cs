@@ -35,7 +35,7 @@ namespace ANT.Model
 
         public Anime Anime { get; set; }
 
-        public DateTime LastUpdateDate { get; set; }
+        public DateTime? LastUpdateDate { get; set; }
 
         public DateTime? NextStreamDate { get; set; }
 
