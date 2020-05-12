@@ -20,7 +20,7 @@ namespace ANT.Modules
         public FavoriteAnimeViewModel()
         {
             SearchCommand = new magno.AsyncCommand(OnSearch);
-            ClearTextCommand = new magno.AsyncCommand(OnClearText);
+            ClearTextCommand = new magno.Command(OnClearText);
             DeleteFavoriteCommand = new magno.AsyncCommand(OnDeleteFavoriteCommand);
             ClearAllCommand = new magno.AsyncCommand(OnClearAll);
             SelectionModeCommand = new magno.Command(OnSelectionMode);
@@ -29,7 +29,8 @@ namespace ANT.Modules
 
         public async Task LoadAsync(object param)
         {
-            GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(await ConstructGroupedCollectionAsync());
+            _originalCollection = await ConstructGroupedCollectionAsync();
+            GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(_originalCollection);
         }
 
         private static Task<List<GroupedFavoriteAnimeByWeekDay>> ConstructGroupedCollectionAsync()
@@ -90,6 +91,7 @@ namespace ANT.Modules
             });
         }
 
+        private IList<GroupedFavoriteAnimeByWeekDay> _originalCollection;
         #region Propriedades
         private ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay> _groupedFavoriteByWeekList;
         public ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay> GroupedFavoriteByWeekList
@@ -119,14 +121,29 @@ namespace ANT.Modules
         public ICommand SearchCommand { get; private set; }
         private async Task OnSearch()
         {
-            await App.DelayRequest();
+            var resultListTask = Task.Run(() =>
+            {
+                IList<GroupedFavoriteAnimeByWeekDay> result = null;
+
+                result = _originalCollection.Select(animeGroup
+                    => new GroupedFavoriteAnimeByWeekDay(animeGroup.GroupName,
+                    animeGroup.Where(anime => anime.Anime.Title.ToLowerInvariant().Contains(SearchQuery.ToLowerInvariant()))
+                    .ToList()))
+                .Where(animeGroup => animeGroup.Count > 0)
+                .ToList();
+
+                return result;
+            });
+
+            GroupedFavoriteByWeekList.ReplaceRange(await resultListTask);
         }
 
         public ICommand ClearTextCommand { get; private set; }
 
-        private async Task OnClearText()
+        private void OnClearText()
         {
-            await App.DelayRequest();
+            SearchQuery = string.Empty;
+            SearchCommand.Execute(null);
         }
 
         public ICommand DeleteFavoriteCommand { get; private set; }
@@ -164,7 +181,7 @@ namespace ANT.Modules
                     {
                         foreach (var item in App.FavoritedAnimes)
                             await NotificationManager.CancelNotificationAsync(item);
-                        
+
                         App.FavoritedAnimes.Clear();
                         await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder
                             , StorageConsts.FavoritedAnimesFileName);

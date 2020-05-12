@@ -77,8 +77,7 @@
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="model:GroupedFavoriteAnimeByWeekDay">
                     <Frame Style="{StaticResource HeaderFrameStyle}">
-                        <Label Text="{Binding GroupName}" Style="{StaticResource ContentTitleLabelStyle}"
-                               HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding GroupName}" Style="{StaticResource HeaderFrameLabel}"/>
                     </Frame>
                     
                 </DataTemplate>
