@@ -15,6 +15,7 @@ using MvvmHelpers;
 using ANT.UTIL;
 using System.Linq;
 using Plugin.LocalNotification;
+using Android.Content;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ANT.Droid.MainActivity))]
 namespace ANT.Droid
@@ -35,9 +36,16 @@ namespace ANT.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
-            NotificationCenter.CreateNotificationChannel();
+            NotificationCenter.CreateNotificationChannel(
+                        new Plugin.LocalNotification.Platform.Droid.NotificationChannelRequest
+                        {
+                            Id = Consts.NotificationChannelTodayAnime,
+                            Name = "Today Animes",
+                            Description = "General",
+                        });
 
             LoadApplication(new App());
+            NotificationCenter.NotifyNotificationTapped(Intent);
         }
 
         private readonly string _rootRoute = "Home";
@@ -114,6 +122,11 @@ namespace ANT.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
+        protected override void OnNewIntent(Intent intent)
+        {
+            NotificationCenter.NotifyNotificationTapped(intent);
+            base.OnNewIntent(intent);
+        }
 
     }
 }

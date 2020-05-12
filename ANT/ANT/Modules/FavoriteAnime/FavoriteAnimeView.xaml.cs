@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ANT.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,10 @@ namespace ANT.Modules
         public FavoriteAnimeView()
         {
             InitializeComponent();
+
+#if DEBUG
+            NotificationTester.IsVisible = true;
+#endif   
             BindingContext = new FavoriteAnimeViewModel();
         }
 
@@ -45,6 +50,17 @@ namespace ANT.Modules
         {
             if (e.PropertyName == "IsVisible" && DeleteButton.IsVisible)
                 await DeleteButton.Animate(new ShakeAnimation());
+        }
+
+        //TODO:Código abaixo é para testes, remover quando estiver tudo funcionando
+        private void gerador_de_notificacao(object sender, EventArgs e)
+        {
+          var animes = (BindingContext as FavoriteAnimeViewModel).GroupedFavoriteByWeekList.SelectMany(p => p.Select(q => q));
+
+            foreach (var item in animes)
+            {
+                NotificationManager.CreateNotificationAsync(item, Consts.NotificationChannelTodayAnime, DateTime.Now.AddMinutes(3));            
+            }
         }
     }
 }

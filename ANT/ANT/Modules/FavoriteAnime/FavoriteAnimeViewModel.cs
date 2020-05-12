@@ -226,7 +226,7 @@ namespace ANT.Modules
 
         //TODO: implementar esta VM e sua View(implementar o template da coleção, e mecanismo de switch para ativar ou desativar as notificações
         //animes que não estão exibindo ou não tem data da semana não vão ter essa opção do switch
-        //TODO: implementar mecanismo de filtro de texto via lupa, o filtro deve exibir o cabeçalho do grupo e os itens que satisfazem á substring de título de anime
-        //digitado no campo de busca;
+        //implementar no template da coleção um controle incremental para o usuário marcar qual foi o último episódio visto
+        //existe uma propriedade dentro de FavoriteAnime para isso
     }
 }

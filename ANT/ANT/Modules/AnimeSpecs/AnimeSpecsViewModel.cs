@@ -252,7 +252,7 @@ namespace ANT.Modules
                     AnimeContext.LastUpdateDate = DateTime.Now;
 
                     if (AnimeContext.CanGenerateNotifications)
-                        await NotificationManager.CreateNotificationAsync(AnimeContext);
+                        await NotificationManager.CreateNotificationAsync(AnimeContext, Consts.NotificationChannelTodayAnime);
 
                     App.FavoritedAnimes.Add(AnimeContext);
                     lang = Lang.Lang.AddedToFavorite;

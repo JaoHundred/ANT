@@ -65,7 +65,7 @@ namespace ANT.Modules
                         _animes[i].IsFavorited = true;
 
                         
-                        await NotificationManager.CreateNotificationAsync(favoritedAnime);
+                        await NotificationManager.CreateNotificationAsync(favoritedAnime, Consts.NotificationChannelTodayAnime);
 
                         App.FavoritedAnimes.Add(favoritedAnime);
                         finalAnimeCount++;

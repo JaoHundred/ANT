@@ -23,13 +23,13 @@ namespace ANT
         {
             InitializeComponent();
 
-            Device.SetFlags(new[] 
-            { 
+            Device.SetFlags(new[]
+            {
                 "RadioButton_Experimental", "Expander_Experimental" , //"SwipeView_Experimental"
             });
-            NotificationCenter.Current.NotificationTapped += Current_NotificationTapped;
 
             MainPage = new AppShell();
+            NotificationCenter.Current.NotificationTapped += Current_NotificationTapped;
         }
 
         public static SettingsPreferences SettingsPreferences;
@@ -61,7 +61,10 @@ namespace ANT
 
         private async void Current_NotificationTapped(NotificationTappedEventArgs e)
         {
-            //TODO: a chamada ao clicar na notificação não funciona, descobrir o que pode ser
+            //necessário para impedir da aplicação chegar aqui antes de ter carregado os FavoritedAnimes
+            while(FavoritedAnimes == null)
+                await Task.Delay(TimeSpan.FromSeconds(2));
+
             int malId = int.Parse(e.Data);
             await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(malId);
         }

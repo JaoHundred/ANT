@@ -14,5 +14,10 @@ namespace ANT.Core
         /// string para "desconhecido" Unknown
         /// </summary>
         public const string Unknown = "Unknown";
+
+        /// <summary>
+        /// string para canal de notificação de animes de hoje
+        /// </summary>
+        public const string NotificationChannelTodayAnime = "channel_anime";
     }
 }

@@ -122,7 +122,9 @@
             </CollectionView.ItemTemplate>
             
         </CollectionView>
-        
+
+        <Button Text="gerador de notificação" Clicked="gerador_de_notificacao"
+                x:Name="NotificationTester" IsVisible="False"/>
         
         <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
                 Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="DeleteButton_AnimationOnIsVisible">
