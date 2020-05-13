@@ -48,8 +48,12 @@ namespace ANT.Modules
                 var groupedFavoriteAnimes = favorited?.GroupBy(p => p.NextStreamDate.Value.DayOfWeek).ToList();
                 var todayAnimes = favorited?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.DayOfWeek)
                 .GroupBy(p => p.NextStreamDate.Value.DayOfWeek);
+                
+                var tomorrowAnimes = favorited?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.AddDays(1).DayOfWeek)
+                .GroupBy(p => p.NextStreamDate.Value.DayOfWeek);
 
                 var today = todayAnimes.LastOrDefault();
+                var tomorrow = tomorrowAnimes.LastOrDefault();
 
                 if (today != null)
                 {
@@ -60,6 +64,17 @@ namespace ANT.Modules
 
                     group.Add(new GroupedFavoriteAnimeByWeekDay(todayString
                         , today.ToList()));
+                }
+
+                if(tomorrow != null)
+                {
+                    groupedFavoriteAnimes.RemoveAll(p => p.Key == tomorrow.Key);
+
+                    string groupName = resMgr.Value.GetString(DateTime.Today.AddDays(1).DayOfWeek.ToString());
+                    string todayString = $"{groupName} ({Lang.Lang.TomorrowAnimes})";
+
+                    group.Add(new GroupedFavoriteAnimeByWeekDay(todayString
+                        , tomorrow.ToList()));
                 }
 
                 IList<DayOfWeek> daysOfWeek = AnimeExtension.FillDayOfWeek();
@@ -80,7 +95,6 @@ namespace ANT.Modules
                         continue;
 
                     group.Add(new GroupedFavoriteAnimeByWeekDay(resMgr.Value.GetString(nextGroupDay.Key.ToString()), nextGroupDay.ToList()));
-
                 }
 
                 if (groupedFavoritedNullDate != null)

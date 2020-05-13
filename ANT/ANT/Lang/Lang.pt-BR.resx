@@ -369,6 +369,9 @@
   <data name="TodayAnimes" xml:space="preserve">
     <value>Animes de hoje</value>
   </data>
+  <data name="TomorrowAnimes" xml:space="preserve">
+    <value>Animes de amanhã</value>
+  </data>
   <data name="TotalEpisodes" xml:space="preserve">
     <value>Total de episódios:</value>
   </data>

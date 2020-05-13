@@ -817,6 +817,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tomorrow animes.
+        /// </summary>
+        public static string TomorrowAnimes {
+            get {
+                return ResourceManager.GetString("TomorrowAnimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Episodes amount:.
         /// </summary>
         public static string TotalEpisodes {
