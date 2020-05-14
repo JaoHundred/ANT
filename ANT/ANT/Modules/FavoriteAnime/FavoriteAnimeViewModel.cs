@@ -238,9 +238,8 @@ namespace ANT.Modules
         #endregion
 
 
-        //TODO: implementar esta VM e sua View(implementar o template da coleção, e mecanismo de switch para ativar ou desativar as notificações
-        //animes que não estão exibindo ou não tem data da semana não vão ter essa opção do switch
-        //implementar no template da coleção um controle incremental para o usuário marcar qual foi o último episódio visto
-        //existe uma propriedade dentro de FavoriteAnime para isso
+        //TODO: implementar esta VM(implementar o template da coleção, e mecanismo de switch para ativar ou desativar as notificações
+        //TODO: implementar filtros por dia da semana(hoje + os 7 dias da semana), ordenação alfebética e alguma outra coisa que for interessante de fazer
+        //usar como base o filtro que existe em catalogueview
     }
 }

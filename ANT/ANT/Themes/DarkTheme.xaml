@@ -70,7 +70,10 @@
 
     <!--vermelho desbotado com saturação mediana-->
     <Color x:Key="BoxViewFilterCloseBoxButtonColor">#D14949</Color>
-    
+
+    <!--azul azure claro-->
+    <Color x:Key="StepperColor">#5a86d5</Color>
+
 
     <!--#endregion-->
 

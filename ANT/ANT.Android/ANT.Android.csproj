@@ -79,6 +79,7 @@
     <PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.3.4.1" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Effects\StepperColorEffect.cs" />
     <Compile Include="Localize.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />

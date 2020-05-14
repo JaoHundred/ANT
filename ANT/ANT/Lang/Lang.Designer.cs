@@ -430,6 +430,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last episode seen.
+        /// </summary>
+        public static string LastEpisode {
+            get {
+                return ResourceManager.GetString("LastEpisode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last seen.
         /// </summary>
         public static string LastSeen {

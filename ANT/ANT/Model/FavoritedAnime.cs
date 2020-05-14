@@ -57,12 +57,14 @@ namespace ANT.Model
             {
                 //TODO: implementar aqui o que acontece quando o switch dos animes favoritos são marcados ou desmarcados
                 //usar as propriedades CanGenerateNotifications e NotificationStatus
-                //
+                //ligar e desligar notificações, no desligar cancela e no ligar cria uma notificação usando o NotificationManager
+                //salvar a mudança em seguida
                 SetProperty(ref _canGenerateNotifications, value);
             }
         }
 
-        public float LastEpisodeSeen { get; set; }
+        //TODO: abrir essa propriedade abaixo e implementar o incremento e decremento seguido de save
+        public int LastEpisodeSeen { get; set; }
 
         public int UniqueNotificationID { get; set; }
 
