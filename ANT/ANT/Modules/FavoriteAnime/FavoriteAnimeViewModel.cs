@@ -238,7 +238,6 @@ namespace ANT.Modules
         #endregion
 
 
-        //TODO: implementar esta VM(implementar o template da coleção, e mecanismo de switch para ativar ou desativar as notificações
         //TODO: implementar filtros por dia da semana(hoje + os 7 dias da semana), ordenação alfebética e alguma outra coisa que for interessante de fazer
         //usar como base o filtro que existe em catalogueview
     }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xamanimation;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using NotificationManager = ANT.Core.NotificationManager;
 
 namespace ANT.Modules
 {
@@ -22,7 +23,7 @@ namespace ANT.Modules
 #endif   
             BindingContext = new FavoriteAnimeViewModel();
         }
-
+        
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             //Necessário para atualizar a lista de recentes toda vez que a página for aberta, já que o shell só carrega uma única vez
@@ -52,15 +53,34 @@ namespace ANT.Modules
                 await DeleteButton.Animate(new ShakeAnimation());
         }
 
-        //TODO:Código abaixo é para testes, remover quando estiver tudo funcionando
+        //TODO: O método logo abaixo é para testes, remover quando estiver tudo funcionando
         private void gerador_de_notificacao(object sender, EventArgs e)
         {
-          var animes = (BindingContext as FavoriteAnimeViewModel).GroupedFavoriteByWeekList.SelectMany(p => p.Select(q => q));
+            var animes = (BindingContext as FavoriteAnimeViewModel).GroupedFavoriteByWeekList.SelectMany(p => p.Select(q => q));
 
             foreach (var item in animes)
             {
-                NotificationManager.CreateNotificationAsync(item, Consts.NotificationChannelTodayAnime, DateTime.Now.AddMinutes(3));            
+                NotificationManager.CreateNotificationAsync(item, Consts.NotificationChannelTodayAnime, DateTime.Now.AddMinutes(3));
             }
+        }
+
+        private async void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            await Task.Run(async () => 
+            {
+                foreach (var anime in App.FavoritedAnimes)
+                {
+                    if (anime.NextStreamDate == null)
+                        continue;
+
+                    if(anime.HasNotificationReady && !anime.CanGenerateNotifications)
+                        await NotificationManager.CancelNotificationAsync(anime);
+                    else if(!anime.HasNotificationReady && anime.CanGenerateNotifications)
+                        await NotificationManager.CreateNotificationAsync(anime, Consts.NotificationChannelTodayAnime);
+                }
+            });
+
+            await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
         }
     }
 }

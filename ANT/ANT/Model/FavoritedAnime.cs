@@ -40,7 +40,7 @@ namespace ANT.Model
         public DateTime? NextStreamDate { get; set; }
 
 
-        private string _notificationStatus = Lang.Lang.On;
+        private string _notificationStatus;
         public string NotificationStatus
         {
             get { return _notificationStatus; }
@@ -55,15 +55,13 @@ namespace ANT.Model
             get { return _canGenerateNotifications; }
             set
             {
-                //TODO: implementar aqui o que acontece quando o switch dos animes favoritos são marcados ou desmarcados
-                //usar as propriedades CanGenerateNotifications e NotificationStatus
-                //ligar e desligar notificações, no desligar cancela e no ligar cria uma notificação usando o NotificationManager
-                //salvar a mudança em seguida
+                NotificationStatus = value ? Lang.Lang.On : Lang.Lang.Off;
                 SetProperty(ref _canGenerateNotifications, value);
             }
         }
 
-        //TODO: abrir essa propriedade abaixo e implementar o incremento e decremento seguido de save
+        public bool HasNotificationReady { get; set; }
+
         public int LastEpisodeSeen { get; set; }
 
         public int UniqueNotificationID { get; set; }

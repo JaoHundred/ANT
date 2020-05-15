@@ -53,6 +53,7 @@ namespace ANT.Core
                     };
                     notification.Android.ChannelId = notificationChannelId;
                     NotificationCenter.Current.Show(notification);
+                    favoritedAnime.HasNotificationReady = true;
                 });
             else // usado para fins de debugar
                 return Task.Run(async() => 
@@ -167,6 +168,7 @@ namespace ANT.Core
             return Task.Run(() =>
             {
                 NotificationCenter.Current.Cancel(favoritedAnime.UniqueNotificationID);
+                favoritedAnime.HasNotificationReady = false;
             });
         }
     }
