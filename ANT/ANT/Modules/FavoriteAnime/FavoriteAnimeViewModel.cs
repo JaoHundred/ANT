@@ -238,7 +238,7 @@ namespace ANT.Modules
         #endregion
 
 
-        //TODO: implementar filtros por dia da semana(hoje + os 7 dias da semana), ordenação alfebética e alguma outra coisa que for interessante de fazer
-        //usar como base o filtro que existe em catalogueview
+        //TODO: implementar filtros https://github.com/JaoHundred/ANT/issues/50
+        //usar como base o filtro que existe em catalogueview 
     }
 }
