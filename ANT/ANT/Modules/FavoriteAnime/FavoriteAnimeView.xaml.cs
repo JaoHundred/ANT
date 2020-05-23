@@ -1,4 +1,5 @@
 ﻿using ANT.Core;
+using ANT.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,8 +69,13 @@ namespace ANT.Modules
         {
             await Task.Run(async () => 
             {
-                foreach (var anime in App.FavoritedAnimes)
+                var animes = (BindingContext as FavoriteAnimeViewModel).GroupedFavoriteByWeekList.SelectMany(p => p.Select(q => q));
+                var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
+
+                foreach (var anime in animes)
                 {
+                    favoriteCollection.Update(anime.Anime.MalId, anime);
+
                     if (anime.NextStreamDate == null)
                         continue;
 
@@ -79,8 +85,6 @@ namespace ANT.Modules
                         await NotificationManager.CreateNotificationAsync(anime, Consts.NotificationChannelTodayAnime);
                 }
             });
-
-            await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
         }
     }
 }

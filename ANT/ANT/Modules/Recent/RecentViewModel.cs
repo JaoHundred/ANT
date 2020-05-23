@@ -26,7 +26,7 @@ namespace ANT.Modules
         {
             await Task.Run(() =>
             {
-                var sortedRecents = App.RecentAnimes.OrderByDescending(p => p.Date).ToList();
+                var sortedRecents = App.liteDB.GetCollection<RecentVisualized>().FindAll().OrderByDescending(p => p.Date).ToList();
                 Recents.ReplaceRange(sortedRecents);
             });
         }
@@ -59,13 +59,9 @@ namespace ANT.Modules
 
             if (canNavigate)
             {
-                var confirmDelegateAction = new Action(async () =>
+                var confirmDelegateAction = new Action(() =>
                 {
-                    await Task.Run(() =>
-                    {
-                        App.RecentAnimes.Clear();
-                        JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
-                    });
+                    App.liteDB.GetCollection<RecentVisualized>().DeleteAll();
 
                     Recents.Clear();
                 });

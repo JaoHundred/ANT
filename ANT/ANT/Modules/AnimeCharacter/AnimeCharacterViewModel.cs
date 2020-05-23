@@ -21,7 +21,7 @@ namespace ANT.Modules
         {
             InitializeTask = LoadAsync(characterId);
 
-            FavoriteCommand = new magno.AsyncCommand(OnFavorite);
+            FavoriteCommand = new magno.Command(OnFavorite);
             OpenLinkCommand = new magno.AsyncCommand<string>(OpenLink);
             SelectedAnimeCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedAnime);
             SelectedVoiceActorCommand = new magno.AsyncCommand(OnSelectedVoiceActor);
@@ -38,7 +38,7 @@ namespace ANT.Modules
 
             try
             {
-                FavoritedAnimeCharacter animeCharacter = App.FavoritedAnimeCharacters.FirstOrDefault(p => p.Character.MalId == characterId);
+                FavoritedAnimeCharacter animeCharacter = App.liteDB.GetCollection<FavoritedAnimeCharacter>().Find(p => p.Character.MalId == characterId).FirstOrDefault();
 
                 if (animeCharacter == null)
                 {
@@ -96,24 +96,22 @@ namespace ANT.Modules
 
         #region commands
         public ICommand FavoriteCommand { get; private set; }
-        public async Task OnFavorite()
+        public void OnFavorite()
         {
             if (CharacterContext.IsFavorited)
             {
                 CharacterContext.IsFavorited = false;
-                App.FavoritedAnimeCharacters.Remove(CharacterContext);
+                App.liteDB.GetCollection<FavoritedAnimeCharacter>().Delete(CharacterContext.Character.MalId);
 
                 DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.RemovedFromFavorite);
             }
             else
             {
                 CharacterContext.IsFavorited = true;
-                App.FavoritedAnimeCharacters.Add(CharacterContext);
+                App.liteDB.GetCollection<FavoritedAnimeCharacter>().Upsert(CharacterContext.Character.MalId, CharacterContext);
 
                 DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.AddedToFavorite);
             }
-
-            await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesCharacterFileName);
         }
 
         public ICommand SelectedAnimeCommand { get; private set; }

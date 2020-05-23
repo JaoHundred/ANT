@@ -31,8 +31,7 @@ namespace ANT.Modules
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
         {
-            int initialAnimeCount = App.FavoritedAnimes.Count;
-            int finalAnimeCount = initialAnimeCount;
+            var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
 
             try
             {
@@ -42,9 +41,6 @@ namespace ANT.Modules
                     {
                         if (_cancelationToken.IsCancellationRequested)
                         {
-                            if (finalAnimeCount > initialAnimeCount)
-                                await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
-
                             await NavigationManager.PopPopUpPageAsync();
                             _cancelationToken.Token.ThrowIfCancellationRequested();
                         }
@@ -52,7 +48,7 @@ namespace ANT.Modules
                         double result = (double)i / _animes.Count;
                         MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
 
-                        if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == _animes[i].Anime.MalId))
+                        if (favoriteCollection.FindAll().Any(p => p.Anime.MalId == _animes[i].Anime.MalId))
                             continue;
 
                         await App.DelayRequest(4);
@@ -67,13 +63,10 @@ namespace ANT.Modules
                         
                         await NotificationManager.CreateNotificationAsync(favoritedAnime, Consts.NotificationChannelTodayAnime);
 
-                        App.FavoritedAnimes.Add(favoritedAnime);
-                        finalAnimeCount++;
+                        favoriteCollection.Upsert(favoritedAnime.Anime.MalId, favoritedAnime);
                     }
                 }, _cancelationToken.Token);
 
-                if (finalAnimeCount > initialAnimeCount)
-                    await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             }
             catch (OperationCanceledException ex)
             {

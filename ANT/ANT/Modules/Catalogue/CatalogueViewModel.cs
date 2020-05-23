@@ -35,6 +35,7 @@ namespace ANT.Modules
         public CatalogueViewModel(GenreSearch genreEnum)
         {
             _currentGenre = genreEnum;
+            //TODO: os filtros não funcionam pelo abertura direto dos gêneros
 
             InitializeDefaultProperties();
 
@@ -73,7 +74,7 @@ namespace ANT.Modules
             {
                 foreach (var observableAnime in Animes)
                 {
-                    var favorited = App.FavoritedAnimes.FirstOrDefault(p => p.Anime.MalId == observableAnime.Anime.MalId);
+                    var favorited = App.liteDB.GetCollection<FavoritedAnime>().FindOne(p => p.Anime.MalId == observableAnime.Anime.MalId);
 
                     observableAnime.IsFavorited = favorited != null;
                 }

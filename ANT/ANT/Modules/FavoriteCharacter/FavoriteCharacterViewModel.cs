@@ -11,6 +11,7 @@ using ANT.Core;
 using ANT.UTIL;
 using System.Linq;
 using Xamarin.Forms;
+using LiteDB;
 
 namespace ANT.Modules
 {
@@ -34,7 +35,7 @@ namespace ANT.Modules
         {
             await Task.Run(() =>
             {
-                FavoritedCharacters.ReplaceRange(App.FavoritedAnimeCharacters);
+                FavoritedCharacters.ReplaceRange(App.liteDB.GetCollection<FavoritedAnimeCharacter>().FindAll().ToList());
                 _originalCollection = new List<FavoritedAnimeCharacter>(FavoritedCharacters);
             });
         }
@@ -73,15 +74,11 @@ namespace ANT.Modules
 
             if (canNavigate)
             {
-                var confirmDelegateAction = new Action(async () =>
+                var confirmDelegateAction = new Action(() =>
                 {
-                    await Task.Run(async() =>
-                    {
-                        App.FavoritedAnimeCharacters.Clear();
-                        await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder
-                            , StorageConsts.FavoritedAnimesCharacterFileName);
-                    });
-
+                        App.liteDB.GetCollection<FavoritedAnimeCharacter>().DeleteAll();
+                        //await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder
+                        //    , StorageConsts.FavoritedAnimesCharacterFileName);
                     FavoritedCharacters.Clear();
                 });
 
@@ -147,12 +144,12 @@ namespace ANT.Modules
 
                         foreach (var item in characters)
                         {
-                            var itemToRemove = App.FavoritedAnimeCharacters.FirstOrDefault(p => p == item);
+                            var itemToRemove = App.liteDB.GetCollection<FavoritedAnimeCharacter>().Find(p => p == item).FirstOrDefault();
 
                             if (itemToRemove != null)
-                                App.FavoritedAnimeCharacters.Remove(itemToRemove);
+                                App.liteDB.GetCollection<FavoritedAnimeCharacter>().Delete(itemToRemove.Character.MalId);
                         }
-                        await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesCharacterFileName);
+                        //await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesCharacterFileName);
                     });
 
                     await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.ClearFavoriteList, Lang.Lang.ClearCannotBeUndone, action);

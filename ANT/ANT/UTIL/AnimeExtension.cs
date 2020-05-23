@@ -99,7 +99,7 @@ namespace ANT.UTIL
                     IsR18 = anime.R18,
                 };
 
-                if (App.FavoritedAnimes.Exists(p => p.Anime.MalId == anime.MalId))
+                if (App.liteDB.GetCollection<FavoritedAnime>().Exists(p => p.Anime.MalId == anime.MalId))
                     animeSub.IsFavorited = true;
 
                 favoritedAnimeSubsEntries.Add(animeSub);

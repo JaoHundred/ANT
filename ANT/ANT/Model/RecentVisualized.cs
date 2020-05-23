@@ -13,6 +13,9 @@ namespace ANT.Model
             FavoritedAnime = anime;
         }
 
+        public RecentVisualized()
+        {}
+
         public DateTimeOffset Date { get; set; }
 
         public FavoritedAnime FavoritedAnime { get; set; }

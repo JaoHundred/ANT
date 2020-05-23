@@ -25,7 +25,8 @@ namespace ANT.Core
 
                     favoritedAnime.NextStreamDate = nextEpisode;
 
-                    FavoritedAnime lastFavorited = App.FavoritedAnimes.LastOrDefault();
+                    FavoritedAnime lastFavorited = App.liteDB.GetCollection<FavoritedAnime>().FindAll()
+                    .OrderBy(p => p.UniqueNotificationID).LastOrDefault();
 
                     if (lastFavorited == null)
                         favoritedAnime.UniqueNotificationID = 0;

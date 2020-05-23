@@ -37,13 +37,15 @@ namespace ANT.Modules
         {
             return Task.Run(() =>
             {
+                var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>().FindAll();
+
                 Lazy<ResourceManager> resMgr = new Lazy<ResourceManager>(
                                     () => new ResourceManager(typeof(Lang.Lang)));
 
                 var group = new List<GroupedFavoriteAnimeByWeekDay>();
 
-                var favorited = App.FavoritedAnimes.Where(p => p.NextStreamDate != null);
-                var groupedFavoritedNullDate = App.FavoritedAnimes.Where(p => p.NextStreamDate == null).GroupBy(p => p.NextStreamDate);
+                var favorited = favoriteCollection.Where(p => p.NextStreamDate != null);
+                var groupedFavoritedNullDate = favoriteCollection.Where(p => p.NextStreamDate == null).GroupBy(p => p.NextStreamDate);
 
                 var groupedFavoriteAnimes = favorited?.GroupBy(p => p.NextStreamDate.Value.DayOfWeek).ToList();
                 var todayAnimes = favorited?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.DayOfWeek)
@@ -165,18 +167,16 @@ namespace ANT.Modules
         private async Task OnDeleteFavoriteCommand()
         {
             var items = SelectedItems.Cast<FavoritedAnime>();
-
+            var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
             foreach (var item in items)
             {
-                App.FavoritedAnimes.Remove(item);
+                favoriteCollection.Delete(item.Anime.MalId);
                 await NotificationManager.CancelNotificationAsync(item);
             }
 
             var constructTask = ConstructGroupedCollectionAsync();
-            var jsonStorageTask = JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
 
             GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(await constructTask);
-            await jsonStorageTask;
         }
 
         public ICommand ClearAllCommand { get; private set; }
@@ -193,13 +193,12 @@ namespace ANT.Modules
                 {
                     await Task.Run(async () =>
                     {
-                        foreach (var item in App.FavoritedAnimes)
+                        var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
+                        var animesToCancelNotification = favoriteCollection.FindAll().ToList();
+                        favoriteCollection.DeleteAll();
+
+                        foreach (var item in animesToCancelNotification)
                             await NotificationManager.CancelNotificationAsync(item);
-
-                        App.FavoritedAnimes.Clear();
-                        await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder
-                            , StorageConsts.FavoritedAnimesFileName);
-
                     });
 
                     GroupedFavoriteByWeekList.Clear();

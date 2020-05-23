@@ -14,6 +14,9 @@ namespace ANT.Model
             CharacterPictures = characterPictures;
         }
 
+        public FavoritedAnimeCharacter()
+        {}
+
         private bool _isFavorited;
         public bool IsFavorited
         {

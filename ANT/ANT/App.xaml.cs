@@ -1,8 +1,10 @@
-﻿using ANT.Core;
+﻿using Android.Graphics;
+using ANT.Core;
 using ANT.Interfaces;
 using ANT.Model;
 using ANT.Modules;
 using JikanDotNet;
+using LiteDB;
 using MvvmHelpers;
 using Plugin.LocalNotification;
 using System;
@@ -33,27 +35,17 @@ namespace ANT
         }
 
         public static SettingsPreferences SettingsPreferences;
-        public static List<FavoritedAnime> FavoritedAnimes;
-        public static List<FavoritedAnimeCharacter> FavoritedAnimeCharacters;
-        public static List<RecentVisualized> RecentAnimes;
+        public static LiteDatabase liteDB;
         public static IJikan Jikan { get; private set; }
         protected async override void OnStart()
         {
             var settingsTask = JsonStorage.ReadDataAsync<SettingsPreferences>(StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
-            var favoritedAnimesTask = JsonStorage.ReadDataAsync<List<FavoritedAnime>>(StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
-            var favoritedAnimesCharacterTask = JsonStorage.ReadDataAsync<List<FavoritedAnimeCharacter>>
-                (StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesCharacterFileName);
-            var recentTask = JsonStorage.ReadDataAsync<List<RecentVisualized>>(StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
-
             SettingsPreferences = await settingsTask ?? new SettingsPreferences();
-
-            FavoritedAnimes = await favoritedAnimesTask ?? new List<FavoritedAnime>();
-            FavoritedAnimeCharacters = await favoritedAnimesCharacterTask ?? new List<FavoritedAnimeCharacter>();
-            RecentAnimes = await recentTask ?? new List<RecentVisualized>();
 
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
 
+            liteDB = new LiteDatabase($"Filename={System.IO.Path.Combine(StorageConsts.LocalAppDataFolder, "data")}");
             //await CultureManager.LoadCultureAsync();
 
             Jikan = new Jikan(useHttps: true);
@@ -61,10 +53,6 @@ namespace ANT
 
         private async void Current_NotificationTapped(NotificationTappedEventArgs e)
         {
-            //necessário para impedir da aplicação chegar aqui antes de ter carregado os FavoritedAnimes
-            while(FavoritedAnimes == null)
-                await Task.Delay(TimeSpan.FromSeconds(2));
-
             int malId = int.Parse(e.Data);
             await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(malId);
         }

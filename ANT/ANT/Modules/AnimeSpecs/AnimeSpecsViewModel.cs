@@ -57,7 +57,7 @@ namespace ANT.Modules
             {
                 long id = (long)param;
 
-                _favoritedAnime = App.FavoritedAnimes.FirstOrDefault(p => p.Anime.MalId == id);
+                _favoritedAnime = App.liteDB.GetCollection<FavoritedAnime>().FindOne(p => p.Anime.MalId == id);
                 //TODO: criar no futuro uma rotina de checagem por atualizações dos animes alvos em favoritos(algo semelhante ao tachiyomi
                 //pode acontecer todo dia, semanalmente ou até mesmo no dia específico de cada anime), a rotina é chamada como background e atualiza
                 //a lista com dados novos se houver
@@ -232,17 +232,17 @@ namespace ANT.Modules
         {
             //TODO: o usuário pode escolher desativar pela tela de FavoritedView e AnimeSpecsView as notificações
             string lang = default;
+            var bdCollection = App.liteDB.GetCollection<FavoritedAnime>();
 
             var taskResult = Task.Run(async () =>
             {
-                if (App.FavoritedAnimes.Contains(AnimeContext))
+                if (bdCollection.Exists(p => p.Anime.MalId == AnimeContext.Anime.MalId))
                 {
                     AnimeContext.IsFavorited = false;
                     _favoritedAnime.IsFavorited = false;
                     await NotificationManager.CancelNotificationAsync(AnimeContext);
 
-
-                    App.FavoritedAnimes.Remove(AnimeContext);
+                    bdCollection.Delete(AnimeContext.Anime.MalId);
                     lang = Lang.Lang.RemovedFromFavorite;
                 }
                 else
@@ -254,7 +254,7 @@ namespace ANT.Modules
                     if (AnimeContext.CanGenerateNotifications)
                         await NotificationManager.CreateNotificationAsync(AnimeContext, Consts.NotificationChannelTodayAnime);
 
-                    App.FavoritedAnimes.Add(AnimeContext);
+                    bdCollection.Upsert(AnimeContext.Anime.MalId, AnimeContext);
                     lang = Lang.Lang.AddedToFavorite;
                 }
 
@@ -265,12 +265,11 @@ namespace ANT.Modules
 
 
             await taskResult;
-            await JsonStorage.SaveDataAsync(App.FavoritedAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesFileName);
             DependencyService.Get<IToast>().MakeToastMessageShort(lang);
 
 #if DEBUG
             Console.WriteLine("Animes favoritados no momento");
-            foreach (var anime in App.FavoritedAnimes)
+            foreach (var anime in bdCollection.FindAll())
             {
                 Console.WriteLine(anime.Anime.Title);
             }
@@ -328,30 +327,32 @@ namespace ANT.Modules
         #region métodos VM
         private Task AddOrUpdateRecentAnimeAsync(FavoritedAnime recentFavoritedAnime)
         {
-            return Task.Run(async () =>
+            return Task.Run(() =>
             {
-                var favoritedSubEntry = App.RecentAnimes.FirstOrDefault(p => p.FavoritedAnime.Anime.MalId == recentFavoritedAnime.Anime.MalId);
-
-                if (favoritedSubEntry != null)
-                    favoritedSubEntry.Date = DateTimeOffset.Now;
-                else
-                {
-                    if (App.RecentAnimes.Count == 10)
-                    {
-                        DateTimeOffset mostAntiqueDate = App.RecentAnimes.Min(p => p.Date);
-                        RecentVisualized mostAntiqueVisualized = App.RecentAnimes.First(p => p.Date == mostAntiqueDate);
-
-                        App.RecentAnimes.Remove(mostAntiqueVisualized);
-                        App.RecentAnimes.Add(new RecentVisualized(recentFavoritedAnime));
-                    }
-                    else if (App.RecentAnimes.Count < 10)
-                        App.RecentAnimes.Add(new RecentVisualized(recentFavoritedAnime));
-                }
-
                 if (_cancellationToken.IsCancellationRequested)
                     _cancellationToken.Token.ThrowIfCancellationRequested();
 
-                await JsonStorage.SaveDataAsync(App.RecentAnimes, StorageConsts.LocalAppDataFolder, StorageConsts.RecentAnimesFileName);
+                var recentCollection = App.liteDB.GetCollection<RecentVisualized>();
+                var favoritedSubEntry = recentCollection.FindOne(p => p.FavoritedAnime.Anime.MalId == recentFavoritedAnime.Anime.MalId);
+
+                if (favoritedSubEntry != null)
+                {
+                    favoritedSubEntry.Date = DateTime.Now;
+                    recentCollection.Upsert(recentFavoritedAnime.Anime.MalId, new RecentVisualized(recentFavoritedAnime));
+                }
+                else
+                {
+                    if (recentCollection.Count() == 10)
+                    {
+                        DateTimeOffset mostAntiqueDate = recentCollection.Min(p => p.Date);
+                        RecentVisualized mostAntiqueVisualized = recentCollection.FindOne(p => p.Date == mostAntiqueDate);
+
+                        recentCollection.Delete(mostAntiqueVisualized.FavoritedAnime.Anime.MalId);
+                        recentCollection.Upsert(recentFavoritedAnime.Anime.MalId, new RecentVisualized(recentFavoritedAnime));
+                    }
+                    else if (recentCollection.Count() < 10)
+                        recentCollection.Upsert(recentFavoritedAnime.Anime.MalId, new RecentVisualized(recentFavoritedAnime));
+                }
 
             }, _cancellationToken.Token);
         }
