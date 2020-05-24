@@ -53,6 +53,9 @@ namespace ANT
 
         private async void Current_NotificationTapped(NotificationTappedEventArgs e)
         {
+            while (liteDB == null)
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+
             int malId = int.Parse(e.Data);
             await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(malId);
         }
