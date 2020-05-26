@@ -16,7 +16,8 @@ namespace ANT.Model
         public RecentVisualized()
         {}
 
-        public DateTimeOffset Date { get; set; }
+        private DateTimeOffset _date;
+        public DateTimeOffset Date { get => _date; set => _date = value.LocalDateTime; }
 
         public FavoritedAnime FavoritedAnime { get; set; }
     }

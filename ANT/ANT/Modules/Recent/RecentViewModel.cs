@@ -83,13 +83,5 @@ namespace ANT.Modules
             SelectedRecent = null;
         }
         #endregion
-
-        //TODO:resolver o problema do datetime/datetimeoffset, liteDB guarda as datas em UTC(universal time) e não local
-        //https://github.com/mbdavid/LiteDB/wiki/Data-Structure
-        //https://github.com/mbdavid/LiteDB/issues/420
-        //https://github.com/mbdavid/LiteDB/issues/794
-        //uma possível solução é guardar datetime/datetimeoffset como long ticks, converter para ticks ao guardar no banco(vai ser necessário converter de volta
-        //para datetime/datetimeoffset para poder usar a data local)
-        //ficar de olho nos objetos de data das classes do jikan
     }
 }

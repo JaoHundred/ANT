@@ -35,9 +35,11 @@ namespace ANT.Model
 
         public Anime Anime { get; set; }
 
-        public DateTime? LastUpdateDate { get; set; }
+        private DateTime? _lastUpdateDate;
+        public DateTime? LastUpdateDate { get => _lastUpdateDate; set => _lastUpdateDate = value?.ToLocalTime(); }
 
-        public DateTime? NextStreamDate { get; set; }
+        private DateTime? _nextStreamDate;
+        public DateTime? NextStreamDate { get => _nextStreamDate; set => _nextStreamDate = value?.ToLocalTime(); }
 
 
         private string _notificationStatus;
