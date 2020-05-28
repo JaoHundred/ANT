@@ -10,6 +10,7 @@ using Plugin.LocalNotification;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -45,7 +46,10 @@ namespace ANT
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
 
-            liteDB = new LiteDatabase($"Filename={System.IO.Path.Combine(StorageConsts.LocalAppDataFolder, "data")}");
+            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
+
+            string fullPath = System.IO.Path.Combine(newLocation, "data");
+            liteDB = new LiteDatabase($"Filename={fullPath}");
             //await CultureManager.LoadCultureAsync();
 
             Jikan = new Jikan(useHttps: true);
