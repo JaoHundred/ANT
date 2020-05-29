@@ -23,12 +23,17 @@ namespace ANT.Modules
             //NotificationTester.IsVisible = true;
 #endif   
             BindingContext = new FavoriteAnimeViewModel();
+            
         }
         
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             //Necessário para atualizar a lista de recentes toda vez que a página for aberta, já que o shell só carrega uma única vez
             //a ViewModel
+            MessagingCenter.Subscribe<FavoriteAnimeViewModel>(this, "CloseFilterView", (sender) =>
+            {
+                CloseSlideMenuTapped(null, null);
+            });
             await (BindingContext as FavoriteAnimeViewModel)?.LoadAsync(null);
         }
 
@@ -67,9 +72,12 @@ namespace ANT.Modules
 
         private async void ContentPage_Disappearing(object sender, EventArgs e)
         {
+            MessagingCenter.Unsubscribe<FavoriteAnimeViewModel>(this, "CloseFilterView");
+            CloseSlideMenuTapped(null, null);
+
             await Task.Run(async () => 
             {
-                var animes = (BindingContext as FavoriteAnimeViewModel).GroupedFavoriteByWeekList.SelectMany(p => p.Select(q => q));
+                var animes = (BindingContext as FavoriteAnimeViewModel)._originalCollection.SelectMany(p => p.Select(q => q));
                 var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
 
                 foreach (var anime in animes)
@@ -85,6 +93,16 @@ namespace ANT.Modules
                         await NotificationManager.CreateNotificationAsync(anime, Consts.NotificationChannelTodayAnime);
                 }
             });
+        }
+
+        private async void CloseSlideMenuTapped(object sender, EventArgs e)
+        {
+            await SlideMenu.TranslateTo(0, _page.Bounds.Bottom, easing: Easing.Linear);
+        }
+
+        private async void FilterTapped(object sender, EventArgs e)
+        {
+            await SlideMenu.TranslateTo(0, _page.Bounds.Top, easing: Easing.Linear);
         }
     }
 }

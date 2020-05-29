@@ -12,6 +12,7 @@ using ANT.Core;
 using System.Linq;
 using System.Resources;
 using Xamarin.Forms;
+using JikanDotNet;
 
 namespace ANT.Modules
 {
@@ -25,10 +26,20 @@ namespace ANT.Modules
             ClearAllCommand = new magno.AsyncCommand(OnClearAll);
             SelectionModeCommand = new magno.Command(OnSelectionMode);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
+            GenreCheckedCommand = new magno.Command<GenreData>(OnGenreCheck);
+            ApplyFilterCommand = new magno.AsyncCommand(OnApplyFilter);
+            ResetFilterCommand = new magno.Command(OnResetFilter);
+            DayOfWeekCheckedCommand = new Command<DayOfWeekFilterDate>(OnDayOfWeekCheck);
         }
 
         public async Task LoadAsync(object param)
         {
+            FilterData = new FilterData
+            {
+                Genres = ANT.UTIL.AnimeExtension.FillGenres(showNSFWGenres: false),
+                DayOfWeekOrder = UTIL.AnimeExtension.FillTodayDayOfWeek(),
+            };
+
             _originalCollection = await ConstructGroupedCollectionAsync();
             GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(_originalCollection);
         }
@@ -50,7 +61,7 @@ namespace ANT.Modules
                 var groupedFavoriteAnimes = favorited?.GroupBy(p => p.NextStreamDate.Value.DayOfWeek).ToList();
                 var todayAnimes = favorited?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.DayOfWeek)
                 .GroupBy(p => p.NextStreamDate.Value.DayOfWeek);
-                
+
                 var tomorrowAnimes = favorited?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.AddDays(1).DayOfWeek)
                 .GroupBy(p => p.NextStreamDate.Value.DayOfWeek);
 
@@ -68,7 +79,7 @@ namespace ANT.Modules
                         , today.ToList()));
                 }
 
-                if(tomorrow != null)
+                if (tomorrow != null)
                 {
                     groupedFavoriteAnimes.RemoveAll(p => p.Key == tomorrow.Key);
 
@@ -79,7 +90,7 @@ namespace ANT.Modules
                         , tomorrow.ToList()));
                 }
 
-                IList<DayOfWeek> daysOfWeek = AnimeExtension.FillDayOfWeek();
+                IList<DayOfWeek> daysOfWeek = UTIL.AnimeExtension.FillDayOfWeek();
 
                 int nextDay = (int)DateTime.Today.DayOfWeek;
                 foreach (var days in daysOfWeek)
@@ -107,7 +118,7 @@ namespace ANT.Modules
             });
         }
 
-        private IList<GroupedFavoriteAnimeByWeekDay> _originalCollection;
+        public IList<GroupedFavoriteAnimeByWeekDay> _originalCollection;
         #region Propriedades
         private ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay> _groupedFavoriteByWeekList;
         public ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay> GroupedFavoriteByWeekList
@@ -128,6 +139,13 @@ namespace ANT.Modules
         {
             get { return _selectedItems; }
             set { SetProperty(ref _selectedItems, value); }
+        }
+
+        private FilterData _filterData;
+        public FilterData FilterData
+        {
+            get { return _filterData; }
+            set { SetProperty(ref _filterData, value); }
         }
 
         #endregion
@@ -234,6 +252,81 @@ namespace ANT.Modules
                 _canNavigate = true;
             }
         }
+
+        public ICommand GenreCheckedCommand { get; private set; }
+        private void OnGenreCheck(GenreData genreData)
+        {
+            genreData.IsChecked = !genreData.IsChecked;
+        }
+
+        public ICommand DayOfWeekCheckedCommand { get; private set; }
+        private void OnDayOfWeekCheck(DayOfWeekFilterDate dayOfWeekFilterDate)
+        {
+            dayOfWeekFilterDate.IsChecked = !dayOfWeekFilterDate.IsChecked;
+        }
+
+        public ICommand ApplyFilterCommand { get; private set; }
+        private async Task OnApplyFilter()
+        {
+            var checkedGenres = FilterData.Genres.Where(p => p.IsChecked).Select(p => p.Genre).ToList();
+            var checkedDaysOfWeek = FilterData.DayOfWeekOrder.Where(p => p.IsChecked).ToList();
+
+            MessagingCenter.Send(this, "CloseFilterView");
+
+            await Task.Delay(TimeSpan.FromMilliseconds(500)); // usado para impedir que seja visto um leve engasto na filtragem
+
+            var animeToRemove = new List<FavoritedAnime>();
+            var groupAnimes = new List<GroupedFavoriteAnimeByWeekDay>(_originalCollection);
+            //TODO: a original collection está perdendo as coleções internas após o filtro, clicar em resetar filtro só traz de volta o cabeçalho dos grupos
+
+            for (int i = 0; i < groupAnimes.Count; i++)
+            {
+                GroupedFavoriteAnimeByWeekDay favoritedAnimeGroup = groupAnimes[i];
+
+                for (int j = 0; j < favoritedAnimeGroup.Count; j++)
+                {
+                    FavoritedAnime favoritedAnime = favoritedAnimeGroup[j];
+
+                    bool hasAllGenres = await favoritedAnime.HasAllSpecifiedGenresAsync(checkedGenres.ToArray());
+                   //TODO: acrescentar a interação do filtro para dia da semana
+
+                    if (!hasAllGenres)
+                        animeToRemove.Add(favoritedAnime);
+                }
+            }
+
+            if (animeToRemove.Count > 0)
+                foreach (var item in animeToRemove)
+                {
+                    foreach (var group in groupAnimes)
+                    {
+                        if(group.Contains(item))
+                            group.Remove(item);
+                    }
+                }
+
+            var groupsWithAnimes = groupAnimes.Where(p => p.Count > 0);
+            GroupedFavoriteByWeekList.ReplaceRange(groupsWithAnimes);
+        }
+
+
+        public ICommand ResetFilterCommand { get; private set; }
+        private void OnResetFilter()
+        {
+            var checkedGenres = FilterData.Genres.Where(p => p.IsChecked);
+            var checkedDays = FilterData.DayOfWeekOrder.Where(p => p.IsChecked);
+
+            foreach (var item in checkedGenres)
+                item.IsChecked = false;
+            foreach (var item in checkedDays)
+                item.IsChecked = false;
+
+            GroupedFavoriteByWeekList.ReplaceRange(_originalCollection);
+            MessagingCenter.Send(this, "CloseFilterView");
+
+            //TODO: mostrar o padrão de filtro quando o sistema de filtro for resetado
+        }
+
         #endregion
 
 

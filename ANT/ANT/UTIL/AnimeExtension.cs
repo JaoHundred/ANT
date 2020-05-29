@@ -235,6 +235,22 @@ namespace ANT.UTIL
             };
         }
 
+        public static IList<DayOfWeekFilterDate> FillTodayDayOfWeek()
+        {
+            return new List<DayOfWeekFilterDate>
+            {
+                 new DayOfWeekFilterDate(TodayDayOfWeek.Today),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.Unknown),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.Sunday),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.Monday),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.Tuesday),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.Wednesday),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.Thursday),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.Friday),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.Saturday),
+            };
+        }
+
         public static IList<SortDirectionData> FillSortDirectionData()
         {
             return new List<SortDirectionData>

@@ -259,6 +259,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Day of week.
+        /// </summary>
+        public static string DayOfWeek {
+            get {
+                return ResourceManager.GetString("DayOfWeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Descending.
         /// </summary>
         public static string Descending {
@@ -817,6 +826,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Today.
+        /// </summary>
+        public static string Today {
+            get {
+                return ResourceManager.GetString("Today", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Today animes.
         /// </summary>
         public static string TodayAnimes {
@@ -867,6 +885,15 @@ namespace ANT.Lang {
         public static string TypeOfSort {
             get {
                 return ResourceManager.GetString("TypeOfSort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string Unknown {
+            get {
+                return ResourceManager.GetString("Unknown", resourceCulture);
             }
         }
         

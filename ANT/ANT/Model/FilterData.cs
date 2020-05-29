@@ -15,6 +15,8 @@ namespace ANT.Model
 
         public IList<SortDirectionData> SortDirections { get; set; }
 
+        public IList<DayOfWeekFilterDate> DayOfWeekOrder { get; set; }
+
         //TODO: quando tiver mais opções de filtros, acrescentar aqui
     }
 }

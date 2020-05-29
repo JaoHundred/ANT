@@ -10,7 +10,6 @@
              xmlns:behavior="clr-namespace:ANT._Behaviors"
              xmlns:ffimg="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:converter="clr-namespace:ANT.Converter"
-             xmlns:effect="clr-namespace:ANT.Effects"
              x:DataType="modules:FavoriteAnimeViewModel"
              mc:Ignorable="d"
              x:Class="ANT.Modules.FavoriteAnimeView"
@@ -23,12 +22,16 @@
         <converter:TranslateEnumConverter x:Key="TranslateEnumConverter"/>
         <converter:ValueIsNullToBoolConverter x:Key="NullToBoolConverter"/>
         <converter:StringToIntConverter x:Key="StringToIntConverter"/>
+
+        <converter:InversorConverter x:Key="InversorConverter"/>
+        <converter:GenreEnumToSeparateWordConverter x:Key="GenreToStringConverter"/>
     </ContentPage.Resources>
 
     <Shell.TitleView>
-        <Grid>
+        <Grid ColumnSpacing="20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Label Text="{res:Translate FavoriteAnimes}" Style="{StaticResource NavigationBarTitleLabelStyle}"
@@ -59,6 +62,12 @@
                     <TapGestureRecognizer Tapped="SearchLabelTapped"/>
                 </Label.GestureRecognizers>
             </Label>
+            <Label Grid.Column="2" x:Name="FilterControl" Style="{StaticResource FilterLabelStyle}"
+                   VerticalOptions="Center" TextColor="{DynamicResource TextTitleColor}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="FilterTapped"/>
+                </Label.GestureRecognizers>
+            </Label>
         </Grid>
     </Shell.TitleView>
 
@@ -70,92 +79,176 @@
                      Command="{Binding SelectionModeCommand}"/>
     </ContentPage.ToolbarItems>
 
-
     <Grid>
-
-        <CollectionView ItemsSource="{Binding GroupedFavoriteByWeekList}" IsGrouped="True"
+        <Grid>
+            <CollectionView ItemsSource="{Binding GroupedFavoriteByWeekList}" IsGrouped="True"
                         SelectionMode="{Binding SelectionMode}"
                         SelectionChangedCommand="{Binding OpenAnimeCommand}"
                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                         SelectedItems="{Binding SelectedItems, Mode=TwoWay}">
-            <CollectionView.GroupHeaderTemplate>
-                <DataTemplate x:DataType="model:GroupedFavoriteAnimeByWeekDay">
-                    <Frame Style="{StaticResource HeaderFrameStyle}">
-                        <Label Text="{Binding GroupName}" Style="{StaticResource HeaderFrameLabel}"/>
-                    </Frame>
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate x:DataType="model:GroupedFavoriteAnimeByWeekDay">
+                        <Frame Style="{StaticResource HeaderFrameStyle}">
+                            <Label Text="{Binding GroupName}" Style="{StaticResource HeaderFrameLabel}"/>
+                        </Frame>
 
-                </DataTemplate>
-            </CollectionView.GroupHeaderTemplate>
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
 
-            <CollectionView.Footer>
-                <Label IsVisible="False"/>
-            </CollectionView.Footer>
+                <CollectionView.Footer>
+                    <Label IsVisible="False"/>
+                </CollectionView.Footer>
 
-            <CollectionView.ItemsLayout>
-                <GridItemsLayout Span="2" Orientation="Vertical" />
-            </CollectionView.ItemsLayout>
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Span="2" Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:FavoritedAnime">
-                    <Frame Scale="0.95" HeightRequest="380" Padding="5">
-                        <Grid x:Name="favoritedAnimeGrid">
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
-                            <ffimg:CachedImage x:Name="img" Source="{Binding Anime.ImageURL}"/>
-                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}" 
-                                               IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
-                            <Label Grid.Row="1" Text="{Binding Anime.Title}" Style="{StaticResource TitleLabelStyle}"/>
-                            <Grid Grid.Row="2" IsVisible="{Binding NextStreamDate, Converter={StaticResource NullToBoolConverter}}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:FavoritedAnime">
+                        <Frame Scale="0.95" HeightRequest="380" Padding="5">
+                            <Grid x:Name="favoritedAnimeGrid">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
                                     <RowDefinition/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
-                                <Label Text="{res:Translate Notifications}"/>
-                                <Grid Grid.Row="1" Margin="10,0,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <Label Text="{Binding NotificationStatus}" />
-                                    <Switch  Grid.Column="1" VerticalOptions="Start" HorizontalOptions="End"
+                                <ffimg:CachedImage x:Name="img" Source="{Binding Anime.ImageURL}"/>
+                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}" 
+                                               IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
+                                <Label Grid.Row="1" Text="{Binding Anime.Title}" Style="{StaticResource TitleLabelStyle}"/>
+                                <Grid Grid.Row="2" IsVisible="{Binding NextStreamDate, Converter={StaticResource NullToBoolConverter}}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Label Text="{res:Translate Notifications}"/>
+                                    <Grid Grid.Row="1" Margin="10,0,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding NotificationStatus}" />
+                                        <Switch  Grid.Column="1" VerticalOptions="Start" HorizontalOptions="End"
                                              IsToggled="{Binding CanGenerateNotifications, Mode=TwoWay}"/>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                            <Grid Grid.Row="3" VerticalOptions="Center">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
-                                <Label Text="{res:Translate LastEpisode}"/>
-                                <Label Grid.Row="1" FontSize="Large" HorizontalTextAlignment="Center"
+                                <Grid Grid.Row="3" VerticalOptions="Center">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Text="{res:Translate LastEpisode}"/>
+                                    <Label Grid.Row="1" FontSize="Large" HorizontalTextAlignment="Center"
                                        TextColor="{DynamicResource TextColor}"
                                        Text="{Binding Value, Source={x:Reference lastEpisodeStepper}}"/>
-                                <Stepper Grid.Row="2"  x:Name="lastEpisodeStepper" HorizontalOptions="CenterAndExpand"
+                                    <Stepper Grid.Row="2"  x:Name="lastEpisodeStepper" HorizontalOptions="CenterAndExpand"
                                          Increment="1" Minimum="0" Maximum="{Binding Anime.Episodes, Converter={StaticResource StringToIntConverter}}" 
                                          Value="{Binding LastEpisodeSeen, Mode=TwoWay}"/>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
 
-        </CollectionView>
+            </CollectionView>
 
-        <Button Text="gerador de notificação" Clicked="gerador_de_notificacao"
+            <Button Text="gerador de notificação" Clicked="gerador_de_notificacao"
                 x:Name="NotificationTester" IsVisible="False"/>
 
-        <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
+            <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
                 Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="DeleteButton_AnimationOnIsVisible">
-            <Button.ImageSource>
-                <FontImageSource FontFamily="{StaticResource FontIcon}"
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="{StaticResource FontIcon}"
                                  Glyph="{StaticResource Delete}"
                                  Size="22" />
-            </Button.ImageSource>
-        </Button>
+                </Button.ImageSource>
+            </Button>
+        </Grid>
+        <Grid x:Name="SlideMenu" BackgroundColor="{DynamicResource AppBackgroundColor}"
+             TranslationY="{Binding Height, Source={x:Reference _page}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+
+            <BoxView Grid.ColumnSpan="2" BackgroundColor="{DynamicResource BoxViewFilterHeaderColor}"/>
+            <Label Text="{res:Translate SearchFilters}" Grid.ColumnSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
+                   FontSize="Title"/>
+
+            <Grid Grid.ColumnSpan="2" HorizontalOptions="End" VerticalOptions="Center"
+                  Margin="0,0,0,10">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="CloseSlideMenuTapped"/>
+                </Grid.GestureRecognizers>
+
+                <AbsoluteLayout>
+                    <BoxView BackgroundColor="{DynamicResource BoxViewFilterCloseBoxButtonColor}" HeightRequest="5"/>
+                    <BoxView BackgroundColor="{DynamicResource BoxViewFilterCloseBoxButtonColor}" CornerRadius="5"/>
+                </AbsoluteLayout>
+
+                <Label Text="X" FontSize="25" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.5*"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <StackLayout Orientation="Vertical" Grid.ColumnSpan="2" >
+                    <Label Text="{res:Translate DayOfWeek}" FontSize="Subtitle"/>
+                    <CollectionView ItemsSource="{Binding FilterData.DayOfWeekOrder}">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="2"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:DayOfWeekFilterDate">
+                                <StackLayout Orientation="Horizontal">
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.DayOfWeekCheckedCommand, Source={x:Reference _page}}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </StackLayout.GestureRecognizers>
+                                    <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
+                                    <Label Text="{Binding TodayDayOfWeek, Converter={StaticResource TranslateEnumConverter}}" 
+                                           VerticalTextAlignment="Center"/>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+
+                <StackLayout Orientation="Vertical" Grid.Row="1" Grid.ColumnSpan="2">
+                    <Label Text="{res:Translate Genres}" FontSize="Subtitle"/>
+                    <CollectionView ItemsSource="{Binding FilterData.Genres}">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="2"/>
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:GenreData">
+                                <StackLayout Orientation="Horizontal">
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.GenreCheckedCommand, Source={x:Reference _page}}"
+                                                      CommandParameter="{Binding .}"/>
+                                    </StackLayout.GestureRecognizers>
+                                    <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
+                                    <Label Text="{Binding Genre, Converter={StaticResource GenreToStringConverter}}" VerticalTextAlignment="Center"/>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Grid>
+
+            <Button Grid.Row="2" Text="{res:Translate ApplyFilter}" Command="{Binding ApplyFilterCommand}"
+                    Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
+            <Button Grid.Row="2" Grid.Column="1" Text="{res:Translate ResetFilter}"
+                    Command="{Binding ResetFilterCommand}" Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
+        </Grid>
     </Grid>
+
 
 </ContentPage>
