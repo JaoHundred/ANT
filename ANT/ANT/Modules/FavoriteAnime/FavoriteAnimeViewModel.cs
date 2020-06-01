@@ -30,6 +30,8 @@ namespace ANT.Modules
             ApplyFilterCommand = new magno.AsyncCommand(OnApplyFilter);
             ResetFilterCommand = new magno.Command(OnResetFilter);
             DayOfWeekCheckedCommand = new Command<DayOfWeekFilterDate>(OnDayOfWeekCheck);
+            SwitchCommand = new Command<FavoritedAnime>(OnSwitch);
+            StepperCommand = new Command<FavoritedAnime>(OnStepper);
         }
 
         public async Task LoadAsync(object param)
@@ -276,8 +278,9 @@ namespace ANT.Modules
             await Task.Delay(TimeSpan.FromMilliseconds(500)); // usado para impedir que seja visto um leve engasto na filtragem
 
             var animeToRemove = new List<FavoritedAnime>();
+            // meio encontrado de não ter a originalCollection filtrada, não está bom, mas é a correção por hora
+            _originalCollection = await ConstructGroupedCollectionAsync(); 
             var groupAnimes = new List<GroupedFavoriteAnimeByWeekDay>(_originalCollection);
-            //TODO: a original collection está perdendo as coleções internas após o filtro, clicar em resetar filtro só traz de volta o cabeçalho dos grupos
 
             for (int i = 0; i < groupAnimes.Count; i++)
             {
@@ -288,7 +291,7 @@ namespace ANT.Modules
                     FavoritedAnime favoritedAnime = favoritedAnimeGroup[j];
 
                     bool hasAllGenres = await favoritedAnime.HasAllSpecifiedGenresAsync(checkedGenres.ToArray());
-                   //TODO: acrescentar a interação do filtro para dia da semana
+                    //TODO: acrescentar a interação do filtro para dia da semana
 
                     if (!hasAllGenres)
                         animeToRemove.Add(favoritedAnime);
@@ -300,7 +303,7 @@ namespace ANT.Modules
                 {
                     foreach (var group in groupAnimes)
                     {
-                        if(group.Contains(item))
+                        if (group.Contains(item))
                             group.Remove(item);
                     }
                 }
@@ -309,9 +312,41 @@ namespace ANT.Modules
             GroupedFavoriteByWeekList.ReplaceRange(groupsWithAnimes);
         }
 
+        public ICommand SwitchCommand { get; private set; }
+        private async void OnSwitch(FavoritedAnime favoritedAnime)
+        {
+            var favoriteds = App.liteDB.GetCollection<FavoritedAnime>();
+            FavoritedAnime favorited = favoriteds.FindById(favoritedAnime.Anime.MalId);
+
+            if (favorited == null)
+                return;
+
+            if (favorited.CanGenerateNotifications != favoritedAnime.CanGenerateNotifications)
+            {
+                if (favoritedAnime.CanGenerateNotifications)
+                    await NotificationManager.CreateNotificationAsync(favoritedAnime, Consts.NotificationChannelTodayAnime);
+                else
+                    await NotificationManager.CancelNotificationAsync(favoritedAnime);
+
+                favoriteds.Update(favoritedAnime.Anime.MalId, favoritedAnime);
+            }
+        }
+
+        public ICommand StepperCommand { get; private set; }
+        private void OnStepper(FavoritedAnime favoritedAnime)
+        {
+            var favoriteds = App.liteDB.GetCollection<FavoritedAnime>();
+            FavoritedAnime favorited = favoriteds.FindById(favoritedAnime.Anime.MalId);
+
+            if (favorited == null)
+                return;
+
+            if (favorited.LastEpisodeSeen != favoritedAnime.LastEpisodeSeen)
+                favoriteds.Update(favoritedAnime.Anime.MalId, favoritedAnime);
+        }
 
         public ICommand ResetFilterCommand { get; private set; }
-        private void OnResetFilter()
+        private async void OnResetFilter()
         {
             var checkedGenres = FilterData.Genres.Where(p => p.IsChecked);
             var checkedDays = FilterData.DayOfWeekOrder.Where(p => p.IsChecked);
@@ -321,6 +356,7 @@ namespace ANT.Modules
             foreach (var item in checkedDays)
                 item.IsChecked = false;
 
+            _originalCollection = await ConstructGroupedCollectionAsync();
             GroupedFavoriteByWeekList.ReplaceRange(_originalCollection);
             MessagingCenter.Send(this, "CloseFilterView");
 

@@ -70,29 +70,10 @@ namespace ANT.Modules
             }
         }
 
-        private async void ContentPage_Disappearing(object sender, EventArgs e)
+        private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             MessagingCenter.Unsubscribe<FavoriteAnimeViewModel>(this, "CloseFilterView");
             CloseSlideMenuTapped(null, null);
-
-            await Task.Run(async () => 
-            {
-                var animes = (BindingContext as FavoriteAnimeViewModel)._originalCollection.SelectMany(p => p.Select(q => q));
-                var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
-
-                foreach (var anime in animes)
-                {
-                    favoriteCollection.Update(anime.Anime.MalId, anime);
-
-                    if (anime.NextStreamDate == null)
-                        continue;
-
-                    if(anime.HasNotificationReady && !anime.CanGenerateNotifications)
-                        await NotificationManager.CancelNotificationAsync(anime);
-                    else if(!anime.HasNotificationReady && anime.CanGenerateNotifications)
-                        await NotificationManager.CreateNotificationAsync(anime, Consts.NotificationChannelTodayAnime);
-                }
-            });
         }
 
         private async void CloseSlideMenuTapped(object sender, EventArgs e)

@@ -4,7 +4,6 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:ANT.Lang"
-             xmlns:comm="clr-namespace:ANT._Behaviors"
              xmlns:modules="clr-namespace:ANT.Modules"
              xmlns:model="clr-namespace:ANT.Model"
              xmlns:behavior="clr-namespace:ANT._Behaviors"
@@ -45,7 +44,7 @@
                 <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntryStyle}" 
                    Text="{Binding SearchQuery}" Unfocused="SearchFieldLostFocus" x:Name="EntrySearchField">
                     <Entry.Behaviors>
-                        <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
+                        <behavior:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
                     </Entry.Behaviors>
                 </Entry>
 
@@ -129,7 +128,13 @@
                                         </Grid.ColumnDefinitions>
                                         <Label Text="{Binding NotificationStatus}" />
                                         <Switch  Grid.Column="1" VerticalOptions="Start" HorizontalOptions="End"
-                                             IsToggled="{Binding CanGenerateNotifications, Mode=TwoWay}"/>
+                                             IsToggled="{Binding CanGenerateNotifications, Mode=TwoWay}" >
+                                            <Switch.Behaviors>
+                                                <behavior:EventToCommandBehavior EventName="Toggled"
+                                                                                 Command="{Binding BindingContext.SwitchCommand, Source={x:Reference _page}}"
+                                                                                 CommandParameter="{Binding .}"/>
+                                            </Switch.Behaviors>
+                                        </Switch>
                                     </Grid>
                                 </Grid>
                                 <Grid Grid.Row="3" VerticalOptions="Center">
@@ -144,7 +149,13 @@
                                        Text="{Binding Value, Source={x:Reference lastEpisodeStepper}}"/>
                                     <Stepper Grid.Row="2"  x:Name="lastEpisodeStepper" HorizontalOptions="CenterAndExpand"
                                          Increment="1" Minimum="0" Maximum="{Binding Anime.Episodes, Converter={StaticResource StringToIntConverter}}" 
-                                         Value="{Binding LastEpisodeSeen, Mode=TwoWay}"/>
+                                         Value="{Binding LastEpisodeSeen, Mode=TwoWay}" >
+                                        <Stepper.Behaviors>
+                                            <behavior:EventToCommandBehavior EventName="ValueChanged"
+                                                                             Command="{Binding BindingContext.StepperCommand, Source={x:Reference _page}}"
+                                                                             CommandParameter="{Binding .}"/>
+                                        </Stepper.Behaviors>
+                                    </Stepper>
                                 </Grid>
                             </Grid>
                         </Frame>
