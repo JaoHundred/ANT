@@ -279,7 +279,7 @@ namespace ANT.Modules
 
             var animeToRemove = new List<FavoritedAnime>();
             // meio encontrado de não ter a originalCollection filtrada, não está bom, mas é a correção por hora
-            _originalCollection = await ConstructGroupedCollectionAsync(); 
+            _originalCollection = await ConstructGroupedCollectionAsync();
             var groupAnimes = new List<GroupedFavoriteAnimeByWeekDay>(_originalCollection);
 
             for (int i = 0; i < groupAnimes.Count; i++)
@@ -290,10 +290,10 @@ namespace ANT.Modules
                 {
                     FavoritedAnime favoritedAnime = favoritedAnimeGroup[j];
 
-                    bool hasAllGenres = await favoritedAnime.HasAllSpecifiedGenresAsync(checkedGenres.ToArray());
-                    //TODO: acrescentar a interação do filtro para dia da semana
+                    var hasAllGenresTask = favoritedAnime.HasAllSpecifiedGenresAsync(checkedGenres.ToArray());
+                    var hasAnyDaysOfWeekTask = favoritedAnime.HasAnyDayOfWeekAsync(checkedDaysOfWeek.ToArray());
 
-                    if (!hasAllGenres)
+                    if (!await hasAllGenresTask || !await hasAnyDaysOfWeekTask)
                         animeToRemove.Add(favoritedAnime);
                 }
             }

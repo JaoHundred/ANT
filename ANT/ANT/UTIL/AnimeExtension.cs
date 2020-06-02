@@ -32,6 +32,38 @@ namespace ANT.UTIL
             });
         }
 
+        public static Task<bool> HasAnyDayOfWeekAsync(this FavoritedAnime favoriteAnime, params DayOfWeekFilterDate[] dayOfWeekFilterDates)
+        {
+            return Task.Run(() =>
+            {
+                List<bool> hasAnyDayOfWeek = new List<bool>();
+
+                if (dayOfWeekFilterDates.Length == 0)
+                    return true;
+
+                foreach (var dayOfWeek in dayOfWeekFilterDates)
+                {
+                    if (!favoriteAnime.NextStreamDate.HasValue)
+                    {
+                        if (dayOfWeekFilterDates.Any(p => p.TodayDayOfWeek == TodayDayOfWeek.Unknown))
+                            hasAnyDayOfWeek.Add(true);
+                        continue;
+                    }
+
+                    bool hasWeekDay = favoriteAnime.NextStreamDate.Value.DayOfWeek.ToString() == dayOfWeek.TodayDayOfWeek.ToString();
+                    bool hasToday = false;
+
+                    if (dayOfWeek.TodayDayOfWeek == TodayDayOfWeek.Today)
+                        hasToday = favoriteAnime.NextStreamDate.Value.DayOfWeek == DateTime.Today.DayOfWeek;
+
+                    if (hasWeekDay || hasToday)
+                        hasAnyDayOfWeek.Add(hasWeekDay | hasToday);
+                }
+
+                return hasAnyDayOfWeek.Any(p => p);
+            });
+        }
+
         public static string GetDescription(Enum value)
         {
             return
