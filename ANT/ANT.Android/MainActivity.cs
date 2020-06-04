@@ -51,12 +51,7 @@ namespace ANT.Droid
         private readonly string _rootRoute = "Home";
 
         private static Page GetCurrentPage()
-        {
-            return (Page)
-                            Xamarin.Forms.Application.
-                            Current.MainPage.Navigation.
-                            NavigationStack.LastOrDefault();
-        }
+            => (Shell.Current?.CurrentItem?.CurrentItem as IShellSectionController)?.PresentedPage;
 
         public override async void OnBackPressed()
         {

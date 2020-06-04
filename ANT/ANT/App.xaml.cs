@@ -46,11 +46,14 @@ namespace ANT
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
 
-            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
+            if (liteDB == null)
+            {
+                string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
 
-            string fullPath = System.IO.Path.Combine(newLocation, "data");
-            liteDB = new LiteDatabase($"Filename={fullPath}");
-            //await CultureManager.LoadCultureAsync();
+                string fullPath = System.IO.Path.Combine(newLocation, "data");
+                liteDB = new LiteDatabase($"Filename={fullPath}");
+                //await CultureManager.LoadCultureAsync();
+            }
 
             Jikan = new Jikan(useHttps: true);
         }
