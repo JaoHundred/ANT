@@ -29,7 +29,7 @@ namespace ANT.Modules
             GenreCheckedCommand = new magno.Command<GenreData>(OnGenreCheck);
             ApplyFilterCommand = new magno.AsyncCommand(OnApplyFilter);
             ResetFilterCommand = new magno.Command(OnResetFilter);
-            DayOfWeekCheckedCommand = new Command<DayOfWeekFilterDate>(OnDayOfWeekCheck);
+            DayOfWeekCheckedCommand = new magno.Command<DayOfWeekFilterDate>(OnDayOfWeekCheck);
             SwitchCommand = new Command<FavoritedAnime>(OnSwitch);
             StepperCommand = new Command<FavoritedAnime>(OnStepper);
         }
