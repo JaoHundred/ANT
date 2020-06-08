@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              xmlns:Theme="clr-namespace:ANT.Themes"
+             xmlns:custom="clr-namespace:ANT.CustomControls"
              xmlns:effect="clr-namespace:ANT.Effects"
              xmlns:Icon="clr-namespace:ANT.Icons"
              xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
@@ -35,6 +36,12 @@
 
             <Style TargetType="Stepper">
                 <Setter Property="effect:StepperColorEffect.Color" Value="{DynamicResource StepperColor}"/>
+            </Style>
+
+            <Style TargetType="custom:BottomSlideMenu">
+                <Setter Property="BackgroundColorMenu" Value="{DynamicResource BottomSlideMenuColor}"/>
+                <Setter Property="HeightMenu" Value="60"/>
+                <Setter Property="CornerRadiusMenu" Value="5"/>
             </Style>
 
             <Style TargetType="Picker">
@@ -173,8 +180,8 @@
             
             <Style TargetType="Button" x:Key="RoundedButtonOverlayStyle" BasedOn="{StaticResource RoundedButtonStyle}">
                 <Setter Property="VerticalOptions" Value="End"/>
-                <Setter Property="HorizontalOptions" Value="End"/>
-                <Setter Property="Margin" Value="30"/>
+                <Setter Property="HorizontalOptions" Value="Start"/>
+                <Setter Property="Margin" Value="30,30,30,60"/>
             </Style>
 
             <Style TargetType="Grid" x:Key="GridFullPageForActivityIndicatorStyle">
@@ -208,6 +215,18 @@
             <Style TargetType="Label" x:Key="FilterLabelStyle">
                 <Setter Property="FontFamily" Value="{DynamicResource FontIcon}"/>
                 <Setter Property="Text" Value="{StaticResource Filter}"/>
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+
+            <Style TargetType="Label" x:Key="DeleteLabelStyle">
+                <Setter Property="FontFamily" Value="{DynamicResource FontIcon}"/>
+                <Setter Property="Text" Value="{StaticResource Delete}"/>
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+
+            <Style TargetType="Label" x:Key="SelectLabelStyle">
+                <Setter Property="FontFamily" Value="{DynamicResource FontIcon}"/>
+                <Setter Property="Text" Value="{StaticResource Select}"/>
                 <Setter Property="FontSize" Value="20"/>
             </Style>
 

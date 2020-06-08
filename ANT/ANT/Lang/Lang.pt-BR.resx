@@ -186,6 +186,9 @@
   <data name="DayOfWeek" xml:space="preserve">
     <value>Dia da semana</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Deletar</value>
+  </data>
   <data name="Descending" xml:space="preserve">
     <value>Decrescente</value>
   </data>
@@ -218,6 +221,9 @@
   </data>
   <data name="FavoriteCharacters" xml:space="preserve">
     <value>Personagens favoritos</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filtrar</value>
   </data>
   <data name="Finalizing" xml:space="preserve">
     <value>Finalizando...</value>

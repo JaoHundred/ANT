@@ -26,5 +26,6 @@
     <x:String x:Key="SeasonCalendar">&#xE787;</x:String>
     <x:String x:Key="GlobalSearch">&#xF49A;</x:String>
     <x:String x:Key="Filter">&#xE71C;</x:String>
+    <x:String x:Key="Select">&#xE8B3;</x:String>
     
 </ResourceDictionary>

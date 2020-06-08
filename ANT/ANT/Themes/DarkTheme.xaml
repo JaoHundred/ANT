@@ -74,6 +74,7 @@
     <!--azul azure claro-->
     <Color x:Key="StepperColor">#5a86d5</Color>
 
+    <Color x:Key="BottomSlideMenuColor">#4D6363</Color>
 
     <!--#endregion-->
 

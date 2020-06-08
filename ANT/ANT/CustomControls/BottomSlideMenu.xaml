@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converter="clr-namespace:ANT.Converter"
+             mc:Ignorable="d"
+             x:Class="ANT.CustomControls.BottomSlideMenu"
+             x:Name="_bottomSlideMenuControl"
+             Padding="0" Margin="0">
+
+    <ContentView.Resources>
+        <converter:MiddleHeightConverter x:Key="MiddleConverter"/>
+    </ContentView.Resources>
+
+    <Grid Padding="0" Margin="0" >
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <ContentView x:Name="ViewContentControl" Grid.RowSpan="2"
+                     Content="{Binding ViewContent, Source={x:Reference _bottomSlideMenuControl}}"/>
+
+        <Grid x:Name="Menu" Grid.Row="1" HeightRequest="{Binding HeightMenu, Source={x:Reference _bottomSlideMenuControl}}">
+
+            <BoxView BackgroundColor="{Binding BackgroundColorMenu, Source={x:Reference _bottomSlideMenuControl}}"
+                     VerticalOptions="End"
+                     HeightRequest="{Binding HeightMenu, Converter={StaticResource MiddleConverter}, Source={x:Reference _bottomSlideMenuControl}}"/>
+
+            <BoxView BackgroundColor="{Binding BackgroundColorMenu, Source={x:Reference _bottomSlideMenuControl}}"
+                     CornerRadius="{Binding CornerRadiusMenu, Source={x:Reference _bottomSlideMenuControl}}"/>
+
+            <ContentView Content="{Binding MenuContent, Source={x:Reference _bottomSlideMenuControl}}"/>
+        </Grid>
+
+    </Grid>
+</ContentView>

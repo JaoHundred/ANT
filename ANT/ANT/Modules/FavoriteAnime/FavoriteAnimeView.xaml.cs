@@ -23,9 +23,8 @@ namespace ANT.Modules
             //NotificationTester.IsVisible = true;
 #endif   
             BindingContext = new FavoriteAnimeViewModel();
-            
         }
-        
+
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             //Necessário para atualizar a lista de recentes toda vez que a página for aberta, já que o shell só carrega uma única vez
@@ -40,7 +39,6 @@ namespace ANT.Modules
         private void SearchLabelTapped(object sender, EventArgs e)
         {
             SearchControl.IsVisible = true;
-            SearchIconLabel.IsVisible = false;
             EntrySearchField.Focus();
 
             LabelTitle.IsVisible = false;
@@ -49,7 +47,6 @@ namespace ANT.Modules
         private void SearchFieldLostFocus(object sender, FocusEventArgs e)
         {
             SearchControl.IsVisible = false;
-            SearchIconLabel.IsVisible = true;
             LabelTitle.IsVisible = true;
         }
 
@@ -85,5 +82,11 @@ namespace ANT.Modules
         {
             await SlideMenu.TranslateTo(0, _page.Bounds.Top, easing: Easing.Linear);
         }
+
+
+        private async void CollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e) => 
+            await bottomSlideMenu.ScrollHappenedAsync(e.VerticalDelta);
+
+
     }
 }
