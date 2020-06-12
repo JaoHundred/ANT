@@ -22,15 +22,5 @@ namespace ANT.Model
         public int SelectedThemeIndex { get; set; }
 
         public int SelectedLanguageIndex { get; set; }
-
-        private TimeSpan _notificationInterval = TimeSpan.FromDays(1);
-        public TimeSpan NotificationInterval
-        {
-            get { return _notificationInterval; }
-            set
-            {
-                _notificationInterval = value;
-            }
-        }
     }
 }
