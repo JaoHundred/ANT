@@ -16,6 +16,10 @@ using ANT.UTIL;
 using System.Linq;
 using Plugin.LocalNotification;
 using Android.Content;
+using ANT.Droid.Helpers;
+using ANT.Droid.Scheduler;
+using Android.App.Job;
+using System.Threading.Tasks;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ANT.Droid.MainActivity))]
 namespace ANT.Droid
@@ -44,10 +48,18 @@ namespace ANT.Droid
                             Description = "General",
                         });
 
+
             LoadApplication(new App());
             NotificationCenter.NotifyNotificationTapped(Intent);
-        }
 
+            //TODO: criar no futuro uma rotina de checagem por atualizações dos dados dos animes salvos em favoritos(algo semelhante ao tachiyomi
+            //pode acontecer todo dia, semanalmente ou até mesmo no dia específico de cada anime)
+            Task.Run(() =>
+            {
+                JobSchedulerHelper.ScheduleJob(this, 0);
+            });
+        }
+        
         private readonly string _rootRoute = "Home";
 
         private static Page GetCurrentPage()
@@ -121,6 +133,13 @@ namespace ANT.Droid
         {
             NotificationCenter.NotifyNotificationTapped(intent);
             base.OnNewIntent(intent);
+        }
+
+        public void CancelJob(int jobId)
+        {
+            var tm = (JobScheduler)GetSystemService(Context.JobSchedulerService);
+
+            tm.Cancel(jobId);
         }
 
     }

@@ -35,17 +35,10 @@ namespace ANT
             NotificationCenter.Current.NotificationTapped += Current_NotificationTapped;
         }
 
-        public static SettingsPreferences SettingsPreferences;
         public static LiteDatabase liteDB;
         public static IJikan Jikan { get; private set; }
         protected async override void OnStart()
         {
-            var settingsTask = JsonStorage.ReadDataAsync<SettingsPreferences>(StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
-            SettingsPreferences = await settingsTask ?? new SettingsPreferences();
-
-            // Handle when your app starts
-            await ThemeManager.LoadThemeAsync();
-
             if (liteDB == null)
             {
                 string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
@@ -54,6 +47,9 @@ namespace ANT
                 liteDB = new LiteDatabase($"Filename={fullPath}");
                 //await CultureManager.LoadCultureAsync();
             }
+
+            // Handle when your app starts
+            await ThemeManager.LoadThemeAsync();
 
             Jikan = new Jikan(useHttps: true);
         }

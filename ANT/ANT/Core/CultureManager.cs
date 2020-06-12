@@ -1,4 +1,5 @@
 ﻿using ANT.Lang;
+using ANT.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -43,9 +44,12 @@ namespace ANT.Core
 
                         break;
                 }
+                
+                var bdCollection = App.liteDB.GetCollection<SettingsPreferences>();
+                var settings = bdCollection.FindById(0);
 
-                App.SettingsPreferences.SelectedLanguageIndex = _currentCultureIndex;
-                JsonStorage.SaveDataAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
+                settings.SelectedLanguageIndex = _currentCultureIndex;
+                bdCollection.Upsert(0, settings);
             });
         }
 

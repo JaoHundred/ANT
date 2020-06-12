@@ -57,8 +57,9 @@ namespace ANT.Core
                         }
                     });
 
-                    App.SettingsPreferences.SelectedThemeIndex = themeId;
-                    await JsonStorage.SaveDataAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
+                    var bdCol = App.liteDB.GetCollection<SettingsPreferences>();
+                    var settings = bdCol.FindById(0);
+                    settings.SelectedThemeIndex = themeId;
                 }
             });
         }
@@ -105,18 +106,27 @@ namespace ANT.Core
         //TODO:implementar os 2 abaixo quando estiver funcionando o json
         private static Task<Themes> CurrentThemeOrCreateAsync()
         {
-            return Task<Themes>.Run(() =>
-           {
-               return (Themes)App.SettingsPreferences.SelectedThemeIndex;
-           });
+            var bdCol = App.liteDB.GetCollection<SettingsPreferences>();
+            var settings = bdCol.FindById(0);
+
+            if (settings == null)
+                settings = new SettingsPreferences();
+
+            var theme = (Themes)settings.SelectedThemeIndex;
+            bdCol.Upsert(0, settings);
+
+            return Task.FromResult(theme);
         }
 
         private static Task UpdateSelectedThemeAsync(int themeId)
         {
-            return Task.Run(() =>
-            {
-                App.SettingsPreferences.SelectedThemeIndex = themeId;
-            });
+            var bdCol = App.liteDB.GetCollection<SettingsPreferences>();
+            var settings = bdCol.FindById(0);
+
+
+            settings.SelectedThemeIndex = themeId;
+
+            return Task.FromResult(bdCol.Upsert(0, settings));
         }
     }
 }

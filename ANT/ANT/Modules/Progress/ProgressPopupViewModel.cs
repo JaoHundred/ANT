@@ -58,10 +58,18 @@ namespace ANT.Modules
                         var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
                         favoritedAnime.IsFavorited = true;
                         favoritedAnime.LastUpdateDate = DateTime.Now;
-                        _animes[i].IsFavorited = true;
+                        favoritedAnime.NextStreamDate = await favoritedAnime.NextEpisodeDateAsync();
 
-                        
-                        await NotificationManager.CreateNotificationAsync(favoritedAnime, Consts.NotificationChannelTodayAnime);
+                        int uniqueId = favoriteCollection.Max(p => p.UniqueNotificationID);
+
+                        if (uniqueId == int.MaxValue)
+                            uniqueId = 0;
+                        else if (uniqueId < int.MaxValue)
+                            uniqueId += 1;
+
+                        favoritedAnime.UniqueNotificationID = uniqueId;
+
+                        _animes[i].IsFavorited = true;
 
                         favoriteCollection.Upsert(favoritedAnime.Anime.MalId, favoritedAnime);
                     }

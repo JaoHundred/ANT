@@ -176,6 +176,76 @@ namespace ANT.UTIL
             return relatedAnimes;
         }
 
+        /// <summary>
+        /// Retorna a data do próximo dia de semana que o anime irá passar, se não houver data, retorna null
+        /// </summary>
+        /// <param name="favoritedAnime"></param>
+        /// <returns></returns>
+        public static Task<DateTime?> NextEpisodeDateAsync(this FavoritedAnime favoritedAnime)
+        {
+            return Task.Run(() =>
+            {
+                if (string.IsNullOrEmpty(favoritedAnime.Anime.Broadcast))
+                    return null;
+
+                var daysOfWeek = Enum.GetNames(typeof(DayOfWeek)).Select(p => new string(p.Append('s').ToArray()).ToString().ToLowerInvariant()).ToList();
+                DayOfWeek? nextEpisodeDay = null;
+
+                string[] broadCastVector = favoritedAnime.Anime.Broadcast.Split(' ');
+
+                foreach (var day in daysOfWeek)
+                {
+                    string broadCastDay = broadCastVector.FirstOrDefault(p => p.ToLowerInvariant() == day);
+
+                    if (string.IsNullOrWhiteSpace(broadCastDay))
+                        continue;
+
+                    broadCastDay = broadCastDay.ToLowerInvariant();
+
+                    switch (broadCastDay)
+                    {
+                        case "sundays":
+                            nextEpisodeDay = DayOfWeek.Sunday;
+                            break;
+                        case "mondays":
+                            nextEpisodeDay = DayOfWeek.Monday;
+                            break;
+                        case "tuesdays":
+                            nextEpisodeDay = DayOfWeek.Tuesday;
+                            break;
+                        case "wednesdays":
+                            nextEpisodeDay = DayOfWeek.Wednesday;
+                            break;
+                        case "thursdays":
+                            nextEpisodeDay = DayOfWeek.Thursday;
+                            break;
+                        case "fridays":
+                            nextEpisodeDay = DayOfWeek.Friday;
+                            break;
+                        case "saturdays":
+                            nextEpisodeDay = DayOfWeek.Saturday;
+                            break;
+                    }
+                }
+
+                if (nextEpisodeDay == null)
+                    return null;
+
+                int daysToSchedule = 0;
+
+                if (nextEpisodeDay > DateTime.Today.DayOfWeek)
+                    daysToSchedule = (int)nextEpisodeDay - (int)DateTime.Today.DayOfWeek;
+
+                else if (nextEpisodeDay <= DateTime.Today.DayOfWeek)
+                    daysToSchedule = ((int)nextEpisodeDay + 7) - (int)DateTime.Today.DayOfWeek;
+                // TODO: ficar de olho nessa condição, suspeito que se acontecer do dia de atualização coincidir com o mesmo dia que passa o anime, nenhuma notificação será gerada para a próxima semana
+
+                DateTime? nextEpisodeDate = DateTime.Today.AddDays(daysToSchedule).AddHours(12);
+
+                return nextEpisodeDate;
+            });
+        }
+
         public static IList<GenreData> FillGenres(bool showNSFWGenres = true)
         {
             var genres = new List<GenreData>()

@@ -62,8 +62,6 @@ namespace ANT.Model
             }
         }
 
-        public bool HasNotificationReady { get; set; }
-
         public int LastEpisodeSeen { get; set; }
 
         public int UniqueNotificationID { get; set; }

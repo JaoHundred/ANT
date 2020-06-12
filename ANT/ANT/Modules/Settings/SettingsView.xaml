@@ -29,7 +29,7 @@
             <TableRoot>
                 <TableSection>
                     <ViewCell>
-                        <StackLayout >
+                        <StackLayout Margin="5">
                             <Label Text="{res:Translate ChangeTheme}" Style="{StaticResource MenuLabelColorStyle}"
                                      />
                             <Picker SelectedIndex="{Binding SelectedThemeIndex}" 

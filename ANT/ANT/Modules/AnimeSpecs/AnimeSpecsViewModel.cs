@@ -58,9 +58,7 @@ namespace ANT.Modules
                 long id = (long)param;
 
                 _favoritedAnime = App.liteDB.GetCollection<FavoritedAnime>().FindOne(p => p.Anime.MalId == id);
-                //TODO: criar no futuro uma rotina de checagem por atualizações dos animes alvos em favoritos(algo semelhante ao tachiyomi
-                //pode acontecer todo dia, semanalmente ou até mesmo no dia específico de cada anime), a rotina é chamada como background e atualiza
-                //a lista com dados novos se houver
+               
 
                 if (_favoritedAnime == null)
                 {
@@ -239,8 +237,6 @@ namespace ANT.Modules
                 if (bdCollection.Exists(p => p.Anime.MalId == AnimeContext.Anime.MalId))
                 {
                     AnimeContext.IsFavorited = false;
-                    _favoritedAnime.IsFavorited = false;
-                    await NotificationManager.CancelNotificationAsync(AnimeContext);
 
                     bdCollection.Delete(AnimeContext.Anime.MalId);
                     lang = Lang.Lang.RemovedFromFavorite;
@@ -248,11 +244,18 @@ namespace ANT.Modules
                 else
                 {
                     AnimeContext.IsFavorited = true;
-                    _favoritedAnime.IsFavorited = true;
                     AnimeContext.LastUpdateDate = DateTime.Now;
 
-                    if (AnimeContext.CanGenerateNotifications)
-                        await NotificationManager.CreateNotificationAsync(AnimeContext, Consts.NotificationChannelTodayAnime);
+                    AnimeContext.NextStreamDate = await AnimeContext.NextEpisodeDateAsync();
+
+                    int uniqueId = bdCollection.Max(p => p.UniqueNotificationID);
+
+                    if (uniqueId == int.MaxValue)
+                        uniqueId = 0;
+                    else if (uniqueId < int.MaxValue)
+                        uniqueId += 1;
+
+                    AnimeContext.UniqueNotificationID = uniqueId;
 
                     bdCollection.Upsert(AnimeContext.Anime.MalId, AnimeContext);
                     lang = Lang.Lang.AddedToFavorite;

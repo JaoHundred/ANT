@@ -189,10 +189,7 @@ namespace ANT.Modules
             var items = SelectedItems.Cast<FavoritedAnime>();
             var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
             foreach (var item in items)
-            {
                 favoriteCollection.Delete(item.Anime.MalId);
-                await NotificationManager.CancelNotificationAsync(item);
-            }
 
             var constructTask = ConstructGroupedCollectionAsync();
 
@@ -211,14 +208,11 @@ namespace ANT.Modules
             {
                 var confirmDelegateAction = new Action(async () =>
                 {
-                    await Task.Run(async () =>
+                    await Task.Run(() =>
                     {
                         var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
                         var animesToCancelNotification = favoriteCollection.FindAll().ToList();
                         favoriteCollection.DeleteAll();
-
-                        foreach (var item in animesToCancelNotification)
-                            await NotificationManager.CancelNotificationAsync(item);
                     });
 
                     GroupedFavoriteByWeekList.Clear();
@@ -313,7 +307,7 @@ namespace ANT.Modules
         }
 
         public ICommand SwitchCommand { get; private set; }
-        private async void OnSwitch(FavoritedAnime favoritedAnime)
+        private void OnSwitch(FavoritedAnime favoritedAnime)
         {
             var favoriteds = App.liteDB.GetCollection<FavoritedAnime>();
             FavoritedAnime favorited = favoriteds.FindById(favoritedAnime.Anime.MalId);
@@ -322,14 +316,7 @@ namespace ANT.Modules
                 return;
 
             if (favorited.CanGenerateNotifications != favoritedAnime.CanGenerateNotifications)
-            {
-                if (favoritedAnime.CanGenerateNotifications)
-                    await NotificationManager.CreateNotificationAsync(favoritedAnime, Consts.NotificationChannelTodayAnime);
-                else
-                    await NotificationManager.CancelNotificationAsync(favoritedAnime);
-
                 favoriteds.Update(favoritedAnime.Anime.MalId, favoritedAnime);
-            }
         }
 
         public ICommand StepperCommand { get; private set; }
