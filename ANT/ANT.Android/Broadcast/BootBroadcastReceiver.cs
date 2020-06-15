@@ -12,6 +12,8 @@ using Android.Views;
 using Android.Widget;
 using ANT.Droid.Helpers;
 using ANT.Droid.Scheduler;
+using AndroidX;
+using AndroidX.Work;
 
 [assembly: UsesPermission(Manifest.Permission.ReceiveBootCompleted)]
 namespace ANT.Droid.Broadcast
@@ -25,7 +27,7 @@ namespace ANT.Droid.Broadcast
         {
             OnReceive(context, intent);
 
-            WorkerHelper.WorkSheduler(context, 0, TimeSpan.FromDays(1));
+            WorkerHelper.WorkSheduler(context, 0, TimeSpan.FromDays(1), ExistingPeriodicWorkPolicy.Keep);
         }
     }
 }

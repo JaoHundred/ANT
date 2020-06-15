@@ -17,7 +17,7 @@ namespace ANT.Droid.Helpers
 {
     public static class WorkerHelper
     {
-        public static void WorkSheduler(Context context, int jobId, TimeSpan periodicInterval)
+        public static void WorkSheduler(Context context, int jobId, TimeSpan periodicInterval, ExistingPeriodicWorkPolicy periodicWorkPolicy)
         {
             var constraints = new Constraints();
             constraints.SetRequiresBatteryNotLow(true);
@@ -26,7 +26,7 @@ namespace ANT.Droid.Helpers
             var notificationWorker = PeriodicWorkRequest.Builder.From<NotificationWorker>(periodicInterval)
             .SetConstraints(constraints).Build();
 
-            WorkManager.GetInstance(context).EnqueueUniquePeriodicWork(jobId.ToString(), ExistingPeriodicWorkPolicy.Keep, notificationWorker);
+            WorkManager.GetInstance(context).EnqueueUniquePeriodicWork(jobId.ToString(), periodicWorkPolicy, notificationWorker);
         }
     }
 }

@@ -53,11 +53,11 @@ namespace ANT.Droid
             LoadApplication(new App());
             NotificationCenter.NotifyNotificationTapped(Intent);
 
-            //TODO: criar no futuro uma rotina de checagem por atualizações dos dados dos animes salvos em favoritos(algo semelhante ao tachiyomi
-            //pode acontecer todo dia, semanalmente ou até mesmo no dia específico de cada anime)
+            //TODO: criar no menu um switch para habilitar ou desabilitar notificações, ao desabilitar se cancela todos os workManager
+            //e ao habilitar se usa a criação com o replace
             Task.Run(() =>
             {
-                WorkerHelper.WorkSheduler(this, 0, TimeSpan.FromDays(1));
+                WorkerHelper.WorkSheduler(this, 0, TimeSpan.FromDays(1), ExistingPeriodicWorkPolicy.Keep);
             });
         }
 
