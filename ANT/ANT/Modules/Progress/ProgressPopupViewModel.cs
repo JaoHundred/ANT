@@ -60,12 +60,17 @@ namespace ANT.Modules
                         favoritedAnime.LastUpdateDate = DateTime.Now;
                         favoritedAnime.NextStreamDate = await favoritedAnime.NextEpisodeDateAsync();
 
-                        int uniqueId = favoriteCollection.Max(p => p.UniqueNotificationID);
+                        int uniqueId = 0;
 
-                        if (uniqueId == int.MaxValue)
-                            uniqueId = 0;
-                        else if (uniqueId < int.MaxValue)
-                            uniqueId += 1;
+                        if (favoriteCollection.Count() > 0)
+                        {
+                            uniqueId = favoriteCollection.Max(p => p.UniqueNotificationID);
+
+                            if (uniqueId == int.MaxValue)
+                                uniqueId = 0;
+                            else if (uniqueId < int.MaxValue)
+                                uniqueId += 1;
+                        }
 
                         favoritedAnime.UniqueNotificationID = uniqueId;
 

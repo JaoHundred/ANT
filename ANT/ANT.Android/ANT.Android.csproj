@@ -84,12 +84,12 @@
   <ItemGroup>
     <Compile Include="Broadcast\BootBroadcastReceiver.cs" />
     <Compile Include="Effects\StepperColorEffect.cs" />
-    <Compile Include="Helpers\JobSchedulerHelper.cs" />
+    <Compile Include="Helpers\WorkerHelper.cs" />
     <Compile Include="Localize.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scheduler\NotificationSheduler.cs" />
+    <Compile Include="Scheduler\NotificationWorker.cs" />
     <Compile Include="Services\GetAndroidFolderService.cs" />
     <Compile Include="Services\ToastService.cs" />
   </ItemGroup>

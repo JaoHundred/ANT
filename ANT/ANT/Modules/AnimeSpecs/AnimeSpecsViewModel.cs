@@ -58,7 +58,7 @@ namespace ANT.Modules
                 long id = (long)param;
 
                 _favoritedAnime = App.liteDB.GetCollection<FavoritedAnime>().FindOne(p => p.Anime.MalId == id);
-               
+
 
                 if (_favoritedAnime == null)
                 {
@@ -248,12 +248,17 @@ namespace ANT.Modules
 
                     AnimeContext.NextStreamDate = await AnimeContext.NextEpisodeDateAsync();
 
-                    int uniqueId = bdCollection.Max(p => p.UniqueNotificationID);
+                    int uniqueId = 0;
 
-                    if (uniqueId == int.MaxValue)
-                        uniqueId = 0;
-                    else if (uniqueId < int.MaxValue)
-                        uniqueId += 1;
+                    if (bdCollection.Count() > 0)
+                    {
+                        uniqueId = bdCollection.Max(p => p.UniqueNotificationID);
+
+                        if (uniqueId == int.MaxValue)
+                            uniqueId = 0;
+                        else if (uniqueId < int.MaxValue)
+                            uniqueId += 1;
+                    }
 
                     AnimeContext.UniqueNotificationID = uniqueId;
 

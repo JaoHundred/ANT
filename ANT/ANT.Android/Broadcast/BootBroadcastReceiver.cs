@@ -25,7 +25,7 @@ namespace ANT.Droid.Broadcast
         {
             OnReceive(context, intent);
 
-            JobSchedulerHelper.ScheduleJob(context, 0);
+            WorkerHelper.WorkSheduler(context, 0, TimeSpan.FromDays(1));
         }
     }
 }

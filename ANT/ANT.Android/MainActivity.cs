@@ -20,6 +20,7 @@ using ANT.Droid.Helpers;
 using ANT.Droid.Scheduler;
 using Android.App.Job;
 using System.Threading.Tasks;
+using AndroidX.Work;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ANT.Droid.MainActivity))]
 namespace ANT.Droid
@@ -56,10 +57,10 @@ namespace ANT.Droid
             //pode acontecer todo dia, semanalmente ou até mesmo no dia específico de cada anime)
             Task.Run(() =>
             {
-                JobSchedulerHelper.ScheduleJob(this, 0);
+                WorkerHelper.WorkSheduler(this, 0, TimeSpan.FromDays(1));
             });
         }
-        
+
         private readonly string _rootRoute = "Home";
 
         private static Page GetCurrentPage()
