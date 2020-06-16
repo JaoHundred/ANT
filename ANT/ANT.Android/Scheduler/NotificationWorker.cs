@@ -40,7 +40,8 @@ namespace ANT.Droid.Scheduler
 
             try
             {
-                var animes = App.liteDB.GetCollection<FavoritedAnime>().Find(p => p.CanGenerateNotifications && p.NextStreamDate != null);
+                var animes = App.liteDB.GetCollection<FavoritedAnime>()
+                    .Find(p => p.CanGenerateNotifications && p.NextStreamDate != null && p.Anime.Airing);
                 DateTime now = DateTime.Now;
 
                 foreach (var anime in animes)

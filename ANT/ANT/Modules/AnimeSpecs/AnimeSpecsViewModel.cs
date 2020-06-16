@@ -262,6 +262,8 @@ namespace ANT.Modules
 
                     AnimeContext.UniqueNotificationID = uniqueId;
 
+                    AnimeContext.CanGenerateNotifications = AnimeContext.Anime.Airing && AnimeContext.NextStreamDate != null;
+
                     bdCollection.Upsert(AnimeContext.Anime.MalId, AnimeContext);
                     lang = Lang.Lang.AddedToFavorite;
                 }

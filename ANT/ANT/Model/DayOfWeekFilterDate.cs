@@ -27,6 +27,7 @@ namespace ANT.Model
     {
         Today,
         Unknown,
+        FinishedAiring,
         Sunday,
         Monday,
         Tuesday,

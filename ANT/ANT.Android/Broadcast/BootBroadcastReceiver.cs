@@ -27,7 +27,7 @@ namespace ANT.Droid.Broadcast
         {
             OnReceive(context, intent);
 
-            WorkerHelper.WorkSheduler(context, 0, TimeSpan.FromDays(1), ExistingPeriodicWorkPolicy.Keep);
+            new WorkerHelper().CreateWorkAndKeep("0", TimeSpan.FromDays(1));
         }
     }
 }

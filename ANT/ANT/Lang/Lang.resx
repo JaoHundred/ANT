@@ -129,6 +129,9 @@
   <data name="Anime" xml:space="preserve">
     <value>Anime</value>
   </data>
+  <data name="AnimeNotifications" xml:space="preserve">
+    <value>Notifications(Animes)</value>
+  </data>
   <data name="Animeography" xml:space="preserve">
     <value>Animeography</value>
   </data>
@@ -227,6 +230,9 @@
   </data>
   <data name="Finalizing" xml:space="preserve">
     <value>Finalizing...</value>
+  </data>
+  <data name="FinishedAiring" xml:space="preserve">
+    <value>Finished Airing</value>
   </data>
   <data name="Friday" xml:space="preserve">
     <value>Friday</value>

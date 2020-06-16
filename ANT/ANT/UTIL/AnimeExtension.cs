@@ -47,6 +47,14 @@ namespace ANT.UTIL
                     {
                         if (dayOfWeekFilterDates.Any(p => p.TodayDayOfWeek == TodayDayOfWeek.Unknown))
                             hasAnyDayOfWeek.Add(true);
+
+                        continue;
+                    }
+
+                    if (favoriteAnime.NextStreamDate.HasValue && !favoriteAnime.Anime.Airing)
+                    {
+                        if (dayOfWeekFilterDates.Any(p => p.TodayDayOfWeek == TodayDayOfWeek.FinishedAiring))
+                            hasAnyDayOfWeek.Add(true);
                         continue;
                     }
 
@@ -343,6 +351,7 @@ namespace ANT.UTIL
             {
                  new DayOfWeekFilterDate(TodayDayOfWeek.Today),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Unknown),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.FinishedAiring),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Sunday),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Monday),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Tuesday),

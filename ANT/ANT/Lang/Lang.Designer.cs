@@ -97,6 +97,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notifications(Animes).
+        /// </summary>
+        public static string AnimeNotifications {
+            get {
+                return ResourceManager.GetString("AnimeNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Animeography.
         /// </summary>
         public static string Animeography {
@@ -390,6 +399,15 @@ namespace ANT.Lang {
         public static string Finalizing {
             get {
                 return ResourceManager.GetString("Finalizing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished Airing.
+        /// </summary>
+        public static string FinishedAiring {
+            get {
+                return ResourceManager.GetString("FinishedAiring", resourceCulture);
             }
         }
         

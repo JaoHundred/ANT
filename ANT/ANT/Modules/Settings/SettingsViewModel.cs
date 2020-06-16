@@ -8,6 +8,8 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using MvvmHelpers;
 using ANT.Model;
+using System.Windows.Input;
+using ANT.Interfaces;
 
 namespace ANT.Modules
 {
@@ -23,6 +25,8 @@ namespace ANT.Modules
             SelectedThemeIndex = _settingsPreferences.SelectedThemeIndex;
             //SelectedLangIndex = App.SettingsPreferences.SelectedLanguageIndex;
             //IsAutomaticTranslate = App.SettingsPreferences.AutomaticTranslate;
+
+            SwitchNotificationCommand = new Command<bool>(OnSwitchNotification);
         }
 
         private SettingsPreferences _settingsPreferences;
@@ -89,5 +93,22 @@ namespace ANT.Modules
         //        //JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
         //    }
         //}
+
+
+        public ICommand SwitchNotificationCommand { get; private set; }
+        private void OnSwitchNotification(bool switchStatus)
+        {
+            if (_settingsPreferences.NotificationsIsOn != switchStatus)
+            {
+                _settingsPreferences.NotificationsIsOn = switchStatus;
+
+                if (_settingsPreferences.NotificationsIsOn)
+                    DependencyService.Get<IWork>().CreateWorkAndReplaceExisting("0", TimeSpan.FromDays(1));
+                else
+                    DependencyService.Get<IWork>().CancelWork("0");
+
+                App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, _settingsPreferences);
+            }
+        }
     }
 }

@@ -17,9 +17,6 @@ namespace ANT.Core
                 if (!(favoritedAnime.Anime.Airing && IsTVSeries(favoritedAnime)))
                     return;
 
-                if (favoritedAnime.NextStreamDate == null)
-                    return;
-
                 var notification = new NotificationRequest
                 {
                     NotificationId = favoritedAnime.UniqueNotificationID,

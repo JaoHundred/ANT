@@ -57,10 +57,18 @@ namespace ANT.Modules
 
                 var group = new List<GroupedFavoriteAnimeByWeekDay>();
 
-                var favorited = favoriteCollection.Where(p => p.NextStreamDate != null);
-                var groupedFavoritedNullDate = favoriteCollection.Where(p => p.NextStreamDate == null).GroupBy(p => p.NextStreamDate);
+                var favorited = favoriteCollection.Where(p => p.NextStreamDate != null && p.Anime.Airing);
+                var groupedFavoritedUnknown = favoriteCollection
+                .Where(p => 
+                (p.NextStreamDate == null && !p.Anime.Airing) || //não tem data e não está exibindo
+                (p.NextStreamDate == null && p.Anime.Airing))//não tem data e está exibindo
+                .GroupBy(p=> !p.CanGenerateNotifications);
+
+                var groupedFavoritedFinished = favoriteCollection.Where(p => p.NextStreamDate != null && !p.Anime.Airing)
+                .GroupBy(p => !p.CanGenerateNotifications);
 
                 var groupedFavoriteAnimes = favorited?.GroupBy(p => p.NextStreamDate.Value.DayOfWeek).ToList();
+
                 var todayAnimes = favorited?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.DayOfWeek)
                 .GroupBy(p => p.NextStreamDate.Value.DayOfWeek);
 
@@ -112,9 +120,17 @@ namespace ANT.Modules
                     group.Add(new GroupedFavoriteAnimeByWeekDay(resMgr.Value.GetString(nextGroupDay.Key.ToString()), nextGroupDay.ToList()));
                 }
 
-                if (groupedFavoritedNullDate != null)
-                    foreach (var item in groupedFavoritedNullDate)
+                if (groupedFavoritedUnknown != null)
+                    foreach (var item in groupedFavoritedUnknown)
+                    {
                         group.Add(new GroupedFavoriteAnimeByWeekDay(Lang.Lang.UnknownDate, item.ToList()));
+                    }
+
+                if (groupedFavoritedFinished != null)
+                    foreach (var item in groupedFavoritedFinished)
+                    {
+                        group.Add(new GroupedFavoriteAnimeByWeekDay(Lang.Lang.FinishedAiring, item.ToList()));
+                    }
 
                 return group;
             });

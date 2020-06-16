@@ -14,6 +14,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Xamarin.Essentials;
 
 namespace ANT
 {
@@ -52,6 +53,14 @@ namespace ANT
             await ThemeManager.LoadThemeAsync();
 
             Jikan = new Jikan(useHttps: true);
+
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                await Task.Run(() =>
+                {
+                    DependencyService.Get<IWork>().CreateWorkAndKeep("0", TimeSpan.FromDays(1));
+                });
+            }
         }
 
         private async void Current_NotificationTapped(NotificationTappedEventArgs e)

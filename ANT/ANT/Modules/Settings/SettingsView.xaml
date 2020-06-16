@@ -4,13 +4,16 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:ANT.Lang"
+             xmlns:behavior="clr-namespace:ANT._Behaviors"
              xmlns:convert="clr-namespace:ANT.Converter"
              mc:Ignorable="d"
              x:Class="ANT.Modules.SettingsView"
              Title="{res:Translate Settings}">
 
     <ContentPage.Resources>
-        <convert:InversorConverter x:Key="InversorConv"/>
+        <convert:InversorConverter x:Key="InversorConverter"/>
+        <convert:BoolToOnOffStringSwitchConverter x:Key="BoolToStringConverter"/>
+
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -42,6 +45,24 @@
                         </StackLayout>
                     </ViewCell>
                 </TableSection>
+                <TableSection>
+                    <ViewCell>
+                        <Grid Margin="5">
+
+                            <Label Text="{res:Translate AnimeNotifications}" Style="{StaticResource MenuLabelColorStyle}"/>
+                            <Switch x:Name="NotificationSwitch" Grid.Row="1" IsToggled="True">
+                                <Switch.Behaviors>
+                                    <behavior:EventToCommandBehavior EventName="Toggled"
+                                                                     Command="{Binding SwitchNotificationCommand}"
+                                                                     CommandParameter="{Binding IsToggled, Source={x:Reference NotificationSwitch}}"/>
+                                </Switch.Behaviors>
+                            </Switch>
+                            <Label Grid.Row="1" Margin="3,0,0,0" Text="{Binding IsToggled, Source={x:Reference NotificationSwitch}
+                                , Converter={StaticResource BoolToStringConverter}}" FontSize="Subtitle"/>
+                        </Grid>
+
+                    </ViewCell>
+                </TableSection>
                 <!--<TableSection>
                     <ViewCell>
                         <StackLayout>
@@ -51,7 +72,7 @@
                                 <Switch Grid.ColumnSpan="2" IsToggled="{Binding IsAutomaticTranslate}"/>
                             </Grid>
 
-                            <StackLayout IsVisible="{Binding IsAutomaticTranslate, Converter={StaticResource InversorConv}}">
+                            <StackLayout IsVisible="{Binding IsAutomaticTranslate, Converter={StaticResource InversorConverter}}">
                                 <Label  Text="{res:Translate ChangeLanguage}" Style="{StaticResource MenuLabelColor}"/>
                                 <Picker SelectedIndex="{Binding SelectedLangIndex}" 
                                     Title="{res:Translate SelectAppLang}">

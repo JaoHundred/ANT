@@ -74,6 +74,8 @@ namespace ANT.Modules
 
                         favoritedAnime.UniqueNotificationID = uniqueId;
 
+                        favoritedAnime.CanGenerateNotifications = favoritedAnime.Anime.Airing && favoritedAnime.NextStreamDate != null;
+
                         _animes[i].IsFavorited = true;
 
                         favoriteCollection.Upsert(favoritedAnime.Anime.MalId, favoritedAnime);

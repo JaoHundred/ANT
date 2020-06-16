@@ -11,22 +11,51 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using AndroidX.Work;
+using ANT.Droid.Helpers;
 using ANT.Droid.Scheduler;
+using ANT.Interfaces;
+using Xamarin.Forms;
 
+[assembly: Dependency(typeof(WorkerHelper))]
 namespace ANT.Droid.Helpers
 {
-    public static class WorkerHelper
+    public class WorkerHelper : IWork
     {
-        public static void WorkSheduler(Context context, int jobId, TimeSpan periodicInterval, ExistingPeriodicWorkPolicy periodicWorkPolicy)
+        public void CancelAllWorks()
+        {
+            WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext).CancelAllWork();
+        }
+
+        public void CancelWork(string workId)
+        {
+            WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext).CancelAllWorkByTag(workId);
+        }
+
+        public void CreateWorkAndKeep(string workId, TimeSpan executionInterval)
+        {
+            PeriodicWorkRequest notificationWorker = CreateConstraints(executionInterval);
+
+            WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext)
+                .EnqueueUniquePeriodicWork(workId, ExistingPeriodicWorkPolicy.Keep, notificationWorker);
+        }
+
+        private static PeriodicWorkRequest CreateConstraints(TimeSpan executionInterval)
         {
             var constraints = new Constraints();
             constraints.SetRequiresBatteryNotLow(true);
             constraints.SetRequiresStorageNotLow(true);
 
-            var notificationWorker = PeriodicWorkRequest.Builder.From<NotificationWorker>(periodicInterval)
+            var notificationWorker = PeriodicWorkRequest.Builder.From<NotificationWorker>(executionInterval)
             .SetConstraints(constraints).Build();
+            return notificationWorker;
+        }
 
-            WorkManager.GetInstance(context).EnqueueUniquePeriodicWork(jobId.ToString(), periodicWorkPolicy, notificationWorker);
+        public void CreateWorkAndReplaceExisting(string workId, TimeSpan executionInterval)
+        {
+            PeriodicWorkRequest notificationWorker = CreateConstraints(executionInterval);
+
+            WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext)
+                .EnqueueUniquePeriodicWork(workId, ExistingPeriodicWorkPolicy.Replace, notificationWorker);
         }
     }
 }

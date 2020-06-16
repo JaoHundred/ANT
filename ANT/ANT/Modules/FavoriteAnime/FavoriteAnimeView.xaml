@@ -20,9 +20,8 @@
     <ContentPage.Resources>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
         <converter:TranslateEnumConverter x:Key="TranslateEnumConverter"/>
-        <converter:ValueIsNullToBoolConverter x:Key="NullToBoolConverter"/>
         <converter:StringToIntConverter x:Key="StringToIntConverter"/>
-
+        <converter:CanShowSwitchOnFavoritedAnimeConverter x:Key="CanShowSwitchConverter"/>
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:GenreEnumToSeparateWordConverter x:Key="GenreToStringConverter"/>
     </ContentPage.Resources>
@@ -100,7 +99,7 @@
                                         <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference img}}" 
                                                IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
                                         <Label Grid.Row="1" Text="{Binding Anime.Title}" Style="{StaticResource TitleLabelStyle}"/>
-                                        <Grid Grid.Row="2" IsVisible="{Binding NextStreamDate, Converter={StaticResource NullToBoolConverter}}">
+                                        <Grid Grid.Row="2" IsVisible="{Binding ., Converter={StaticResource CanShowSwitchConverter}}">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="auto"/>
                                                 <RowDefinition/>
