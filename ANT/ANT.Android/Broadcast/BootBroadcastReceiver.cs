@@ -14,6 +14,8 @@ using ANT.Droid.Helpers;
 using ANT.Droid.Scheduler;
 using AndroidX;
 using AndroidX.Work;
+using ANT.Model;
+using ANT.Core;
 
 [assembly: UsesPermission(Manifest.Permission.ReceiveBootCompleted)]
 namespace ANT.Droid.Broadcast
@@ -27,7 +29,17 @@ namespace ANT.Droid.Broadcast
         {
             OnReceive(context, intent);
 
-            new WorkerHelper().CreateWorkAndKeep("0", TimeSpan.FromDays(1));
+            var bd = ANT.App.liteDB.GetCollection<SettingsPreferences>();
+            var settings = bd.FindById(0);
+
+            if (settings == null)
+            {
+                var settingPrefs = new SettingsPreferences();
+                ANT.App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, settingPrefs);
+            }
+
+            if (settings.NotificationsIsOn)
+                new WorkerHelper().CreateWorkAndKeep(WorkManagerConsts.AnimesNotificationWorkId, TimeSpan.FromDays(1));
         }
     }
 }

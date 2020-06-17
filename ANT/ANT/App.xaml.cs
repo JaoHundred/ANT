@@ -54,13 +54,28 @@ namespace ANT
 
             Jikan = new Jikan(useHttps: true);
 
-            if (Device.RuntimePlatform == Device.Android)
+            var bd = liteDB.GetCollection<SettingsPreferences>();
+            var settings = bd.FindById(0);
+
+            if (settings == null)
             {
-                await Task.Run(() =>
-                {
-                    DependencyService.Get<IWork>().CreateWorkAndKeep("0", TimeSpan.FromDays(1));
-                });
+                var settingPrefs = new SettingsPreferences();
+                liteDB.GetCollection<SettingsPreferences>().Upsert(0, settingPrefs);
             }
+
+            if (settings.NotificationsIsOn)
+            {
+                if (Device.RuntimePlatform == Device.Android)
+                {
+                    await Task.Run(() =>
+                    {
+                        DependencyService.Get<IWork>().CreateWorkAndKeep(WorkManagerConsts.AnimesNotificationWorkId, TimeSpan.FromDays(1));
+                    });
+                }
+            }
+
+            //TODO: repetir o mesmo procedimento acima para essa parte, para o work de atualização de animes na lista de favoritos
+            //(repetir também no BootBroadcastReceiver)
         }
 
         private async void Current_NotificationTapped(NotificationTappedEventArgs e)
