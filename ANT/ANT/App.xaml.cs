@@ -42,11 +42,7 @@ namespace ANT
         {
             if (liteDB == null)
             {
-                string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
-
-                string fullPath = System.IO.Path.Combine(newLocation, "data");
-                liteDB = new LiteDatabase($"Filename={fullPath}");
-                //await CultureManager.LoadCultureAsync();
+                StartLiteDB();
             }
 
             // Handle when your app starts
@@ -76,6 +72,18 @@ namespace ANT
 
             //TODO: repetir o mesmo procedimento acima para essa parte, para o work de atualização de animes na lista de favoritos
             //(repetir também no BootBroadcastReceiver)
+        }
+
+        /// <summary>
+        /// Método para iniciar o LiteDB
+        /// </summary>
+        public static void StartLiteDB()
+        {
+            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
+
+            string fullPath = System.IO.Path.Combine(newLocation, "data");
+            liteDB = new LiteDatabase($"Filename={fullPath}");
+            //await CultureManager.LoadCultureAsync();
         }
 
         private async void Current_NotificationTapped(NotificationTappedEventArgs e)

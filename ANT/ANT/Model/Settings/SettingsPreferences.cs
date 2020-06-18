@@ -23,7 +23,9 @@ namespace ANT.Model
         public int SelectedThemeIndex { get; set; }
 
         public int SelectedLanguageIndex { get; set; }
+
         public bool NotificationsIsOn { get; set; }
+        
 
     }
 }

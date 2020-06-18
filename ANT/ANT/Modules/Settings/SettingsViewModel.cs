@@ -20,16 +20,15 @@ namespace ANT.Modules
 
             //TODO: as funcionalidades de troca de idioma dentro dos settings não funcionam, deixar desativado isso por tempo indeterminado
 
-            _settingsPreferences = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
+            Settings = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
 
-            SelectedThemeIndex = _settingsPreferences.SelectedThemeIndex;
+            SelectedThemeIndex = Settings.SelectedThemeIndex;
             //SelectedLangIndex = App.SettingsPreferences.SelectedLanguageIndex;
             //IsAutomaticTranslate = App.SettingsPreferences.AutomaticTranslate;
 
-            SwitchNotificationCommand = new Command<bool>(OnSwitchNotification);
+            SwitchNotificationCommand = new Command(OnSwitchNotification);
         }
 
-        private SettingsPreferences _settingsPreferences;
 
         private int _selectedThemeIndex;
         public int SelectedThemeIndex
@@ -53,6 +52,8 @@ namespace ANT.Modules
                 }
             }
         }
+
+        public SettingsPreferences Settings { get; set; }
 
         //private int _selectedLangIndex;
         //public int SelectedLangIndex
@@ -96,18 +97,18 @@ namespace ANT.Modules
 
 
         public ICommand SwitchNotificationCommand { get; private set; }
-        private void OnSwitchNotification(bool switchStatus)
+        private void OnSwitchNotification()
         {
-            if (_settingsPreferences.NotificationsIsOn != switchStatus)
-            {
-                _settingsPreferences.NotificationsIsOn = switchStatus;
+            var settings = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
 
-                if (_settingsPreferences.NotificationsIsOn)
+            if(settings != null && settings.NotificationsIsOn != Settings.NotificationsIsOn)
+            {
+                if (Settings.NotificationsIsOn)
                     DependencyService.Get<IWork>().CreateWorkAndReplaceExisting("0", TimeSpan.FromDays(1));
                 else
                     DependencyService.Get<IWork>().CancelWork("0");
 
-                App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, _settingsPreferences);
+                App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, Settings);
             }
         }
     }

@@ -31,12 +31,7 @@ namespace ANT.Droid.Scheduler
         public override Result DoWork()
         {
             if (App.liteDB == null)
-            {
-                string newLocation = Android.App.Application.Context.GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
-
-                string fullPath = System.IO.Path.Combine(newLocation, "data");
-                App.liteDB = new LiteDatabase($"Filename={fullPath}");
-            }
+                App.StartLiteDB();
 
             try
             {

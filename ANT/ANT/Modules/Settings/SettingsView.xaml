@@ -50,11 +50,10 @@
                         <Grid Margin="5">
 
                             <Label Text="{res:Translate AnimeNotifications}" Style="{StaticResource MenuLabelColorStyle}"/>
-                            <Switch x:Name="NotificationSwitch" Grid.Row="1" IsToggled="True">
+                            <Switch x:Name="NotificationSwitch" Grid.Row="1" IsToggled="{Binding Settings.NotificationsIsOn, Mode=TwoWay}">
                                 <Switch.Behaviors>
                                     <behavior:EventToCommandBehavior EventName="Toggled"
-                                                                     Command="{Binding SwitchNotificationCommand}"
-                                                                     CommandParameter="{Binding IsToggled, Source={x:Reference NotificationSwitch}}"/>
+                                                                     Command="{Binding SwitchNotificationCommand}"/>
                                 </Switch.Behaviors>
                             </Switch>
                             <Label Grid.Row="1" Margin="3,0,0,0" Text="{Binding IsToggled, Source={x:Reference NotificationSwitch}

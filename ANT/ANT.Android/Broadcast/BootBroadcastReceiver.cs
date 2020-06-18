@@ -29,6 +29,8 @@ namespace ANT.Droid.Broadcast
         {
             OnReceive(context, intent);
 
+            App.StartLiteDB();
+
             var bd = ANT.App.liteDB.GetCollection<SettingsPreferences>();
             var settings = bd.FindById(0);
 
