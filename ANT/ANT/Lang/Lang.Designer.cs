@@ -565,6 +565,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not Started.
+        /// </summary>
+        public static string NotStarted {
+            get {
+                return ResourceManager.GetString("NotStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
         public static string Off {

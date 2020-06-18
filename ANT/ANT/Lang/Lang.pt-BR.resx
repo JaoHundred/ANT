@@ -285,6 +285,9 @@
   <data name="Notifications" xml:space="preserve">
     <value>Notificações</value>
   </data>
+  <data name="NotStarted" xml:space="preserve">
+    <value>Não iniciou</value>
+  </data>
   <data name="Off" xml:space="preserve">
     <value>Desligado</value>
   </data>

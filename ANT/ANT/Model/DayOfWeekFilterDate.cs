@@ -28,6 +28,7 @@ namespace ANT.Model
         Today,
         Unknown,
         FinishedAiring,
+        NotStarted,
         Sunday,
         Monday,
         Tuesday,

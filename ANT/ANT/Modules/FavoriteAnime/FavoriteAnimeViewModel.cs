@@ -50,29 +50,22 @@ namespace ANT.Modules
         {
             return Task.Run(() =>
             {
-                var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>().FindAll();
+                var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>().FindAll().ToList();
 
                 Lazy<ResourceManager> resMgr = new Lazy<ResourceManager>(
                                     () => new ResourceManager(typeof(Lang.Lang)));
 
                 var group = new List<GroupedFavoriteAnimeByWeekDay>();
 
-                var favorited = favoriteCollection.Where(p => p.NextStreamDate != null && p.Anime.Airing);
-                var groupedFavoritedUnknown = favoriteCollection
-                .Where(p => 
-                (p.NextStreamDate == null && !p.Anime.Airing) || //não tem data e não está exibindo
-                (p.NextStreamDate == null && p.Anime.Airing))//não tem data e está exibindo
-                .GroupBy(p=> !p.CanGenerateNotifications);
+                var airingAndHasDayWeekAnimes = favoriteCollection.Where(p => p.NextStreamDate != null && p.Anime.Airing);
 
-                var groupedFavoritedFinished = favoriteCollection.Where(p => p.NextStreamDate != null && !p.Anime.Airing)
-                .GroupBy(p => !p.CanGenerateNotifications);
 
-                var groupedFavoriteAnimes = favorited?.GroupBy(p => p.NextStreamDate.Value.DayOfWeek).ToList();
+                var groupedFavoriteAnimes = airingAndHasDayWeekAnimes?.GroupBy(p => p.NextStreamDate.Value.DayOfWeek).ToList();
 
-                var todayAnimes = favorited?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.DayOfWeek)
+                var todayAnimes = airingAndHasDayWeekAnimes?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.DayOfWeek)
                 .GroupBy(p => p.NextStreamDate.Value.DayOfWeek);
 
-                var tomorrowAnimes = favorited?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.AddDays(1).DayOfWeek)
+                var tomorrowAnimes = airingAndHasDayWeekAnimes?.Where(p => p.NextStreamDate.Value.DayOfWeek == DateTime.Today.AddDays(1).DayOfWeek)
                 .GroupBy(p => p.NextStreamDate.Value.DayOfWeek);
 
                 var today = todayAnimes.LastOrDefault();
@@ -120,17 +113,42 @@ namespace ANT.Modules
                     group.Add(new GroupedFavoriteAnimeByWeekDay(resMgr.Value.GetString(nextGroupDay.Key.ToString()), nextGroupDay.ToList()));
                 }
 
-                if (groupedFavoritedUnknown != null)
-                    foreach (var item in groupedFavoritedUnknown)
-                    {
-                        group.Add(new GroupedFavoriteAnimeByWeekDay(Lang.Lang.UnknownDate, item.ToList()));
-                    }
+                favoriteCollection.RemoveAll(p => airingAndHasDayWeekAnimes.Contains(p));
+
+                var notStarted = favoriteCollection.Where(p => UTIL.AnimeExtension.HasNotStartedAiring(p));
+                var groupedFavoritedNotStarted = notStarted.GroupBy(p => !p.CanGenerateNotifications);
+
+                if (groupedFavoritedNotStarted != null)
+                    foreach (var item in groupedFavoritedNotStarted)
+                        group.Add(new GroupedFavoriteAnimeByWeekDay(Lang.Lang.NotStarted, item.ToList()));
+
+                favoriteCollection.RemoveAll(p => notStarted.Contains(p));
+
+                var finished = favoriteCollection.Where(p => UTIL.AnimeExtension.HasFinishedAiring(p));
+                var groupedFavoritedFinished = finished.GroupBy(p => !p.CanGenerateNotifications);
 
                 if (groupedFavoritedFinished != null)
                     foreach (var item in groupedFavoritedFinished)
-                    {
                         group.Add(new GroupedFavoriteAnimeByWeekDay(Lang.Lang.FinishedAiring, item.ToList()));
-                    }
+
+                favoriteCollection.RemoveAll(p => finished.Contains(p));
+
+                var groupedFavoritedUnknown = favoriteCollection.Where(p =>
+               UTIL.AnimeExtension.IsUnknownAiring(p))
+                .GroupBy(p => !p.CanGenerateNotifications);
+
+                if (groupedFavoritedUnknown != null)
+                    foreach (var item in groupedFavoritedUnknown)
+                        group.Add(new GroupedFavoriteAnimeByWeekDay(Lang.Lang.UnknownDate, item.ToList()));
+
+#if DEBUG
+                var groupedList = group.SelectMany(p => p.Select(q => q)).ToList();
+
+                var excludedIDs = new HashSet<long>(groupedList.Select(p => p.Anime.MalId));
+                var missedItens = favoriteCollection.Where(p => !excludedIDs.Contains(p.Anime.MalId)).ToList();
+
+                Console.WriteLine($"Itens perdidos na filtragem {missedItens.Count}");
+#endif
 
                 return group;
             });
@@ -292,6 +310,9 @@ namespace ANT.Modules
             _originalCollection = await ConstructGroupedCollectionAsync();
             var groupAnimes = new List<GroupedFavoriteAnimeByWeekDay>(_originalCollection);
 
+            //TODO:contar a quantidade de animes cadastrados e ver se todos estão aparecendo apenas uma única vez
+
+            //TODO:olhar aqui em conjunto com o HasAnyDayOfWeek
             for (int i = 0; i < groupAnimes.Count; i++)
             {
                 GroupedFavoriteAnimeByWeekDay favoritedAnimeGroup = groupAnimes[i];

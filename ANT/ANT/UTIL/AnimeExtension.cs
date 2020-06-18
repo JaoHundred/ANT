@@ -43,33 +43,56 @@ namespace ANT.UTIL
 
                 foreach (var dayOfWeek in dayOfWeekFilterDates)
                 {
-                    if (!favoriteAnime.NextStreamDate.HasValue)
+                    if (favoriteAnime.NextStreamDate != null && favoriteAnime.Anime.Airing)
                     {
-                        if (dayOfWeekFilterDates.Any(p => p.TodayDayOfWeek == TodayDayOfWeek.Unknown))
-                            hasAnyDayOfWeek.Add(true);
+                        bool hasWeekDay = favoriteAnime.NextStreamDate.Value.DayOfWeek.ToString() == dayOfWeek.TodayDayOfWeek.ToString();
+                        bool hasToday = false;
 
-                        continue;
+                        if (dayOfWeek.TodayDayOfWeek == TodayDayOfWeek.Today)
+                            hasToday = favoriteAnime.NextStreamDate.Value.DayOfWeek == DateTime.Today.DayOfWeek;
+
+                        if (hasWeekDay || hasToday)
+                            hasAnyDayOfWeek.Add(hasWeekDay | hasToday);
                     }
 
-                    if (favoriteAnime.NextStreamDate.HasValue && !favoriteAnime.Anime.Airing)
-                    {
-                        if (dayOfWeekFilterDates.Any(p => p.TodayDayOfWeek == TodayDayOfWeek.FinishedAiring))
-                            hasAnyDayOfWeek.Add(true);
-                        continue;
-                    }
+                    else if(HasNotStartedAiring(favoriteAnime)
+                    && dayOfWeek.TodayDayOfWeek == TodayDayOfWeek.NotStarted)
+                        hasAnyDayOfWeek.Add(true);
 
-                    bool hasWeekDay = favoriteAnime.NextStreamDate.Value.DayOfWeek.ToString() == dayOfWeek.TodayDayOfWeek.ToString();
-                    bool hasToday = false;
+                    else if (HasFinishedAiring(favoriteAnime)
+                    && dayOfWeek.TodayDayOfWeek == TodayDayOfWeek.FinishedAiring)
+                        hasAnyDayOfWeek.Add(true);
 
-                    if (dayOfWeek.TodayDayOfWeek == TodayDayOfWeek.Today)
-                        hasToday = favoriteAnime.NextStreamDate.Value.DayOfWeek == DateTime.Today.DayOfWeek;
 
-                    if (hasWeekDay || hasToday)
-                        hasAnyDayOfWeek.Add(hasWeekDay | hasToday);
+                    else if (IsUnknownAiring(favoriteAnime)
+                    && dayOfWeek.TodayDayOfWeek == TodayDayOfWeek.Unknown)
+                        hasAnyDayOfWeek.Add(true);
+
                 }
 
                 return hasAnyDayOfWeek.Any(p => p);
             });
+        }
+
+        public static bool IsUnknownAiring(FavoritedAnime favoriteAnime)
+        {
+            return !HasFinishedAiring(favoriteAnime) && !HasNotStartedAiring(favoriteAnime);
+        }
+
+        public static bool HasFinishedAiring(FavoritedAnime favoriteAnime)
+        {
+            return !favoriteAnime.Anime.Airing
+                && favoriteAnime.Anime.Aired != null
+                && favoriteAnime.Anime.Aired.From.HasValue && favoriteAnime.Anime.Aired.To.HasValue
+                && favoriteAnime.Anime.Aired.From < DateTime.Today
+                && favoriteAnime.Anime.Aired.To < DateTime.Today;
+        }
+
+        public static bool HasNotStartedAiring(FavoritedAnime favoriteAnime)
+        {
+            return favoriteAnime.Anime.Aired?.From != null
+                && favoriteAnime.Anime.Aired.From > DateTime.Today
+                && !favoriteAnime.Anime.Airing;
         }
 
         public static string GetDescription(Enum value)
@@ -352,6 +375,7 @@ namespace ANT.UTIL
                  new DayOfWeekFilterDate(TodayDayOfWeek.Today),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Unknown),
                  new DayOfWeekFilterDate(TodayDayOfWeek.FinishedAiring),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.NotStarted),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Sunday),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Monday),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Tuesday),

@@ -39,6 +39,10 @@ namespace ANT.Model
         public DateTime? LastUpdateDate { get => _lastUpdateDate; set => _lastUpdateDate = value?.ToLocalTime(); }
 
         private DateTime? _nextStreamDate;
+        /// <summary>
+        /// propriedade para ser usado somente para pegar o dia da semana, se houver
+        /// para usos de início e término de anime usar Anime.Aired
+        /// </summary>
         public DateTime? NextStreamDate { get => _nextStreamDate; set => _nextStreamDate = value?.ToLocalTime(); }
 
 
