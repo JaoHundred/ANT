@@ -65,7 +65,7 @@ namespace ANT
                 {
                     await Task.Run(() =>
                     {
-                        DependencyService.Get<IWork>().CreateWorkAndKeep(WorkManagerConsts.AnimesNotificationWorkId, TimeSpan.FromDays(1));
+                        DependencyService.Get<IWork>().CreatePeriodicWorkAndKeep(WorkManagerConsts.AnimesNotificationWorkId, TimeSpan.FromDays(1));
                     });
                 }
             }

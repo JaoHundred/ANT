@@ -244,7 +244,7 @@ namespace ANT.Modules
                 else
                 {
                     AnimeContext.IsFavorited = true;
-                    AnimeContext.LastUpdateDate = DateTime.Now;
+                    AnimeContext.LastUpdateDate = DateTime.Today;
 
                     AnimeContext.NextStreamDate = await AnimeContext.NextEpisodeDateAsync();
 

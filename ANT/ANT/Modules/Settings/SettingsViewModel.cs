@@ -104,7 +104,7 @@ namespace ANT.Modules
             if(settings != null && settings.NotificationsIsOn != Settings.NotificationsIsOn)
             {
                 if (Settings.NotificationsIsOn)
-                    DependencyService.Get<IWork>().CreateWorkAndReplaceExisting("0", TimeSpan.FromDays(1));
+                    DependencyService.Get<IWork>().CreatePeriodicWorkAndReplaceExisting("0", TimeSpan.FromDays(1));
                 else
                     DependencyService.Get<IWork>().CancelWork("0");
 

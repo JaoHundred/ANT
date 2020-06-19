@@ -17,15 +17,21 @@ using AndroidX.Work;
 using ANT.Model;
 using ANT.Core;
 
-[assembly: UsesPermission(Manifest.Permission.ReceiveBootCompleted)]
+//[assembly: UsesPermission(Manifest.Permission.ReceiveBootCompleted)]
 namespace ANT.Droid.Broadcast
 {
 
-    [BroadcastReceiver(Enabled = true, Exported = true, DirectBootAware = true)]
-    [IntentFilter(new[] { Intent.ActionLockedBootCompleted })]
-    class BootBroadcastReceiver : BroadcastReceiver
+    //[BroadcastReceiver(Enabled = true, Exported = true, DirectBootAware = true)]
+    //[IntentFilter(new[] { Intent.ActionLockedBootCompleted })]
+    class BootBroadcastReceiver /*: BroadcastReceiver*/
     {
-        public override void OnReceive(Context context, Intent intent)
+        //TODO:aparentemente o workmanager já escuta o bootreceiver segundo 
+        //https://stackoverflow.com/questions/53043183/how-to-register-a-periodic-work-request-with-workmanger-system-wide-once-i-e-a
+        // na resposta correta o IgorGanapolsky respondeu que ele já escuta o boot_completed
+        //testar desativar essa classe e seus apetrechos de atributos para ver se o boot ainda acontece
+        //se acontecer, deletar essa arquivo/classe
+
+        public /*override*/ void OnReceive(Context context, Intent intent)
         {
             OnReceive(context, intent);
 
@@ -41,7 +47,7 @@ namespace ANT.Droid.Broadcast
             }
 
             if (settings.NotificationsIsOn)
-                new WorkerHelper().CreateWorkAndKeep(WorkManagerConsts.AnimesNotificationWorkId, TimeSpan.FromDays(1));
+                new WorkerHelper().CreatePeriodicWorkAndKeep(WorkManagerConsts.AnimesNotificationWorkId, TimeSpan.FromDays(1));
         }
     }
 }

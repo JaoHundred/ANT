@@ -31,7 +31,7 @@ namespace ANT.Droid.Helpers
             WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext).CancelAllWorkByTag(workId);
         }
 
-        public void CreateWorkAndKeep(string workId, TimeSpan executionInterval)
+        public void CreatePeriodicWorkAndKeep(string workId, TimeSpan executionInterval)
         {
             PeriodicWorkRequest notificationWorker = CreateConstraints(executionInterval);
 
@@ -50,7 +50,7 @@ namespace ANT.Droid.Helpers
             return notificationWorker;
         }
 
-        public void CreateWorkAndReplaceExisting(string workId, TimeSpan executionInterval)
+        public void CreatePeriodicWorkAndReplaceExisting(string workId, TimeSpan executionInterval)
         {
             PeriodicWorkRequest notificationWorker = CreateConstraints(executionInterval);
 

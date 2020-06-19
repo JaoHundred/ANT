@@ -47,10 +47,13 @@ namespace ANT.Model
 
 
         private string _notificationStatus;
+        /// <summary>
+        /// String de exibição de status causado pela propriedade CanGenerateNotifications
+        /// </summary>
         public string NotificationStatus
         {
             get { return _notificationStatus; }
-            set { SetProperty(ref _notificationStatus, value); }
+            private set { SetProperty(ref _notificationStatus, value); }
         }
         private bool _canGenerateNotifications = true;
         /// <summary>

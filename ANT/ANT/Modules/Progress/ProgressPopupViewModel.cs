@@ -57,7 +57,7 @@ namespace ANT.Modules
 
                         var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
                         favoritedAnime.IsFavorited = true;
-                        favoritedAnime.LastUpdateDate = DateTime.Now;
+                        favoritedAnime.LastUpdateDate = DateTime.Today;
                         favoritedAnime.NextStreamDate = await favoritedAnime.NextEpisodeDateAsync();
 
                         int uniqueId = 0;
