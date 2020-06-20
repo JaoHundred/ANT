@@ -42,8 +42,8 @@ namespace ANT.Droid.Helpers
         private static PeriodicWorkRequest CreateConstraints(TimeSpan executionInterval)
         {
             var constraints = new Constraints();
-            constraints.SetRequiresBatteryNotLow(true);
-            constraints.SetRequiresStorageNotLow(true);
+            constraints.SetRequiresStorageNotLow(false);
+            constraints.SetRequiresBatteryNotLow(false);
 
             var notificationWorker = PeriodicWorkRequest.Builder.From<NotificationWorker>(executionInterval)
             .SetConstraints(constraints).Build();

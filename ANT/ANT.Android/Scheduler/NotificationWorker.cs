@@ -30,11 +30,11 @@ namespace ANT.Droid.Scheduler
         //https://devblogs.microsoft.com/xamarin/getting-started-workmanager/
         public override Result DoWork()
         {
-            if (App.liteDB == null)
-                App.StartLiteDB();
-
             try
             {
+                if (App.liteDB == null)
+                    App.StartLiteDB();
+
                 var animes = App.liteDB.GetCollection<FavoritedAnime>()
                     .Find(p => p.CanGenerateNotifications && p.NextStreamDate != null && p.Anime.Airing);
                 DateTime now = DateTime.Now;
@@ -50,7 +50,8 @@ namespace ANT.Droid.Scheduler
             }
             catch (Exception ex)
             {
-                return new Result.Failure();
+                //TODO:salvar aqui os dados do que deu errado
+                return new Result.Success();
             }
 
             return new Result.Success();
