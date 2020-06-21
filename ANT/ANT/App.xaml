@@ -218,6 +218,12 @@
                 <Setter Property="FontSize" Value="20"/>
             </Style>
 
+            <Style TargetType="Label" x:Key="UpdateLabelStyle">
+                <Setter Property="FontFamily" Value="{DynamicResource FontIcon}"/>
+                <Setter Property="Text" Value="{StaticResource Refresh}"/>
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+
             <Style TargetType="Label" x:Key="DeleteLabelStyle">
                 <Setter Property="FontFamily" Value="{DynamicResource FontIcon}"/>
                 <Setter Property="Text" Value="{StaticResource Delete}"/>

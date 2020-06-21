@@ -13,6 +13,7 @@ using System.Linq;
 using System.Resources;
 using Xamarin.Forms;
 using JikanDotNet;
+using MvvmHelpers.Commands;
 
 namespace ANT.Modules
 {
@@ -30,12 +31,16 @@ namespace ANT.Modules
             ApplyFilterCommand = new magno.AsyncCommand(OnApplyFilter);
             ResetFilterCommand = new magno.Command(OnResetFilter);
             DayOfWeekCheckedCommand = new magno.Command<DayOfWeekFilterDate>(OnDayOfWeekCheck);
-            SwitchCommand = new Command<FavoritedAnime>(OnSwitch);
-            StepperCommand = new Command<FavoritedAnime>(OnStepper);
+            SwitchCommand = new Xamarin.Forms.Command<FavoritedAnime>(OnSwitch);
+            StepperCommand = new Xamarin.Forms.Command<FavoritedAnime>(OnStepper);
+            UpdateFavoriteAnimesCommand = new AsyncCommand(OnUpdateAnimes);
         }
 
         public async Task LoadAsync(object param)
         {
+            if (_isUpdatingAnimes)
+                return;
+
             FilterData = new FilterData
             {
                 Genres = ANT.UTIL.AnimeExtension.FillGenres(showNSFWGenres: false),
@@ -386,6 +391,28 @@ namespace ANT.Modules
 
             //TODO: mostrar o padrão de filtro quando o sistema de filtro for resetado
         }
+
+        private bool _isUpdatingAnimes;
+        public AsyncCommand UpdateFavoriteAnimesCommand { get; private set; }
+        private async Task OnUpdateAnimes()
+        {
+            _isUpdatingAnimes = true;
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ChoiceModalViewModel>();
+
+            if (canNavigate)
+            {
+                var action = new Action(async () =>
+                {
+                    await NavigationManager
+                    .NavigatePopUpAsync<ProgressPopupViewModel>(App.liteDB.GetCollection<FavoritedAnime>().FindAll().ToList(), this
+                    , new Action(async () => { await LoadAsync(null); }));
+                });
+
+                await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.UpdatingAnimes, Lang.Lang.UpdatingAnimesMessage, action);
+            }
+            _isUpdatingAnimes = false;
+        }
+
 
         #endregion
 

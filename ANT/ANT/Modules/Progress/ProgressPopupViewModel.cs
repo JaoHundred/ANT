@@ -27,24 +27,39 @@ namespace ANT.Modules
             CancelProcessCommand = new magno.Command(OnCancel);
         }
 
+        public ProgressPopupViewModel(object collection, BaseViewModel viewModelType, Action actionAfterClose)
+        {
+            _cancelationToken = new CancellationTokenSource();
+            _collection = collection;
+            _viewModelType = viewModelType;
+            _actionAfterClose = actionAfterClose;
+            InitializeTask = LoadAsync(null);
+            CancelProcessCommand = new magno.Command(OnCancel);
+        }
+
         private CancellationTokenSource _cancelationToken;
         private BaseViewModel _viewModelType;
+        private Action _actionAfterClose;
         private object _collection;
         public Task InitializeTask { get; }
         public async Task LoadAsync(object param)
         {
-
             try
             {
                 await Task.Run(async () =>
                 {
                     if (_viewModelType is CatalogueViewModel && _collection is IList<FavoritedAnime>)
                     {
-                        await FavoriteAnimes();
+                        await FavoriteAnimesFromCatalogue();
                     }
-                    else if(_viewModelType is FavoriteAnimeViewModel && _collection is IList<FavoritedAnime>)
+                    else if (_viewModelType is FavoriteAnimeViewModel && _collection is IList<FavoritedAnime> col)
                     {
-                        //TODO:chamar aqui o método para atualizar os favoritos que estão em FavoriteAnimeViewModel
+                        await UpdateAnimesFromFavorited(col);
+
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.UpdatedAnimes);
+                        });
                     }
                 }, _cancelationToken.Token);
 
@@ -60,26 +75,26 @@ namespace ANT.Modules
                 await App.DelayRequest(2);
                 await NavigationManager.PopPopUpPageAsync();
             }
+            finally
+            {
+                if (_actionAfterClose != null)
+                    _actionAfterClose.Invoke();
 
-            MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, 1);
-            //necessário para não bugar o comportamento da popup, abrir e fechar muito rápido causa efeitos não esperados e mantém a popup aberta para sempre
-            await App.DelayRequest(2);
-            await NavigationManager.PopPopUpPageAsync();
+                MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, 1);
+                //necessário para não bugar o comportamento da popup, abrir e fechar muito rápido causa efeitos não esperados e mantém a popup aberta para sempre
+                await App.DelayRequest(2);
+
+                await NavigationManager.PopPopUpPageAsync();
+            }
         }
 
-        private async Task FavoriteAnimes()
+        private async Task FavoriteAnimesFromCatalogue()
         {
             var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
             var collection = _collection as IList<FavoritedAnime>;
 
             for (int i = 0; i < collection.Count; i++)
             {
-                if (_cancelationToken.IsCancellationRequested)
-                {
-                    await NavigationManager.PopPopUpPageAsync();
-                    _cancelationToken.Token.ThrowIfCancellationRequested();
-                }
-
                 double result = (double)i / collection.Count;
                 MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
 
@@ -114,6 +129,48 @@ namespace ANT.Modules
                 collection[i].IsFavorited = true;
 
                 favoriteCollection.Upsert(favoritedAnime.Anime.MalId, favoritedAnime);
+            }
+        }
+
+        private async Task UpdateAnimesFromFavorited(IList<FavoritedAnime> animes)
+        {
+            //TODO:testar mais algumas vezes, na primeira tentativa no dispositivo real
+            //foram feitas trocas de aplicativo enquanto essa função continuava funcionando
+            //ao terminar não foi completado todos as atualizações da lista, mas o processamento não parou
+            //depois que terminou, ao clicar mais vezes em atualizar o restante que não tinha sido atualizado foi atualizando
+            var db = App.liteDB.GetCollection<FavoritedAnime>();
+            double total = animes.Count;
+
+            for (int i = 0; i < animes.Count; i++)
+            {
+                var favoriteAnime = animes[i];
+
+                if ((favoriteAnime.LastUpdateDate == null)
+                    || (favoriteAnime.LastUpdateDate != null && favoriteAnime.LastUpdateDate != DateTime.Today))
+                {
+                    await App.DelayRequest(4);
+
+                    Anime anime = await App.Jikan.GetAnime(favoriteAnime.Anime.MalId);
+                    anime.RequestCached = true;
+
+                    int lastEpisode = favoriteAnime.LastEpisodeSeen;
+                    bool hasNotification = favoriteAnime.CanGenerateNotifications;
+
+                    favoriteAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
+                    favoriteAnime.LastUpdateDate = DateTime.Today;
+                    favoriteAnime.IsFavorited = true;
+                    favoriteAnime.LastEpisodeSeen = lastEpisode;
+                    favoriteAnime.NextStreamDate = await favoriteAnime.NextEpisodeDateAsync();
+
+                    //se está exibindo e possui data de estreia
+                    favoriteAnime.CanGenerateNotifications =
+                        favoriteAnime.Anime.Airing && favoriteAnime.NextStreamDate != null ? hasNotification : false;
+
+                    db.Update(favoriteAnime.Anime.MalId, favoriteAnime);
+
+                    double result = (double)i / total;
+                    MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
+                }
             }
         }
 

@@ -40,8 +40,8 @@ namespace ANT.Modules
         public ICommand ConfirmCommand { get; private set; }
         private async Task OnConfirm()
         {
-            _action.Invoke();
             await NavigationManager.PopPopUpPageAsync();
+            _action.Invoke();
         }
 
         public ICommand CancelCommand { get; private set; }

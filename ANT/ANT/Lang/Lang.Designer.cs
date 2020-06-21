@@ -952,6 +952,33 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Animes updated successfully.
+        /// </summary>
+        public static string UpdatedAnimes {
+            get {
+                return ResourceManager.GetString("UpdatedAnimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating animes.
+        /// </summary>
+        public static string UpdatingAnimes {
+            get {
+                return ResourceManager.GetString("UpdatingAnimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Animes will be updated, internet connection is required. Do you wish to continue?.
+        /// </summary>
+        public static string UpdatingAnimesMessage {
+            get {
+                return ResourceManager.GetString("UpdatingAnimesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Voice acting roles.
         /// </summary>
         public static string VoiceActingRoles {

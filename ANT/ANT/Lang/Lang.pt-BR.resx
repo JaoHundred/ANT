@@ -414,6 +414,15 @@
   <data name="UnknownDate" xml:space="preserve">
     <value>Transmissão desconhecida</value>
   </data>
+  <data name="UpdatedAnimes" xml:space="preserve">
+    <value>Animes atualizados com sucesso</value>
+  </data>
+  <data name="UpdatingAnimes" xml:space="preserve">
+    <value>Atualizando animes</value>
+  </data>
+  <data name="UpdatingAnimesMessage" xml:space="preserve">
+    <value>Os animes vão ser atualizados, é necessário ter conexão com internet. Deseja continuar?</value>
+  </data>
   <data name="VoiceActingRoles" xml:space="preserve">
     <value>Papeis em dublagens</value>
   </data>

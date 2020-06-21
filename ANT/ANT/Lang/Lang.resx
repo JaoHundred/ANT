@@ -414,6 +414,15 @@
   <data name="UnknownDate" xml:space="preserve">
     <value>Unknown broadcast</value>
   </data>
+  <data name="UpdatedAnimes" xml:space="preserve">
+    <value>Animes updated successfully</value>
+  </data>
+  <data name="UpdatingAnimes" xml:space="preserve">
+    <value>Updating animes</value>
+  </data>
+  <data name="UpdatingAnimesMessage" xml:space="preserve">
+    <value>Animes will be updated, internet connection is required. Do you wish to continue?</value>
+  </data>
   <data name="VoiceActingRoles" xml:space="preserve">
     <value>Voice acting roles</value>
   </data>
