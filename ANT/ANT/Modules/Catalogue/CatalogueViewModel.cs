@@ -348,7 +348,7 @@ namespace ANT.Modules
             if (canNavigate)
             {
                 var items = SelectedItems.Cast<FavoritedAnime>().ToList();
-                await NavigationManager.NavigatePopUpAsync<ProgressPopupViewModel>(items);
+                await NavigationManager.NavigatePopUpAsync<ProgressPopupViewModel>(items, this);
             };
 
             SingleSelectionMode();
