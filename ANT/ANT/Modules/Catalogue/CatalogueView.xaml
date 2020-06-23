@@ -23,6 +23,8 @@
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
         <converter:GenreEnumToSeparateWordConverter x:Key="GenreToStringConverter"/>
         <converter:TranslateEnumConverter x:Key="TranslateEnumConverter"/>
+        <converter:ValueIsNullToBoolConverter x:Key="ValueIsNullToBoolConverter"/>
+        <converter:BoolToGridLenghtConverter x:Key="BoolToGridLenghtConverter"/>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -86,18 +88,37 @@
     </ContentPage.ToolbarItems>
 
 
-    <Grid>
-        <Grid>
+    <Grid RowSpacing="0">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{Binding IsSeasonCatalogue, Converter={StaticResource BoolToGridLenghtConverter}, ConverterParameter=20}"/>
+            <RowDefinition Height="90*"/>
+        </Grid.RowDefinitions>
+        <Frame VerticalOptions="Start" Padding="3" CornerRadius="0" Margin="3,3" 
+               IsVisible="{Binding SeasonData, Converter={StaticResource ValueIsNullToBoolConverter}}">
+            <Grid x:DataType="VM:CatalogueViewModel">
+                <Picker Title="{res:Translate SelectYear}" HorizontalOptions="Center"
+                        ItemsSource="{Binding SeasonData.Years}"
+                        SelectedItem="{Binding SeasonData.SelectedYear, Mode=TwoWay}"/>
+
+                <Picker Grid.Column="1" Title="{res:Translate SelectSeason}" HorizontalOptions="Center"
+                        ItemsSource="{Binding SeasonData.Seasons}"
+                        SelectedItem="{Binding SeasonData.SelectedSeason, Mode=TwoWay}"/>
+
+                <Button Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource SpecsButtonStyle}"
+                        Text="{res:Translate Confirm}" Command="{Binding ChangeSeasonCommand}"/>
+            </Grid>
+        </Frame>
+        <Grid Grid.Row="1" >
             <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection" Margin="3,3,3,0"
                             SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                             SelectionChangedCommand="{Binding OpenAnimeCommand}"
                             RemainingItemsThreshold="{Binding RemainingAnimeCount}"
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+
                 <CollectionView.EmptyView>
-                    <Grid>
-                        <ActivityIndicator IsVisible="{Binding Loading}" IsRunning="{Binding Loading}"/>
-                    </Grid>
+                    <BoxView/>
                 </CollectionView.EmptyView>
 
                 <CollectionView.Footer>
@@ -148,7 +169,8 @@
                            IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
 
             <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
-                Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible">
+                Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible"
+                    d:IsVisible="false">
 
                 <Button.ImageSource>
                     <FontImageSource FontFamily="{StaticResource FontIcon}"
@@ -157,9 +179,13 @@
                 </Button.ImageSource>
             </Button>
 
-            
+            <Grid Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
+                  IsVisible="{Binding Loading}">
+                <ActivityIndicator IsVisible="{Binding Loading}" IsRunning="{Binding Loading}"/>
+            </Grid>
+
         </Grid>
-        <Grid x:Name="SlideMenu" BackgroundColor="{DynamicResource AppBackgroundColor}"
+        <Grid Grid.RowSpan="2" x:Name="SlideMenu" BackgroundColor="{DynamicResource AppBackgroundColor}"
              TranslationY="{Binding Height, Source={x:Reference _Page}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>

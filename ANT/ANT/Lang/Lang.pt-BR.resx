@@ -219,6 +219,9 @@
   <data name="Error" xml:space="preserve">
     <value>Algo deu errado, por favor entre novamente nessa página</value>
   </data>
+  <data name="Fall" xml:space="preserve">
+    <value>Outono</value>
+  </data>
   <data name="FavoriteAnimes" xml:space="preserve">
     <value>Animes favoritos</value>
   </data>
@@ -251,6 +254,9 @@
   </data>
   <data name="Home" xml:space="preserve">
     <value>Principal</value>
+  </data>
+  <data name="HourToNotify" xml:space="preserve">
+    <value>Horas para notificar(horas aproximadas)</value>
   </data>
   <data name="Language" xml:space="preserve">
     <value>Idioma</value>
@@ -354,6 +360,12 @@
   <data name="SelectAppTheme" xml:space="preserve">
     <value>Selecionar tema do aplicativo</value>
   </data>
+  <data name="SelectSeason" xml:space="preserve">
+    <value>Selecione a temporada</value>
+  </data>
+  <data name="SelectYear" xml:space="preserve">
+    <value>Selecione o ano</value>
+  </data>
   <data name="Sequels" xml:space="preserve">
     <value>Continuações</value>
   </data>
@@ -369,8 +381,14 @@
   <data name="SpinOffs" xml:space="preserve">
     <value>Spin offs</value>
   </data>
+  <data name="Spring" xml:space="preserve">
+    <value>Primavera</value>
+  </data>
   <data name="StartDate" xml:space="preserve">
     <value>Data de início</value>
+  </data>
+  <data name="Summer" xml:space="preserve">
+    <value>Verão</value>
   </data>
   <data name="Sunday" xml:space="preserve">
     <value>Domingo</value>
@@ -437,5 +455,8 @@
   </data>
   <data name="Wednesdays" xml:space="preserve">
     <value>Quartas</value>
+  </data>
+  <data name="Winter" xml:space="preserve">
+    <value>Inverno</value>
   </data>
 </root>

@@ -367,6 +367,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fall.
+        /// </summary>
+        public static string Fall {
+            get {
+                return ResourceManager.GetString("Fall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Favorite animes.
         /// </summary>
         public static string FavoriteAnimes {
@@ -462,6 +471,15 @@ namespace ANT.Lang {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hour to notify(estimated hours).
+        /// </summary>
+        public static string HourToNotify {
+            get {
+                return ResourceManager.GetString("HourToNotify", resourceCulture);
             }
         }
         
@@ -772,6 +790,24 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select the season.
+        /// </summary>
+        public static string SelectSeason {
+            get {
+                return ResourceManager.GetString("SelectSeason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the year.
+        /// </summary>
+        public static string SelectYear {
+            get {
+                return ResourceManager.GetString("SelectYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sequels.
         /// </summary>
         public static string Sequels {
@@ -817,11 +853,29 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spring.
+        /// </summary>
+        public static string Spring {
+            get {
+                return ResourceManager.GetString("Spring", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start date.
         /// </summary>
         public static string StartDate {
             get {
                 return ResourceManager.GetString("StartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Summer.
+        /// </summary>
+        public static string Summer {
+            get {
+                return ResourceManager.GetString("Summer", resourceCulture);
             }
         }
         
@@ -1020,6 +1074,15 @@ namespace ANT.Lang {
         public static string Wednesdays {
             get {
                 return ResourceManager.GetString("Wednesdays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Winter.
+        /// </summary>
+        public static string Winter {
+            get {
+                return ResourceManager.GetString("Winter", resourceCulture);
             }
         }
     }

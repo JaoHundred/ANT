@@ -16,6 +16,7 @@ using ANT.UTIL;
 using ANT.Core;
 using magno = MvvmHelpers.Commands;
 using ANT.Model;
+using Android.App;
 
 namespace ANT.Modules
 {
@@ -23,7 +24,7 @@ namespace ANT.Modules
     {
         //TODO: impedir de abrir a janela de filtros se eu tiver chegado nessa tela a partir da seleção de 1 gênero em AnimeSpecs
         //https://github.com/JaoHundred/ANT/issues/42
-         
+
         public CatalogueViewModel(CatalogueModeEnum catalogueMode)
         {
             _catalogueMode = catalogueMode;
@@ -66,6 +67,7 @@ namespace ANT.Modules
             BackButtonCommand = new magno.AsyncCommand<CatalogueView>(OnBackButton);
             SelectSortDirectionCommand = new magno.Command<SortDirectionData>(OnChangeSortDirection);
             SelectSortTypeCommand = new magno.Command<OrderData>(OnSelectSortType);
+            ChangeSeasonCommand = new magno.AsyncCommand(OnChangeSeason);
         }
 
         public Task NavigationFrom()
@@ -170,21 +172,45 @@ namespace ANT.Modules
             set { SetProperty(ref _remainingAnimeCount, value); }
         }
 
+        private SeasonData _seasonData;
+        public SeasonData SeasonData
+        {
+            get { return _seasonData; }
+            set { SetProperty(ref _seasonData, value); }
+        }
+
+        private bool _isSeasonCatalogue;
+        public bool IsSeasonCatalogue
+        {
+            get { return _isSeasonCatalogue; }
+            set { SetProperty(ref _isSeasonCatalogue, value); }
+        }
+
         #endregion
 
         #region métodos da VM
         private async Task LoadSeasonCatalogueAsync()
         {
+            IsSeasonCatalogue = true;
             //remove EndDate, essa informação não existe nos animes da temporada
             FilterData.Orders.RemoveAt(FilterData.Orders.Count - 1);
 
             await App.DelayRequest();
             var results = await App.Jikan.GetSeason();
+            
             results.RequestCached = true;
 
             var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavorited();
             _originalCollection = favoritedEntries.OrderByDescending(p => p.Anime.Score).ToList();
             Animes.AddRange(_originalCollection);
+
+            await App.DelayRequest();
+            var seasonArchive = await App.Jikan.GetSeasonArchive();
+            int minYear = seasonArchive.Archives.Min(p => p.Year);
+            int maxYear = seasonArchive.Archives.Max(p => p.Year);
+
+            Seasons name = (JikanDotNet.Seasons)Enum.Parse(typeof(JikanDotNet.Seasons), results.SeasonName);
+            SeasonData = new SeasonData(results.SeasonYear, results.SeasonName, minYear, maxYear);
         }
 
         private async Task<bool> LoadGlobalCatalogueAsync()
@@ -561,6 +587,26 @@ namespace ANT.Modules
 
             _animeSearchConfig.OrderBy = orderData.OrderBy;
         }
+
+        public ICommand ChangeSeasonCommand { get; private set; }
+        private async Task OnChangeSeason()
+        {
+            Loading = true;
+            ClearTextQuery();
+
+            await App.DelayRequest();
+
+            var result = await App.Jikan.GetSeason(SeasonData.SelectedYear.Value, SeasonData.SelectedSeason);
+            result.RequestCached = true;
+
+            var favoritedEntries = result.SeasonEntries.ConvertAnimesToFavorited();
+            _originalCollection = favoritedEntries.OrderByDescending(p => p.Anime.Score).ToList();
+            Animes.ReplaceRange(_originalCollection);
+
+            Loading = false;
+        }
+
+
 
         #endregion
 
