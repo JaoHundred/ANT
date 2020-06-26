@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
+using System.Resources;
 
 namespace ANT
 {
@@ -55,20 +56,27 @@ namespace ANT
 
             if (settings == null)
             {
-                var settingPrefs = new SettingsPreferences();
-                liteDB.GetCollection<SettingsPreferences>().Upsert(0, settingPrefs);
+                settings = new SettingsPreferences();
+                liteDB.GetCollection<SettingsPreferences>().Upsert(0, settings);
             }
 
-            if (settings.NotificationsIsOn)
-            {
-                if (Device.RuntimePlatform == Device.Android)
-                {
-                    await Task.Run(() =>
-                    {
-                        DependencyService.Get<IWork>().CreatePeriodicWorkAndKeep(WorkManagerConsts.AnimesNotificationWorkId, TimeSpan.FromDays(1));
-                    });
-                }
-            }
+            //TODO:quando estiver funcionando o sistema de workmanager, descomentar linhas abaixo e remover o isvisible false do SettingsView
+            // na parte do menu de agendamento de notificação
+            //if (settings.NotificationsIsOn)
+            //{
+            //    if (Device.RuntimePlatform == Device.Android)
+            //    {
+            //        await Task.Run(() =>
+            //        {
+
+            //           var hourToNotify = DependencyService.Get<IWork>().InitialDelay(settings.HourToNotify);
+
+            //            DependencyService.Get<IWork>().CreateOneTimeWorkAndKeep(WorkManagerConsts.ReschedulerWorkId, hourToNotify);
+            //            //DependencyService.Get<IAlarm>()
+            //            //.StartAlarmRTCWakeUp(settings.HourToNotify, int.Parse(WorkManagerConsts.AnimesNotificationWorkId), TimeSpan.FromDays(1));
+            //        });
+            //    }
+            //}
 
             //TODO: repetir o mesmo procedimento acima para essa parte, para o work de atualização de animes na lista de favoritos
             //(repetir também no BootBroadcastReceiver)

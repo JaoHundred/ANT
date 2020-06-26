@@ -7,9 +7,10 @@ namespace ANT.Interfaces
 {
     public interface IWork
     {
-        void CreatePeriodicWorkAndKeep(string workId, TimeSpan executionInterval);
-        void CreatePeriodicWorkAndReplaceExisting(string workId, TimeSpan executionInterval);
-        void CancelWork(string workId);
+        TimeSpan InitialDelay(TimeSpan triggerAt);
+        void CreateOneTimeWorkAndKeep(string workId, TimeSpan triggerAt);
+        void CreatePeriodicWorkAndReplace(string workId, TimeSpan interval);
+        void CancelWork(params string[] workId);
         void CancelAllWorks();
     }
 }

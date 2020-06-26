@@ -8,5 +8,6 @@ namespace ANT.Core
     {
         public const string AnimesNotificationWorkId = "0";
         public const string UpdateAnimesWorkId = "1";
+        public const string ReschedulerWorkId = "2";
     }
 }

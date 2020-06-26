@@ -47,9 +47,15 @@
                 </TableSection>
                 <TableSection>
                     <ViewCell>
-                        <Grid Margin="5">
+                        <Grid Margin="5" IsVisible="false">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
 
                             <Label Text="{res:Translate AnimeNotifications}" Style="{StaticResource MenuLabelColorStyle}"/>
+
                             <Switch x:Name="NotificationSwitch" Grid.Row="1" IsToggled="{Binding Settings.NotificationsIsOn, Mode=TwoWay}">
                                 <Switch.Behaviors>
                                     <behavior:EventToCommandBehavior EventName="Toggled"
@@ -58,6 +64,13 @@
                             </Switch>
                             <Label Grid.Row="1" Margin="3,0,0,0" Text="{Binding IsToggled, Source={x:Reference NotificationSwitch}
                                 , Converter={StaticResource BoolToStringConverter}}" FontSize="Subtitle"/>
+
+                            <StackLayout Grid.Row="2" IsVisible="{Binding IsToggled, Source={x:Reference NotificationSwitch}}">
+
+                                <Label Text="{res:Translate HourToNotify}" FontSize="Subtitle"  Margin="3,0,0,0"/>
+                                <TimePicker TextColor="{DynamicResource TextColor}"
+                                        Time="{Binding TimeToNotify, Mode=TwoWay}"/>
+                            </StackLayout>
                         </Grid>
 
                     </ViewCell>

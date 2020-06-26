@@ -17,13 +17,13 @@ using AndroidX.Work;
 using ANT.Model;
 using ANT.Core;
 
-//[assembly: UsesPermission(Manifest.Permission.ReceiveBootCompleted)]
+[assembly: UsesPermission(Manifest.Permission.ReceiveBootCompleted)]
 namespace ANT.Droid.Broadcast
 {
 
-    //[BroadcastReceiver(Enabled = true, Exported = true, DirectBootAware = true)]
-    //[IntentFilter(new[] { Intent.ActionLockedBootCompleted })]
-    class BootBroadcastReceiver /*: BroadcastReceiver*/
+    [BroadcastReceiver(Enabled = true, Exported = true, DirectBootAware = true)]
+    [IntentFilter(new[] { Intent.ActionLockedBootCompleted })]
+    class BootBroadcastReceiver : BroadcastReceiver
     {
         //TODO:aparentemente o workmanager já escuta o bootreceiver segundo 
         //https://stackoverflow.com/questions/53043183/how-to-register-a-periodic-work-request-with-workmanger-system-wide-once-i-e-a
@@ -31,23 +31,26 @@ namespace ANT.Droid.Broadcast
         //testar desativar essa classe e seus apetrechos de atributos para ver se o boot ainda acontece
         //se acontecer, deletar essa arquivo/classe
 
-        public /*override*/ void OnReceive(Context context, Intent intent)
+        public override void OnReceive(Context context, Intent intent)
         {
             OnReceive(context, intent);
 
-            App.StartLiteDB();
+            if (App.liteDB == null)
+                App.StartLiteDB();
 
             var bd = ANT.App.liteDB.GetCollection<SettingsPreferences>();
             var settings = bd.FindById(0);
 
             if (settings == null)
             {
-                var settingPrefs = new SettingsPreferences();
-                ANT.App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, settingPrefs);
+                settings = new SettingsPreferences();
+                ANT.App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, settings);
             }
 
-            if (settings.NotificationsIsOn)
-                new WorkerHelper().CreatePeriodicWorkAndKeep(WorkManagerConsts.AnimesNotificationWorkId, TimeSpan.FromDays(1));
+            //TODO: se o work manager funcionar, apagar o conteúdo desse método
+            //if (settings.NotificationsIsOn)
+            //    new AlarmManagerHelper()
+            //        .StartAlarmRTCWakeUp(settings.HourToNotify, int.Parse(WorkManagerConsts.AnimesNotificationWorkId), TimeSpan.FromDays(1));
         }
     }
 }

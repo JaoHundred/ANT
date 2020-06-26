@@ -17,6 +17,7 @@ using ANT.Model;
 using ANT.Core;
 using AndroidX.Work;
 using Google.Common.Util.Concurrent;
+using ANT.Droid.Helpers;
 
 namespace ANT.Droid.Scheduler
 {
@@ -53,6 +54,8 @@ namespace ANT.Droid.Scheduler
                 //TODO:salvar aqui os dados do que deu errado
                 return new Result.Success();
             }
+
+            Console.WriteLine($"Disparou em {DateTime.Now}");
 
             return new Result.Success();
         }

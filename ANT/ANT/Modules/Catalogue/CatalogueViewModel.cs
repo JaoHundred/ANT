@@ -17,6 +17,8 @@ using ANT.Core;
 using magno = MvvmHelpers.Commands;
 using ANT.Model;
 using Android.App;
+using System.Resources;
+using System.Globalization;
 
 namespace ANT.Modules
 {
@@ -197,7 +199,7 @@ namespace ANT.Modules
 
             await App.DelayRequest();
             var results = await App.Jikan.GetSeason();
-            
+
             results.RequestCached = true;
 
             var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavorited();
@@ -209,8 +211,13 @@ namespace ANT.Modules
             int minYear = seasonArchive.Archives.Min(p => p.Year);
             int maxYear = seasonArchive.Archives.Max(p => p.Year);
 
+            Lazy<ResourceManager> ResMgr = new Lazy<ResourceManager>(
+                    () => new ResourceManager(typeof(Lang.Lang)));
+
+            string selectedSeason = ResMgr.Value.GetString(results.SeasonName);
+
             Seasons name = (JikanDotNet.Seasons)Enum.Parse(typeof(JikanDotNet.Seasons), results.SeasonName);
-            SeasonData = new SeasonData(results.SeasonYear, results.SeasonName, minYear, maxYear);
+            SeasonData = new SeasonData(results.SeasonYear, selectedSeason, minYear, maxYear);
         }
 
         private async Task<bool> LoadGlobalCatalogueAsync()
@@ -596,7 +603,24 @@ namespace ANT.Modules
 
             await App.DelayRequest();
 
-            var result = await App.Jikan.GetSeason(SeasonData.SelectedYear.Value, SeasonData.SelectedSeason);
+            Lazy<ResourceManager> ResMgr = new Lazy<ResourceManager>(
+                    () => new ResourceManager(typeof(Lang.Lang)));
+
+            string selectedSeasonEnUs = string.Empty;
+            foreach (var seasonKey in SeasonData.SeasonKeys)
+            {
+                string seasonName = ResMgr.Value.GetString(seasonKey.ToString());
+
+                if (SeasonData.SelectedSeason == seasonName)
+                {
+                    selectedSeasonEnUs = seasonKey.ToString();
+                    break;
+                }
+            }
+
+            var selectedSeasonEnum = (JikanDotNet.Seasons)Enum.Parse(typeof(JikanDotNet.Seasons), selectedSeasonEnUs);
+
+            var result = await App.Jikan.GetSeason(SeasonData.SelectedYear.Value, selectedSeasonEnum);
             result.RequestCached = true;
 
             var favoritedEntries = result.SeasonEntries.ConvertAnimesToFavorited();

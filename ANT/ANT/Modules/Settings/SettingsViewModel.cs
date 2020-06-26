@@ -55,6 +55,39 @@ namespace ANT.Modules
 
         public SettingsPreferences Settings { get; set; }
 
+        private TimeSpan _timeToNotify;
+
+        public TimeSpan TimeToNotify
+        {
+            get { return _timeToNotify = Settings.HourToNotify; }
+            set
+            {
+                if (Settings.HourToNotify != value)
+                {
+                    Settings.HourToNotify = value;
+
+                    var worksIds = new[]
+                    {
+                        WorkManagerConsts.AnimesNotificationWorkId,
+                        WorkManagerConsts.ReschedulerWorkId,
+                    };
+
+                    DependencyService.Get<IWork>().CancelWork(WorkManagerConsts.AnimesNotificationWorkId);
+
+                    //DependencyService.Get<IAlarm>()
+                    //     .StartAlarmRTCWakeUp(Settings.HourToNotify, int.Parse(WorkManagerConsts.AnimesNotificationWorkId), TimeSpan.FromDays(1));
+                    var hourToNotify = DependencyService.Get<IWork>().InitialDelay(Settings.HourToNotify);
+                    DependencyService.Get<IWork>().CreateOneTimeWorkAndKeep(WorkManagerConsts.ReschedulerWorkId, hourToNotify);
+
+                    App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, Settings);
+
+                    SetProperty(ref _timeToNotify, value);
+                }
+            }
+        }
+
+
+
         //private int _selectedLangIndex;
         //public int SelectedLangIndex
         //{
@@ -99,17 +132,32 @@ namespace ANT.Modules
         public ICommand SwitchNotificationCommand { get; private set; }
         private void OnSwitchNotification()
         {
-            var settings = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
-
-            if(settings != null && settings.NotificationsIsOn != Settings.NotificationsIsOn)
+            if (Settings != null)
             {
                 if (Settings.NotificationsIsOn)
-                    DependencyService.Get<IWork>().CreatePeriodicWorkAndReplaceExisting("0", TimeSpan.FromDays(1));
+                {
+                    var hourToNotify = DependencyService.Get<IWork>().InitialDelay(Settings.HourToNotify);
+                    DependencyService.Get<IWork>().CreateOneTimeWorkAndKeep(WorkManagerConsts.ReschedulerWorkId, hourToNotify);
+                    //DependencyService.Get<IAlarm>()
+                    //    .StartAlarmRTCWakeUp(Settings.HourToNotify, int.Parse(WorkManagerConsts.AnimesNotificationWorkId), TimeSpan.FromDays(1));
+                }
                 else
-                    DependencyService.Get<IWork>().CancelWork("0");
+                {
+                    var worksIds = new[]
+                    {
+                        WorkManagerConsts.AnimesNotificationWorkId,
+                        WorkManagerConsts.ReschedulerWorkId,
+                    };
+
+                    DependencyService.Get<IWork>().CancelWork(worksIds);
+                    //DependencyService.Get<IAlarm>().CancelAlarm(int.Parse(WorkManagerConsts.AnimesNotificationWorkId));
+                }
 
                 App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, Settings);
             }
         }
+
+
+
     }
 }

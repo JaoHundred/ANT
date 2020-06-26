@@ -26,36 +26,48 @@ namespace ANT.Droid.Helpers
             WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext).CancelAllWork();
         }
 
-        public void CancelWork(string workId)
+        public void CancelWork(params string[] workIds)
         {
-            WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext).CancelAllWorkByTag(workId);
+            foreach (var work in workIds)
+                WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext).CancelUniqueWork(work);
         }
 
-        public void CreatePeriodicWorkAndKeep(string workId, TimeSpan executionInterval)
-        {
-            PeriodicWorkRequest notificationWorker = CreateConstraints(executionInterval);
-
-            WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext)
-                .EnqueueUniquePeriodicWork(workId, ExistingPeriodicWorkPolicy.Keep, notificationWorker);
-        }
-
-        private static PeriodicWorkRequest CreateConstraints(TimeSpan executionInterval)
+        public void CreateOneTimeWorkAndKeep(string workId, TimeSpan triggerAt)
         {
             var constraints = new Constraints();
             constraints.SetRequiresStorageNotLow(false);
             constraints.SetRequiresBatteryNotLow(false);
 
-            var notificationWorker = PeriodicWorkRequest.Builder.From<NotificationWorker>(executionInterval)
-            .SetConstraints(constraints).Build();
-            return notificationWorker;
+            var notificationWorker = OneTimeWorkRequest.Builder.From<InitialDelayWorker>()
+            .SetConstraints(constraints).SetInitialDelay(triggerAt).Build();
+
+            WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext)
+                .EnqueueUniqueWork(workId, ExistingWorkPolicy.Keep, notificationWorker);
         }
 
-        public void CreatePeriodicWorkAndReplaceExisting(string workId, TimeSpan executionInterval)
+        public void CreatePeriodicWorkAndReplace(string workId, TimeSpan interval)
         {
-            PeriodicWorkRequest notificationWorker = CreateConstraints(executionInterval);
+            var constraints = new Constraints();
+            constraints.SetRequiresStorageNotLow(false);
+            constraints.SetRequiresBatteryNotLow(false);
+
+            var notificationWorker = PeriodicWorkRequest.Builder.From<NotificationWorker>(interval)
+            .SetConstraints(constraints).Build();
 
             WorkManager.GetInstance(Xamarin.Essentials.Platform.AppContext)
                 .EnqueueUniquePeriodicWork(workId, ExistingPeriodicWorkPolicy.Replace, notificationWorker);
+        }
+
+        public TimeSpan InitialDelay(TimeSpan triggerAt)
+        {
+            TimeSpan duration;
+            if (new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, 0) == triggerAt)
+                duration = TimeSpan.FromSeconds(1);
+            else if (DateTime.Now.TimeOfDay > triggerAt)
+                duration = (DateTime.Now.TimeOfDay - triggerAt.Add(TimeSpan.FromDays(1))).Duration();
+            else
+                duration = (DateTime.Now.TimeOfDay - triggerAt).Duration();
+            return duration;
         }
     }
 }

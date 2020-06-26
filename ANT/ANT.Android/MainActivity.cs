@@ -21,6 +21,7 @@ using ANT.Droid.Scheduler;
 using Android.App.Job;
 using System.Threading.Tasks;
 using AndroidX.Work;
+using ANT.Droid.Broadcast;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ANT.Droid.MainActivity))]
 namespace ANT.Droid
