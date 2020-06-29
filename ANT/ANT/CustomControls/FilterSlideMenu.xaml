@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="clr-namespace:ANT.Lang"
+             mc:Ignorable="d"
+             x:Class="ANT.CustomControls.FilterSlideMenu"
+             x:Name="_filterSlideMenu">
+
+    <Grid >
+
+        <ContentView Content="{Binding PageContent, Source={x:Reference _filterSlideMenu}}"/>
+
+        <Grid x:Name="SlideMenu" BackgroundColor="{DynamicResource AppBackgroundColor}"
+              TranslationY="{Binding Height, Source={x:Reference _filterSlideMenu}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <BoxView Grid.ColumnSpan="2" BackgroundColor="{DynamicResource BoxViewFilterHeaderColor}"/>
+            <Label Text="{res:Translate SearchFilters}" d:Text="Filtros" Grid.ColumnSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
+                   FontSize="Title"/>
+
+            <Grid Grid.ColumnSpan="2" HorizontalOptions="End" VerticalOptions="Center"
+                  Margin="0,0,0,10">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="CloseSlideMenuTapped"/>
+                </Grid.GestureRecognizers>
+
+                <AbsoluteLayout>
+                    <BoxView BackgroundColor="{DynamicResource BoxViewFilterCloseBoxButtonColor}" HeightRequest="5"/>
+                    <BoxView BackgroundColor="{DynamicResource BoxViewFilterCloseBoxButtonColor}" CornerRadius="5"/>
+                </AbsoluteLayout>
+
+                <Label Text="X" FontSize="25" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            </Grid>
+
+            <ContentView Grid.Row="1" Grid.ColumnSpan="2" Content="{Binding Filters, Source={x:Reference _filterSlideMenu}}"/>
+            <ContentView Grid.Row="2" Grid.ColumnSpan="2" Content="{Binding FilterMenu, Source={x:Reference _filterSlideMenu}}"/>
+        </Grid>
+        
+    </Grid>
+
+</ContentView>

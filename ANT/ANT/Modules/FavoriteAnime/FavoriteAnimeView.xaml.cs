@@ -1,4 +1,5 @@
-﻿using ANT.Core;
+﻿using Android.Widget;
+using ANT.Core;
 using ANT.Model;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace ANT.Modules
             //a ViewModel
             MessagingCenter.Subscribe<FavoriteAnimeViewModel>(this, "CloseFilterView", (sender) =>
             {
-                CloseSlideMenuTapped(null, null);
+                FilterSlideControl.IsOpen = false;
             });
             await (BindingContext as FavoriteAnimeViewModel)?.LoadAsync(null);
         }
@@ -72,23 +73,15 @@ namespace ANT.Modules
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             MessagingCenter.Unsubscribe<FavoriteAnimeViewModel>(this, "CloseFilterView");
-            CloseSlideMenuTapped(null, null);
+            FilterSlideControl.IsOpen = false;
         }
 
-        private async void CloseSlideMenuTapped(object sender, EventArgs e)
+        private void FilterTapped(object sender, EventArgs e)
         {
-            await SlideMenu.TranslateTo(0, _page.Bounds.Bottom, easing: Easing.Linear);
+            FilterSlideControl.IsOpen = true;
         }
 
-        private async void FilterTapped(object sender, EventArgs e)
-        {
-            await SlideMenu.TranslateTo(0, _page.Bounds.Top, easing: Easing.Linear);
-        }
-
-
-        private async void CollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e) => 
+        private async void CollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e) =>
             await bottomSlideMenu.ScrollHappenedAsync(e.VerticalDelta);
-
-
     }
 }
