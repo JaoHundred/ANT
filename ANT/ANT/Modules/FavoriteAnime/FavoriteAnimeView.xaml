@@ -178,45 +178,18 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
+                    
+                    <custom:MenuImageButton Command="{Binding SelectionModeCommand}"
+                                            ImageStyle="{StaticResource SelectLabelStyle}"
+                                            ImageText="{res:Translate MultiSelect}"/>
 
-                    <StackLayout Orientation="Vertical" >
-                        <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding SelectionModeCommand}"/>
-                        </StackLayout.GestureRecognizers>
+                    <custom:MenuImageButton Grid.Column="1" ImageStyle="{StaticResource SearchLabelStyle}"
+                                            ImageText="multiselect"
+                                            Tapped="SearchLabelTapped"/>
 
-                        <Label Style="{StaticResource SelectLabelStyle}"
-                               TextColor="{DynamicResource TextTitleColor}"
-                               HorizontalTextAlignment="Start"
-                               Margin="10,0,0,0" />
-                        <Label Text="{res:Translate MultiSelect}"
-                               TextColor="{DynamicResource TextTitleColor}"
-                               FontAttributes="Bold"
-                               HorizontalTextAlignment="Start"/>
-                    </StackLayout>
-
-                    <StackLayout Grid.Column="1" Orientation="Vertical">
-                        <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="SearchLabelTapped"/>
-                        </StackLayout.GestureRecognizers>
-                        <Label Style="{StaticResource SearchLabelStyle}" x:Name="SearchIconLabel"
-                               TextColor="{DynamicResource TextTitleColor}"
-                               HorizontalTextAlignment="Center"/>
-
-                        <Label Text="{res:Translate Search}" FontAttributes="Bold"
-                               TextColor="{DynamicResource TextTitleColor}"
-                               HorizontalTextAlignment="Center"/>
-                    </StackLayout>
-                    <StackLayout Grid.Column="2" Orientation="Vertical" HorizontalOptions="End">
-                        <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="FilterTapped"/>
-                        </StackLayout.GestureRecognizers>
-                        <Label Grid.Column="1" x:Name="FilterControl" Style="{StaticResource FilterLabelStyle}"
-                               TextColor="{DynamicResource TextTitleColor}"  HorizontalTextAlignment="Center"
-                                Margin="0,0,10,0"/>
-                        <Label Text="{res:Translate Filter}" FontAttributes="Bold"
-                               TextColor="{DynamicResource TextTitleColor}"
-                               HorizontalTextAlignment="Start"/>
-                    </StackLayout>
+                    <custom:MenuImageButton Grid.Column="2" ImageStyle="{StaticResource FilterLabelStyle}"
+                                            ImageText="{res:Translate MultiSelect}"
+                                            Tapped="FilterTapped"/>
                 </Grid>
             </custom:BottomSlideMenu.MenuContent>
 
@@ -306,6 +279,4 @@
                     Command="{Binding ResetFilterCommand}" Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
         </Grid>
     </Grid>
-
-
 </ContentPage>

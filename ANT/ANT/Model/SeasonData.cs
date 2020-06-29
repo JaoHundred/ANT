@@ -11,7 +11,6 @@ namespace ANT.Model
 {
     public class SeasonData : ObservableObject
     {
-
         public SeasonData(int? year, string season, int minYear, int maxYear)
         {
             Seasons = new List<string>
@@ -34,7 +33,6 @@ namespace ANT.Model
             for (int i = minYear; i <= maxYear + 10; i++)
                 Years.Add(i);
 
-            //(JikanDotNet.Seasons)Enum.Parse(typeof(JikanDotNet.Seasons), season)
             SelectedYear = year;
             SelectedSeason = Seasons.First(p => p.ToLower() == season.ToLower());
         }
