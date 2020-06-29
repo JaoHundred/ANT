@@ -184,11 +184,11 @@
                                             ImageText="{res:Translate MultiSelect}"/>
 
                     <custom:MenuImageButton Grid.Column="1" ImageStyle="{StaticResource SearchLabelStyle}"
-                                            ImageText="multiselect"
+                                            ImageText="{res:Translate Search}"
                                             Tapped="SearchLabelTapped"/>
 
                     <custom:MenuImageButton Grid.Column="2" ImageStyle="{StaticResource FilterLabelStyle}"
-                                            ImageText="{res:Translate MultiSelect}"
+                                            ImageText="{res:Translate Filter}"
                                             Tapped="FilterTapped"/>
                 </Grid>
             </custom:BottomSlideMenu.MenuContent>
