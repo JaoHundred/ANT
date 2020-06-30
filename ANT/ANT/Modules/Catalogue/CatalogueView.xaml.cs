@@ -18,7 +18,7 @@ namespace ANT.Modules
 
             MessagingCenter.Subscribe<CatalogueViewModel>(this, "CloseFilterView", (sender) =>
            {
-               CloseSlideMenuTapped(null, null);
+               FilderSlide.IsOpen = false;
            });
         }
 
@@ -31,8 +31,6 @@ namespace ANT.Modules
         private void SearchLabelTapped(object sender, EventArgs e)
         {
             SearchControl.IsVisible = true;
-            SearchIconLabel.IsVisible = false;
-            FilterControl.IsVisible = false;
             EntrySearchField.Focus();
 
             LabelTitle.IsVisible = false;
@@ -41,19 +39,17 @@ namespace ANT.Modules
         private void SearchFieldLostFocus(object sender, FocusEventArgs e)
         {
             SearchControl.IsVisible = false;
-            SearchIconLabel.IsVisible = true;
-            FilterControl.IsVisible = true;
             LabelTitle.IsVisible = true;
         }
 
-        private async void CloseSlideMenuTapped(object sender, EventArgs e)
+        private void FilterTapped(object sender, EventArgs e)
         {
-            await SlideMenu.TranslateTo(0, _Page.Bounds.Bottom, easing: Easing.Linear);
+            FilderSlide.IsOpen = true;
         }
 
-        private async void FilterTapped(object sender, EventArgs e)
+        private async void CatalogueCollection_Scrolled(object sender, ItemsViewScrolledEventArgs e)
         {
-            await SlideMenu.TranslateTo(0, _Page.Bounds.Top, easing: Easing.Linear);
+            await bottomSlideMenu.ScrollHappenedAsync(e.VerticalDelta);
         }
     }
 }

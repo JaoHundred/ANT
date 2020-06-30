@@ -5,13 +5,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:ANT.Lang"
              xmlns:converter="clr-namespace:ANT.Converter"
-             xmlns:animate="clr-namespace:Xamanimation;assembly=Xamanimation"
              xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:comm="clr-namespace:ANT._Behaviors"
              xmlns:favo="clr-namespace:ANT.Model"
-             xmlns:ji="clr-namespace:JikanDotNet;assembly=JikanDotNet"
+             xmlns:custom="clr-namespace:ANT.CustomControls"
              xmlns:VM="clr-namespace:ANT.Modules"
-             xmlns:back="clr-namespace:ANT.UTIL"
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
@@ -29,15 +27,10 @@
 
     <Shell.TitleView>
         <Grid ColumnSpacing="20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
             <Label Text="{res:Translate Catalogue}" Style="{StaticResource NavigationBarTitleLabelStyle}"
                    x:Name="LabelTitle" />
 
-            <Grid Grid.ColumnSpan="3" x:Name="SearchControl" IsVisible="False">
+            <Grid x:Name="SearchControl" IsVisible="False">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="auto"/>
@@ -56,7 +49,7 @@
                     </Label.GestureRecognizers>
                 </Label>
             </Grid>
-            <Label Grid.Column="1" Style="{StaticResource SearchLabelStyle}" x:Name="SearchIconLabel"
+            <!--<Label Grid.Column="1" Style="{StaticResource SearchLabelStyle}" x:Name="SearchIconLabel"
                    VerticalOptions="Center" TextColor="{DynamicResource TextTitleColor}">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="SearchLabelTapped"/>
@@ -68,7 +61,7 @@
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="FilterTapped"/>
                 </Label.GestureRecognizers>
-            </Label>
+            </Label>-->
         </Grid>
 
 
@@ -86,132 +79,129 @@
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
+    
+    <custom:FilterSlideMenu x:Name="FilderSlide">
+        <custom:FilterSlideMenu.PageContent>
 
+            <custom:BottomSlideMenu x:Name="bottomSlideMenu">
+                <custom:BottomSlideMenu.ViewContent>
+                    <Grid RowSpacing="0">
 
-    <Grid RowSpacing="0">
-        
-        <Grid.RowDefinitions>
-            <RowDefinition Height="{Binding IsSeasonCatalogue, Converter={StaticResource BoolToGridLenghtConverter}, ConverterParameter=20}"/>
-            <RowDefinition Height="90*"/>
-        </Grid.RowDefinitions>
-        <Frame VerticalOptions="Start" Padding="3" CornerRadius="0" Margin="3,3" 
-               IsVisible="{Binding SeasonData, Converter={StaticResource ValueIsNullToBoolConverter}}">
-            <Grid x:DataType="VM:CatalogueViewModel">
-                <Picker Title="{res:Translate SelectYear}" HorizontalOptions="Center"
-                        ItemsSource="{Binding SeasonData.Years}"
-                        SelectedItem="{Binding SeasonData.SelectedYear, Mode=TwoWay}"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="{Binding IsSeasonCatalogue, Converter={StaticResource BoolToGridLenghtConverter}, ConverterParameter=20}"/>
+                            <RowDefinition Height="90*"/>
+                        </Grid.RowDefinitions>
+                        <Frame VerticalOptions="Start" Padding="3" CornerRadius="0" Margin="3,3" 
+                               IsVisible="{Binding SeasonData, Converter={StaticResource ValueIsNullToBoolConverter}}">
+                            <Grid x:DataType="VM:CatalogueViewModel">
+                                <Picker Title="{res:Translate SelectYear}" HorizontalOptions="Center"
+                                        ItemsSource="{Binding SeasonData.Years}"
+                                        SelectedItem="{Binding SeasonData.SelectedYear, Mode=TwoWay}"/>
 
-                <Picker Grid.Column="1" Title="{res:Translate SelectSeason}" HorizontalOptions="Center"
-                        ItemsSource="{Binding SeasonData.Seasons}"
-                        SelectedItem="{Binding SeasonData.SelectedSeason, Mode=TwoWay}"/>
+                                <Picker Grid.Column="1" Title="{res:Translate SelectSeason}" HorizontalOptions="Center"
+                                        ItemsSource="{Binding SeasonData.Seasons}"
+                                        SelectedItem="{Binding SeasonData.SelectedSeason, Mode=TwoWay}"/>
 
-                <Button Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource SpecsButtonStyle}"
-                        Text="{res:Translate Confirm}" Command="{Binding ChangeSeasonCommand}"/>
-            </Grid>
-        </Frame>
-        <Grid Grid.Row="1" >
-            <CollectionView ItemsSource="{Binding Animes}" x:Name="CatalogueCollection" Margin="3,3,3,0"
-                            SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
-                            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                            SelectionChangedCommand="{Binding OpenAnimeCommand}"
-                            RemainingItemsThreshold="{Binding RemainingAnimeCount}"
-                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
-
-                <CollectionView.EmptyView>
-                    <BoxView/>
-                </CollectionView.EmptyView>
-
-                <CollectionView.Footer>
-                    <!--a presença de um footer também mantém os itens da lista nos tamanhos corretos(o fim dela)-->
-                    <Label HeightRequest="50"/>
-                </CollectionView.Footer>
-
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" 
-                                     Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
-                </CollectionView.ItemsLayout>
-
-                <CollectionView.ItemTemplate>
-
-                    <DataTemplate x:DataType="favo:FavoritedAnime">
-                        <Frame>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
-
-                                <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}"/>
-
-                                <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
-                                    <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
-                                             IsVisible="{Binding IsFavorited}"/>
-
-                                    <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
-                                           IsVisible="{Binding IsFavorited}"
-                                           HorizontalOptions="Center" VerticalOptions="Center"/>
-                                </Grid>
-
-                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
-                                                   IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
-
-                                <Label Grid.Row="1" Text="{Binding Anime.Title}" 
-                                       LineBreakMode="TailTruncation" MaxLines="1"
-                                       Style="{StaticResource AnimeFrameLabelStyle}" />
+                                <Button Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource SpecsButtonStyle}"
+                                        Text="{res:Translate Confirm}" Command="{Binding ChangeSeasonCommand}"/>
                             </Grid>
                         </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                        <CollectionView Grid.Row="1"  ItemsSource="{Binding Animes}" x:Name="CatalogueCollection" Margin="3,3,3,0"
+                                        SelectionMode="{Binding SelectionMode}" SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
+                                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                                        SelectionChangedCommand="{Binding OpenAnimeCommand}"
+                                        RemainingItemsThreshold="{Binding RemainingAnimeCount}"
+                                        RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
+                                        Scrolled="CatalogueCollection_Scrolled">
 
-            </CollectionView>
+                            <CollectionView.EmptyView>
+                                <BoxView/>
+                            </CollectionView.EmptyView>
 
-            <ActivityIndicator HorizontalOptions="Center"  VerticalOptions="End" 
-                           IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
+                            <CollectionView.Footer>
+                                <!--a presença de um footer também mantém os itens da lista nos tamanhos corretos(o fim dela)-->
+                                <Label HeightRequest="50"/>
+                            </CollectionView.Footer>
 
-            <Button x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
-                Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible"
-                    d:IsVisible="false">
+                            <CollectionView.ItemsLayout>
+                                <GridItemsLayout Orientation="Vertical" 
+                                     Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
+                            </CollectionView.ItemsLayout>
 
-                <Button.ImageSource>
-                    <FontImageSource FontFamily="{StaticResource FontIcon}"
-                                 Glyph="{StaticResource StarFill}"
-                                 Size="22" />
-                </Button.ImageSource>
-            </Button>
+                            <CollectionView.ItemTemplate>
 
-            <Grid Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
-                  IsVisible="{Binding Loading}">
-                <ActivityIndicator IsVisible="{Binding Loading}" IsRunning="{Binding Loading}"/>
-            </Grid>
+                                <DataTemplate x:DataType="favo:FavoritedAnime">
+                                    <Frame>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition Height="auto"/>
+                                            </Grid.RowDefinitions>
 
-        </Grid>
-        <Grid Grid.RowSpan="2" x:Name="SlideMenu" BackgroundColor="{DynamicResource AppBackgroundColor}"
-             TranslationY="{Binding Height, Source={x:Reference _Page}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition />
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
+                                            <FFimage:CachedImage x:Name="AnimeImage" Source="{Binding Anime.ImageURL}"/>
+
+                                            <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InversorConverter}, Source={x:Reference AnimeImage}}">
+                                                <BoxView BackgroundColor="{StaticResource OpaqueBlackColor}"
+                                                             IsVisible="{Binding IsFavorited}"/>
+
+                                                <Label Style="{StaticResource FavoritedAnimeStyle}" FontSize="50"
+                                                           IsVisible="{Binding IsFavorited}"
+                                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                            </Grid>
+
+                                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
+                                                                   IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
+
+                                            <Label Grid.Row="1" Text="{Binding Anime.Title}" 
+                                                       LineBreakMode="TailTruncation" MaxLines="1"
+                                                       Style="{StaticResource AnimeFrameLabelStyle}" />
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                        </CollectionView>
+
+                        <ActivityIndicator Grid.RowSpan="2" HorizontalOptions="Center"  VerticalOptions="End" 
+                                               IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"/>
+
+                        <Button Grid.RowSpan="2" x:Name="FavoriteButton" Command="{Binding AddToFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
+                                    Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="FavoriteButton_AnimationOnIsVisible"
+                                    d:IsVisible="false">
+
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                                     Glyph="{StaticResource StarFill}"
+                                                     Size="22" />
+                            </Button.ImageSource>
+                        </Button>
+
+                        <Grid Grid.Row="1" Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
+                                  IsVisible="{Binding Loading}">
+                            <ActivityIndicator IsVisible="{Binding Loading}" IsRunning="{Binding Loading}"/>
+                        </Grid>
 
 
-            <BoxView Grid.ColumnSpan="2" BackgroundColor="{DynamicResource BoxViewFilterHeaderColor}"/>
-            <Label Text="{res:Translate SearchFilters}" Grid.ColumnSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
-                   FontSize="Title"/>
+                    </Grid>
+                </custom:BottomSlideMenu.ViewContent>
+                <custom:BottomSlideMenu.MenuContent>
+                    <Grid Margin="30,10,30,0" >
+                        <custom:MenuImageButton ImageText="{res:Translate MultiSelect}" ImageStyle="{StaticResource SelectLabelStyle}"
+                                                Command="{Binding SelectionModeCommand}"/>
+                        <custom:MenuImageButton Grid.Column="1" ImageStyle="{StaticResource SearchLabelStyle}"
+                                                ImageText="{res:Translate Search}"
+                                                Tapped="SearchLabelTapped"/>
 
-            <Grid Grid.ColumnSpan="2" HorizontalOptions="End" VerticalOptions="Center"
-                  Margin="0,0,0,10">
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="CloseSlideMenuTapped"/>
-                </Grid.GestureRecognizers>
+                        <custom:MenuImageButton Grid.Column="2" ImageStyle="{StaticResource FilterLabelStyle}"
+                                                ImageText="{res:Translate Filter}"
+                                                Tapped="FilterTapped"/>
+                    </Grid>
+                </custom:BottomSlideMenu.MenuContent>
 
-                <AbsoluteLayout>
-                    <BoxView BackgroundColor="{DynamicResource BoxViewFilterCloseBoxButtonColor}" HeightRequest="5"/>
-                    <BoxView BackgroundColor="{DynamicResource BoxViewFilterCloseBoxButtonColor}" CornerRadius="5"/>
-                </AbsoluteLayout>
-
-                <Label Text="X" FontSize="25" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
-            </Grid>
-
+            </custom:BottomSlideMenu>
+            
+        </custom:FilterSlideMenu.PageContent>
+        <custom:FilterSlideMenu.Filters>
             <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -275,12 +265,19 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </StackLayout>
-            </Grid>
 
-            <Button Grid.Row="2" Text="{res:Translate ApplyFilter}" Command="{Binding ApplyFilterCommand}"
-                    Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
-            <Button Grid.Row="2" Grid.Column="1" Text="{res:Translate ResetFilter}"
-                    Command="{Binding ResetFilterCommand}" Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
-        </Grid>
-    </Grid>
+
+            </Grid>
+        </custom:FilterSlideMenu.Filters>
+        <custom:FilterSlideMenu.FilterMenu>
+            <Grid>
+                <Button Text="{res:Translate ApplyFilter}" Command="{Binding ApplyFilterCommand}"
+                        Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
+                <Button Grid.Column="1" Text="{res:Translate ResetFilter}"
+                        Command="{Binding ResetFilterCommand}" Style="{StaticResource SpecsButtonStyle}" Margin="5"/>
+            </Grid>
+        </custom:FilterSlideMenu.FilterMenu>
+    </custom:FilterSlideMenu>
+
+
 </ContentPage>
