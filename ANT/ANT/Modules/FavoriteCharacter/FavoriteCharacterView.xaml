@@ -9,6 +9,7 @@
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:behavior="clr-namespace:ANT._Behaviors"
              xmlns:converter="clr-namespace:ANT.Converter"
+             xmlns:custom="clr-namespace:ANT.CustomControls"
              xmlns:comm="clr-namespace:ANT._Behaviors"
              x:DataType="vm:FavoriteCharacterViewModel"
              mc:Ignorable="d"
@@ -24,14 +25,10 @@
 
     <Shell.TitleView>
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
             <Label Text="{res:Translate FavoriteCharacters}" Style="{StaticResource NavigationBarTitleLabelStyle}"
                    x:Name="LabelTitle" />
 
-            <Grid Grid.ColumnSpan="2" x:Name="SearchControl" IsVisible="False">
+            <Grid x:Name="SearchControl" IsVisible="False">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="auto"/>
@@ -50,82 +47,91 @@
                     </Label.GestureRecognizers>
                 </Label>
             </Grid>
-            <Label Grid.Column="1" Style="{StaticResource SearchLabelStyle}" x:Name="SearchIconLabel"
-                   VerticalOptions="Center" Margin="0,0,2,0" TextColor="{DynamicResource TextTitleColor}">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="SearchLabelTapped"/>
-                </Label.GestureRecognizers>
-            </Label>
         </Grid>
     </Shell.TitleView>
 
     <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="{res:Translate MultiSelect}"
+                     Command="{Binding SelectionModeCommand}"/>
+        
         <ToolbarItem Order="Secondary" Text="{res:Translate ClearAll}"
                      Command="{Binding ClearAllRecentCommand}"/>
 
-        <ToolbarItem Order="Secondary" Text="{res:Translate MultiSelect}"
-                     Command="{Binding SelectionModeCommand}"/>
     </ContentPage.ToolbarItems>
 
-    <Grid>
-        <CollectionView ItemsSource="{Binding FavoritedCharacters}" 
+    <custom:BottomSlideMenu x:Name="BottomSlide">
+        <custom:BottomSlideMenu.ViewContent>
+            <Grid>
+                <CollectionView ItemsSource="{Binding FavoritedCharacters}" 
                         Margin="10,5,10,5" SelectedItem="{Binding SelectedFavorite, Mode=TwoWay}" 
                         SelectedItems="{Binding SelectedFavorites, Mode=TwoWay}"
                         SelectionChangedCommand="{Binding OpenCharacterCommand}"
-                        SelectionMode="{Binding SelectionMode}" x:Name="CharactersCollectionView">
+                        SelectionMode="{Binding SelectionMode}" x:Name="CharactersCollectionView"
+                                Scrolled="CharactersCollectionView_Scrolled">
 
-            <CollectionView.EmptyView>
-                <Grid>
-                    <Label Text="{res:Translate NothingForNow}" FontSize="40" VerticalOptions="Center"
+                    <CollectionView.EmptyView>
+                        <Grid>
+                            <Label Text="{res:Translate NothingForNow}" FontSize="40" VerticalOptions="Center"
                            HorizontalOptions="Center" 
                            IsVisible="{Binding SearchQuery, Converter={StaticResource SearchTextToEmptyView}}"/>
-                </Grid>
-            </CollectionView.EmptyView>
+                        </Grid>
+                    </CollectionView.EmptyView>
 
-            
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
-            </CollectionView.ItemsLayout>
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:FavoritedAnimeCharacter">
-                    <Frame HeightRequest="200">
-                        <Grid>
-                            <ffimage:CachedImage Grid.RowSpan="2" x:Name="img" Source="{Binding Character.ImageURL}"/>
-                            <ActivityIndicator Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference img}}"
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:FavoritedAnimeCharacter">
+                            <Frame HeightRequest="200">
+                                <Grid>
+                                    <ffimage:CachedImage Grid.RowSpan="2" x:Name="img" Source="{Binding Character.ImageURL}"/>
+                                    <ActivityIndicator Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference img}}"
                                        IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
 
-                            <StackLayout Grid.Column="1" Orientation="Vertical">
-                                <Label Text="{Binding Character.Name}" Style="{StaticResource TitleLabelStyle}">
-                                    <Label.Behaviors>
-                                        <behavior:LabelLinesBehavior MaxLines="2"/>
-                                    </Label.Behaviors>
-                                </Label>
+                                    <StackLayout Grid.Column="1" Orientation="Vertical">
+                                        <Label Text="{Binding Character.Name}" Style="{StaticResource TitleLabelStyle}">
+                                            <Label.Behaviors>
+                                                <behavior:LabelLinesBehavior MaxLines="2"/>
+                                            </Label.Behaviors>
+                                        </Label>
 
-                                <Label Text="{Binding Character.NameKanji}" Style="{StaticResource TitleLabelStyle}"
+                                        <Label Text="{Binding Character.NameKanji}" Style="{StaticResource TitleLabelStyle}"
                                        LineBreakMode="TailTruncation"/>
-                            </StackLayout>
+                                    </StackLayout>
 
-                            <Label Grid.Column="1" Grid.Row="1" Style="{StaticResource ContentBodyLabelStyle}" LineBreakMode="TailTruncation"
+                                    <Label Grid.Column="1" Grid.Row="1" Style="{StaticResource ContentBodyLabelStyle}" LineBreakMode="TailTruncation"
                                    Text="{Binding Character.About, Converter={StaticResource RemoveSubStringConverter}, ConverterParameter=\\n}">
-                                <Label.Behaviors>
-                                    <behavior:LabelLinesBehavior MaxLines="5"/>
-                                </Label.Behaviors>
-                            </Label>
+                                        <Label.Behaviors>
+                                            <behavior:LabelLinesBehavior MaxLines="5"/>
+                                        </Label.Behaviors>
+                                    </Label>
 
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-        <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
+                <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
                 Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="DeleteButton_AnimationOnIsVisible">
-            <Button.ImageSource>
-                <FontImageSource FontFamily="{StaticResource FontIcon}"
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="{StaticResource FontIcon}"
                                  Glyph="{StaticResource Delete}"
                                  Size="22" />
-            </Button.ImageSource>
-        </Button>
-    </Grid>
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+        </custom:BottomSlideMenu.ViewContent>
+        <custom:BottomSlideMenu.MenuContent>
+            <Grid>
+                <custom:MenuImageButton ImageText="{res:Translate MultiSelect}" ImageStyle="{StaticResource SelectLabelStyle}"
+                                        Command="{Binding SelectionModeCommand}"/>
+                <custom:MenuImageButton Grid.Column="1" ImageText="{res:Translate Search}" ImageStyle="{StaticResource SearchLabelStyle}"
+                                        Tapped="SearchLabelTapped"/>
+            </Grid>
+        </custom:BottomSlideMenu.MenuContent>
+    </custom:BottomSlideMenu>
+    
 </ContentPage>

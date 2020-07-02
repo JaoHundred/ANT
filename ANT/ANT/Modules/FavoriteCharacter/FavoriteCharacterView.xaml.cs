@@ -28,7 +28,6 @@ namespace ANT.Modules
         private void SearchLabelTapped(object sender, EventArgs e)
         {
             SearchControl.IsVisible = true;
-            SearchIconLabel.IsVisible = false;
             EntrySearchField.Focus();
 
             LabelTitle.IsVisible = false;
@@ -37,7 +36,6 @@ namespace ANT.Modules
         private void SearchFieldLostFocus(object sender, FocusEventArgs e)
         {
             SearchControl.IsVisible = false;
-            SearchIconLabel.IsVisible = true;
             LabelTitle.IsVisible = true;
         }
 
@@ -45,6 +43,11 @@ namespace ANT.Modules
         {
             if (e.PropertyName == "IsVisible" && DeleteButton.IsVisible)
                 await DeleteButton.Animate(new ShakeAnimation());
+        }
+
+        private async void CharactersCollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
+        {
+            await BottomSlide.ScrollHappenedAsync(e.VerticalDelta);
         }
     }
 }
