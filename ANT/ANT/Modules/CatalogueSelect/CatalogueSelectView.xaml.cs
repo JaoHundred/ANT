@@ -18,14 +18,5 @@ namespace ANT.Modules
             InitializeComponent();
             BindingContext = new CatalogueSelectViewModel();
         }
-
-        private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
-        {
-            if (sender is VisualElement ve)
-            {
-                await ve.ScaleTo(0.95, 100, easing: Easing.Linear);
-                await ve.ScaleTo(1, 100, easing: Easing.Linear);
-            }
-        }
     }
 }

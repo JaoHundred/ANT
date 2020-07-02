@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="ANT.CustomControls.CatalogueButton"
+             x:Name="_catalogueButton">
+
+    <ContentView.Resources>
+        <Style TargetType="BoxView" x:Key="LeftBoxViewStyle">
+            <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueGridButtonLeftColor}"/>
+            <Setter Property="CornerRadius" Value="20"/>
+        </Style>
+        <Style TargetType="BoxView" x:Key="RightBoxViewStyle">
+            <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueGridButtonRightColor}"/>
+            <Setter Property="CornerRadius" Value="5"/>
+        </Style>
+        <Style TargetType="Image">
+            <Setter Property="Scale" Value="0.5"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            <Setter Property="VerticalTextAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="Medium"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+            <Setter Property="TextColor" Value="{DynamicResource TextTitleColor}"/>
+        </Style>
+    </ContentView.Resources>
+    
+    <Grid ColumnSpacing="0">
+
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" 
+                                  Command="{Binding Command, Source={x:Reference _catalogueButton}}"
+                                  CommandParameter="{Binding CommandParameter, Source={x:Reference _catalogueButton}}"/>
+        </Grid.GestureRecognizers>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <BoxView Style="{StaticResource LeftBoxViewStyle}" Grid.ColumnSpan="2" />
+        <Image >
+            <Image.Source>
+                <FontImageSource FontFamily="{Binding FontFamily, Source={x:Reference _catalogueButton}}"
+                                 Glyph="{Binding TextIcon, Source={x:Reference _catalogueButton}}"/>
+            </Image.Source>
+        </Image>
+        <BoxView  Grid.Column="1" Style="{StaticResource RightBoxViewStyle}"/>
+        <Label Grid.Column="1" Text="{Binding ButtonText, Source={x:Reference _catalogueButton}}" />
+    </Grid>
+</ContentView>

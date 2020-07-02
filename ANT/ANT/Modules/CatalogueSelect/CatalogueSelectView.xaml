@@ -4,33 +4,12 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:ANT.Lang"
+             xmlns:custom="clr-namespace:ANT.CustomControls"
              mc:Ignorable="d"
              xmlns:modules="clr-namespace:ANT.Modules"
              xmlns:util="clr-namespace:ANT.UTIL"
              x:DataType="modules:CatalogueSelectViewModel"
              x:Class="ANT.Modules.CatalogueSelectView">
-
-    <ContentPage.Resources>
-        <Style TargetType="BoxView" x:Key="LeftBoxViewStyle">
-            <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueGridButtonLeftColor}"/>
-            <Setter Property="CornerRadius" Value="20"/>
-        </Style>
-        <Style TargetType="BoxView" x:Key="RightBoxViewStyle">
-            <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueGridButtonRightColor}"/>
-            <Setter Property="CornerRadius" Value="5"/>
-        </Style>
-        <Style TargetType="Image">
-            <Setter Property="Scale" Value="0.5"/>
-        </Style>
-        <Style TargetType="Label">
-            <Setter Property="HorizontalTextAlignment" Value="Center"/>
-            <Setter Property="VerticalTextAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="Medium"/>
-            <Setter Property="FontAttributes" Value="Bold"/>
-            <Setter Property="TextColor" Value="{DynamicResource TextTitleColor}"/>
-        </Style>
-    </ContentPage.Resources>
-
 
     <Shell.TitleView>
         <Grid>
@@ -46,7 +25,14 @@
     <ScrollView Orientation="Vertical">
         <StackLayout Margin="10,30,10,10" Spacing="20">
 
-            <Grid ColumnSpacing="0" HeightRequest="50">
+            <custom:CatalogueButton ButtonText="{res:Translate Season}" HeightRequest="50"
+                                    TextIcon="{StaticResource SeasonCalendar}" FontFamily="{StaticResource FontIcon}"
+                                    Command="{Binding OpenCatalogueCommand}" CommandParameter="{x:Static util:CatalogueModeEnum.Season}"/>
+
+            <custom:CatalogueButton ButtonText="{res:Translate GlobalSearch}" HeightRequest="50"
+                                    TextIcon="{StaticResource GlobalSearch}" FontFamily="{StaticResource FontIcon}"
+                                    Command="{Binding OpenCatalogueCommand}" CommandParameter="{x:Static util:CatalogueModeEnum.Global}"/>
+            <!--<Grid ColumnSpacing="0" HeightRequest="50">
                 
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" 
@@ -67,9 +53,9 @@
                 </Image>
                 <BoxView  Grid.Column="1" Style="{StaticResource RightBoxViewStyle}"/>
                 <Label Grid.Column="1" Text="{res:Translate Season}" />
-            </Grid>
+            </Grid>-->
 
-            <Grid ColumnSpacing="0" HeightRequest="50">
+            <!--<Grid ColumnSpacing="0" HeightRequest="50">
 
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" 
@@ -90,7 +76,7 @@
                 </Image>
                 <BoxView  Grid.Column="1" Style="{StaticResource RightBoxViewStyle}"/>
                 <Label Grid.Column="1" Text="{res:Translate GlobalSearch}" />
-            </Grid>
+            </Grid>-->
 
         </StackLayout>
     </ScrollView>

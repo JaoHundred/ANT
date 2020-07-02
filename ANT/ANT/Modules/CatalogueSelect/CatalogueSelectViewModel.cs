@@ -22,11 +22,10 @@ namespace ANT.Modules
         public ICommand OpenCatalogueCommand { get; private set; }
         private async Task OnOpenCatalogue(CatalogueModeEnum catalogueMode)
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(500)); // necessário para não atropelar a animação do botão
-
             if (IsNotBusy)
             {
                 IsBusy = true;
+                await Task.Delay(TimeSpan.FromMilliseconds(500)); // necessário para não atropelar a animação do botão
                 await NavigationManager.NavigateShellAsync<CatalogueViewModel>(catalogueMode);
                 IsBusy = false;
             }
