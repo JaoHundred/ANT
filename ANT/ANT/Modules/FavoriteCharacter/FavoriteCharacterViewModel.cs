@@ -76,9 +76,7 @@ namespace ANT.Modules
             {
                 var confirmDelegateAction = new Action(() =>
                 {
-                        App.liteDB.GetCollection<FavoritedAnimeCharacter>().DeleteAll();
-                        //await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder
-                        //    , StorageConsts.FavoritedAnimesCharacterFileName);
+                    App.liteDB.GetCollection<FavoritedAnimeCharacter>().DeleteAll();
                     FavoritedCharacters.Clear();
                 });
 
@@ -138,19 +136,14 @@ namespace ANT.Modules
                 if (canNavigate)
                 {
                     var characters = SelectedFavorites.Cast<FavoritedAnimeCharacter>().ToList();
-                    var action = new Action(async () =>
-                    {
-                        FavoritedCharacters.RemoveRange(characters);
+                    var action = new Action(() =>
+                   {
+                       var characterCollection = App.liteDB.GetCollection<FavoritedAnimeCharacter>();
+                       foreach (var item in characters)
+                           characterCollection.Delete(item.Character.MalId);
 
-                        foreach (var item in characters)
-                        {
-                            var itemToRemove = App.liteDB.GetCollection<FavoritedAnimeCharacter>().Find(p => p == item).FirstOrDefault();
-
-                            if (itemToRemove != null)
-                                App.liteDB.GetCollection<FavoritedAnimeCharacter>().Delete(itemToRemove.Character.MalId);
-                        }
-                        //await JsonStorage.SaveDataAsync(App.FavoritedAnimeCharacters, StorageConsts.LocalAppDataFolder, StorageConsts.FavoritedAnimesCharacterFileName);
-                    });
+                       FavoritedCharacters.RemoveRange(characters);
+                   });
 
                     await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.ClearFavoriteList, Lang.Lang.ClearCannotBeUndone, action);
                     SelectedFavorites = null;
