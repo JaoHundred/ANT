@@ -30,16 +30,7 @@ namespace ANT.Modules
 
         private void SearchLabelTapped(object sender, EventArgs e)
         {
-            SearchControl.IsVisible = true;
             EntrySearchField.Focus();
-
-            LabelTitle.IsVisible = false;
-        }
-
-        private void SearchFieldLostFocus(object sender, FocusEventArgs e)
-        {
-            SearchControl.IsVisible = false;
-            LabelTitle.IsVisible = true;
         }
 
         private void FilterTapped(object sender, EventArgs e)

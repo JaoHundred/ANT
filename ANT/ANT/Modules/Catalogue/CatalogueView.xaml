@@ -28,17 +28,18 @@
     <Shell.TitleView>
         <Grid ColumnSpacing="20">
             <Label Text="{res:Translate Catalogue}" Style="{StaticResource NavigationBarTitleLabelStyle}"
-                   x:Name="LabelTitle" />
+                   x:Name="LabelTitle" IsVisible="{Binding IsSearchVisible, Converter={StaticResource InversorConverter}}" />
 
-            <Grid x:Name="SearchControl" IsVisible="False">
+            <Grid x:Name="SearchControl" IsVisible="{Binding IsSearchVisible}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntryStyle}" 
-                   Text="{Binding SearchQuery}" Unfocused="SearchFieldLostFocus" x:Name="EntrySearchField">
+                       ReturnType="Search" ReturnCommand="{Binding SearchCommand}"
+                       Text="{Binding SearchQuery}" x:Name="EntrySearchField">
                     <Entry.Behaviors>
-                        <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
+                        <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding BackTrackSearchClearCommand}"/>
                     </Entry.Behaviors>
                 </Entry>
 
@@ -190,7 +191,8 @@
                                                 Command="{Binding SelectionModeCommand}"/>
                         <custom:MenuImageButton Grid.Column="1" ImageStyle="{StaticResource SearchLabelStyle}"
                                                 ImageText="{res:Translate Search}"
-                                                Tapped="SearchLabelTapped"/>
+                                                Tapped="SearchLabelTapped"
+                                                Command="{Binding OpenSearchCommand}"/>
 
                         <custom:MenuImageButton Grid.Column="2" ImageStyle="{StaticResource FilterLabelStyle}"
                                                 ImageText="{res:Translate Filter}"

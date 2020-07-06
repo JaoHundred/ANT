@@ -19,6 +19,7 @@ using ANT.Model;
 using Android.App;
 using System.Resources;
 using System.Globalization;
+using ANT.UTIL.Equality;
 
 namespace ANT.Modules
 {
@@ -55,12 +56,16 @@ namespace ANT.Modules
                 SortDirection = SortDirection.Descending,
             };
 
+            IsSearchVisible = false;
+
             Animes = new ObservableRangeCollection<FavoritedAnime>();
 
             SelectionModeCommand = new magno.Command(OnSelectionMode);
             AddToFavoriteCommand = new magno.AsyncCommand(OnAddToFavorite);
             ClearTextCommand = new magno.Command(OnClearText);
             SearchCommand = new magno.AsyncCommand(OnSearch);
+            OpenSearchCommand = new magno.Command(OnOpenSearch);
+            BackTrackSearchClearCommand = new magno.Command(OnBackTrackSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
             GenreCheckedCommand = new magno.Command<GenreData>(OnGenreCheck);
@@ -156,6 +161,13 @@ namespace ANT.Modules
             set { SetProperty(ref _selectedItems, value); }
         }
 
+        private bool _isSearchVisible;
+        public bool IsSearchVisible
+        {
+            get { return _isSearchVisible; }
+            set { SetProperty(ref _isSearchVisible, value); }
+        }
+
         private List<FavoritedAnime> _animesWithSpecifiedFilters;
         private List<FavoritedAnime> _originalCollection;
         private ObservableRangeCollection<FavoritedAnime> _animes;
@@ -226,9 +238,12 @@ namespace ANT.Modules
 
             try
             {
-                //TODO: https://github.com/JaoHundred/ANT/issues/32
+                AnimeSearchResult anime = null;
 
-                AnimeSearchResult anime = await App.Jikan.SearchAnime(_animeSearchConfig, _pageCount++);
+                if (string.IsNullOrWhiteSpace(SearchQuery))
+                    anime = await App.Jikan.SearchAnime(_animeSearchConfig, _pageCount++);
+                else if (SearchQuery?.Length > 0)
+                    anime = await App.Jikan.SearchAnime(SearchQuery, _pageCount++);
 
                 Console.WriteLine($"Page count {_pageCount}");
 
@@ -238,8 +253,17 @@ namespace ANT.Modules
 
                     IList<FavoritedAnime> animes = anime.Results.ConvertAnimeSearchEntryToAnimeSubEntry().ConvertAnimesToFavorited();
 
-                    _originalCollection.AddRange(animes);
-                    Animes.AddRange(animes);
+                    var toAddAnimes = new List<FavoritedAnime>();
+                    var equalityComparer = new FavoriteAnimeEqualityComparer();
+
+                    foreach (var item in animes)
+                    {
+                        if (!Animes.Contains(item, equalityComparer))
+                            toAddAnimes.Add(item);
+                    }
+
+                    _originalCollection.AddRange(toAddAnimes);
+                    Animes.AddRange(toAddAnimes);
 
                     return false;
                 }
@@ -275,7 +299,12 @@ namespace ANT.Modules
             }
         }
 
-        private void ClearTextQuery() => SearchQuery = string.Empty;
+        private void ClearTextQuery()
+        {
+
+            SearchQuery = string.Empty;
+            IsSearchVisible = false;
+        }
         #endregion
 
         #region commands
@@ -397,8 +426,11 @@ namespace ANT.Modules
         public ICommand SearchCommand { get; private set; }
         private async Task OnSearch()
         {
-            if (SearchQuery?.Length > 0)
+            if (SearchQuery?.Length > 0 && _catalogueMode == CatalogueModeEnum.Season)
                 RemainingAnimeCount = -1;
+
+            else if (SearchQuery?.Length > 0 && _catalogueMode == CatalogueModeEnum.Global)
+                RemainingAnimeCount = 0;
 
             else if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Season)
                 RemainingAnimeCount = -1;
@@ -409,9 +441,16 @@ namespace ANT.Modules
             else if (SearchQuery?.Length == 0 && _currentGenre != null)
                 RemainingAnimeCount = 0;
 
-            var resultListTask = Task.Run(() =>
+            if (string.IsNullOrWhiteSpace(SearchQuery) && _catalogueMode == CatalogueModeEnum.Season)
+            {
+                IsSearchVisible = false;
+                SearchQuery = string.Empty;
+            }
+
+            Loading = true;
+            var resultListTask = Task.Run(async () =>
            {
-               IList<FavoritedAnime> result = null;
+               IList<FavoritedAnime> result = new List<FavoritedAnime>();
 
                switch (_catalogueMode)
                {
@@ -428,9 +467,17 @@ namespace ANT.Modules
                        break;
 
                    case CatalogueModeEnum.Global:
+                       await App.DelayRequest();
+                       
+                       _pageCount = 1;
+                       AnimeSearchResult animes = null;
 
-                       result = _originalCollection.Where(anime => anime.Anime.Title.ToLowerInvariant()
-                        .Contains(SearchQuery.ToLowerInvariant())).ToList();
+                       if (string.IsNullOrWhiteSpace(SearchQuery))
+                           animes = await App.Jikan.SearchAnime(_animeSearchConfig, _pageCount++);
+                       else
+                           animes = await App.Jikan.SearchAnime(SearchQuery, _pageCount++);
+                       result = animes.Results.ConvertAnimeSearchEntryToAnimeSubEntry().ConvertAnimesToFavorited();
+                       Console.WriteLine("chamou pesquisa global {0}", DateTime.Now.TimeOfDay.ToString());
 
                        break;
                }
@@ -439,7 +486,29 @@ namespace ANT.Modules
            });
 
             Animes.ReplaceRange(await resultListTask);
+            Loading = false;
         }
+
+        public ICommand OpenSearchCommand { get; private set; }
+        private void OnOpenSearch()
+        {
+            IsSearchVisible = true;
+        }
+
+        public ICommand BackTrackSearchClearCommand { get; private set; }
+        private async void OnBackTrackSearch()
+        {
+            if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Season)
+            {
+                IsSearchVisible = false;
+                SearchCommand.Execute(null);
+            }
+            if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Global)
+            {
+                await ResetAndLoadGlobalAsync();
+            }
+        }
+
 
         bool _canNavigate = true;
         public ICommand OpenAnimeCommand { get; private set; }

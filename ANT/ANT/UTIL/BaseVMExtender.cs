@@ -26,7 +26,7 @@ namespace ANT.UTIL
             set { SetProperty(ref _selectionMode, value); }
         }
 
-        private string _searchQuery;
+        private string _searchQuery = string.Empty;
         public string SearchQuery
         {
             get { return _searchQuery; }
