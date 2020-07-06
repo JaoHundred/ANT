@@ -50,19 +50,7 @@
                     </Label.GestureRecognizers>
                 </Label>
             </Grid>
-            <!--<Label Grid.Column="1" Style="{StaticResource SearchLabelStyle}" x:Name="SearchIconLabel"
-                   VerticalOptions="Center" TextColor="{DynamicResource TextTitleColor}">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="SearchLabelTapped"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Grid.Column="2" x:Name="FilterControl" Style="{StaticResource FilterLabelStyle}"
-                   VerticalOptions="Center" TextColor="{DynamicResource TextTitleColor}"
-                   IsVisible="{Binding Loading, Converter={StaticResource InversorConverter}}">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="FilterTapped"/>
-                </Label.GestureRecognizers>
-            </Label>-->
+           
         </Grid>
 
 
@@ -186,17 +174,33 @@
                     </Grid>
                 </custom:BottomSlideMenu.ViewContent>
                 <custom:BottomSlideMenu.MenuContent>
-                    <Grid Margin="30,10,30,0" >
+                    <Grid Margin="30,10,30,0">
+                        
                         <custom:MenuImageButton ImageText="{res:Translate MultiSelect}" ImageStyle="{StaticResource SelectLabelStyle}"
                                                 Command="{Binding SelectionModeCommand}"/>
+
                         <custom:MenuImageButton Grid.Column="1" ImageStyle="{StaticResource SearchLabelStyle}"
+                                                IsVisible="{Binding HasSelectedGenre, Converter={StaticResource InversorConverter}}"
                                                 ImageText="{res:Translate Search}"
                                                 Tapped="SearchLabelTapped"
-                                                Command="{Binding OpenSearchCommand}"/>
+                                                Command="{Binding OpenSearchCommand}">
+                            <custom:MenuImageButton.Triggers>
+                                <DataTrigger TargetType="custom:MenuImageButton" Binding="{Binding HasSelectedGenre}" Value="True">
+                                    <Setter Property="Grid.Column" Value="0"/>
+                                </DataTrigger>
+                            </custom:MenuImageButton.Triggers>
+                        </custom:MenuImageButton>
 
                         <custom:MenuImageButton Grid.Column="2" ImageStyle="{StaticResource FilterLabelStyle}"
+                                                IsVisible="{Binding HasSelectedGenre, Converter={StaticResource InversorConverter}}"
                                                 ImageText="{res:Translate Filter}"
-                                                Tapped="FilterTapped"/>
+                                                Tapped="FilterTapped">
+                            <custom:MenuImageButton.Triggers>
+                                <DataTrigger TargetType="custom:MenuImageButton" Binding="{Binding HasSelectedGenre}" Value="True">
+                                    <Setter Property="Grid.Column" Value="0"/>
+                                </DataTrigger>
+                            </custom:MenuImageButton.Triggers>
+                        </custom:MenuImageButton>
                     </Grid>
                 </custom:BottomSlideMenu.MenuContent>
 

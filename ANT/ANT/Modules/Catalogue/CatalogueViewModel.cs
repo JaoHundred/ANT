@@ -39,7 +39,11 @@ namespace ANT.Modules
         public CatalogueViewModel(GenreSearch genreEnum)
         {
             _currentGenre = genreEnum;
-            //TODO: os filtros não funcionam pelo abertura direto dos gêneros
+            
+            // se eu tenho um gênero singular selecionado(cheguei aqui clicando em um único gênero específico de um anime em AnimesSpecs)
+            HasSelectedGenre = true; 
+            
+            ClearTextQuery();
 
             InitializeDefaultProperties();
 
@@ -143,6 +147,13 @@ namespace ANT.Modules
         {
             get { return _loading; }
             set { SetProperty(ref _loading, value); }
+        }
+
+        private bool _hasSelectedGenre;
+        public bool HasSelectedGenre
+        {
+            get { return _hasSelectedGenre; }
+            set { SetProperty(ref _hasSelectedGenre, value); }
         }
 
         public FilterData FilterData { get; set; }
