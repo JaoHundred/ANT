@@ -32,6 +32,24 @@ namespace ANT.UTIL
             });
         }
 
+        public static Task<bool> HasAnySpecifiedGenresAsync(this FavoritedAnime favoriteAnime, params GenreSearch[] genres)
+        {
+            return Task.Run(() =>
+            {
+                List<bool> hasAnyGenres = new List<bool>();
+
+                foreach (var genre in genres)
+                {
+                    bool result = favoriteAnime.Anime.Genres.Any(p => p.Name.ToLowerInvariant().RemoveOcurrencesFromString(new[] { '-', ' ' })
+                     == genre.ToString().ToLowerInvariant().RemoveOcurrencesFromString(new[] { '-', ' ' }));
+
+                    hasAnyGenres.Add(result);
+                }
+
+                return hasAnyGenres.Any(p => p);
+            });
+        }
+
         public static Task<bool> HasAnyDayOfWeekAsync(this FavoritedAnime favoriteAnime, params DayOfWeekFilterDate[] dayOfWeekFilterDates)
         {
             return Task.Run(() =>
@@ -55,7 +73,7 @@ namespace ANT.UTIL
                             hasAnyDayOfWeek.Add(hasWeekDay | hasToday);
                     }
 
-                    else if(HasNotStartedAiring(favoriteAnime)
+                    else if (HasNotStartedAiring(favoriteAnime)
                     && dayOfWeek.TodayDayOfWeek == TodayDayOfWeek.NotStarted)
                         hasAnyDayOfWeek.Add(true);
 
@@ -135,14 +153,16 @@ namespace ANT.UTIL
             return episodeList;
         }
 
-        public static IList<FavoritedAnime> ConvertAnimesToFavorited(this ICollection<AnimeSubEntry> animeSubEntries)
+        public async static Task<IList<FavoritedAnime>> ConvertCatalogueAnimesToFavoritedAsync(this ICollection<AnimeSubEntry> animeSubEntries, bool showNSFW)
         {
             var animeSubs = animeSubEntries.ToList();
             var favoritedAnimeSubsEntries = new List<FavoritedAnime>();
 
+
             for (int i = 0; i < animeSubs.Count; i++)
             {
                 var anime = animeSubs[i];
+
                 var animeSub = new FavoritedAnime
                 {
                     Anime = new Anime
@@ -158,9 +178,16 @@ namespace ANT.UTIL
                             From = anime.AiringStart,
                         },
                     },
-
-                    IsR18 = anime.R18,
                 };
+
+                if (!showNSFW && animeSub.Anime.Genres != null)
+                {
+                    bool hasNSFWGenres = await HasAnySpecifiedGenresAsync(animeSub, FillNSFWGenres().Select(p => p.Genre).ToArray());
+                    animeSub.IsNSFW = hasNSFWGenres;
+
+                    if (hasNSFWGenres)
+                        continue;
+                }
 
                 if (App.liteDB.GetCollection<FavoritedAnime>().Exists(p => p.Anime.MalId == anime.MalId))
                     animeSub.IsFavorited = true;
@@ -328,19 +355,24 @@ namespace ANT.UTIL
 
             if (!showNSFWGenres)
             {
-                var toRemove = new List<GenreData>
-                {
-                    new GenreData(GenreSearch.Ecchi),
-                    new GenreData(GenreSearch.Harem),
-                    new GenreData(GenreSearch.Hentai),
-                    new GenreData(GenreSearch.Yaoi),
-                    new GenreData(GenreSearch.Yuri),
-                };
+                var toRemove = FillNSFWGenres();
 
                 genres = genres.Except(toRemove, new EqualityGenreData()).ToList();
             }
 
             return genres;
+        }
+
+        public static IList<GenreData> FillNSFWGenres()
+        {
+            return new List<GenreData>
+            {
+                new GenreData(GenreSearch.Ecchi),
+                new GenreData(GenreSearch.Harem),
+                new GenreData(GenreSearch.Hentai),
+                new GenreData(GenreSearch.Yaoi),
+                new GenreData(GenreSearch.Yuri),
+            };
         }
 
         public static IList<OrderData> FillOrderData()

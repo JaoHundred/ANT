@@ -39,10 +39,10 @@ namespace ANT.Modules
         public CatalogueViewModel(GenreSearch genreEnum)
         {
             _currentGenre = genreEnum;
-            
+
             // se eu tenho um gênero singular selecionado(cheguei aqui clicando em um único gênero específico de um anime em AnimesSpecs)
-            HasSelectedGenre = true; 
-            
+            HasSelectedGenre = true;
+
             ClearTextQuery();
 
             InitializeDefaultProperties();
@@ -53,12 +53,28 @@ namespace ANT.Modules
         private void InitializeDefaultProperties()
         {
             _originalCollection = new List<FavoritedAnime>();
+            _settingsPreferences = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
 
-            _animeSearchConfig = new AnimeSearchConfig()
+            if (_settingsPreferences.ShowNSFW)
             {
-                OrderBy = AnimeSearchSortable.Score,
-                SortDirection = SortDirection.Descending,
-            };
+                _animeSearchConfig = new AnimeSearchConfig()
+                {
+                    OrderBy = AnimeSearchSortable.Score,
+                    SortDirection = SortDirection.Descending,
+                };
+            }
+            //TODO:a configuração de exclusão de animes com gênero não ocorre como esperado, ver em
+            //https://github.com/Ervie/jikan.net/issues/17
+            else
+            {
+                _animeSearchConfig = new AnimeSearchConfig()
+                {
+                    OrderBy = AnimeSearchSortable.Score,
+                    SortDirection = SortDirection.Descending,
+                    Genres = UTIL.AnimeExtension.FillNSFWGenres().Select(p => p.Genre).ToList(),
+                    GenreIncluded = false,
+                };
+            }
 
             IsSearchVisible = false;
 
@@ -94,6 +110,7 @@ namespace ANT.Modules
             });
         }
 
+        private SettingsPreferences _settingsPreferences;
         private int _pageCount = 1;
         private readonly CatalogueModeEnum? _catalogueMode;
         private readonly GenreSearch? _currentGenre;
@@ -108,7 +125,7 @@ namespace ANT.Modules
             //integração do sistema de escolha do usuário para o que ele não quer exibir
             FilterData = new FilterData
             {
-                Genres = ANT.UTIL.AnimeExtension.FillGenres(showNSFWGenres: false),
+                Genres = ANT.UTIL.AnimeExtension.FillGenres(_settingsPreferences.ShowNSFW),
                 SortDirections = UTIL.AnimeExtension.FillSortDirectionData(),
                 Orders = new ObservableRangeCollection<OrderData>(UTIL.AnimeExtension.FillOrderData()),
             };
@@ -225,7 +242,7 @@ namespace ANT.Modules
 
             results.RequestCached = true;
 
-            var favoritedEntries = results.SeasonEntries.ConvertAnimesToFavorited();
+            var favoritedEntries = await results.SeasonEntries.ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
             _originalCollection = favoritedEntries.OrderByDescending(p => p.Anime.Score).ToList();
             Animes.AddRange(_originalCollection);
 
@@ -262,7 +279,8 @@ namespace ANT.Modules
                 {
                     anime.RequestCached = true;
 
-                    IList<FavoritedAnime> animes = anime.Results.ConvertAnimeSearchEntryToAnimeSubEntry().ConvertAnimesToFavorited();
+                    IList<FavoritedAnime> animes = await anime.Results.ConvertAnimeSearchEntryToAnimeSubEntry()
+                        .ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
 
                     var toAddAnimes = new List<FavoritedAnime>();
                     var equalityComparer = new FavoriteAnimeEqualityComparer();
@@ -279,7 +297,10 @@ namespace ANT.Modules
                     return false;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+
+            }
 
             return true;
         }
@@ -296,7 +317,8 @@ namespace ANT.Modules
             {
                 animeGenre.RequestCached = true;
 
-                IList<FavoritedAnime> favoritedSubEntries = animeGenre.Anime.ConvertAnimesToFavorited();
+                IList<FavoritedAnime> favoritedSubEntries = await animeGenre.Anime
+                    .ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
 
                 _originalCollection.AddRange(favoritedSubEntries);
                 Animes.AddRange(favoritedSubEntries);
@@ -479,7 +501,7 @@ namespace ANT.Modules
 
                    case CatalogueModeEnum.Global:
                        await App.DelayRequest();
-                       
+
                        _pageCount = 1;
                        AnimeSearchResult animes = null;
 
@@ -487,7 +509,8 @@ namespace ANT.Modules
                            animes = await App.Jikan.SearchAnime(_animeSearchConfig, _pageCount++);
                        else
                            animes = await App.Jikan.SearchAnime(SearchQuery, _pageCount++);
-                       result = animes.Results.ConvertAnimeSearchEntryToAnimeSubEntry().ConvertAnimesToFavorited();
+                       result = await animes.Results.ConvertAnimeSearchEntryToAnimeSubEntry()
+                       .ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
                        Console.WriteLine("chamou pesquisa global {0}", DateTime.Now.TimeOfDay.ToString());
 
                        break;
@@ -703,7 +726,7 @@ namespace ANT.Modules
             var result = await App.Jikan.GetSeason(SeasonData.SelectedYear.Value, selectedSeasonEnum);
             result.RequestCached = true;
 
-            var favoritedEntries = result.SeasonEntries.ConvertAnimesToFavorited();
+            var favoritedEntries = await result.SeasonEntries.ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
             _originalCollection = favoritedEntries.OrderByDescending(p => p.Anime.Score).ToList();
             Animes.ReplaceRange(_originalCollection);
 

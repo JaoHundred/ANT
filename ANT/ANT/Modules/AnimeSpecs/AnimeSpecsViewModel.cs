@@ -337,7 +337,7 @@ namespace ANT.Modules
         #region métodos VM
         private Task AddOrUpdateRecentAnimeAsync(FavoritedAnime recentFavoritedAnime)
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 if (_cancellationToken.IsCancellationRequested)
                     _cancellationToken.Token.ThrowIfCancellationRequested();
@@ -346,19 +346,22 @@ namespace ANT.Modules
                 var favoritedSubEntry = recentCollection.FindOne(p => p.FavoritedAnime.Anime.MalId == recentFavoritedAnime.Anime.MalId);
 
                 if (favoritedSubEntry != null)
-                {
-                    favoritedSubEntry.Date = DateTime.Now;
                     recentCollection.Upsert(recentFavoritedAnime.Anime.MalId, new RecentVisualized(recentFavoritedAnime));
-                }
                 else
                 {
                     if (recentCollection.Count() == 10)
                     {
-                        DateTimeOffset mostAntiqueDate = recentCollection.Min(p => p.Date);
+                        var settings = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
+
+                        DateTimeOffset mostAntiqueDate = settings.ShowNSFW
+                            ? recentCollection.Min(p => p.Date)
+                            : recentCollection.FindAll().Where(p => p.FavoritedAnime.IsNSFW).Min(p => p.Date);
+
                         RecentVisualized mostAntiqueVisualized = recentCollection.FindOne(p => p.Date == mostAntiqueDate);
 
                         recentCollection.Delete(mostAntiqueVisualized.FavoritedAnime.Anime.MalId);
                         recentCollection.Upsert(recentFavoritedAnime.Anime.MalId, new RecentVisualized(recentFavoritedAnime));
+
                     }
                     else if (recentCollection.Count() < 10)
                         recentCollection.Upsert(recentFavoritedAnime.Anime.MalId, new RecentVisualized(recentFavoritedAnime));

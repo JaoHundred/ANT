@@ -27,6 +27,7 @@ namespace ANT.Modules
             //IsAutomaticTranslate = App.SettingsPreferences.AutomaticTranslate;
 
             SwitchNotificationCommand = new Command(OnSwitchNotification);
+            SwitchNSFWCommand = new Command(OnSwitchNSFW);
         }
 
 
@@ -157,7 +158,13 @@ namespace ANT.Modules
             }
         }
 
-
-
+        public ICommand SwitchNSFWCommand { get; private set; }
+        private void OnSwitchNSFW()
+        {
+            if(Settings!= null)
+            {
+                App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, Settings);
+            }
+        }
     }
 }

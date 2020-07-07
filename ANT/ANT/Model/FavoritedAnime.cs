@@ -5,6 +5,7 @@ using JikanDotNet;
 using MvvmHelpers;
 using Newtonsoft.Json;
 using ANT.Core;
+using System.Linq;
 
 namespace ANT.Model
 {
@@ -16,11 +17,13 @@ namespace ANT.Model
         {
             Anime = anime;
             Episodes = episodes;
+            IsNSFW =  UTIL.AnimeExtension.HasAnySpecifiedGenresAsync(this, UTIL.AnimeExtension.FillNSFWGenres().Select(p => p.Genre).ToArray()).Result;
         }
 
         public FavoritedAnime(Anime anime)
         {
             Anime = anime;
+            IsNSFW = UTIL.AnimeExtension.HasAnySpecifiedGenresAsync(this, UTIL.AnimeExtension.FillNSFWGenres().Select(p => p.Genre).ToArray()).Result;
         }
 
         public FavoritedAnime()
@@ -73,7 +76,7 @@ namespace ANT.Model
 
         public int UniqueNotificationID { get; set; }
 
-        public bool? IsR18 { get; set; }
+        public bool IsNSFW { get; set; }
 
         public IList<AnimeEpisode> Episodes { get; set; }
 

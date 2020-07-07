@@ -26,8 +26,17 @@ namespace ANT.Modules
         {
             await Task.Run(() =>
             {
+                var settings = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
                 var sortedRecents = App.liteDB.GetCollection<RecentVisualized>().FindAll().OrderByDescending(p => p.Date).ToList();
-                Recents.ReplaceRange(sortedRecents);
+
+                if (!settings.ShowNSFW)
+                {
+                    var collection = sortedRecents.Where(p => !p.FavoritedAnime.IsNSFW);
+                    Recents.ReplaceRange(collection);
+                }
+                else
+                    Recents.ReplaceRange(sortedRecents);
+                
             });
         }
 

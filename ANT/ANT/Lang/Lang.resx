@@ -294,6 +294,9 @@
   <data name="NotStarted" xml:space="preserve">
     <value>Not Started</value>
   </data>
+  <data name="NSFW" xml:space="preserve">
+    <value>Show adult content</value>
+  </data>
   <data name="Off" xml:space="preserve">
     <value>Off</value>
   </data>

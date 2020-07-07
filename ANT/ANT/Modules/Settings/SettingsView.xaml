@@ -47,6 +47,28 @@
                 </TableSection>
                 <TableSection>
                     <ViewCell>
+                        <Grid Margin="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <Label Text="{res:Translate NSFW}" Style="{StaticResource MenuLabelColorStyle}"/>
+
+                            <Switch x:Name="NSFWSwitch" Grid.Row="1" IsToggled="{Binding Settings.ShowNSFW, Mode=TwoWay}">
+                                <Switch.Behaviors>
+                                    <behavior:EventToCommandBehavior EventName="Toggled"
+                                                                     Command="{Binding SwitchNSFWCommand}"/>
+                                </Switch.Behaviors>
+                            </Switch>
+                            <Label Grid.Row="1" Margin="3,0,0,0" Text="{Binding IsToggled, Source={x:Reference NSFWSwitch}
+                                , Converter={StaticResource BoolToStringConverter}}" FontSize="Subtitle"/>
+                        </Grid>
+                    </ViewCell>
+                </TableSection>
+                <TableSection>
+                    <ViewCell>
                         <Grid Margin="5" IsVisible="false">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>

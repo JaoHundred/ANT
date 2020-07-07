@@ -592,6 +592,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show adult content.
+        /// </summary>
+        public static string NSFW {
+            get {
+                return ResourceManager.GetString("NSFW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
         public static string Off {

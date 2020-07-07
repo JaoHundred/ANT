@@ -28,6 +28,8 @@ namespace ANT.Model
 
         public bool NotificationsIsOn { get; set; }
 
+        public bool ShowNSFW { get; set; }
+
         public TimeSpan HourToNotify { get; set; }
 
         /// <summary>
