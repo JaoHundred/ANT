@@ -337,7 +337,7 @@ namespace ANT.Modules
         #region métodos VM
         private Task AddOrUpdateRecentAnimeAsync(FavoritedAnime recentFavoritedAnime)
         {
-            return Task.Run(async () =>
+            return Task.Run(() =>
             {
                 if (_cancellationToken.IsCancellationRequested)
                     _cancellationToken.Token.ThrowIfCancellationRequested();
@@ -352,10 +352,21 @@ namespace ANT.Modules
                     if (recentCollection.Count() == 10)
                     {
                         var settings = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
+                        DateTimeOffset mostAntiqueDate = default;
 
-                        DateTimeOffset mostAntiqueDate = settings.ShowNSFW
-                            ? recentCollection.Min(p => p.Date)
-                            : recentCollection.FindAll().Where(p => p.FavoritedAnime.IsNSFW).Min(p => p.Date);
+                        var minDate = recentCollection.Min(p => p.Date);
+                        var nsfwCollection = recentCollection.Find(p => p.FavoritedAnime.IsNSFW);
+
+                        if (settings.ShowNSFW)
+                            mostAntiqueDate = minDate;
+                        else
+                        {
+                            if (nsfwCollection != null && nsfwCollection.Count() > 0)
+                                mostAntiqueDate = nsfwCollection.Min(p => p.Date);
+
+                            else if (nsfwCollection == null || nsfwCollection.Count() == 0)
+                                mostAntiqueDate = minDate;
+                        }
 
                         RecentVisualized mostAntiqueVisualized = recentCollection.FindOne(p => p.Date == mostAntiqueDate);
 
