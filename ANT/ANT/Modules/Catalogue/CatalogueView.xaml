@@ -37,14 +37,9 @@
                 </Grid.ColumnDefinitions>
                 <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntryStyle}" 
                        ReturnType="Search" ReturnCommand="{Binding SearchCommand}"
-                       Text="{Binding SearchQuery}" x:Name="EntrySearchField">
-                    <Entry.Behaviors>
-                        <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding BackTrackSearchClearCommand}"/>
-                    </Entry.Behaviors>
-                </Entry>
+                       Text="{Binding SearchQuery}" x:Name="EntrySearchField"/>
 
-                <Label Grid.Column="1" Style="{StaticResource SearchCancelButtonStyle}"  
-                   IsVisible="{Binding SearchQuery, Converter={StaticResource EmptyTextToBoolConverter}}">
+                <Label Grid.Column="1" Style="{StaticResource SearchCancelButtonStyle}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ClearTextCommand}"/>
                     </Label.GestureRecognizers>
@@ -225,9 +220,7 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="favo:SortDirectionData">
                                 <RadioButton Grid.Row="1" Text="{Binding SortDirection, Converter={StaticResource TranslateEnumConverter}}" 
-                                         GroupName="SortDirection" IsChecked="{Binding IsChecked, Mode=TwoWay}"
-                                         Command="{Binding BindingContext.SelectSortDirectionCommand, Source={x:Reference _Page}}"
-                                         CommandParameter="{Binding .}"/>
+                                         GroupName="SortDirection" IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
@@ -242,9 +235,7 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="favo:OrderData">
                                 <RadioButton Text="{Binding OrderBy, Converter={StaticResource TranslateEnumConverter}}" GroupName="SearchSortable" 
-                                         IsChecked="{Binding IsChecked, Mode=TwoWay}"
-                                         Command="{Binding BindingContext.SelectSortTypeCommand, Source={x:Reference _Page}}"
-                                         CommandParameter="{Binding .}"/>
+                                         IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
@@ -262,7 +253,7 @@
                                 <StackLayout Orientation="Horizontal">
                                     <StackLayout.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding BindingContext.GenreCheckedCommand, Source={x:Reference _Page}}"
-                                                      CommandParameter="{Binding .}"/>
+                                                              CommandParameter="{Binding .}"/>
                                     </StackLayout.GestureRecognizers>
                                     <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
                                     <Label Text="{Binding Genre, Converter={StaticResource GenreToStringConverter}}" VerticalTextAlignment="Center"/>

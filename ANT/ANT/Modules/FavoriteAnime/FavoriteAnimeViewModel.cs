@@ -41,9 +41,11 @@ namespace ANT.Modules
             if (_isUpdatingAnimes)
                 return;
 
+            _settingsPreferences = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
+
             FilterData = new FilterData
             {
-                Genres = ANT.UTIL.AnimeExtension.FillGenres(showNSFWGenres: false),
+                Genres = ANT.UTIL.AnimeExtension.FillGenres(_settingsPreferences.ShowNSFW),
                 DayOfWeekOrder = UTIL.AnimeExtension.FillTodayDayOfWeek(),
             };
 
@@ -56,6 +58,11 @@ namespace ANT.Modules
             return Task.Run(() =>
             {
                 var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>().FindAll().ToList();
+
+                if(!_settingsPreferences.ShowNSFW)
+                {
+                    favoriteCollection = favoriteCollection.Where(p => !p.IsNSFW).ToList();
+                }
 
                 Lazy<ResourceManager> resMgr = new Lazy<ResourceManager>(
                                     () => new ResourceManager(typeof(Lang.Lang)));
@@ -160,6 +167,7 @@ namespace ANT.Modules
         }
 
         public IList<GroupedFavoriteAnimeByWeekDay> _originalCollection;
+        private static SettingsPreferences _settingsPreferences;
         #region Propriedades
         private ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay> _groupedFavoriteByWeekList;
         public ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay> GroupedFavoriteByWeekList
@@ -393,6 +401,8 @@ namespace ANT.Modules
         }
 
         private bool _isUpdatingAnimes;
+
+        //TODO: testar comando abaixo com a funcionalidade nova de filtrar por isNSFW dos animes
         public AsyncCommand UpdateFavoriteAnimesCommand { get; private set; }
         private async Task OnUpdateAnimes()
         {
@@ -403,8 +413,15 @@ namespace ANT.Modules
             {
                 var action = new Action(async () =>
                 {
+                    var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>().FindAll().ToList();
+
+                    if (!_settingsPreferences.ShowNSFW)
+                    {
+                        favoriteCollection = favoriteCollection.Where(p => !p.IsNSFW).ToList();
+                    }
+
                     await NavigationManager
-                    .NavigatePopUpAsync<ProgressPopupViewModel>(App.liteDB.GetCollection<FavoritedAnime>().FindAll().ToList(), this
+                    .NavigatePopUpAsync<ProgressPopupViewModel>(favoriteCollection, this
                     , new Action(async () => { await LoadAsync(null); }));
                 });
 

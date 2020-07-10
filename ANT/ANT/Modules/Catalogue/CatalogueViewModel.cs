@@ -55,26 +55,8 @@ namespace ANT.Modules
             _originalCollection = new List<FavoritedAnime>();
             _settingsPreferences = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
 
-            if (_settingsPreferences.ShowNSFW)
-            {
-                _animeSearchConfig = new AnimeSearchConfig()
-                {
-                    OrderBy = AnimeSearchSortable.Score,
-                    SortDirection = SortDirection.Descending,
-                };
-            }
-            //TODO:a configuração de exclusão de animes com gênero não ocorre como esperado, ver em
-            //https://github.com/Ervie/jikan.net/issues/17
-            else
-            {
-                _animeSearchConfig = new AnimeSearchConfig()
-                {
-                    OrderBy = AnimeSearchSortable.Score,
-                    SortDirection = SortDirection.Descending,
-                    Genres = UTIL.AnimeExtension.FillNSFWGenres().Select(p => p.Genre).ToList(),
-                    GenreIncluded = false,
-                };
-            }
+
+            ResetSearchConfig(_settingsPreferences.ShowNSFW, AnimeSearchSortable.Score, SortDirection.Descending);
 
             IsSearchVisible = false;
 
@@ -85,15 +67,12 @@ namespace ANT.Modules
             ClearTextCommand = new magno.Command(OnClearText);
             SearchCommand = new magno.AsyncCommand(OnSearch);
             OpenSearchCommand = new magno.Command(OnOpenSearch);
-            BackTrackSearchClearCommand = new magno.Command(OnBackTrackSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
             GenreCheckedCommand = new magno.Command<GenreData>(OnGenreCheck);
             ApplyFilterCommand = new magno.AsyncCommand(OnApplyFilter);
             ResetFilterCommand = new magno.AsyncCommand(OnResetFilter);
             BackButtonCommand = new magno.AsyncCommand<CatalogueView>(OnBackButton);
-            SelectSortDirectionCommand = new magno.Command<SortDirectionData>(OnChangeSortDirection);
-            SelectSortTypeCommand = new magno.Command<OrderData>(OnSelectSortType);
             ChangeSeasonCommand = new magno.AsyncCommand(OnChangeSeason);
         }
 
@@ -271,7 +250,10 @@ namespace ANT.Modules
                 if (string.IsNullOrWhiteSpace(SearchQuery))
                     anime = await App.Jikan.SearchAnime(_animeSearchConfig, _pageCount++);
                 else if (SearchQuery?.Length > 0)
-                    anime = await App.Jikan.SearchAnime(SearchQuery, _pageCount++);
+                {
+                    ResetSearchConfig(_settingsPreferences.ShowNSFW, AnimeSearchSortable.Title, SortDirection.Descending);
+                    anime = await App.Jikan.SearchAnime(SearchQuery, _pageCount++, _animeSearchConfig);
+                }
 
                 Console.WriteLine($"Page count {_pageCount}");
 
@@ -329,6 +311,34 @@ namespace ANT.Modules
             {
                 RemainingAnimeCount = -1;
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// método para resetar ou iniciar o objeto SearchConfig
+        /// </summary>
+        /// <param name="showNSFW"></param>
+        /// <param name="animeSearchSortable"></param>
+        /// <param name="sortDirection"></param>
+        private void ResetSearchConfig(bool showNSFW, AnimeSearchSortable animeSearchSortable, SortDirection sortDirection)
+        {
+            if (showNSFW)
+            {
+                _animeSearchConfig = new AnimeSearchConfig()
+                {
+                    OrderBy = animeSearchSortable,
+                    SortDirection = sortDirection,
+                };
+            }
+            else
+            {
+                _animeSearchConfig = new AnimeSearchConfig()
+                {
+                    OrderBy = animeSearchSortable,
+                    SortDirection = sortDirection,
+                    Genres = UTIL.AnimeExtension.FillNSFWGenres().Select(p => p.Genre).ToList(),
+                    GenreIncluded = false
+                };
             }
         }
 
@@ -506,9 +516,16 @@ namespace ANT.Modules
                        AnimeSearchResult animes = null;
 
                        if (string.IsNullOrWhiteSpace(SearchQuery))
+                       {
+                           ResetSearchConfig(_settingsPreferences.ShowNSFW, AnimeSearchSortable.Score, SortDirection.Descending);
                            animes = await App.Jikan.SearchAnime(_animeSearchConfig, _pageCount++);
+                       }
                        else
-                           animes = await App.Jikan.SearchAnime(SearchQuery, _pageCount++);
+                       {
+                           ResetSearchConfig(_settingsPreferences.ShowNSFW, AnimeSearchSortable.Title, SortDirection.Descending);
+
+                           animes = await App.Jikan.SearchAnime(SearchQuery, _pageCount++, _animeSearchConfig);
+                       }
                        result = await animes.Results.ConvertAnimeSearchEntryToAnimeSubEntry()
                        .ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
                        Console.WriteLine("chamou pesquisa global {0}", DateTime.Now.TimeOfDay.ToString());
@@ -528,21 +545,6 @@ namespace ANT.Modules
         {
             IsSearchVisible = true;
         }
-
-        public ICommand BackTrackSearchClearCommand { get; private set; }
-        private async void OnBackTrackSearch()
-        {
-            if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Season)
-            {
-                IsSearchVisible = false;
-                SearchCommand.Execute(null);
-            }
-            if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Global)
-            {
-                await ResetAndLoadGlobalAsync();
-            }
-        }
-
 
         bool _canNavigate = true;
         public ICommand OpenAnimeCommand { get; private set; }
@@ -567,7 +569,20 @@ namespace ANT.Modules
         public ICommand ApplyFilterCommand { get; private set; }
         private async Task OnApplyFilter()
         {
-            _animeSearchConfig.Genres = FilterData.Genres.Where(p => p.IsChecked).Select(p => p.Genre).ToList();
+            var selectedGenres = FilterData.Genres.Where(p => p.IsChecked).Select(p => p.Genre).ToList();
+            var selectedOrder = FilterData.Orders.Where(p => p.IsChecked).First();
+            var selectedSort = FilterData.SortDirections.Where(p => p.IsChecked).First();
+
+            _animeSearchConfig.OrderBy = selectedOrder.OrderBy;
+            _animeSearchConfig.SortDirection = selectedSort.SortDirection;
+            _animeSearchConfig.Genres = selectedGenres;
+            _animeSearchConfig.GenreIncluded = true;
+
+            if (!_settingsPreferences.ShowNSFW && selectedGenres.Count == 0)
+            {
+                _animeSearchConfig.Genres = UTIL.AnimeExtension.FillNSFWGenres().Select(p => p.Genre).ToList();
+                _animeSearchConfig.GenreIncluded = false;
+            }
 
             MessagingCenter.Send(this, "CloseFilterView");
             switch (_catalogueMode)
@@ -613,7 +628,7 @@ namespace ANT.Modules
                     {
                         FavoritedAnime favoritedAnime = _animesWithSpecifiedFilters[i];
 
-                        bool hasAllGenres = await favoritedAnime.HasAllSpecifiedGenresAsync(_animeSearchConfig.Genres.ToArray());
+                        bool hasAllGenres = await favoritedAnime.HasAllSpecifiedGenresAsync(selectedGenres.ToArray());
 
                         if (!hasAllGenres)
                             animeToRemove.Add(favoritedAnime);
@@ -670,32 +685,12 @@ namespace ANT.Modules
 
                 case CatalogueModeEnum.Global:
 
-                    _animeSearchConfig = new AnimeSearchConfig()
-                    {
-                        OrderBy = AnimeSearchSortable.Score,
-                        SortDirection = SortDirection.Descending,
-                    };
+                    ResetSearchConfig(_settingsPreferences.ShowNSFW, AnimeSearchSortable.Score, SortDirection.Descending);
 
                     await ResetAndLoadGlobalAsync();
 
                     break;
             }
-        }
-
-
-        public ICommand SelectSortDirectionCommand { get; private set; }
-        private void OnChangeSortDirection(SortDirectionData sortDirectionData)
-            => _animeSearchConfig.SortDirection = sortDirectionData.SortDirection;
-
-        public ICommand SelectSortTypeCommand { get; private set; }
-        private void OnSelectSortType(OrderData orderData)
-        {
-
-            //TODO: startDate e endDate tem tanto opção para ordenar via eles(com os radio button) quanto opção para
-            //inserir um intervalo de datas, decidir o que fazer a respeito desses 2 casos
-            //TODO: traduzir via converter os nomes dos filtros
-
-            _animeSearchConfig.OrderBy = orderData.OrderBy;
         }
 
         public ICommand ChangeSeasonCommand { get; private set; }
@@ -733,18 +728,9 @@ namespace ANT.Modules
             Loading = false;
         }
 
-
-
         #endregion
 
         //TODO: o footer ainda não está se comportando conforme deveria
 
-        //TODO: os filtros no catálogo de season devem ser nesse formato abaixo(não fazem requisições via internet para jikan)
-        /*
-         * .Where(
-            anime => anime.R18 == false &&
-            anime.HasAllSpecifiedGenres(GenreSearch.Ecchi) == false
-            )
-        */
     }
 }
