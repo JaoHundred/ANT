@@ -132,8 +132,26 @@
                         <Label Text="{Binding AnimeContext.Anime.Synopsis}" FontSize="20"/>
                     </ScrollView>
 
-                    <Button Grid.Row="2" Text="{res:Translate Genre}" Command="{Binding CheckAnimeGenresCommand}"
-                                Style="{StaticResource SpecsButtonStyle}" HorizontalOptions="Start" Margin="5,0,0,0"/>
+                    <CollectionView Grid.Row="2" ItemsSource="{Binding AnimeGenres}">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout ItemSpacing="15" Orientation="Horizontal"/>
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="ji:MALSubItem">
+                                <Frame Style="{StaticResource FrameGenreStyle}" Padding="0"
+                                       WidthRequest="125" BorderColor="Black">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.GenreSearchCommand, Source={x:Reference TabbedView}}"
+                                                              CommandParameter="{Binding Name}"/>
+                                    </Frame.GestureRecognizers>
+
+                                    <Label Text="{Binding Name}" FontSize="Subtitle" FontAttributes="Bold" 
+                                           VerticalOptions="Center" HorizontalOptions="Center"/>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
                 </Grid>
             </Frame>

@@ -39,10 +39,10 @@ namespace ANT.Modules
         {
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenLinkCommand = new magno.AsyncCommand<string>(OnLink);
-            CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             BackButtonCommand = new magno.AsyncCommand<BackButtonOriginEnum>(OnBackButton);
             OpenAnimeCharacterCommand = new magno.AsyncCommand(OnOpenAnimeCharacter);
+            GenreSearchCommand = new magno.AsyncCommand<string>(OnGenreSearch);
         }
 
         public Task InitializeTask { get; }
@@ -68,6 +68,8 @@ namespace ANT.Modules
 
                     _favoritedAnime = new FavoritedAnime(anime);
                 }
+
+                AnimeGenres = _favoritedAnime.Anime.Genres.ToList();
 
                 await AddOrUpdateRecentAnimeAsync(_favoritedAnime);
                 AnimeContext = _favoritedAnime;
@@ -226,6 +228,13 @@ namespace ANT.Modules
             set { SetProperty(ref _characters, value); }
         }
 
+        private IList<MALSubItem> _animeGenres;
+        public IList<MALSubItem> AnimeGenres
+        {
+            get { return _animeGenres; }
+            set { SetProperty(ref _animeGenres, value); }
+        }
+
         private IList<AnimeEpisode> _episodes;
         public IList<AnimeEpisode> Episodes
         {
@@ -324,16 +333,6 @@ namespace ANT.Modules
             await Launcher.TryOpenAsync(link);
         }
 
-
-        public ICommand CheckAnimeGenresCommand { get; private set; }
-        private async Task OnCheckAnimeGenres()
-        {
-            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<AnimeGenrePopupViewModel>();
-
-            if (canNavigate)
-                await NavigationManager.NavigatePopUpAsync<AnimeGenrePopupViewModel>(AnimeContext.Anime.Genres.ToList());
-        }
-
         public ICommand OpenAnimeCommand { get; private set; }
         private async Task OnOpenAnime()
         {
@@ -367,6 +366,21 @@ namespace ANT.Modules
 
             if (origin == BackButtonOriginEnum.NavigationBar)
                 await NavigationManager.PopShellPageAsync();
+        }
+
+        public ICommand GenreSearchCommand { get; private set; }
+        public async Task OnGenreSearch(string genreName)
+        {
+            if (IsNotBusy)
+            {
+                IsBusy = true;
+                string formatedString = genreName.RemoveOcurrencesFromString(new char[] { '-', ' ' });
+                GenreSearch genre = (GenreSearch)Enum.Parse(typeof(GenreSearch), formatedString, true);
+
+                await NavigationManager.NavigateShellAsync<CatalogueViewModel>(genre);
+
+                IsBusy = false;
+            }
         }
         #endregion
 

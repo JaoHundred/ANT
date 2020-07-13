@@ -62,9 +62,6 @@
     <EmbeddedResource Update="Modules\AnimeCharacter\AnimeCharacterView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Modules\AnimeSpecs\AnimeGenrePopupView.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Modules\AnimeSpecs\AnimeSpecsView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
