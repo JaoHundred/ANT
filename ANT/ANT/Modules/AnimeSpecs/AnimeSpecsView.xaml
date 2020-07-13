@@ -27,6 +27,8 @@
         <converter:DurationFormatToShortConverter x:Key="DurationFormatToShortConverter"/>
         <converter:IsMovieToVisibleConverter x:Key="IsMovieToVisibleConverter"/>
         <converter:InversorConverter x:Key="InversorConverter"/>
+        <converter:VACollectionToSpecifiedIndexConverter x:Key="VATOIndex"/>
+        <behavior:LabelLinesBehavior x:Key="LabelLinesBehavior"/>
     </TabbedPage.Resources>
 
     <Shell.TitleView>
@@ -133,9 +135,6 @@
                     <Button Grid.Row="2" Text="{res:Translate Genre}" Command="{Binding CheckAnimeGenresCommand}"
                                 Style="{StaticResource SpecsButtonStyle}" HorizontalOptions="Start" Margin="5,0,0,0"/>
 
-                    <Button Grid.Row="2" Text="{res:Translate Characters}" Command="{Binding CheckAnimeCharactersCommand}" 
-                                Style="{StaticResource SpecsButtonStyle}" HorizontalOptions="End" Margin="0,0,5,0"/>
-
                 </Grid>
             </Frame>
 
@@ -144,6 +143,54 @@
                 <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
             </Grid>
         </Grid>
+    </ContentPage>
+
+    <ContentPage Title="{res:Translate Characters}" x:DataType="VM:AnimeSpecsViewModel">
+        <CollectionView ItemsSource="{Binding Characters}" Margin="10,5,10,5" SelectionMode="Single"
+                            SelectionChangedCommand="{Binding OpenAnimeCharacterCommand}"
+                            SelectedItem="{Binding SelectedCharacter, Mode=TwoWay}">
+            <CollectionView.EmptyView>
+                <Grid Style="{StaticResource GridFullPageForActivityIndicatorStyle}">
+                    <ActivityIndicator IsVisible="{Binding IsLoadingCharacters}" IsRunning="{Binding IsLoadingCharacters}"/>
+                </Grid>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="ji:CharacterEntry">
+                    <Frame>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <FFimage:CachedImage Grid.RowSpan="3" x:Name="CharacterCachedImage" Source="{Binding ImageURL}"/>
+
+                            <ActivityIndicator Grid.RowSpan="3" IsRunning="{Binding IsLoading, Source={x:Reference CharacterCachedImage}}"
+                                                   IsVisible="{Binding IsLoading, Source={x:Reference CharacterCachedImage}}"/>
+
+                            <Label Grid.Column="1" Text="{Binding Name}" FontSize="Title" FontAttributes="Bold" 
+                                       LineBreakMode="TailTruncation" >
+                                <Label.Behaviors>
+                                    <behavior:LabelLinesBehavior MaxLines="2"/>
+                                </Label.Behaviors>
+                            </Label>
+                            <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Vertical" Spacing="0">
+                                <Label Text="{res:Translate Role}" FontSize="Title" FontAttributes="Bold"/>
+                                <Label Text="{Binding Role}" FontSize="Body"/>
+                            </StackLayout>
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding VoiceActors, Converter={StaticResource VATOIndex}, ConverterParameter=0}"
+                                       FontSize="Body" FontAttributes="Bold" VerticalOptions="End"
+                                       LineBreakMode="TailTruncation"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </ContentPage>
 
     <ContentPage Title="{res:Translate Episodes}">

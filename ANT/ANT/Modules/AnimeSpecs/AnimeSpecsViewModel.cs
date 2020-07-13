@@ -40,9 +40,9 @@ namespace ANT.Modules
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenLinkCommand = new magno.AsyncCommand<string>(OnLink);
             CheckAnimeGenresCommand = new magno.AsyncCommand(OnCheckAnimeGenres);
-            CheckAnimeCharactersCommand = new magno.AsyncCommand(OnCheckAnimeCharacters);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             BackButtonCommand = new magno.AsyncCommand<BackButtonOriginEnum>(OnBackButton);
+            OpenAnimeCharacterCommand = new magno.AsyncCommand(OnOpenAnimeCharacter);
         }
 
         public Task InitializeTask { get; }
@@ -74,7 +74,15 @@ namespace ANT.Modules
                 CanEnable = true;
                 IsLoading = false;
 
-                var groupedList = Task.Run(() =>
+                IsLoadingCharacters = true;
+                var loadCharactersTask = Task.Run(async () =>
+                {
+                    await App.DelayRequest(2);
+                    AnimeCharactersStaff animeCharactersStaff = await App.Jikan.GetAnimeCharactersStaff(_favoritedAnime.Anime.MalId);
+                    Characters = animeCharactersStaff.Characters.ToList();
+                }, _cancellationToken.Token);
+
+                var relatedAnimeTask = Task.Run(() =>
                 {
                     var relatedAnimes = new List<Model.RelatedAnime>();
 
@@ -113,9 +121,8 @@ namespace ANT.Modules
                     foreach (var item in _favoritedAnime.RelatedAnimes.GroupBy(p => p.GroupName))
                         groupedRelatedAnime.Add(new GroupedRelatedAnime(item.Key, item.ToList()));
 
-                    return groupedRelatedAnime;
-                });
-                GroupedRelatedAnimeList = await groupedList;
+                    GroupedRelatedAnimeList = groupedRelatedAnime;
+                }, _cancellationToken.Token);
 
                 if (_favoritedAnime.Episodes == null)
                 {
@@ -126,6 +133,10 @@ namespace ANT.Modules
                 Episodes = _favoritedAnime.Episodes;
                 IsLoadingEpisodes = false;
 
+                await loadCharactersTask;
+                IsLoadingCharacters = false;
+
+                await relatedAnimeTask;
                 await Task.Run(async () =>
                 {
                     foreach (var group in GroupedRelatedAnimeList)
@@ -187,6 +198,13 @@ namespace ANT.Modules
             set { SetProperty(ref _isLoadingEpisodes, value); }
         }
 
+        private bool _isLoadingCharecters;
+        public bool IsLoadingCharacters
+        {
+            get { return _isLoadingCharecters; }
+            set { SetProperty(ref _isLoadingCharecters, value); }
+        }
+
         private FavoritedAnime _animeContext;
         public FavoritedAnime AnimeContext
         {
@@ -199,6 +217,13 @@ namespace ANT.Modules
         {
             get { return _canEnable; }
             set { SetProperty(ref _canEnable, value); }
+        }
+
+        private IList<CharacterEntry> _characters;
+        public IList<CharacterEntry> Characters
+        {
+            get { return _characters; }
+            set { SetProperty(ref _characters, value); }
         }
 
         private IList<AnimeEpisode> _episodes;
@@ -215,8 +240,15 @@ namespace ANT.Modules
             set { SetProperty(ref _selectedAnime, value); }
         }
 
-        private List<GroupedRelatedAnime> _groupedRelatedAnimeList;
-        public List<GroupedRelatedAnime> GroupedRelatedAnimeList
+        private CharacterEntry _selectedCharacter;
+        public CharacterEntry SelectedCharacter
+        {
+            get { return _selectedCharacter; }
+            set { SetProperty(ref _selectedCharacter, value); }
+        }
+
+        private IList<GroupedRelatedAnime> _groupedRelatedAnimeList;
+        public IList<GroupedRelatedAnime> GroupedRelatedAnimeList
         {
             get { return _groupedRelatedAnimeList; }
             set { SetProperty(ref _groupedRelatedAnimeList, value); }
@@ -302,15 +334,6 @@ namespace ANT.Modules
                 await NavigationManager.NavigatePopUpAsync<AnimeGenrePopupViewModel>(AnimeContext.Anime.Genres.ToList());
         }
 
-        public ICommand CheckAnimeCharactersCommand { get; private set; }
-        private async Task OnCheckAnimeCharacters()
-        {
-            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<AnimeCharacterPopupViewModel>();
-
-            if (canNavigate)
-                await NavigationManager.NavigatePopUpAsync<AnimeCharacterPopupViewModel>(AnimeContext.Anime.MalId);
-        }
-
         public ICommand OpenAnimeCommand { get; private set; }
         private async Task OnOpenAnime()
         {
@@ -322,6 +345,19 @@ namespace ANT.Modules
             }
 
             SelectedAnime = null;
+        }
+
+        public ICommand OpenAnimeCharacterCommand { get; private set; }
+        private async Task OnOpenAnimeCharacter()
+        {
+            if (IsNotBusy && SelectedCharacter != null)
+            {
+                IsBusy = true;
+                await Task.Delay(TimeSpan.FromMilliseconds(200));
+                await NavigationManager.NavigateShellAsync<AnimeCharacterViewModel>(SelectedCharacter.MalId);
+                IsBusy = false;
+                SelectedCharacter = null;
+            }
         }
 
         public ICommand BackButtonCommand { get; private set; }
