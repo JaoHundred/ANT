@@ -9,6 +9,9 @@ using System.Windows.Input;
 using Xamarin.Essentials;
 using magno = MvvmHelpers.Commands;
 using ANT.Core;
+using ANT.Model;
+using System.Linq;
+using Xamarin.Forms;
 
 namespace ANT.Modules
 {
@@ -18,7 +21,7 @@ namespace ANT.Modules
         {
             InitializeTask = LoadAsync(malId);
 
-            FavoriteCommand = new magno.AsyncCommand(OnFavorite);
+            FavoriteCommand = new magno.Command(OnFavorite);
             SelectedAnimeCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedAnime);
             SelectedCharacterCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedCharacter);
             OpenLinkCommand = new magno.AsyncCommand<string>(OpenLink);
@@ -34,14 +37,20 @@ namespace ANT.Modules
 
             try
             {
-                await App.DelayRequest();
-                Person person = await App.Jikan.GetPerson(id);
+                var favoritedVoiceActor = App.liteDB.GetCollection<FavoritedVoiceActor>().FindById(id);
 
-                await App.DelayRequest();
-                PersonPictures personPictures = await App.Jikan.GetPersonPictures(id);
+                if (favoritedVoiceActor == null)
+                {
+                    await App.DelayRequest();
+                    Person person = await App.Jikan.GetPerson(id);
 
-                PersonContext = person;
-                PersonPictures = personPictures.Pictures;
+                    await App.DelayRequest();
+                    PersonPictures personPictures = await App.Jikan.GetPersonPictures(id);
+
+                    favoritedVoiceActor = new FavoritedVoiceActor(person, personPictures.Pictures.ToList());
+                }
+
+                PersonContext = favoritedVoiceActor;
             }
             catch (Exception ex)
             {
@@ -55,18 +64,11 @@ namespace ANT.Modules
         }
 
         #region propriedades
-        private Person _personContext;
-        public Person PersonContext
+        private FavoritedVoiceActor _personContext;
+        public FavoritedVoiceActor PersonContext
         {
             get { return _personContext; }
             set { SetProperty(ref _personContext, value); }
-        }
-
-        private ICollection<Picture> _personPictures;
-        public ICollection<Picture> PersonPictures
-        {
-            get { return _personPictures; }
-            set { SetProperty(ref _personPictures, value); }
         }
 
         private bool _isLoading;
@@ -86,16 +88,26 @@ namespace ANT.Modules
 
         #region commands
         public ICommand FavoriteCommand { get; private set; }
-        private async Task OnFavorite()
+        private void OnFavorite()
         {
-            await App.DelayRequest();
-            //TODO: salvar o voice actor na lista de favoritos, se já estiver favoritado, desfavoritar
+            if(PersonContext.IsFavorited)
+            {
+                PersonContext.IsFavorited = false;
+                App.liteDB.GetCollection<FavoritedVoiceActor>().Delete(PersonContext.VoiceActor.MalId);
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.RemovedFromFavorite);
+            }
+            else
+            {
+                PersonContext.IsFavorited = true;
+                App.liteDB.GetCollection<FavoritedVoiceActor>().Upsert(PersonContext.VoiceActor.MalId, PersonContext);
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.AddedToFavorite);
+            }
         }
 
         public ICommand SelectedCharacterCommand { get; private set; }
         private async Task OnSelectedCharacter(MALImageSubItem selectedCharacter)
         {
-            if(IsNotBusy)
+            if (IsNotBusy)
             {
                 IsBusy = true;
                 await NavigationManager.NavigateShellAsync<AnimeCharacterViewModel>(selectedCharacter.MalId);
@@ -119,7 +131,7 @@ namespace ANT.Modules
         {
             await Launcher.TryOpenAsync(link);
         }
-        
+
         #endregion
     }
 }

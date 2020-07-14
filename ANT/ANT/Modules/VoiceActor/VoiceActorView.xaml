@@ -17,7 +17,7 @@
 
     <TabbedPage.ToolbarItems>
         <ToolbarItem Order="Secondary" Text="{res:Translate MAL}"
-                     Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PersonContext.LinkCanonical}"/>
+                     Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PersonContext.VoiceActor.LinkCanonical}"/>
     </TabbedPage.ToolbarItems>
 
     <TabbedPage.Resources>
@@ -46,18 +46,18 @@
                     </Grid.RowDefinitions>
 
                     <ScrollView Orientation="Horizontal">
-                        <Label  Text="{Binding PersonContext.Name}" 
+                        <Label  Text="{Binding PersonContext.VoiceActor.Name}" 
                                 HorizontalOptions="Center"
                                 Style="{StaticResource ContentTitleLabelStyle}" d:Text="Name"/>
                     </ScrollView>
 
                     <ScrollView Grid.Row="1" Orientation="Vertical" Margin="0,5,0,0">
-                        <Label Text="{Binding PersonContext.More, Converter={StaticResource NewLineConverter}, ConverterParameter=\\n}" 
+                        <Label Text="{Binding PersonContext.VoiceActor.More, Converter={StaticResource NewLineConverter}, ConverterParameter=\\n}" 
                                Style="{StaticResource ContentBodyLabelStyle}" d:Text="About"/>
                     </ScrollView>
 
                     <ffimage:CachedImage Grid.Column="1" Grid.RowSpan="2" x:Name="ChImage" 
-                                         Source="{Binding PersonContext.ImageURL}"/>
+                                         Source="{Binding PersonContext.VoiceActor.ImageURL}"/>
                     <ActivityIndicator Grid.Column="1" Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference ChImage}}"
                                        IsVisible="{Binding IsLoading, Source={x:Reference ChImage}}"/>
                 </Grid>
@@ -70,7 +70,7 @@
                                  Glyph="{StaticResource Star}"
                                  Size="20"/>
                 </Button.ImageSource>
-                <!--<Button.Triggers>
+                <Button.Triggers>
                     <DataTrigger TargetType="Button" Binding="{Binding PersonContext.IsFavorited}" Value="True">
                         <Setter Property="ImageSource">
                             <FontImageSource FontFamily="{StaticResource FontIcon}"
@@ -78,7 +78,7 @@
                                          Size="22"/>
                         </Setter>
                     </DataTrigger>
-                </Button.Triggers>-->
+                </Button.Triggers>
             </Button>
             <Frame Grid.Row="1" Margin="0,0,0,3">
                 <Grid>
@@ -88,7 +88,7 @@
                     </Grid.RowDefinitions>
                     <Label Text="{res:Translate Pictures}" d:Text="Pictures" FontSize="Title"/>
                     <Frame Grid.Row="1" Style="{StaticResource FrameGenreStyle}" BorderColor="Gray" >
-                        <CollectionView ItemsSource="{Binding PersonPictures}">
+                        <CollectionView ItemsSource="{Binding PersonContext.VoiceActorPictures}">
                             <CollectionView.EmptyView>
                                 <Grid>
                                     <Label Text="{res:Translate NoDataAvailable}" VerticalOptions="Center" 
@@ -127,7 +127,7 @@
 
     </ContentPage>
     <ContentPage Title="{res:Translate VoiceActingRoles}">
-        <CollectionView Margin="10,5,10,5" ItemsSource="{Binding PersonContext.VoiceActingRoles}">
+        <CollectionView Margin="10,5,10,5" ItemsSource="{Binding PersonContext.VoiceActor.VoiceActingRoles}">
 
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
