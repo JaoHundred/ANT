@@ -108,7 +108,16 @@
         </FlyoutItem.Icon>
         <ShellContent ContentTemplate="{DataTemplate modules:FavoriteCharacterView}"/>
     </FlyoutItem>
-    
+
+    <FlyoutItem Title="{res:Translate FavoriteVoiceActors}" Route="FavoriteVoiceActors">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="{StaticResource FontIcon}"
+                             Glyph="{StaticResource FavoriteList}"
+                             Color="{DynamicResource TextColor}"/>
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate modules:FavoriteVoiceActorView}"/>
+    </FlyoutItem>
+
     <FlyoutItem Title="{res:Translate Settings}" Route="Settings">
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="{StaticResource FontIcon}"

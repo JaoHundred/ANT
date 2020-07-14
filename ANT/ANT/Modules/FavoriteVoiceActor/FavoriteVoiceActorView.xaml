@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="ANT.Modules.FavoriteVoiceActorView"
+             Appearing="ContentPage_Appearing"
+             xmlns:res="clr-namespace:ANT.Lang"
+             xmlns:vm="clr-namespace:ANT.Modules"
+             xmlns:model="clr-namespace:ANT.Model"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:behavior="clr-namespace:ANT._Behaviors"
+             xmlns:converter="clr-namespace:ANT.Converter"
+             xmlns:custom="clr-namespace:ANT.CustomControls"
+             xmlns:comm="clr-namespace:ANT._Behaviors"
+             x:DataType="vm:FavoriteVoiceActorViewModel">
+
+    <ContentPage.Resources>
+        <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
+        <converter:RemoveSpecifiedSubStringConverter x:Key="RemoveSubStringConverter"/>
+        <converter:SearchTextToVisibleEmptyViewConverter x:Key="SearchTextToEmptyView"/>
+    </ContentPage.Resources>
+
+    <Shell.TitleView>
+        <Grid>
+            <Label Text="{res:Translate FavoriteVoiceActors}" Style="{StaticResource NavigationBarTitleLabelStyle}"
+                   x:Name="LabelTitle" />
+
+            <Grid x:Name="SearchControl" IsVisible="False">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Entry Placeholder="{res:Translate Search}" Style="{StaticResource SearchEntryStyle}" 
+                   Text="{Binding SearchQuery}" Unfocused="SearchFieldLostFocus" x:Name="EntrySearchField">
+                    <Entry.Behaviors>
+                        <comm:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchCommand}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Label Grid.Column="1" Style="{StaticResource SearchCancelButtonStyle}"  
+                   IsVisible="{Binding SearchQuery, Converter={StaticResource EmptyTextToBoolConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearTextCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+        </Grid>
+    </Shell.TitleView>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="{res:Translate MultiSelect}"
+                     Command="{Binding SelectionModeCommand}"/>
+
+        <ToolbarItem Order="Secondary" Text="{res:Translate ClearAll}"
+                     Command="{Binding ClearAllRecentCommand}"/>
+
+    </ContentPage.ToolbarItems>
+
+    <custom:BottomSlideMenu x:Name="BottomSlide">
+        <custom:BottomSlideMenu.ViewContent>
+            <Grid>
+                <CollectionView ItemsSource="{Binding FavoritedActors}" 
+                        Margin="10,5,10,5" SelectedItem="{Binding SelectedFavorite, Mode=TwoWay}" 
+                        SelectedItems="{Binding SelectedFavorites, Mode=TwoWay}"
+                        SelectionChangedCommand="{Binding OpenVoiceActorCommand}"
+                        SelectionMode="{Binding SelectionMode}" x:Name="ActorsCollectionView"
+                                Scrolled="ActorsCollectionView_Scrolled">
+
+                    <CollectionView.EmptyView>
+                        <Grid>
+                            <Label Text="{res:Translate NothingForNow}" FontSize="40" VerticalOptions="Center"
+                           HorizontalOptions="Center" 
+                           IsVisible="{Binding SearchQuery, Converter={StaticResource SearchTextToEmptyView}}"/>
+                        </Grid>
+                    </CollectionView.EmptyView>
+
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:FavoritedVoiceActor">
+                            <Frame HeightRequest="200">
+                                <Grid>
+                                    <ffimage:CachedImage Grid.RowSpan="2" x:Name="img" Source="{Binding VoiceActor.ImageURL}"/>
+                                    <ActivityIndicator Grid.RowSpan="2" IsRunning="{Binding IsLoading, Source={x:Reference img}}"
+                                       IsVisible="{Binding IsLoading, Source={x:Reference img}}"/>
+
+                                        <Label Grid.Column="1" Text="{Binding VoiceActor.Name}" Style="{StaticResource TitleLabelStyle}">
+                                            <Label.Behaviors>
+                                                <behavior:LabelLinesBehavior MaxLines="2"/>
+                                            </Label.Behaviors>
+                                        </Label>
+
+                                    <Label Grid.Column="1" Grid.Row="1" Style="{StaticResource ContentBodyLabelStyle}" LineBreakMode="TailTruncation"
+                                   Text="{Binding VoiceActor.More, Converter={StaticResource RemoveSubStringConverter}, ConverterParameter=\\n}">
+                                        <Label.Behaviors>
+                                            <behavior:LabelLinesBehavior MaxLines="5"/>
+                                        </Label.Behaviors>
+                                    </Label>
+
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
+                Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="DeleteButton_AnimationOnIsVisible">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                 Glyph="{StaticResource Delete}"
+                                 Size="22" />
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+        </custom:BottomSlideMenu.ViewContent>
+        <custom:BottomSlideMenu.MenuContent>
+            <Grid>
+                <custom:MenuImageButton ImageText="{res:Translate MultiSelect}" ImageStyle="{StaticResource SelectLabelStyle}"
+                                        Command="{Binding SelectionModeCommand}"/>
+                <custom:MenuImageButton Grid.Column="1" ImageText="{res:Translate Search}" ImageStyle="{StaticResource SearchLabelStyle}"
+                                        Tapped="SearchLabelTapped"/>
+            </Grid>
+        </custom:BottomSlideMenu.MenuContent>
+    </custom:BottomSlideMenu>
+
+</ContentPage>

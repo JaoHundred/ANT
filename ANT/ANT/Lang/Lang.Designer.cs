@@ -394,6 +394,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Favorite voice actors.
+        /// </summary>
+        public static string FavoriteVoiceActors {
+            get {
+                return ResourceManager.GetString("FavoriteVoiceActors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter.
         /// </summary>
         public static string Filter {

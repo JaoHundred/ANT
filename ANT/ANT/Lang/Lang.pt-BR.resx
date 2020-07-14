@@ -228,6 +228,9 @@
   <data name="FavoriteCharacters" xml:space="preserve">
     <value>Personagens favoritos</value>
   </data>
+  <data name="FavoriteVoiceActors" xml:space="preserve">
+    <value>Atores de voz favoritos</value>
+  </data>
   <data name="Filter" xml:space="preserve">
     <value>Filtrar</value>
   </data>
