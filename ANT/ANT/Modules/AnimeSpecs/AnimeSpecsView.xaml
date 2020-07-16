@@ -290,12 +290,65 @@
 
         </Grid>
     </ContentPage>
+    <ContentPage Title="{res:Translate News}">
+        <CollectionView ItemsSource="{Binding News}" Margin="10,5,10,5" SelectionMode="Single"
+                        SelectionChangedCommand="{Binding OpenNewsCommand}"
+                        SelectedItem="{Binding SelectedNews, Mode=TwoWay}">
+
+            <CollectionView.EmptyView>
+                <Grid Style="{StaticResource GridFullPageForActivityIndicatorStyle}">
+                    <ActivityIndicator IsVisible="{Binding IsLoadingNews}" IsRunning="{Binding IsLoadingNews}"/>
+                </Grid>
+            </CollectionView.EmptyView>
+            
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="ji:News">
+                    <Frame>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <FFimage:CachedImage Grid.RowSpan="3" x:Name="newsImage" Source="{Binding ImageURL}"/>
+                            <ActivityIndicator Grid.RowSpan="3" IsRunning="{Binding IsLoading, Source={x:Reference newsImage}}"
+                                               IsVisible="{Binding IsLoading, Source={x:Reference newsImage}}"/>
+
+                            <Label Grid.Column="1" Text="{Binding Title}" Style="{StaticResource TitleLabelStyle}" MaxLines="3"/>
+
+                            <StackLayout Orientation="Vertical" Grid.Row="1" Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{res:Translate Author}" FontSize="Medium" FontAttributes="Bold" 
+                                       LineBreakMode="TailTruncation"/>
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Author}" FontSize="Subtitle" />
+                            </StackLayout>
+
+
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding Date, Converter={StaticResource DateConverter}}"
+                                   FontSize="Body" HorizontalOptions="End"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </ContentPage>
     <ContentPage Title="{res:Translate Related}">
         <CollectionView IsGrouped="True" ItemsSource="{Binding GroupedRelatedAnimeList}"
                         Margin="3" SelectionMode="Single" SelectedItem="{Binding SelectedAnime, Mode=TwoWay}"
-                        SelectionChangedCommand="{Binding OpenAnimeCommand}">
+                        SelectionChangedCommand="{Binding OpenAnimeCommand}"
+                        Style="{StaticResource CollectionViewEmptyListStyle}">
+
+            <CollectionView.EmptyView>
+                <Grid Style="{StaticResource GridFullPageForActivityIndicatorStyle}">
+                    <ActivityIndicator IsVisible="{Binding IsLoadingRelated}" IsRunning="{Binding IsLoadingRelated}"/>
+                </Grid>
+            </CollectionView.EmptyView>
+
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
             </CollectionView.ItemsLayout>
 
             <CollectionView.GroupHeaderTemplate>

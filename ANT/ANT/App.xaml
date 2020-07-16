@@ -60,10 +60,6 @@
                 <Setter Property="WidthRequest" Value="50"/>
             </Style>
 
-            <Style TargetType="CollectionView">
-                <Setter Property="BackgroundColor" Value="Transparent"/>
-            </Style>
-
             <Style TargetType="RefreshView">
                 <Setter Property="RefreshColor" Value="{DynamicResource ProgressIndicatorColor}"/>
                 <Setter Property="BackgroundColor" Value="WhiteSmoke"/>
@@ -121,6 +117,7 @@
                 <Setter Property="HeightRequest" Value="200"/>
                 <Setter Property="IsOpaque" Value="True"/>
                 <Setter Property="DownsampleToViewSize" Value="True"/>
+                <Setter Property="ErrorPlaceholder" Value="placeholder.png"/>
             </Style>
 
             <!--#endregion-->
@@ -133,6 +130,7 @@
 
             <Style TargetType="Label" x:Key="TitleLabelStyle">
                 <Setter Property="FontSize" Value="Title"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="LineBreakMode" Value="TailTruncation"/>
 
             </Style>
@@ -243,12 +241,12 @@
                 <Setter Property="VerticalOptions" Value="Center"/>
             </Style>
 
-            <Style TargetType="CollectionView" x:Key="FavoriteListRecentListStyle">
+            <Style TargetType="CollectionView" x:Key="CollectionViewEmptyListStyle">
                 <Setter Property="EmptyView">
                     <Setter.Value>
                         <Grid>
-                            <Label Text="{res:Translate NothingForNow}" FontSize="40" VerticalOptions="Center"
-                                   HorizontalOptions="Center"/>
+                            <Label Text="{res:Translate NoDataAvailable}" FontSize="Title" VerticalOptions="Center"
+                                   HorizontalOptions="Center" FontAttributes="Bold"/>
                         </Grid>
                     </Setter.Value>
                 </Setter>

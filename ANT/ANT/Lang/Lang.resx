@@ -144,6 +144,9 @@
   <data name="At" xml:space="preserve">
     <value>at</value>
   </data>
+  <data name="Author" xml:space="preserve">
+    <value>Author</value>
+  </data>
   <data name="AutomaticTranslate" xml:space="preserve">
     <value>Automatic Translate</value>
   </data>
@@ -284,6 +287,9 @@
   </data>
   <data name="MultiSelect" xml:space="preserve">
     <value>Select</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>News</value>
   </data>
   <data name="NoDataAvailable" xml:space="preserve">
     <value>No data available</value>

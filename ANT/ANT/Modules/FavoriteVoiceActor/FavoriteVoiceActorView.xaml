@@ -62,20 +62,12 @@
         <custom:BottomSlideMenu.ViewContent>
             <Grid>
                 <CollectionView ItemsSource="{Binding FavoritedActors}" 
-                        Margin="10,5,10,5" SelectedItem="{Binding SelectedFavorite, Mode=TwoWay}" 
-                        SelectedItems="{Binding SelectedFavorites, Mode=TwoWay}"
-                        SelectionChangedCommand="{Binding OpenVoiceActorCommand}"
-                        SelectionMode="{Binding SelectionMode}" x:Name="ActorsCollectionView"
+                                Margin="10,5,10,5" SelectedItem="{Binding SelectedFavorite, Mode=TwoWay}" 
+                                SelectedItems="{Binding SelectedFavorites, Mode=TwoWay}"
+                                SelectionChangedCommand="{Binding OpenVoiceActorCommand}"
+                                SelectionMode="{Binding SelectionMode}" x:Name="ActorsCollectionView"
+                                Style="{StaticResource CollectionViewEmptyListStyle}"
                                 Scrolled="ActorsCollectionView_Scrolled">
-
-                    <CollectionView.EmptyView>
-                        <Grid>
-                            <Label Text="{res:Translate NothingForNow}" FontSize="40" VerticalOptions="Center"
-                           HorizontalOptions="Center" 
-                           IsVisible="{Binding SearchQuery, Converter={StaticResource SearchTextToEmptyView}}"/>
-                        </Grid>
-                    </CollectionView.EmptyView>
-
 
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>

@@ -39,6 +39,7 @@ namespace ANT.Modules
         {
             FavoriteCommand = new magno.AsyncCommand(OnFavorite);
             OpenLinkCommand = new magno.AsyncCommand<string>(OnLink);
+            OpenNewsCommand = new magno.AsyncCommand(OnLinkNews);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             BackButtonCommand = new magno.AsyncCommand<BackButtonOriginEnum>(OnBackButton);
             OpenAnimeCharacterCommand = new magno.AsyncCommand(OnOpenAnimeCharacter);
@@ -71,6 +72,15 @@ namespace ANT.Modules
 
                 AnimeGenres = _favoritedAnime.Anime.Genres.ToList();
 
+                IsLoadingNews = true;
+                var loadAnimeNewsTask = Task.Run(async () =>
+                {
+                    await App.DelayRequest(2);
+                    AnimeNews animeNews = await App.Jikan.GetAnimeNews(_favoritedAnime.Anime.MalId);
+
+                    News = animeNews.News.ToList();
+                }, _cancellationToken.Token);
+
                 await AddOrUpdateRecentAnimeAsync(_favoritedAnime);
                 AnimeContext = _favoritedAnime;
                 CanEnable = true;
@@ -84,6 +94,7 @@ namespace ANT.Modules
                     Characters = animeCharactersStaff.Characters.ToList();
                 }, _cancellationToken.Token);
 
+                IsLoadingRelated = true;
                 var relatedAnimeTask = Task.Run(() =>
                 {
                     var relatedAnimes = new List<Model.RelatedAnime>();
@@ -138,7 +149,11 @@ namespace ANT.Modules
                 await loadCharactersTask;
                 IsLoadingCharacters = false;
 
+                await loadAnimeNewsTask;
+                IsLoadingNews = false;
+
                 await relatedAnimeTask;
+                IsLoadingRelated = false;
                 await Task.Run(async () =>
                 {
                     foreach (var group in GroupedRelatedAnimeList)
@@ -207,6 +222,20 @@ namespace ANT.Modules
             set { SetProperty(ref _isLoadingCharecters, value); }
         }
 
+        private bool _isLoadingNews;
+        public bool IsLoadingNews
+        {
+            get { return _isLoadingNews; }
+            set { SetProperty(ref _isLoadingNews, value); }
+        }
+
+        private bool _isLoadingRelated;
+        public bool IsLoadingRelated
+        {
+            get { return _isLoadingRelated; }
+            set { SetProperty(ref _isLoadingRelated, value); }
+        }
+
         private FavoritedAnime _animeContext;
         public FavoritedAnime AnimeContext
         {
@@ -242,6 +271,13 @@ namespace ANT.Modules
             set { SetProperty(ref _episodes, value); }
         }
 
+        private IList<News> _news;
+        public IList<News> News
+        {
+            get { return _news; }
+            set { SetProperty(ref _news, value); }
+        }
+
         private Model.RelatedAnime _selectedAnime;
         public Model.RelatedAnime SelectedAnime
         {
@@ -254,6 +290,13 @@ namespace ANT.Modules
         {
             get { return _selectedCharacter; }
             set { SetProperty(ref _selectedCharacter, value); }
+        }
+
+        private News _selectedNews;
+        public News SelectedNews
+        {
+            get { return _selectedNews; }
+            set { SetProperty(ref _selectedNews, value); }
         }
 
         private IList<GroupedRelatedAnime> _groupedRelatedAnimeList;
@@ -327,6 +370,19 @@ namespace ANT.Modules
 #endif
         }
 
+        public ICommand OpenNewsCommand { get; private set; }
+        private async Task OnLinkNews()
+        {
+            if (IsNotBusy && SelectedNews != null)
+            {
+                IsBusy = true;
+                await Task.Delay(TimeSpan.FromMilliseconds(500));
+                await Launcher.TryOpenAsync(SelectedNews.Url);
+                IsBusy = false;
+            }
+
+            SelectedNews = null;
+        }
         public ICommand OpenLinkCommand { get; private set; }
         private async Task OnLink(string link)
         {
