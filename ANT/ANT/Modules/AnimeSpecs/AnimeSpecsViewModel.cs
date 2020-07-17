@@ -76,6 +76,10 @@ namespace ANT.Modules
                 var loadAnimeNewsTask = Task.Run(async () =>
                 {
                     await App.DelayRequest(2);
+
+                    if (_cancellationToken.IsCancellationRequested)
+                        _cancellationToken.Token.ThrowIfCancellationRequested();
+
                     AnimeNews animeNews = await App.Jikan.GetAnimeNews(_favoritedAnime.Anime.MalId);
 
                     News = animeNews.News.ToList();
@@ -90,6 +94,10 @@ namespace ANT.Modules
                 var loadCharactersTask = Task.Run(async () =>
                 {
                     await App.DelayRequest(2);
+
+                    if (_cancellationToken.IsCancellationRequested)
+                        _cancellationToken.Token.ThrowIfCancellationRequested();
+
                     AnimeCharactersStaff animeCharactersStaff = await App.Jikan.GetAnimeCharactersStaff(_favoritedAnime.Anime.MalId);
                     Characters = animeCharactersStaff.Characters.ToList();
                 }, _cancellationToken.Token);
@@ -97,6 +105,9 @@ namespace ANT.Modules
                 IsLoadingRelated = true;
                 var relatedAnimeTask = Task.Run(() =>
                 {
+                    if (_cancellationToken.IsCancellationRequested)
+                        _cancellationToken.Token.ThrowIfCancellationRequested();
+
                     var relatedAnimes = new List<Model.RelatedAnime>();
 
                     if (_favoritedAnime.Anime.Related.ParentStories != null)

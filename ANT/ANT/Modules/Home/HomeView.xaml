@@ -3,8 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:jikan="clr-namespace:JikanDotNet;assembly=JikanDotNet"
+             xmlns:ffImage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:vm="clr-namespace:ANT.Modules"
              mc:Ignorable="d"
-             x:Class="ANT.Modules.HomeView" >
+             x:Class="ANT.Modules.HomeView" 
+             x:DataType="vm:HomeViewModel"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
 
     <Shell.TitleView>
         <Grid>
@@ -16,5 +22,28 @@
                    x:Name="LabelTitle" />
         </Grid>
     </Shell.TitleView>
-    
+
+    <Grid RowDefinitions="*,*">
+        <CollectionView ItemsSource="{Binding Recommendations}" SelectionMode="Single" Margin="5">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15"/>
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="jikan:Recommendation">
+                    <Frame WidthRequest="200">
+                        <Grid RowDefinitions="*, auto">
+                            <ffImage:CachedImage x:Name="recommendationImage" Source="{Binding ImageURL}"/>
+                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference recommendationImage}}"
+                                               IsVisible="{Binding IsLoading, Source={x:Reference recommendationImage}}"/>
+
+                            <Label Grid.Row="1" Text="{Binding Title}" Style="{StaticResource TitleLabelStyle}"/>
+
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+
 </ContentPage>

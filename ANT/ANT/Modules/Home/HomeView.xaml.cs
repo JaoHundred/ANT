@@ -17,5 +17,15 @@ namespace ANT.Modules
             InitializeComponent();
             BindingContext = new HomeViewModel();
         }
+
+        private async void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            await ((HomeViewModel)BindingContext).LoadAsync();
+        }
+
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            ((HomeViewModel)BindingContext).Unload();
+        }
     }
 }
