@@ -336,6 +336,9 @@
   <data name="Recents" xml:space="preserve">
     <value>Recently seen</value>
   </data>
+  <data name="Recommendations" xml:space="preserve">
+    <value>Recommendations</value>
+  </data>
   <data name="Related" xml:space="preserve">
     <value>Related</value>
   </data>

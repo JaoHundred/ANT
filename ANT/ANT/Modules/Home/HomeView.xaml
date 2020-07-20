@@ -5,7 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:jikan="clr-namespace:JikanDotNet;assembly=JikanDotNet"
              xmlns:ffImage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:res="clr-namespace:ANT.Lang"
              xmlns:vm="clr-namespace:ANT.Modules"
+             xmlns:model="clr-namespace:ANT.Model"
              mc:Ignorable="d"
              x:Class="ANT.Modules.HomeView" 
              x:DataType="vm:HomeViewModel"
@@ -23,27 +25,63 @@
         </Grid>
     </Shell.TitleView>
 
-    <Grid RowDefinitions="*,*">
-        <CollectionView ItemsSource="{Binding Recommendations}" SelectionMode="Single" Margin="5">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15"/>
-            </CollectionView.ItemsLayout>
+    <ScrollView Orientation="Vertical">
+        <Grid RowDefinitions="auto, 250, auto, 250">
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="jikan:Recommendation">
-                    <Frame WidthRequest="200">
-                        <Grid RowDefinitions="*, auto">
-                            <ffImage:CachedImage x:Name="recommendationImage" Source="{Binding ImageURL}"/>
-                            <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference recommendationImage}}"
+            <Label Text="{res:Translate TodayAnimes}" Style="{StaticResource ContentTitleLabelStyle}"
+               Margin="5,5,0,0" FontAttributes="Bold"/>
+            <CollectionView Grid.Row="1" ItemsSource="{Binding TodayAnimes}" SelectionMode="Single" Margin="10,5,5,5"
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                        SelectionChangedCommand="{Binding SelectedItemCommand}"
+                        Style="{StaticResource CollectionViewEmptyListStyle}">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:FavoritedAnime">
+                        <Frame WidthRequest="150">
+                            <Grid RowDefinitions="*, auto">
+                                <ffImage:CachedImage x:Name="animeImage" Source="{Binding Anime.ImageURL}"/>
+                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference animeImage}}"
+                                               IsVisible="{Binding IsLoading, Source={x:Reference animeImage}}"/>
+
+                                <Label Grid.Row="1" Text="{Binding Anime.Title}" Style="{StaticResource TitleLabelStyle}"
+                                   HorizontalOptions="Center"/>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label Grid.Row="2"  Text="{res:Translate Recommendations}" Style="{StaticResource ContentTitleLabelStyle}"
+                        Margin="5,5,0,0" FontAttributes="Bold" IsVisible="{Binding HasRecommendations}" />
+            <CollectionView Grid.Row="3" ItemsSource="{Binding Recommendations}" SelectionMode="Single" Margin="10,5,5,5"
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                        SelectionChangedCommand="{Binding SelectedItemCommand}" IsVisible="{Binding HasRecommendations}" >
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15"/>
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="jikan:Recommendation">
+                        <Frame WidthRequest="150">
+                            <Grid RowDefinitions="*, auto">
+                                <ffImage:CachedImage x:Name="recommendationImage" Source="{Binding ImageURL}"/>
+                                <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference recommendationImage}}"
                                                IsVisible="{Binding IsLoading, Source={x:Reference recommendationImage}}"/>
 
-                            <Label Grid.Row="1" Text="{Binding Title}" Style="{StaticResource TitleLabelStyle}"/>
+                                <Label Grid.Row="1" Text="{Binding Title}" Style="{StaticResource TitleLabelStyle}"
+                                   HorizontalOptions="Center"/>
 
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </Grid>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
+        </Grid>
+    </ScrollView>
 </ContentPage>

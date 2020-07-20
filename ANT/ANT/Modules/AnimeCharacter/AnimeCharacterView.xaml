@@ -135,8 +135,8 @@
     </ContentPage>
     <ContentPage Title="{res:Translate Animeography}">
         <CollectionView ItemsSource="{Binding CharacterContext.Character.Animeography}" Margin="10,5,10,5"
-                            SelectionMode="Single" SelectionChangedCommand="{Binding SelectedAnimeCommand}"
-                            SelectionChangedCommandParameter="{Binding SelectedItem, Source={x:RelativeSource Mode=Self}}">
+                            SelectionMode="Single" SelectionChangedCommand="{Binding SelectedItemCommand}"
+                            SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
             </CollectionView.ItemsLayout>
@@ -165,9 +165,8 @@
     </ContentPage>
     <ContentPage Title="{res:Translate VoiceActors}">
         <CollectionView ItemsSource="{Binding CharacterContext.Character.VoiceActors}" Margin="5,5,10,5"
-                        SelectionMode="Single" SelectionChangedCommand="{Binding SelectedVoiceActorCommand}"
-                        SelectionChangedCommandParameter="{Binding SelectedVoiceActor}"
-                        SelectedItem="{Binding SelectedVoiceActor}">
+                        SelectionMode="Single" SelectionChangedCommand="{Binding SelectedItemCommand}"
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
             </CollectionView.ItemsLayout>

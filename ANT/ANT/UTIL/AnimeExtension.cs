@@ -234,6 +234,72 @@ namespace ANT.UTIL
             return relatedAnimes;
         }
 
+        public static ScheduledDay ConvertDayOfWeekToScheduleDay(this DayOfWeek dayOfWeek)
+        {
+            ScheduledDay scheduledDay = default;
+
+            switch (dayOfWeek)
+            {
+                case DayOfWeek.Friday:
+                    scheduledDay= ScheduledDay.Friday;
+                    break;
+
+                case DayOfWeek.Monday:
+                    scheduledDay = ScheduledDay.Monday;
+                    break;
+
+                case DayOfWeek.Saturday:
+                    scheduledDay = ScheduledDay.Saturday;
+                    break;
+
+                case DayOfWeek.Sunday:
+                    scheduledDay = ScheduledDay.Sunday;
+                    break;
+
+                case DayOfWeek.Thursday:
+                    scheduledDay = ScheduledDay.Thursday;
+                    break;
+
+                case DayOfWeek.Tuesday:
+                    scheduledDay = ScheduledDay.Tuesday;
+                    break;
+
+                case DayOfWeek.Wednesday:
+                    scheduledDay = ScheduledDay.Wednesday;
+                    break;
+
+            }
+
+            return scheduledDay;
+        }
+
+        public static IList<AnimeSubEntry> GetCurrentScheduleDay(this Schedule schedule)
+        {
+            if (schedule.Sunday?.Count > 0)
+                return schedule.Sunday.ToList();
+
+            else if (schedule.Monday?.Count > 0)
+                return schedule.Monday.ToList();
+
+            else if (schedule.Tuesday?.Count > 0)
+                return schedule.Tuesday.ToList();
+
+            else if (schedule.Wednesday?.Count > 0)
+                return schedule.Wednesday.ToList();
+
+            else if (schedule.Thursday?.Count > 0)
+                return schedule.Thursday.ToList();
+
+            else if (schedule.Friday?.Count > 0)
+                return schedule.Friday.ToList();
+
+            else if (schedule.Saturday?.Count > 0)
+                return schedule.Saturday.ToList();
+
+            return new List<AnimeSubEntry>();
+
+        }
+
         /// <summary>
         /// Retorna a data do próximo dia de semana que o anime irá passar, se não houver data, retorna null
         /// </summary>

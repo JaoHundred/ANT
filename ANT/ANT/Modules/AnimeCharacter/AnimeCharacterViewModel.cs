@@ -23,8 +23,7 @@ namespace ANT.Modules
 
             FavoriteCommand = new magno.Command(OnFavorite);
             OpenLinkCommand = new magno.AsyncCommand<string>(OpenLink);
-            SelectedAnimeCommand = new magno.AsyncCommand<MALImageSubItem>(OnSelectedAnime);
-            SelectedVoiceActorCommand = new magno.AsyncCommand(OnSelectedVoiceActor);
+            SelectedItemCommand = new magno.AsyncCommand(OnSelectedItem);
         }
 
         public Task InitializeTask { get; }
@@ -86,11 +85,11 @@ namespace ANT.Modules
             set { SetProperty(ref _characterContext, value); }
         }
 
-        private VoiceActorEntry _selectedVoiceActor;
-        public VoiceActorEntry SelectedVoiceActor
+        private object _selectedItem;
+        public object SelectedItem
         {
-            get { return _selectedVoiceActor; }
-            set { SetProperty(ref _selectedVoiceActor, value); }
+            get { return _selectedItem; }
+            set { SetProperty(ref _selectedItem, value); }
         }
         #endregion
 
@@ -114,27 +113,21 @@ namespace ANT.Modules
             }
         }
 
-        public ICommand SelectedAnimeCommand { get; private set; }
-        private async Task OnSelectedAnime(MALImageSubItem item)
+        public ICommand SelectedItemCommand { get; set; }
+        private async Task OnSelectedItem()
         {
-            if (IsNotBusy)
+            if (IsNotBusy && SelectedItem != null)
             {
-                IsBusy = true;
-                NavigationManager.RemoveAllPagesExceptRootAndHierarquicalRoot();
-                await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(item.MalId);
-                IsBusy = false;
-            }
-        }
 
-        public ICommand SelectedVoiceActorCommand { get; set; }
-        private async Task OnSelectedVoiceActor()
-        {
-            if (IsNotBusy && SelectedVoiceActor != null)
-            {
                 IsBusy = true;
-                await NavigationManager.NavigateShellAsync<VoiceActorViewModel>(SelectedVoiceActor.MalId);
+                if (SelectedItem is VoiceActorEntry voiceActorEntry)
+                    await NavigationManager.NavigateShellAsync<VoiceActorViewModel>(voiceActorEntry.MalId);
+
+                else if(SelectedItem is MALImageSubItem mALImageSubItem)
+                    await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(mALImageSubItem.MalId);
+
                 IsBusy = false;
-                SelectedVoiceActor = null;
+                SelectedItem = null;
             }
         }
 
