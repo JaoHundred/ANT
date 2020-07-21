@@ -43,6 +43,8 @@ namespace ANT.Modules
 
             try
             {
+                IsLoadingTodayAnimes = true;
+
                 await App.DelayRequest(2);
                 var loadRecommendationsTask = Task.Run(async () =>
                 {
@@ -69,7 +71,7 @@ namespace ANT.Modules
                     Recommendations recommendations = await App.Jikan.GetAnimeRecommendations(animeAsRecommend.Anime.MalId);
 
                     var recommendationAnimes = recommendations.RecommendationCollection
-                    .Where(recommendation => !animeCollection.Exists(p => recommendation.MalId == p.Anime.MalId))
+                    .Where(recommendation => !animeCollection.Exists(favoritedAnime => recommendation.MalId == favoritedAnime.Anime.MalId))
                     .ToList();
 
                     if (recommendationAnimes.Count == 0)
@@ -106,6 +108,7 @@ namespace ANT.Modules
                 }, _cancellationTokenSource.Token);
 
                 await Task.WhenAny(loadRecommendationsTask, loadTodayAnimesTask);
+                IsLoadingTodayAnimes = false;
             }
             catch (JikanDotNet.Exceptions.JikanRequestException ex)
             {
@@ -118,6 +121,10 @@ namespace ANT.Modules
             catch (Exception ex)
             {
                 DependencyService.Get<IToast>().MakeToastMessageLong(ex.Message);
+            }
+            finally
+            {
+                IsLoadingTodayAnimes = false;
             }
 
         }
@@ -142,6 +149,13 @@ namespace ANT.Modules
         {
             get { return _selectedItem; }
             set { SetProperty(ref _selectedItem, value); }
+        }
+
+        private bool _isLoadingTodayAnimes;
+        public bool IsLoadingTodayAnimes
+        {
+            get { return _isLoadingTodayAnimes; }
+            set { SetProperty(ref _isLoadingTodayAnimes, value); }
         }
 
         private bool _hasRecommendations;

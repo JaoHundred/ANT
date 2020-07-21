@@ -56,6 +56,12 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
+            <Grid Grid.Row="1" Style="{StaticResource GridFullPageForActivityIndicatorStyle}"
+                  IsVisible="{Binding IsLoadingTodayAnimes}">
+                <ActivityIndicator IsRunning="{Binding IsLoadingTodayAnimes}"
+                                   IsVisible="{Binding IsLoadingTodayAnimes}"/>
+            </Grid>
+
             <Label Grid.Row="2"  Text="{res:Translate Recommendations}" Style="{StaticResource ContentTitleLabelStyle}"
                         Margin="5,5,0,0" FontAttributes="Bold" IsVisible="{Binding HasRecommendations}" />
             <CollectionView Grid.Row="3" ItemsSource="{Binding Recommendations}" SelectionMode="Single" Margin="10,5,5,5"
