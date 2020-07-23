@@ -38,13 +38,15 @@ namespace ANT
         }
 
         public static LiteDatabase liteDB;
+        public static LiteDatabase liteErrorLogDB;
         public static IJikan Jikan { get; private set; }
         protected async override void OnStart()
         {
             if (liteDB == null)
-            {
                 StartLiteDB();
-            }
+
+            if (liteErrorLogDB == null)
+                StartErrorLogLiteDB();
 
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
@@ -91,7 +93,17 @@ namespace ANT
 
             string fullPath = System.IO.Path.Combine(newLocation, "data");
             liteDB = new LiteDatabase($"Filename={fullPath}");
-            //await CultureManager.LoadCultureAsync();
+        }
+
+        /// <summary>
+        /// Método para iniciar o liteErrorLogDB
+        /// </summary>
+        public static void StartErrorLogLiteDB()
+        {
+            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
+
+            string fullPath = System.IO.Path.Combine(newLocation, "errorLog");
+            liteErrorLogDB = new LiteDatabase($"Filename={fullPath}");
         }
 
         private async void Current_NotificationTapped(NotificationTappedEventArgs e)
