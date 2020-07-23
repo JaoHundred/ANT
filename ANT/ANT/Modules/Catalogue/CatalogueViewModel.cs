@@ -20,6 +20,9 @@ using Android.App;
 using System.Resources;
 using System.Globalization;
 using ANT.UTIL.Equality;
+using JikanDotNet.Exceptions;
+using Java.Sql;
+using ANT.Converter;
 
 namespace ANT.Modules
 {
@@ -212,31 +215,67 @@ namespace ANT.Modules
         #region métodos da VM
         private async Task LoadSeasonCatalogueAsync()
         {
-            IsSeasonCatalogue = true;
-            //remove EndDate, essa informação não existe nos animes da temporada
-            FilterData.Orders.RemoveAt(FilterData.Orders.Count - 1);
+            try
+            {
+                IsSeasonCatalogue = true;
+                //remove EndDate, essa informação não existe nos animes da temporada
+                FilterData.Orders.RemoveAt(FilterData.Orders.Count - 1);
 
-            await App.DelayRequest();
-            var results = await App.Jikan.GetSeason();
+                await App.DelayRequest();
+                var results = await App.Jikan.GetSeason();
 
-            results.RequestCached = true;
+                results.RequestCached = true;
 
-            var favoritedEntries = await results.SeasonEntries.ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
-            _originalCollection = favoritedEntries.OrderByDescending(p => p.Anime.Score).ToList();
-            Animes.AddRange(_originalCollection);
+                var favoritedEntries = await results.SeasonEntries.ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
+                _originalCollection = favoritedEntries.OrderByDescending(p => p.Anime.Score).ToList();
+                Animes.AddRange(_originalCollection);
 
-            await App.DelayRequest();
-            var seasonArchive = await App.Jikan.GetSeasonArchive();
-            int minYear = seasonArchive.Archives.Min(p => p.Year);
-            int maxYear = seasonArchive.Archives.Max(p => p.Year);
+                await App.DelayRequest();
+                var seasonArchive = await App.Jikan.GetSeasonArchive();
+                int minYear = seasonArchive.Archives.Min(p => p.Year);
+                int maxYear = seasonArchive.Archives.Max(p => p.Year);
 
-            Lazy<ResourceManager> ResMgr = new Lazy<ResourceManager>(
-                    () => new ResourceManager(typeof(Lang.Lang)));
+                Lazy<ResourceManager> ResMgr = new Lazy<ResourceManager>(
+                        () => new ResourceManager(typeof(Lang.Lang)));
 
-            string selectedSeason = ResMgr.Value.GetString(results.SeasonName);
+                string selectedSeason = ResMgr.Value.GetString(results.SeasonName);
 
-            Seasons name = (JikanDotNet.Seasons)Enum.Parse(typeof(JikanDotNet.Seasons), results.SeasonName);
-            SeasonData = new SeasonData(results.SeasonYear, selectedSeason, minYear, maxYear);
+                Seasons name = (JikanDotNet.Seasons)Enum.Parse(typeof(JikanDotNet.Seasons), results.SeasonName);
+                SeasonData = new SeasonData(results.SeasonYear, selectedSeason, minYear, maxYear);
+            }
+            catch(JikanRequestException ex)
+            {
+                Console.WriteLine($"problema encontrado em: {ex.ResponseCode.ToString()}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
+
+                var error = new ErrorLog()
+                {
+                    AdditionalInfo = ex.ResponseCode.ToString(),
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+            }
+            catch(OperationCanceledException ex)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"problema encontrado em: {ex.Message}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
+
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+            }
         }
 
         private async Task<bool> LoadGlobalCatalogueAsync()
@@ -279,9 +318,37 @@ namespace ANT.Modules
                     return false;
                 }
             }
+            catch(JikanRequestException ex)
+            {
+                Console.WriteLine($"problemas em: {ex.ResponseCode}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
+
+                var error = new ErrorLog()
+                {
+                    AdditionalInfo = ex.ResponseCode.ToString(),
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+
+            }
+            catch(OperationCanceledException ex)
+            { }
             catch (Exception ex)
             {
+                Console.WriteLine($"problemas em: {ex.Message}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
 
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
             }
 
             return true;
@@ -293,25 +360,62 @@ namespace ANT.Modules
 
             //TODO: entradas por aqui de gêneros como super power são convertidas para supernatural(o valor não muda, mas o MAL me manda os gêneros errados pra esse tipo)
             //ficar de olho e ver se é apenas mais um problema no MAL
-            AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount++);
-
-            if (animeGenre != null)
+            bool hasFinishedLoading = false;
+            try
             {
-                animeGenre.RequestCached = true;
+                AnimeGenre animeGenre = await App.Jikan.GetAnimeGenre(_currentGenre.Value, _pageCount++);
 
-                IList<FavoritedAnime> favoritedSubEntries = await animeGenre.Anime
-                    .ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
+                if (animeGenre != null)
+                {
+                    animeGenre.RequestCached = true;
 
-                _originalCollection.AddRange(favoritedSubEntries);
-                Animes.AddRange(favoritedSubEntries);
+                    IList<FavoritedAnime> favoritedSubEntries = await animeGenre.Anime
+                        .ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
 
-                return false;
+                    _originalCollection.AddRange(favoritedSubEntries);
+                    Animes.AddRange(favoritedSubEntries);
+
+                    hasFinishedLoading = false;
+                }
+                else
+                {
+                    RemainingAnimeCount = -1;
+                    hasFinishedLoading = true;
+                }
             }
-            else
+            catch(JikanRequestException ex)
             {
-                RemainingAnimeCount = -1;
-                return true;
+                Console.WriteLine($"problema encontrado em: {ex.ResponseCode}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
+
+                var error = new ErrorLog()
+                {
+                    AdditionalInfo = ex.ResponseCode.ToString(),
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
             }
+            catch(OperationCanceledException ex)
+            { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"problema encontrado em: {ex.Message}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
+
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+            }
+
+            return hasFinishedLoading;
         }
 
         /// <summary>
@@ -469,75 +573,109 @@ namespace ANT.Modules
         public ICommand SearchCommand { get; private set; }
         private async Task OnSearch()
         {
-            if (SearchQuery?.Length > 0 && _catalogueMode == CatalogueModeEnum.Season)
-                RemainingAnimeCount = -1;
-
-            else if (SearchQuery?.Length > 0 && _catalogueMode == CatalogueModeEnum.Global)
-                RemainingAnimeCount = 0;
-
-            else if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Season)
-                RemainingAnimeCount = -1;
-
-            else if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Global)
-                RemainingAnimeCount = 0;
-
-            else if (SearchQuery?.Length == 0 && _currentGenre != null)
-                RemainingAnimeCount = 0;
-
-            if (string.IsNullOrWhiteSpace(SearchQuery) && _catalogueMode == CatalogueModeEnum.Season)
+            try
             {
-                IsSearchVisible = false;
-                SearchQuery = string.Empty;
-            }
+                if (SearchQuery?.Length > 0 && _catalogueMode == CatalogueModeEnum.Season)
+                    RemainingAnimeCount = -1;
 
-            Loading = true;
-            var resultListTask = Task.Run(async () =>
-           {
-               IList<FavoritedAnime> result = new List<FavoritedAnime>();
+                else if (SearchQuery?.Length > 0 && _catalogueMode == CatalogueModeEnum.Global)
+                    RemainingAnimeCount = 0;
 
-               switch (_catalogueMode)
+                else if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Season)
+                    RemainingAnimeCount = -1;
+
+                else if (SearchQuery?.Length == 0 && _catalogueMode == CatalogueModeEnum.Global)
+                    RemainingAnimeCount = 0;
+
+                else if (SearchQuery?.Length == 0 && _currentGenre != null)
+                    RemainingAnimeCount = 0;
+
+                if (string.IsNullOrWhiteSpace(SearchQuery) && _catalogueMode == CatalogueModeEnum.Season)
+                {
+                    IsSearchVisible = false;
+                    SearchQuery = string.Empty;
+                }
+
+                Loading = true;
+                var resultListTask = Task.Run(async () =>
                {
-                   case CatalogueModeEnum.Season:
+                   IList<FavoritedAnime> result = new List<FavoritedAnime>();
 
-                       if (_animesWithSpecifiedFilters != null)
-                           result = _animesWithSpecifiedFilters.Where(anime => anime.Anime.Title.ToLowerInvariant()
-                           .Contains(SearchQuery.ToLowerInvariant())).ToList();
+                   switch (_catalogueMode)
+                   {
+                       case CatalogueModeEnum.Season:
 
-                       else
-                           result = _originalCollection.Where(anime => anime.Anime.Title.ToLowerInvariant()
-                           .Contains(SearchQuery.ToLowerInvariant())).ToList();
+                           if (_animesWithSpecifiedFilters != null)
+                               result = _animesWithSpecifiedFilters.Where(anime => anime.Anime.Title.ToLowerInvariant()
+                               .Contains(SearchQuery.ToLowerInvariant())).ToList();
 
-                       break;
+                           else
+                               result = _originalCollection.Where(anime => anime.Anime.Title.ToLowerInvariant()
+                               .Contains(SearchQuery.ToLowerInvariant())).ToList();
 
-                   case CatalogueModeEnum.Global:
-                       await App.DelayRequest();
+                           break;
 
-                       _pageCount = 1;
-                       AnimeSearchResult animes = null;
+                       case CatalogueModeEnum.Global:
+                           await App.DelayRequest();
 
-                       if (string.IsNullOrWhiteSpace(SearchQuery))
-                       {
-                           ResetSearchConfig(_settingsPreferences.ShowNSFW, AnimeSearchSortable.Score, SortDirection.Descending);
-                           animes = await App.Jikan.SearchAnime(_animeSearchConfig, _pageCount++);
-                       }
-                       else
-                       {
-                           ResetSearchConfig(_settingsPreferences.ShowNSFW, AnimeSearchSortable.Title, SortDirection.Descending);
+                           _pageCount = 1;
+                           AnimeSearchResult animes = null;
 
-                           animes = await App.Jikan.SearchAnime(SearchQuery, _pageCount++, _animeSearchConfig);
-                       }
-                       result = await animes.Results.ConvertAnimeSearchEntryToAnimeSubEntry()
-                       .ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
-                       Console.WriteLine("chamou pesquisa global {0}", DateTime.Now.TimeOfDay.ToString());
+                           if (string.IsNullOrWhiteSpace(SearchQuery))
+                           {
+                               ResetSearchConfig(_settingsPreferences.ShowNSFW, AnimeSearchSortable.Score, SortDirection.Descending);
+                               animes = await App.Jikan.SearchAnime(_animeSearchConfig, _pageCount++);
+                           }
+                           else
+                           {
+                               ResetSearchConfig(_settingsPreferences.ShowNSFW, AnimeSearchSortable.Title, SortDirection.Descending);
 
-                       break;
-               }
+                               animes = await App.Jikan.SearchAnime(SearchQuery, _pageCount++, _animeSearchConfig);
+                           }
+                           result = await animes.Results.ConvertAnimeSearchEntryToAnimeSubEntry()
+                           .ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
+                           Console.WriteLine("chamou pesquisa global {0}", DateTime.Now.TimeOfDay.ToString());
 
-               return result;
-           });
+                           break;
+                   }
 
-            Animes.ReplaceRange(await resultListTask);
-            Loading = false;
+                   return result;
+               });
+
+                Animes.ReplaceRange(await resultListTask);
+                Loading = false;
+            }
+            catch(JikanRequestException ex)
+            {
+                Console.WriteLine($"problema em: {ex.ResponseCode}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
+
+                var error = new ErrorLog()
+                {
+                    AdditionalInfo = ex.ResponseCode.ToString(),
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+            }
+            catch(OperationCanceledException ex)
+            { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"problema em: {ex.Message}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
+
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+            }
         }
 
         public ICommand OpenSearchCommand { get; private set; }
@@ -696,36 +834,70 @@ namespace ANT.Modules
         public ICommand ChangeSeasonCommand { get; private set; }
         private async Task OnChangeSeason()
         {
-            Loading = true;
-            ClearTextQuery();
-
-            await App.DelayRequest();
-
-            Lazy<ResourceManager> ResMgr = new Lazy<ResourceManager>(
-                    () => new ResourceManager(typeof(Lang.Lang)));
-
-            string selectedSeasonEnUs = string.Empty;
-            foreach (var seasonKey in SeasonData.SeasonKeys)
+            try
             {
-                string seasonName = ResMgr.Value.GetString(seasonKey.ToString());
+                Loading = true;
+                ClearTextQuery();
 
-                if (SeasonData.SelectedSeason == seasonName)
+                await App.DelayRequest();
+
+                Lazy<ResourceManager> ResMgr = new Lazy<ResourceManager>(
+                        () => new ResourceManager(typeof(Lang.Lang)));
+
+                string selectedSeasonEnUs = string.Empty;
+                foreach (var seasonKey in SeasonData.SeasonKeys)
                 {
-                    selectedSeasonEnUs = seasonKey.ToString();
-                    break;
+                    string seasonName = ResMgr.Value.GetString(seasonKey.ToString());
+
+                    if (SeasonData.SelectedSeason == seasonName)
+                    {
+                        selectedSeasonEnUs = seasonKey.ToString();
+                        break;
+                    }
                 }
+
+                var selectedSeasonEnum = (JikanDotNet.Seasons)Enum.Parse(typeof(JikanDotNet.Seasons), selectedSeasonEnUs);
+
+                var result = await App.Jikan.GetSeason(SeasonData.SelectedYear.Value, selectedSeasonEnum);
+                result.RequestCached = true;
+
+                var favoritedEntries = await result.SeasonEntries.ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
+                _originalCollection = favoritedEntries.OrderByDescending(p => p.Anime.Score).ToList();
+                Animes.ReplaceRange(_originalCollection);
+
+                Loading = false;
             }
+            catch(JikanRequestException ex)
+            {
+                Console.WriteLine($"problema encontrado em: {ex.ResponseCode}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
 
-            var selectedSeasonEnum = (JikanDotNet.Seasons)Enum.Parse(typeof(JikanDotNet.Seasons), selectedSeasonEnUs);
+                var error = new ErrorLog()
+                {
+                    AdditionalInfo = ex.ResponseCode.ToString(),
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
 
-            var result = await App.Jikan.GetSeason(SeasonData.SelectedYear.Value, selectedSeasonEnum);
-            result.RequestCached = true;
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+            }
+            catch(OperationCanceledException ex)
+            { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"problema encontrado em: {ex.Message}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
 
-            var favoritedEntries = await result.SeasonEntries.ConvertCatalogueAnimesToFavoritedAsync(_settingsPreferences.ShowNSFW);
-            _originalCollection = favoritedEntries.OrderByDescending(p => p.Anime.Score).ToList();
-            Animes.ReplaceRange(_originalCollection);
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
 
-            Loading = false;
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+            }
         }
 
         #endregion

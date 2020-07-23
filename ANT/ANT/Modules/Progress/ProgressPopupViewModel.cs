@@ -13,6 +13,7 @@ using ANT.Core;
 using ANT.UTIL;
 using Xamarin.Forms;
 using System.Linq;
+using JikanDotNet.Exceptions;
 
 namespace ANT.Modules
 {
@@ -90,45 +91,79 @@ namespace ANT.Modules
 
         private async Task FavoriteAnimesFromCatalogue()
         {
-            var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
-            var collection = _collection as IList<FavoritedAnime>;
-
-            for (int i = 0; i < collection.Count; i++)
+            try
             {
-                double result = (double)i / collection.Count;
-                MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
+                var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
+                var collection = _collection as IList<FavoritedAnime>;
 
-                if (favoriteCollection.FindAll().Any(p => p.Anime.MalId == collection[i].Anime.MalId))
-                    continue;
-
-                await App.DelayRequest(4);
-                Anime anime = await App.Jikan.GetAnime(collection[i].Anime.MalId);
-                anime.RequestCached = true;
-
-                var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
-                favoritedAnime.IsFavorited = true;
-                favoritedAnime.LastUpdateDate = DateTime.Today;
-                favoritedAnime.NextStreamDate = await favoritedAnime.NextEpisodeDateAsync();
-
-                int uniqueId = 0;
-
-                if (favoriteCollection.Count() > 0)
+                for (int i = 0; i < collection.Count; i++)
                 {
-                    uniqueId = favoriteCollection.Max(p => p.UniqueNotificationID);
+                    double result = (double)i / collection.Count;
+                    MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
 
-                    if (uniqueId == int.MaxValue)
-                        uniqueId = 0;
-                    else if (uniqueId < int.MaxValue)
-                        uniqueId += 1;
+                    if (favoriteCollection.FindAll().Any(p => p.Anime.MalId == collection[i].Anime.MalId))
+                        continue;
+
+                    await App.DelayRequest(4);
+                    Anime anime = await App.Jikan.GetAnime(collection[i].Anime.MalId);
+                    anime.RequestCached = true;
+
+                    var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
+                    favoritedAnime.IsFavorited = true;
+                    favoritedAnime.LastUpdateDate = DateTime.Today;
+                    favoritedAnime.NextStreamDate = await favoritedAnime.NextEpisodeDateAsync();
+
+                    int uniqueId = 0;
+
+                    if (favoriteCollection.Count() > 0)
+                    {
+                        uniqueId = favoriteCollection.Max(p => p.UniqueNotificationID);
+
+                        if (uniqueId == int.MaxValue)
+                            uniqueId = 0;
+                        else if (uniqueId < int.MaxValue)
+                            uniqueId += 1;
+                    }
+
+                    favoritedAnime.UniqueNotificationID = uniqueId;
+
+                    favoritedAnime.CanGenerateNotifications = favoritedAnime.Anime.Airing && favoritedAnime.NextStreamDate != null;
+
+                    collection[i].IsFavorited = true;
+
+                    favoriteCollection.Upsert(favoritedAnime.Anime.MalId, favoritedAnime);
                 }
+            }
+            catch(JikanRequestException ex)
+            {
+                Console.WriteLine($"problema encontrado em : {ex.ResponseCode}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
 
-                favoritedAnime.UniqueNotificationID = uniqueId;
+                var error = new ErrorLog()
+                {
+                    AdditionalInfo = ex.ResponseCode.ToString(),
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
 
-                favoritedAnime.CanGenerateNotifications = favoritedAnime.Anime.Airing && favoritedAnime.NextStreamDate != null;
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+            }
+            catch(OperationCanceledException ex)
+            { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"problema encontrado em : {ex.Message}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
 
-                collection[i].IsFavorited = true;
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
 
-                favoriteCollection.Upsert(favoritedAnime.Anime.MalId, favoritedAnime);
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
             }
         }
 
@@ -138,39 +173,74 @@ namespace ANT.Modules
             //foram feitas trocas de aplicativo enquanto essa função continuava funcionando
             //ao terminar não foi completado todos as atualizações da lista, mas o processamento não parou
             //depois que terminou, ao clicar mais vezes em atualizar o restante que não tinha sido atualizado foi atualizando
-            var db = App.liteDB.GetCollection<FavoritedAnime>();
-            double total = animes.Count;
-
-            for (int i = 0; i < animes.Count; i++)
+            try
             {
-                var favoriteAnime = animes[i];
+                var db = App.liteDB.GetCollection<FavoritedAnime>();
+                double total = animes.Count;
 
-                if ((favoriteAnime.LastUpdateDate == null)
-                    || (favoriteAnime.LastUpdateDate != null && favoriteAnime.LastUpdateDate != DateTime.Today))
+                for (int i = 0; i < animes.Count; i++)
                 {
-                    await App.DelayRequest(4);
+                    var favoriteAnime = animes[i];
 
-                    Anime anime = await App.Jikan.GetAnime(favoriteAnime.Anime.MalId);
-                    anime.RequestCached = true;
+                    if ((favoriteAnime.LastUpdateDate == null)
+                        || (favoriteAnime.LastUpdateDate != null && favoriteAnime.LastUpdateDate != DateTime.Today))
+                    {
+                        await App.DelayRequest(4);
 
-                    int lastEpisode = favoriteAnime.LastEpisodeSeen;
-                    bool hasNotification = favoriteAnime.CanGenerateNotifications;
+                        Anime anime = await App.Jikan.GetAnime(favoriteAnime.Anime.MalId);
+                        anime.RequestCached = true;
 
-                    favoriteAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
-                    favoriteAnime.LastUpdateDate = DateTime.Today;
-                    favoriteAnime.IsFavorited = true;
-                    favoriteAnime.LastEpisodeSeen = lastEpisode;
-                    favoriteAnime.NextStreamDate = await favoriteAnime.NextEpisodeDateAsync();
+                        int lastEpisode = favoriteAnime.LastEpisodeSeen;
+                        bool hasNotification = favoriteAnime.CanGenerateNotifications;
 
-                    //se está exibindo e possui data de estreia
-                    favoriteAnime.CanGenerateNotifications =
-                        favoriteAnime.Anime.Airing && favoriteAnime.NextStreamDate != null ? hasNotification : false;
+                        favoriteAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
+                        favoriteAnime.LastUpdateDate = DateTime.Today;
+                        favoriteAnime.IsFavorited = true;
+                        favoriteAnime.LastEpisodeSeen = lastEpisode;
+                        favoriteAnime.NextStreamDate = await favoriteAnime.NextEpisodeDateAsync();
 
-                    db.Update(favoriteAnime.Anime.MalId, favoriteAnime);
+                        //se está exibindo e possui data de estreia
+                        favoriteAnime.CanGenerateNotifications =
+                            favoriteAnime.Anime.Airing && favoriteAnime.NextStreamDate != null ? hasNotification : false;
 
-                    double result = (double)i / total;
-                    MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
+                        db.Update(favoriteAnime.Anime.MalId, favoriteAnime);
+
+                        double result = (double)i / total;
+                        MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
+                    }
                 }
+            }
+            catch(JikanRequestException ex)
+            {
+                Console.WriteLine($"problema encontrado em : {ex.ResponseCode}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
+
+                var error = new ErrorLog()
+                {
+                    AdditionalInfo = ex.ResponseCode.ToString(),
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+            }
+            catch(OperationCanceledException ex)
+            { }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"problema encontrado em : {ex.Message}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
+
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
             }
         }
 

@@ -18,5 +18,7 @@ namespace ANT.Model
         public Type ExceptionType { get; set; }
 
         public DateTime ExceptionDate { get; set; }
+
+        public string AdditionalInfo { get; set; }
     }
 }

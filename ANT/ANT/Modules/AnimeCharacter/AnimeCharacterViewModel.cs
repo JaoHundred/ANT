@@ -12,6 +12,7 @@ using Xamarin.Essentials;
 using ANT.Core;
 using ANT.Model;
 using Xamarin.Forms;
+using JikanDotNet.Exceptions;
 
 namespace ANT.Modules
 {
@@ -52,9 +53,41 @@ namespace ANT.Modules
 
                 CharacterContext = animeCharacter;
             }
+            catch (JikanRequestException ex)
+            {
+                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
+
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                    AdditionalInfo = ex.ResponseCode.ToString(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+
+
+            }
+            catch (OperationCanceledException ex)
+            {
+                Console.WriteLine($"Tasks canceladas {Environment.NewLine} " +
+                    $"{ex.Message}");
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
+
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
+
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
             }
             finally
             {
@@ -123,7 +156,7 @@ namespace ANT.Modules
                 if (SelectedItem is VoiceActorEntry voiceActorEntry)
                     await NavigationManager.NavigateShellAsync<VoiceActorViewModel>(voiceActorEntry.MalId);
 
-                else if(SelectedItem is MALImageSubItem mALImageSubItem)
+                else if (SelectedItem is MALImageSubItem mALImageSubItem)
                     await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(mALImageSubItem.MalId);
 
                 IsBusy = false;

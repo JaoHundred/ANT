@@ -73,9 +73,9 @@ namespace ANT.Modules
                 AnimeGenres = _favoritedAnime.Anime.Genres.ToList();
 
                 IsLoadingNews = true;
+                await App.DelayRequest(2);
                 var loadAnimeNewsTask = Task.Run(async () =>
                 {
-                    await App.DelayRequest(2);
 
                     if (_cancellationToken.IsCancellationRequested)
                         _cancellationToken.Token.ThrowIfCancellationRequested();
@@ -91,9 +91,9 @@ namespace ANT.Modules
                 IsLoading = false;
 
                 IsLoadingCharacters = true;
+                await App.DelayRequest(2);
                 var loadCharactersTask = Task.Run(async () =>
                 {
-                    await App.DelayRequest(2);
 
                     if (_cancellationToken.IsCancellationRequested)
                         _cancellationToken.Token.ThrowIfCancellationRequested();
@@ -191,6 +191,18 @@ namespace ANT.Modules
             catch (JikanRequestException ex)
             {
                 Console.WriteLine($"Problema encontrado em :{ex.Message}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
+
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    AdditionalInfo = ex.ResponseCode.ToString(),
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+
                 _cancellationToken.Cancel();
             }
             catch (OperationCanceledException ex)
@@ -202,6 +214,15 @@ namespace ANT.Modules
             {
                 Console.WriteLine($"Problema encontrado em :{ex.Message}");
                 DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
+
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
                 _cancellationToken.Cancel();
             }
             finally

@@ -133,24 +133,31 @@ namespace ANT.UTIL
         /// <returns></returns>
         public static async Task<IList<AnimeEpisode>> GetAllEpisodesAsync(this Anime anime, CancellationTokenSource cancellationToken = null)
         {
-            await App.DelayRequest(2);
-            AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(anime.MalId);
-
-            var episodeList = new List<AnimeEpisode>();
-
-            for (int j = 0; j < episodes.EpisodesLastPage; j++)
+            try
             {
-                await App.DelayRequest(4);
+                await App.DelayRequest(2);
+                AnimeEpisodes episodes = await App.Jikan.GetAnimeEpisodes(anime.MalId);
 
-                if (cancellationToken != null && cancellationToken.IsCancellationRequested)
-                    cancellationToken.Token.ThrowIfCancellationRequested();
+                var episodeList = new List<AnimeEpisode>();
 
-                var epiList = await App.Jikan.GetAnimeEpisodes(anime.MalId, j + 1);
+                for (int j = 0; j < episodes.EpisodesLastPage; j++)
+                {
+                    await App.DelayRequest(4);
 
-                episodeList.AddRange(epiList.EpisodeCollection);
+                    if (cancellationToken != null && cancellationToken.IsCancellationRequested)
+                        cancellationToken.Token.ThrowIfCancellationRequested();
+
+                    var epiList = await App.Jikan.GetAnimeEpisodes(anime.MalId, j + 1);
+
+                    episodeList.AddRange(epiList.EpisodeCollection);
+                }
+
+                return episodeList;
             }
-
-            return episodeList;
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async static Task<IList<FavoritedAnime>> ConvertCatalogueAnimesToFavoritedAsync(this ICollection<AnimeSubEntry> animeSubEntries, bool showNSFW)

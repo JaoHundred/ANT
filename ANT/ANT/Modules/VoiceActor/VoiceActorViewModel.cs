@@ -12,6 +12,7 @@ using ANT.Core;
 using ANT.Model;
 using System.Linq;
 using Xamarin.Forms;
+using JikanDotNet.Exceptions;
 
 namespace ANT.Modules
 {
@@ -52,9 +53,36 @@ namespace ANT.Modules
 
                 PersonContext = favoritedVoiceActor;
             }
+            catch(JikanRequestException ex)
+            {
+                Console.WriteLine($"problema encontrado em : {ex.ResponseCode}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
+
+                var error = new ErrorLog()
+                {
+                    AdditionalInfo = ex.ResponseCode.ToString(),
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+            }
+            catch(OperationCanceledException ex)
+            { }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine($"problema encontrado em : {ex.Message}");
+                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
+
+                var error = new ErrorLog()
+                {
+                    Exception = ex,
+                    ExceptionDate = DateTime.Now,
+                    ExceptionType = ex.GetType(),
+                };
+
+                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
             }
             finally
             {
