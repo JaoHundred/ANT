@@ -103,7 +103,11 @@ namespace ANT
             string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
 
             string fullPath = System.IO.Path.Combine(newLocation, "errorLog");
-            liteErrorLogDB = new LiteDatabase($"Filename={fullPath}");
+
+            BsonMapper bsonMapper = BsonMapper.Global;
+            bsonMapper.Entity<ErrorLog>().Id(errorLog => errorLog.Id);
+
+            liteErrorLogDB = new LiteDatabase($"Filename={fullPath}", bsonMapper);
         }
 
         private async void Current_NotificationTapped(NotificationTappedEventArgs e)

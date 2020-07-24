@@ -190,18 +190,7 @@ namespace ANT.Modules
             }
             catch (JikanRequestException ex)
             {
-                Console.WriteLine($"Problema encontrado em :{ex.Message}");
-                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
-
-                var error = new ErrorLog()
-                {
-                    Exception = ex,
-                    AdditionalInfo = ex.ResponseCode.ToString(),
-                    ExceptionDate = DateTime.Now,
-                    ExceptionType = ex.GetType(),
-                };
-
-                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+                ex.SaveExceptionData();
 
                 _cancellationToken.Cancel();
             }
@@ -212,17 +201,7 @@ namespace ANT.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Problema encontrado em :{ex.Message}");
-                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
-
-                var error = new ErrorLog()
-                {
-                    Exception = ex,
-                    ExceptionDate = DateTime.Now,
-                    ExceptionType = ex.GetType(),
-                };
-
-                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+                ex.SaveExceptionData();
                 _cancellationToken.Cancel();
             }
             finally

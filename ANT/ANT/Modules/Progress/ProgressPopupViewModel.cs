@@ -136,34 +136,13 @@ namespace ANT.Modules
             }
             catch(JikanRequestException ex)
             {
-                Console.WriteLine($"problema encontrado em : {ex.ResponseCode}");
-                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
-
-                var error = new ErrorLog()
-                {
-                    AdditionalInfo = ex.ResponseCode.ToString(),
-                    Exception = ex,
-                    ExceptionDate = DateTime.Now,
-                    ExceptionType = ex.GetType(),
-                };
-
-                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+                ex.SaveExceptionData();
             }
             catch(OperationCanceledException ex)
             { }
             catch (Exception ex)
             {
-                Console.WriteLine($"problema encontrado em : {ex.Message}");
-                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
-
-                var error = new ErrorLog()
-                {
-                    Exception = ex,
-                    ExceptionDate = DateTime.Now,
-                    ExceptionType = ex.GetType(),
-                };
-
-                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+                ex.SaveExceptionData();
             }
         }
 
@@ -212,35 +191,13 @@ namespace ANT.Modules
             }
             catch(JikanRequestException ex)
             {
-                Console.WriteLine($"problema encontrado em : {ex.ResponseCode}");
-                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
-
-                var error = new ErrorLog()
-                {
-                    AdditionalInfo = ex.ResponseCode.ToString(),
-                    Exception = ex,
-                    ExceptionDate = DateTime.Now,
-                    ExceptionType = ex.GetType(),
-                };
-
-                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+                ex.SaveExceptionData();
             }
             catch(OperationCanceledException ex)
             { }
             catch (Exception ex)
             {
-
-                Console.WriteLine($"problema encontrado em : {ex.Message}");
-                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
-
-                var error = new ErrorLog()
-                {
-                    Exception = ex,
-                    ExceptionDate = DateTime.Now,
-                    ExceptionType = ex.GetType(),
-                };
-
-                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+                ex.SaveExceptionData();
             }
         }
 

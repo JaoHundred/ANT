@@ -10,12 +10,13 @@ namespace ANT.Model
         public ErrorLog()
         {}
 
-        [BsonId(true)]
         public int Id { get; set; }
 
-        public System.Exception Exception { get; set; }
+        public  string StackTrace { get; set; }
+        public string Source { get; set; }
+        public string Message { get; set; }
 
-        public Type ExceptionType { get; set; }
+        public string ExceptionTypeName { get; set; }
 
         public DateTime ExceptionDate { get; set; }
 

@@ -13,6 +13,7 @@ using ANT.Core;
 using ANT.Model;
 using Xamarin.Forms;
 using JikanDotNet.Exceptions;
+using ANT.UTIL;
 
 namespace ANT.Modules
 {
@@ -55,19 +56,7 @@ namespace ANT.Modules
             }
             catch (JikanRequestException ex)
             {
-                DependencyService.Get<IToast>().MakeToastMessageLong(ex.ResponseCode.ToString());
-
-                var error = new ErrorLog()
-                {
-                    Exception = ex,
-                    ExceptionDate = DateTime.Now,
-                    ExceptionType = ex.GetType(),
-                    AdditionalInfo = ex.ResponseCode.ToString(),
-                };
-
-                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
-
-
+                ex.SaveExceptionData();
             }
             catch (OperationCanceledException ex)
             {
@@ -76,18 +65,7 @@ namespace ANT.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
-
-                DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.Error);
-
-                var error = new ErrorLog()
-                {
-                    Exception = ex,
-                    ExceptionDate = DateTime.Now,
-                    ExceptionType = ex.GetType(),
-                };
-
-                App.liteErrorLogDB.GetCollection<ErrorLog>().Insert(error);
+                ex.SaveExceptionData();
             }
             finally
             {
