@@ -93,6 +93,8 @@ namespace ANT
 
             string fullPath = System.IO.Path.Combine(newLocation, "data");
             liteDB = new LiteDatabase($"Filename={fullPath}");
+
+            liteDB.Checkpoint();
         }
 
         /// <summary>
@@ -108,6 +110,8 @@ namespace ANT
             bsonMapper.Entity<ErrorLog>().Id(errorLog => errorLog.Id);
 
             liteErrorLogDB = new LiteDatabase($"Filename={fullPath}", bsonMapper);
+
+            liteErrorLogDB.Checkpoint();
         }
 
         private async void Current_NotificationTapped(NotificationTappedEventArgs e)

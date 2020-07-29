@@ -180,6 +180,9 @@
   <data name="ClearCannotBeUndone" xml:space="preserve">
     <value>Tem certeza que deseja limpar a lista? Esta ação não pode ser desfeita.</value>
   </data>
+  <data name="ClearDatabase" xml:space="preserve">
+    <value>Deletar banco de dados</value>
+  </data>
   <data name="ClearFavoriteList" xml:space="preserve">
     <value>Limpar lista de favoritos</value>
   </data>
@@ -203,6 +206,9 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Detalhes</value>
+  </data>
+  <data name="DropDatabase" xml:space="preserve">
+    <value>Isso vai deletar o banco de dados {0}, você quer continuar?</value>
   </data>
   <data name="DurationPerEpisode" xml:space="preserve">
     <value>Duração por episódio: </value>
@@ -339,6 +345,9 @@
   <data name="Recommendations" xml:space="preserve">
     <value>Recomendações</value>
   </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Registro</value>
+  </data>
   <data name="Related" xml:space="preserve">
     <value>Relacionados</value>
   </data>
@@ -386,6 +395,9 @@
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Configurações</value>
+  </data>
+  <data name="ShrinkSize" xml:space="preserve">
+    <value>Diminuir tamanho</value>
   </data>
   <data name="SideStory" xml:space="preserve">
     <value>Paralelos</value>
@@ -455,6 +467,9 @@
   </data>
   <data name="UpdatingAnimesMessage" xml:space="preserve">
     <value>Os animes vão ser atualizados, é necessário ter conexão com internet. Deseja continuar?</value>
+  </data>
+  <data name="UserData" xml:space="preserve">
+    <value>Dados do usuário</value>
   </data>
   <data name="VoiceActingRoles" xml:space="preserve">
     <value>Papeis em dublagens</value>

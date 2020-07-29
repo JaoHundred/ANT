@@ -17,5 +17,10 @@ namespace ANT.Modules
             InitializeComponent();
             BindingContext = new SettingsViewModel();
         }
+
+        private async void _settings_Appearing(object sender, EventArgs e)
+        {
+            await ((SettingsViewModel)BindingContext).LoadAsync(null);
+        }
     }
 }

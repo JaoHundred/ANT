@@ -180,6 +180,9 @@
   <data name="ClearCannotBeUndone" xml:space="preserve">
     <value>Are you sure you want clear the list? This action cannot be undone.</value>
   </data>
+  <data name="ClearDatabase" xml:space="preserve">
+    <value>Clear database</value>
+  </data>
   <data name="ClearFavoriteList" xml:space="preserve">
     <value>Clear favorite list</value>
   </data>
@@ -203,6 +206,9 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Details</value>
+  </data>
+  <data name="DropDatabase" xml:space="preserve">
+    <value>This will delete {0} database, do you wish to continue?</value>
   </data>
   <data name="DurationPerEpisode" xml:space="preserve">
     <value>Duration per episode:</value>
@@ -339,6 +345,9 @@
   <data name="Recommendations" xml:space="preserve">
     <value>Recommendations</value>
   </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Registry</value>
+  </data>
   <data name="Related" xml:space="preserve">
     <value>Related</value>
   </data>
@@ -386,6 +395,9 @@
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="ShrinkSize" xml:space="preserve">
+    <value>Shrink size</value>
   </data>
   <data name="SideStory" xml:space="preserve">
     <value>Side story</value>
@@ -455,6 +467,9 @@
   </data>
   <data name="UpdatingAnimesMessage" xml:space="preserve">
     <value>Animes will be updated, internet connection is required. Do you wish to continue?</value>
+  </data>
+  <data name="UserData" xml:space="preserve">
+    <value>User data</value>
   </data>
   <data name="VoiceActingRoles" xml:space="preserve">
     <value>Voice acting roles</value>

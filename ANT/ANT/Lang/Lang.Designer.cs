@@ -250,6 +250,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear database.
+        /// </summary>
+        public static string ClearDatabase {
+            get {
+                return ResourceManager.GetString("ClearDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear favorite list.
         /// </summary>
         public static string ClearFavoriteList {
@@ -318,6 +327,15 @@ namespace ANT.Lang {
         public static string Details {
             get {
                 return ResourceManager.GetString("Details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This will delete {0} database, do you wish to continue?.
+        /// </summary>
+        public static string DropDatabase {
+            get {
+                return ResourceManager.GetString("DropDatabase", resourceCulture);
             }
         }
         
@@ -727,6 +745,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Registry.
+        /// </summary>
+        public static string Registry {
+            get {
+                return ResourceManager.GetString("Registry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Related.
         /// </summary>
         public static string Related {
@@ -867,6 +894,15 @@ namespace ANT.Lang {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shrink size.
+        /// </summary>
+        public static string ShrinkSize {
+            get {
+                return ResourceManager.GetString("ShrinkSize", resourceCulture);
             }
         }
         
@@ -1074,6 +1110,15 @@ namespace ANT.Lang {
         public static string UpdatingAnimesMessage {
             get {
                 return ResourceManager.GetString("UpdatingAnimesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User data.
+        /// </summary>
+        public static string UserData {
+            get {
+                return ResourceManager.GetString("UserData", resourceCulture);
             }
         }
         

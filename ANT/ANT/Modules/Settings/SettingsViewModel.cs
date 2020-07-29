@@ -10,6 +10,7 @@ using MvvmHelpers;
 using ANT.Model;
 using System.Windows.Input;
 using ANT.Interfaces;
+using magno = MvvmHelpers.Commands;
 
 namespace ANT.Modules
 {
@@ -28,7 +29,19 @@ namespace ANT.Modules
 
             SwitchNotificationCommand = new Command(OnSwitchNotification);
             SwitchNSFWCommand = new Command(OnSwitchNSFW);
+            ClearDatabaseCommand = new magno.AsyncCommand(OnClearDatabase);
         }
+
+        public Task InitializeTask { get; }
+
+        public async Task LoadAsync(object param)
+        {
+            await Task.Run(() =>
+            {
+                DatabaseInfo = new DatabaseInfo<ErrorLog>(App.liteErrorLogDB);
+            });
+        }
+
 
 
         private int _selectedThemeIndex;
@@ -52,6 +65,13 @@ namespace ANT.Modules
                         break;
                 }
             }
+        }
+
+        private DatabaseInfo<ErrorLog> _databaseInfo;
+        public DatabaseInfo<ErrorLog> DatabaseInfo
+        {
+            get { return _databaseInfo; }
+            set { SetProperty(ref _databaseInfo, value); }
         }
 
         public SettingsPreferences Settings { get; set; }
@@ -129,6 +149,8 @@ namespace ANT.Modules
         //    }
         //}
 
+        #region commands
+
 
         public ICommand SwitchNotificationCommand { get; private set; }
         private void OnSwitchNotification()
@@ -161,10 +183,36 @@ namespace ANT.Modules
         public ICommand SwitchNSFWCommand { get; private set; }
         private void OnSwitchNSFW()
         {
-            if(Settings!= null)
+            if (Settings != null)
             {
                 App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, Settings);
             }
         }
+
+        public ICommand ClearDatabaseCommand { get; private set; }
+        private async Task OnClearDatabase()
+        {
+            //TODO: ficar de olho em uma atualização para isso, rebuild sempre lança exceção de timeout com ou sem uma task
+
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ChoiceModalViewModel>();
+
+            if (canNavigate)
+            {
+                var action = new Action(() =>
+                {
+                    if (App.liteErrorLogDB == DatabaseInfo.LiteDatabase)
+                        DatabaseInfo.LiteDatabase.GetCollection<ErrorLog>().DeleteAll();
+
+                    DatabaseInfo.DatabaseSize = DatabaseInfo.GetDatabaseSize();
+                    DatabaseInfo.CollectionDataCount = DatabaseInfo.GetDatabaseCollectionDataCount();
+                });
+
+                await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(
+                    Lang.Lang.ClearDatabase, 
+                    string.Format( Lang.Lang.DropDatabase, DatabaseInfo.GetDatabaseName()), action);
+            }
+        }
+
+        #endregion
     }
 }
