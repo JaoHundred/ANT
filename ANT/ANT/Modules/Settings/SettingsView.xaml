@@ -76,15 +76,21 @@
                         <Grid Margin="5" RowDefinitions="auto, *" >
                             <Label Text="{res:Translate UserData}" Style="{StaticResource MenuLabelColorStyle}"/>
 
-                            <Grid Grid.Row="1" ColumnDefinitions="auto, *, *, auto">
+                            <Grid Grid.Row="1" ColumnDefinitions="auto, *" HorizontalOptions="Center">
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding ClearDatabaseCommand}"/>
                                 </Grid.GestureRecognizers>
-                                <Label Text="{Binding DatabaseInfo.DatabaseName, Mode=TwoWay}" FontSize="Subtitle"/>
-                                <Label Grid.Column="1" Text="{Binding DatabaseInfo.CollectionDataCount, Mode=TwoWay}" FontSize="Subtitle"
-                                       HorizontalOptions="End"/>
-                                <Label Grid.Column="2" Text="{res:Translate Registry}" FontSize="Subtitle"/>
-                                <Label Grid.Column="3"  Text="{res:Translate ClearDatabase}" FontSize="Subtitle"/>
+                                <Label Text="{Binding DatabaseInfo.DatabaseName, Mode=TwoWay}" FontSize="Subtitle" d:Text="banco"/>
+
+                                <StackLayout Grid.Column="1" Orientation="Horizontal"
+                                             HorizontalOptions="Start">
+                                    <Label  Text="{Binding DatabaseInfo.CollectionDataCount, Mode=TwoWay}" FontSize="Subtitle"
+                                       d:Text="100" />
+                                    <Label Grid.Column="2" Text="{res:Translate Registry}" FontSize="Subtitle" d:Text="Registry"/>
+                                </StackLayout>
+
+                                <Label Grid.Row="1" Grid.ColumnSpan="2"  Text="{res:Translate ClearDatabase}" FontSize="Subtitle" d:Text="Clear database"
+                                       HorizontalOptions="Center"/>
                             </Grid>
                         </Grid>
                     </ViewCell>

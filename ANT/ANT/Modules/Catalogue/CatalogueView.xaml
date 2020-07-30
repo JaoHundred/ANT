@@ -136,9 +136,8 @@
                                             <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference AnimeImage}}" 
                                                                    IsVisible="{Binding IsLoading, Source={x:Reference AnimeImage}}"/>
 
-                                            <Label Grid.Row="1" Text="{Binding Anime.Title}" 
-                                                       LineBreakMode="TailTruncation" MaxLines="1"
-                                                       Style="{StaticResource AnimeFrameLabelStyle}" />
+                                            <Label Grid.Row="1" Text="{Binding Anime.Title}" MaxLines="1"
+                                                       Style="{StaticResource TitleLabelStyle}" HorizontalOptions="Center"/>
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>
