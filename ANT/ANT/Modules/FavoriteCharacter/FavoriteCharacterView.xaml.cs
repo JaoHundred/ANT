@@ -31,12 +31,14 @@ namespace ANT.Modules
             EntrySearchField.Focus();
 
             LabelTitle.IsVisible = false;
+            UpdateLabel.IsVisible = false;
         }
 
         private void SearchFieldLostFocus(object sender, FocusEventArgs e)
         {
             SearchControl.IsVisible = false;
             LabelTitle.IsVisible = true;
+            UpdateLabel.IsVisible = true;
         }
 
         private async void DeleteButton_AnimationOnIsVisible(object sender, System.ComponentModel.PropertyChangedEventArgs e)

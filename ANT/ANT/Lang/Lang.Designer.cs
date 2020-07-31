@@ -1096,6 +1096,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Characters updated succesfully.
+        /// </summary>
+        public static string UpdatedCharacters {
+            get {
+                return ResourceManager.GetString("UpdatedCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updating animes.
         /// </summary>
         public static string UpdatingAnimes {
@@ -1110,6 +1119,24 @@ namespace ANT.Lang {
         public static string UpdatingAnimesMessage {
             get {
                 return ResourceManager.GetString("UpdatingAnimesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating characters.
+        /// </summary>
+        public static string UpdatingCharacters {
+            get {
+                return ResourceManager.GetString("UpdatingCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Characters will be updated, internet connection is required. Do you wish to continue?.
+        /// </summary>
+        public static string UpdatingCharactersMessage {
+            get {
+                return ResourceManager.GetString("UpdatingCharactersMessage", resourceCulture);
             }
         }
         

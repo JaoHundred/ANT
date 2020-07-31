@@ -403,7 +403,7 @@ namespace ANT.Modules
         private bool _isUpdatingAnimes;
 
         //TODO: testar comando abaixo com a funcionalidade nova de filtrar por isNSFW dos animes
-        public AsyncCommand UpdateFavoriteAnimesCommand { get; private set; }
+        public ICommand UpdateFavoriteAnimesCommand { get; private set; }
         private async Task OnUpdateAnimes()
         {
             _isUpdatingAnimes = true;

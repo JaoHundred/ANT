@@ -25,6 +25,7 @@ namespace ANT.Modules
             ClearTextCommand = new magno.Command(OnClearText);
             SearchCommand = new magno.AsyncCommand(OnSearch);
             SelectionModeCommand = new magno.Command(OnSelectionMode);
+            UpdateFavoriteCharactersCommand = new magno.AsyncCommand(OnUpdateFavoriteCharacters);
 
             FavoritedCharacters = new ObservableRangeCollection<FavoritedAnimeCharacter>();
         }
@@ -35,6 +36,9 @@ namespace ANT.Modules
         {
             await Task.Run(() =>
             {
+                if (_isUpdatingAnimes)
+                    return;
+
                 FavoritedCharacters.ReplaceRange(App.liteDB.GetCollection<FavoritedAnimeCharacter>().FindAll().ToList());
                 _originalCollection = new List<FavoritedAnimeCharacter>(FavoritedCharacters);
             });
@@ -149,6 +153,31 @@ namespace ANT.Modules
                     SelectedFavorites = null;
                 }
             }
+        }
+
+        private bool _isUpdatingAnimes;
+
+        //TODO: testar comando abaixo com a funcionalidade nova de filtrar por isNSFW dos animes
+        public ICommand UpdateFavoriteCharactersCommand { get; private set; }
+        private async Task OnUpdateFavoriteCharacters()
+        {
+            _isUpdatingAnimes = true;
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ChoiceModalViewModel>();
+
+            if (canNavigate)
+            {
+                var action = new Action(async () =>
+                {
+                    var favoriteCollection = App.liteDB.GetCollection<FavoritedAnimeCharacter>().FindAll().ToList();
+
+                    await NavigationManager
+                    .NavigatePopUpAsync<ProgressPopupViewModel>(favoriteCollection, this
+                    , new Action(async () => { await LoadAsync(null); }));
+                });
+
+                await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.UpdatingCharacters, Lang.Lang.UpdatingCharactersMessage, action);
+            }
+            _isUpdatingAnimes = false;
         }
         #endregion
     }
