@@ -465,6 +465,9 @@
   <data name="UpdatedCharacters" xml:space="preserve">
     <value>Characters updated succesfully</value>
   </data>
+  <data name="UpdatedVoiceActors" xml:space="preserve">
+    <value>Voice actors updated succesfully</value>
+  </data>
   <data name="UpdatingAnimes" xml:space="preserve">
     <value>Updating animes</value>
   </data>
@@ -476,6 +479,12 @@
   </data>
   <data name="UpdatingCharactersMessage" xml:space="preserve">
     <value>Characters will be updated, internet connection is required. Do you wish to continue?</value>
+  </data>
+  <data name="UpdatingVoiceActors" xml:space="preserve">
+    <value>Updating voice actors</value>
+  </data>
+  <data name="UpdatingVoiceActorsMessage" xml:space="preserve">
+    <value>Voice actors will be updated, internet connection is required. Do you wish to continue?</value>
   </data>
   <data name="UserData" xml:space="preserve">
     <value>User data</value>

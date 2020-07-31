@@ -36,7 +36,7 @@ namespace ANT.Modules
         {
             await Task.Run(() =>
             {
-                if (_isUpdatingAnimes)
+                if (_isUpdatingCharacters)
                     return;
 
                 FavoritedCharacters.ReplaceRange(App.liteDB.GetCollection<FavoritedAnimeCharacter>().FindAll().ToList());
@@ -155,13 +155,13 @@ namespace ANT.Modules
             }
         }
 
-        private bool _isUpdatingAnimes;
+        private bool _isUpdatingCharacters;
 
         //TODO: testar comando abaixo com a funcionalidade nova de filtrar por isNSFW dos animes
         public ICommand UpdateFavoriteCharactersCommand { get; private set; }
         private async Task OnUpdateFavoriteCharacters()
         {
-            _isUpdatingAnimes = true;
+            _isUpdatingCharacters = true;
             bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ChoiceModalViewModel>();
 
             if (canNavigate)
@@ -177,7 +177,7 @@ namespace ANT.Modules
 
                 await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.UpdatingCharacters, Lang.Lang.UpdatingCharactersMessage, action);
             }
-            _isUpdatingAnimes = false;
+            _isUpdatingCharacters = false;
         }
         #endregion
     }

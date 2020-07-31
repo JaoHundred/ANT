@@ -22,6 +22,7 @@ namespace ANT.Modules
             ClearTextCommand = new magno.Command(OnClearText);
             SearchCommand = new magno.AsyncCommand(OnSearch);
             SelectionModeCommand = new magno.Command(OnSelectionMode);
+            UpdateFavoriteVoiceActorsCommand = new magno.AsyncCommand(OnUpdateFavoriteVoiceActors);
 
             FavoritedActors = new ObservableRangeCollection<FavoritedVoiceActor>();
         }
@@ -32,6 +33,9 @@ namespace ANT.Modules
         {
             await Task.Run(() =>
             {
+                if (_isUpdatingVoiceActors)
+                    return;
+
                 FavoritedActors.ReplaceRange(App.liteDB.GetCollection<FavoritedVoiceActor>().FindAll().ToList());
                 _originalCollection = new List<FavoritedVoiceActor>(FavoritedActors);
             });
@@ -147,6 +151,31 @@ namespace ANT.Modules
                     SelectedFavorites = null;
                 }
             }
+        }
+
+        private bool _isUpdatingVoiceActors;
+
+        //TODO: testar comando abaixo com a funcionalidade nova de filtrar por isNSFW dos animes
+        public ICommand UpdateFavoriteVoiceActorsCommand { get; private set; }
+        private async Task OnUpdateFavoriteVoiceActors()
+        {
+            _isUpdatingVoiceActors = true;
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ChoiceModalViewModel>();
+
+            if (canNavigate)
+            {
+                var action = new Action(async () =>
+                {
+                    var favoriteCollection = App.liteDB.GetCollection<FavoritedVoiceActor>().FindAll().ToList();
+
+                    await NavigationManager
+                    .NavigatePopUpAsync<ProgressPopupViewModel>(favoriteCollection, this
+                    , new Action(async () => { await LoadAsync(); }));
+                });
+
+                await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.UpdatingVoiceActors, Lang.Lang.UpdatingVoiceActorsMessage, action);
+            }
+            _isUpdatingVoiceActors = false;
         }
         #endregion
     }

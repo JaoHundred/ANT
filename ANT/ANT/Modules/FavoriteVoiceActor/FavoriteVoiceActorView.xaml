@@ -46,6 +46,13 @@
                     </Label.GestureRecognizers>
                 </Label>
             </Grid>
+            <Label  Style="{StaticResource UpdateLabelStyle}" x:Name="UpdateLabel"
+                   VerticalOptions="Center" TextColor="{DynamicResource TextTitleColor}"
+                    HorizontalOptions="End">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding UpdateFavoriteVoiceActorsCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
         </Grid>
     </Shell.TitleView>
 

@@ -1105,6 +1105,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Voice actors updated succesfully.
+        /// </summary>
+        public static string UpdatedVoiceActors {
+            get {
+                return ResourceManager.GetString("UpdatedVoiceActors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updating animes.
         /// </summary>
         public static string UpdatingAnimes {
@@ -1137,6 +1146,24 @@ namespace ANT.Lang {
         public static string UpdatingCharactersMessage {
             get {
                 return ResourceManager.GetString("UpdatingCharactersMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating voice actors.
+        /// </summary>
+        public static string UpdatingVoiceActors {
+            get {
+                return ResourceManager.GetString("UpdatingVoiceActors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Voice actors will be updated, internet connection is required. Do you wish to continue?.
+        /// </summary>
+        public static string UpdatingVoiceActorsMessage {
+            get {
+                return ResourceManager.GetString("UpdatingVoiceActorsMessage", resourceCulture);
             }
         }
         

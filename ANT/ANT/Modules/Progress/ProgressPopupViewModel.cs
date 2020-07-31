@@ -71,6 +71,15 @@ namespace ANT.Modules
                             DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.UpdatedCharacters);
                         });
                     }
+                    else if (_viewModelType is FavoriteVoiceActorViewModel && _collection is IList<FavoritedVoiceActor> voiceActorCollection)
+                    {
+                        await UpdateVoiceActorFromFavorited(voiceActorCollection);
+
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.UpdatedVoiceActors);
+                        });
+                    }
                 }, _cancelationToken.Token);
 
             }
@@ -255,6 +264,51 @@ namespace ANT.Modules
                     chara.IsFavorited = true;
 
                     db.Update(chara.Character.MalId, chara);
+                }
+            }
+            catch (JikanRequestException ex)
+            {
+                ex.SaveExceptionData();
+            }
+            catch (OperationCanceledException ex)
+            { }
+            catch (Exception ex)
+            {
+                ex.SaveExceptionData();
+            }
+        }
+
+        private async Task UpdateVoiceActorFromFavorited(IList<FavoritedVoiceActor> voiceActors)
+        {
+            try
+            {
+                var db = App.liteDB.GetCollection<FavoritedVoiceActor>();
+                double total = voiceActors.Count;
+
+                for (int i = 0; i < voiceActors.Count; i++)
+                {
+                    double result = (double)i / total;
+                    MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
+
+                    await App.DelayRequest(4);
+
+                    if (_cancelationToken != null && _cancelationToken.IsCancellationRequested)
+                        _cancelationToken.Token.ThrowIfCancellationRequested();
+
+                    var voiceAc = voiceActors[i];
+
+                    Person person = await App.Jikan.GetPerson(voiceAc.VoiceActor.MalId);
+                    person.RequestCached = true;
+
+                    await App.DelayRequest(4);
+
+                    PersonPictures characterPictures = await App.Jikan.GetPersonPictures(voiceAc.VoiceActor.MalId);
+                    characterPictures.RequestCached = true;
+
+                    voiceAc = new FavoritedVoiceActor(person, characterPictures.Pictures.ToList());
+                    voiceAc.IsFavorited = true;
+
+                    db.Update(voiceAc.VoiceActor.MalId, voiceAc);
                 }
             }
             catch (JikanRequestException ex)
