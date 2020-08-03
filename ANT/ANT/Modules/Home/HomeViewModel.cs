@@ -13,6 +13,7 @@ using System.Windows.Input;
 using magno = MvvmHelpers.Commands;
 using ANT.Core;
 using ANT.UTIL;
+using LiteDB;
 
 namespace ANT.Modules
 {
@@ -43,7 +44,39 @@ namespace ANT.Modules
 
             try
             {
-                IsLoadingTodayAnimes = true;
+                await App.DelayRequest(2);
+                var loadTodayAnimesTask = Task.Run(async () =>
+                {
+                    if (_cancellationTokenSource.IsCancellationRequested)
+                        _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                    var todayAnimeCollection = App.liteDB.GetCollection<TodayAnimes>();
+                    var todayAnimes = todayAnimeCollection.FindById(0);
+
+                    if (todayAnimes?.DayOfWeek != DateTime.Today.DayOfWeek || todayAnimes?.ShowNSFW != settings.ShowNSFW)
+                    {
+                        IsLoadingTodayAnimes = true;
+
+                        Schedule schedule = await App.Jikan.GetSchedule(DateTime.Today.DayOfWeek.ConvertDayOfWeekToScheduleDay());
+
+                        var animes = await schedule.GetCurrentScheduleDay().ConvertCatalogueAnimesToFavoritedAsync(settings.ShowNSFW);
+
+                        var tdayAnimes = new TodayAnimes
+                        {
+                            DayOfWeek = DateTime.Today.DayOfWeek,
+                            FavoritedAnimes = animes,
+                            ShowNSFW = settings.ShowNSFW,
+                        };
+
+                        TodayAnimes = tdayAnimes;
+                        todayAnimeCollection.Upsert(0, tdayAnimes);
+
+                        IsLoadingTodayAnimes = false;
+                    }
+                    else if (TodayAnimes == null || todayAnimes?.DayOfWeek != DateTime.Today.DayOfWeek)
+                        TodayAnimes = todayAnimes;
+
+                }, _cancellationTokenSource.Token);
 
                 await App.DelayRequest(2);
                 var loadRecommendationsTask = Task.Run(async () =>
@@ -95,20 +128,9 @@ namespace ANT.Modules
 
                 }, _cancellationTokenSource.Token);
 
-                await App.DelayRequest(2);
-                var loadTodayAnimesTask = Task.Run(async () =>
-                {
-                    if (_cancellationTokenSource.IsCancellationRequested)
-                        _cancellationTokenSource.Token.ThrowIfCancellationRequested();
-
-                    Schedule schedule = await App.Jikan.GetSchedule(DateTime.Today.DayOfWeek.ConvertDayOfWeekToScheduleDay());
-
-                    TodayAnimes = await schedule.GetCurrentScheduleDay().ConvertCatalogueAnimesToFavoritedAsync(settings.ShowNSFW);
-
-                }, _cancellationTokenSource.Token);
 
                 await Task.WhenAny(loadRecommendationsTask, loadTodayAnimesTask);
-                IsLoadingTodayAnimes = false;
+
             }
             catch (JikanDotNet.Exceptions.JikanRequestException ex)
             {
@@ -129,6 +151,8 @@ namespace ANT.Modules
 
         }
 
+
+
         #region properties
         private IList<Recommendation> _recomendations;
         public IList<Recommendation> Recommendations
@@ -137,8 +161,8 @@ namespace ANT.Modules
             set { SetProperty(ref _recomendations, value); }
         }
 
-        private IList<FavoritedAnime> _todayAnimes;
-        public IList<FavoritedAnime> TodayAnimes
+        private TodayAnimes _todayAnimes;
+        public TodayAnimes TodayAnimes
         {
             get { return _todayAnimes; }
             set { SetProperty(ref _todayAnimes, value); }
@@ -186,6 +210,5 @@ namespace ANT.Modules
         }
 
         #endregion
-
     }
 }

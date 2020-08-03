@@ -30,7 +30,7 @@
 
             <Label Text="{res:Translate TodayAnimes}" Style="{StaticResource ContentTitleLabelStyle}"
                Margin="5,5,0,0" FontAttributes="Bold"/>
-            <CollectionView Grid.Row="1" ItemsSource="{Binding TodayAnimes}" SelectionMode="Single" Margin="10,5,5,5"
+            <CollectionView Grid.Row="1" ItemsSource="{Binding TodayAnimes.FavoritedAnimes}" SelectionMode="Single" Margin="10,5,5,5"
                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                         SelectionChangedCommand="{Binding SelectedItemCommand}"
                         Style="{StaticResource CollectionViewEmptyListStyle}">
@@ -43,7 +43,7 @@
                     <DataTemplate x:DataType="model:FavoritedAnime">
                         <Frame WidthRequest="150">
                             <Grid RowDefinitions="*, auto">
-                                <ffImage:CachedImage x:Name="animeImage" Source="{Binding Anime.ImageURL}"/>
+                                <ffImage:CachedImage x:Name="animeImage" Source="{Binding  Anime.ImageURL}"/>
                                 <ActivityIndicator IsRunning="{Binding IsLoading, Source={x:Reference animeImage}}"
                                                IsVisible="{Binding IsLoading, Source={x:Reference animeImage}}"/>
 

@@ -92,7 +92,11 @@ namespace ANT
             string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
 
             string fullPath = System.IO.Path.Combine(newLocation, "data");
-            liteDB = new LiteDatabase($"Filename={fullPath}");
+
+            BsonMapper bsonMapper = BsonMapper.Global;
+            bsonMapper.Entity<TodayAnimes>().Id(todayAnimes => todayAnimes.Id);
+
+            liteDB = new LiteDatabase($"Filename={fullPath}", bsonMapper);
 
             liteDB.Checkpoint();
         }
