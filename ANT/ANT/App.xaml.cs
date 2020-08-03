@@ -95,6 +95,7 @@ namespace ANT
 
             BsonMapper bsonMapper = BsonMapper.Global;
             bsonMapper.Entity<TodayAnimes>().Id(todayAnimes => todayAnimes.Id);
+            bsonMapper.Entity<RecommendationAnimes>().Id(recommendation => recommendation.Id);
 
             liteDB = new LiteDatabase($"Filename={fullPath}", bsonMapper);
 

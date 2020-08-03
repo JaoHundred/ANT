@@ -44,7 +44,6 @@ namespace ANT.Modules
 
             try
             {
-                await App.DelayRequest(2);
                 var loadTodayAnimesTask = Task.Run(async () =>
                 {
                     if (_cancellationTokenSource.IsCancellationRequested)
@@ -57,6 +56,7 @@ namespace ANT.Modules
                     {
                         IsLoadingTodayAnimes = true;
 
+                        await App.DelayRequest(2);
                         Schedule schedule = await App.Jikan.GetSchedule(DateTime.Today.DayOfWeek.ConvertDayOfWeekToScheduleDay());
 
                         var animes = await schedule.GetCurrentScheduleDay().ConvertCatalogueAnimesToFavoritedAsync(settings.ShowNSFW);
@@ -78,59 +78,80 @@ namespace ANT.Modules
 
                 }, _cancellationTokenSource.Token);
 
-                await App.DelayRequest(2);
                 var loadRecommendationsTask = Task.Run(async () =>
                 {
+                    var recommendationAnimesCollection = App.liteDB.GetCollection<RecommendationAnimes>();
+                    var recommendationsCache = recommendationAnimesCollection.FindById(0);
+
                     var animeCollection = settings.ShowNSFW
-                         ? App.liteDB.GetCollection<FavoritedAnime>().FindAll().ToList()
-                         : App.liteDB.GetCollection<FavoritedAnime>().Find(p => !p.IsNSFW).ToList();
+                       ? App.liteDB.GetCollection<FavoritedAnime>().FindAll().ToList()
+                       : App.liteDB.GetCollection<FavoritedAnime>().Find(p => !p.IsNSFW).ToList();
 
                     int collectionCount = animeCollection.Count;
 
                     if (collectionCount == 0)
-                    {
                         return;
-                    }
 
-                    var rand = new Random();
-
-                    int indexPick = rand.Next(collectionCount);
-
-                    FavoritedAnime animeAsRecommend = animeCollection[indexPick];
-
-                    if (_cancellationTokenSource.IsCancellationRequested)
-                        _cancellationTokenSource.Token.ThrowIfCancellationRequested();
-
-                    Recommendations recommendations = await App.Jikan.GetAnimeRecommendations(animeAsRecommend.Anime.MalId);
-
-                    var recommendationAnimes = recommendations.RecommendationCollection
-                    .Where(recommendation => !animeCollection.Exists(favoritedAnime => recommendation.MalId == favoritedAnime.Anime.MalId))
-                    .ToList();
-
-                    if (recommendationAnimes.Count == 0)
+                    if (recommendationsCache == null
+                    || recommendationsCache != null && DateTime.Now.Subtract(recommendationsCache.LastRecommendationDate).TotalHours >= 1
+                    || settings.ShowNSFW != recommendationsCache.ShowNSFW)
                     {
-                        return;
+                        var rand = new Random();
+
+                        int indexPick = rand.Next(collectionCount);
+
+                        FavoritedAnime animeAsRecommend = animeCollection[indexPick];
+
+                        if (_cancellationTokenSource.IsCancellationRequested)
+                            _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                        await App.DelayRequest(2);
+                        Recommendations recommendations = await App.Jikan.GetAnimeRecommendations(animeAsRecommend.Anime.MalId);
+
+                        var recommendationAnimes = recommendations.RecommendationCollection
+                        .Where(recommendation => !animeCollection.Exists(favoritedAnime => recommendation.MalId == favoritedAnime.Anime.MalId))
+                        .ToList();
+
+                        if (recommendationAnimes.Count == 0)
+                        {
+                            if (recommendationsCache != null)
+                                LoadRecommendationFromCache(settings, recommendationAnimesCollection, recommendationsCache);
+
+                            return;
+                        }
+
+                        var recomendationsList = new HashSet<Recommendation>();
+
+                        for (int i = 0; i < 5; i++)
+                        {
+                            await Task.Delay(TimeSpan.FromMilliseconds(50));
+                            indexPick = rand.Next(recommendationAnimes.Count);
+
+                            recomendationsList.Add(recommendationAnimes[indexPick]);
+                        }
+
+                        var recommendationAnimesCache = new RecommendationAnimes
+                        {
+                            Recommendations = recomendationsList
+                            .Where(recommendation => !App.liteDB.GetCollection<FavoritedAnime>()
+                            .Exists(favoritedAnime => recommendation.MalId == favoritedAnime.Anime.MalId))
+                            .ToList(),
+                            LastRecommendationDate = DateTime.Now,
+                            ShowNSFW = settings.ShowNSFW,
+                        };
+
+                        RecommendationAnimes = recommendationAnimesCache;
+                        HasRecommendations = RecommendationAnimes.Recommendations.Count() != 0;
+                        recommendationAnimesCollection.Upsert(0, recommendationAnimesCache);
+
                     }
 
-                    var recomendationsList = new HashSet<Recommendation>();
-
-
-                    for (int i = 0; i < 5; i++)
-                    {
-                        await Task.Delay(TimeSpan.FromMilliseconds(50));
-                        indexPick = rand.Next(recommendationAnimes.Count);
-
-                        recomendationsList.Add(recommendationAnimes[indexPick]);
-                    }
-
-                    Recommendations = recomendationsList.ToList();
-                    HasRecommendations = true;
+                    else if (DateTime.Now.Subtract(recommendationsCache.LastRecommendationDate).TotalHours < 1)
+                        LoadRecommendationFromCache(settings, recommendationAnimesCollection, recommendationsCache);
 
                 }, _cancellationTokenSource.Token);
 
-
                 await Task.WhenAny(loadRecommendationsTask, loadTodayAnimesTask);
-
             }
             catch (JikanDotNet.Exceptions.JikanRequestException ex)
             {
@@ -151,14 +172,12 @@ namespace ANT.Modules
 
         }
 
-
-
         #region properties
-        private IList<Recommendation> _recomendations;
-        public IList<Recommendation> Recommendations
+        private RecommendationAnimes _recomendationAnimes;
+        public RecommendationAnimes RecommendationAnimes
         {
-            get { return _recomendations; }
-            set { SetProperty(ref _recomendations, value); }
+            get { return _recomendationAnimes; }
+            set { SetProperty(ref _recomendationAnimes, value); }
         }
 
         private TodayAnimes _todayAnimes;
@@ -209,6 +228,24 @@ namespace ANT.Modules
             }
         }
 
+        #endregion
+
+        #region ViewModel Methods
+        private void LoadRecommendationFromCache(SettingsPreferences settings
+            , ILiteCollection<RecommendationAnimes> recommendationAnimesCollection, RecommendationAnimes recommendationsCache)
+        {
+
+            recommendationsCache.Recommendations = recommendationsCache.Recommendations
+                        .Where(recommendation => !App.liteDB.GetCollection<FavoritedAnime>()
+                        .Exists(favoritedAnime => recommendation.MalId == favoritedAnime.Anime.MalId))
+                        .ToList();
+
+            RecommendationAnimes = recommendationsCache;
+
+            HasRecommendations = RecommendationAnimes.Recommendations.Count() != 0;
+
+            recommendationAnimesCollection.Upsert(0, recommendationsCache);
+        }
         #endregion
     }
 }
