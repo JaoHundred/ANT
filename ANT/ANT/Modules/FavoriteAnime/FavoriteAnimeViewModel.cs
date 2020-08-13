@@ -235,12 +235,14 @@ namespace ANT.Modules
         {
             var items = SelectedItems.Cast<FavoritedAnime>();
             var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
+            
             foreach (var item in items)
                 favoriteCollection.Delete(item.Anime.MalId);
 
-            var constructTask = ConstructGroupedCollectionAsync();
+            var collection = await ConstructGroupedCollectionAsync();
+            _originalCollection = collection;
 
-            GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(await constructTask);
+            GroupedFavoriteByWeekList.ReplaceRange(_originalCollection);
         }
 
         public ICommand ClearAllCommand { get; private set; }
