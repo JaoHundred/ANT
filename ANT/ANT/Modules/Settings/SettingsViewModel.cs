@@ -24,12 +24,16 @@ namespace ANT.Modules
             Settings = App.liteDB.GetCollection<SettingsPreferences>().FindById(0);
 
             SelectedThemeIndex = Settings.SelectedThemeIndex;
+            CurrentVersion = Xamarin.Essentials.VersionTracking.CurrentVersion;
             //SelectedLangIndex = App.SettingsPreferences.SelectedLanguageIndex;
             //IsAutomaticTranslate = App.SettingsPreferences.AutomaticTranslate;
 
             SwitchNotificationCommand = new Command(OnSwitchNotification);
             SwitchNSFWCommand = new Command(OnSwitchNSFW);
             ClearDatabaseCommand = new magno.AsyncCommand(OnClearDatabase);
+            OverviewCommand = new magno.AsyncCommand(OnOverview);
+            PatchNotesCommand = new magno.AsyncCommand(OnPatchNotes);
+            LicensesCommand = new magno.AsyncCommand(OnLicenses);
         }
 
         public Task InitializeTask { get; }
@@ -72,6 +76,13 @@ namespace ANT.Modules
         {
             get { return _databaseInfo; }
             set { SetProperty(ref _databaseInfo, value); }
+        }
+
+        private string _currentVersion;
+        public string CurrentVersion
+        {
+            get { return _currentVersion; }
+            set { SetProperty(ref _currentVersion, value); }
         }
 
         public SettingsPreferences Settings { get; set; }
@@ -208,9 +219,31 @@ namespace ANT.Modules
                 });
 
                 await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(
-                    Lang.Lang.ClearDatabase, 
-                    string.Format( Lang.Lang.DropDatabase, DatabaseInfo.GetDatabaseName()), action);
+                    Lang.Lang.ClearDatabase,
+                    string.Format(Lang.Lang.DropDatabase, DatabaseInfo.GetDatabaseName()), action);
             }
+        }
+
+        public ICommand OverviewCommand { get; private set; }
+        private async Task OnOverview()
+        {
+            //TODO:navegar para ant readme.md(a home) no github(testar no dispositivo real)
+            await Launcher.TryOpenAsync("https://github.com/JaoHundred/ANT#ant");
+        }
+
+        public ICommand PatchNotesCommand { get; private set; }
+        private async Task OnPatchNotes()
+        {
+            //TODO: criar PatchNote.md ou ver como funciona o release no github
+            //TODO:navegar para patch notes do projeto ant no github
+            //await Launcher.TryOpenAsync("");
+        }
+
+        public ICommand LicensesCommand { get; private set; }
+        private async Task OnLicenses()
+        {
+            //TODO: criar licenses.md no github
+            //await Launcher.TryOpenAsync("");
         }
 
         #endregion

@@ -32,7 +32,7 @@
     </Shell.TitleView>
 
     <ContentPage.Content >
-        <TableView Intent="Settings" HasUnevenRows="True" Margin="5" >
+        <TableView Intent="Settings" HasUnevenRows="True" Margin="5">
             <TableRoot>
                 <TableSection>
                     <ViewCell>
@@ -73,30 +73,28 @@
                 </TableSection>
                 <TableSection >
                     <ViewCell >
-                        <Grid Margin="5" RowDefinitions="auto, *" >
+                        <Grid Margin="5" RowDefinitions="auto, auto, auto" >
                             <Label Text="{res:Translate UserData}" Style="{StaticResource MenuLabelColorStyle}"/>
 
-                            <Grid Grid.Row="1" ColumnDefinitions="auto, *" HorizontalOptions="Center">
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding ClearDatabaseCommand}"/>
-                                </Grid.GestureRecognizers>
-                                <Label Text="{Binding DatabaseInfo.DatabaseName, Mode=TwoWay}" FontSize="Subtitle" d:Text="banco"/>
+                            <Label Grid.Row="1" FontSize="Subtitle">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding DatabaseInfo.DatabaseName, Mode=TwoWay}" d:Text="banco"/>
+                                        <Span Text=" "/>
+                                        <Span Text="{Binding DatabaseInfo.CollectionDataCount, Mode=TwoWay}"/>
+                                        <Span Text=" "/>
+                                        <Span Text="{res:Translate Registry}" d:Text="Registry"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Button Grid.Row="2" Text="{res:Translate ClearDatabase}" Command="{Binding ClearDatabaseCommand}"
+                                    Style="{StaticResource SpecsButtonStyle}" HorizontalOptions="Start"/>
 
-                                <StackLayout Grid.Column="1" Orientation="Horizontal"
-                                             HorizontalOptions="Start">
-                                    <Label  Text="{Binding DatabaseInfo.CollectionDataCount, Mode=TwoWay}" FontSize="Subtitle"
-                                       d:Text="100" />
-                                    <Label Grid.Column="2" Text="{res:Translate Registry}" FontSize="Subtitle" d:Text="Registry"/>
-                                </StackLayout>
-
-                                <Label Grid.Row="1" Grid.ColumnSpan="2"  Text="{res:Translate ClearDatabase}" FontSize="Subtitle" d:Text="Clear database"
-                                       HorizontalOptions="Center"/>
-                            </Grid>
                         </Grid>
                     </ViewCell>
                 </TableSection>
                 <TableSection>
-                    <ViewCell>
+                    <!--<ViewCell>
                         <Grid Margin="5" IsVisible="false">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
@@ -123,9 +121,47 @@
                             </StackLayout>
                         </Grid>
 
+                    </ViewCell>-->
+                </TableSection>
+                <TableSection>
+                    <ViewCell>
+                        <Grid Margin="5" >
+                            <Label Text="{res:Translate About}" Style="{StaticResource MenuLabelColorStyle}"/>
+                            <Label Grid.Row="1" Text="{res:Translate Overview}" FontSize="Subtitle">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OverviewCommand}"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Label Grid.Row="2" Text="{res:Translate PatchNotes}" FontSize="Subtitle" >
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding PatchNotesCommand}"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Label Grid.Row="3" Text="{res:Translate Licenses}" FontSize="Subtitle" >
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding LicensesCommand}"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
                     </ViewCell>
                 </TableSection>
+                <TableSection>
+                    <ViewCell>
+                        <Grid Margin="5">
+                            <Label Text="{res:Translate AppDetails}" Style="{StaticResource MenuLabelColorStyle}"/>
+                            <Label Grid.Row="1" d:Text="1.0.0" Text="{Binding CurrentVersion}" FontSize="Subtitle">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{res:Translate Version}"/>
+                                        <Span Text=" "/>
+                                        <Span Text="{Binding CurrentVersion}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
 
+                        </Grid>
+                    </ViewCell>
+                </TableSection>
             </TableRoot>
         </TableView>
     </ContentPage.Content>

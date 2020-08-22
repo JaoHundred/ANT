@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
   <data name="AddedToFavorite" xml:space="preserve">
     <value>Added to favorites</value>
   </data>
@@ -135,6 +138,9 @@
   <data name="Animeography" xml:space="preserve">
     <value>Animeography</value>
   </data>
+  <data name="AppDetails" xml:space="preserve">
+    <value>App details</value>
+  </data>
   <data name="ApplyFilter" xml:space="preserve">
     <value>Apply filter</value>
   </data>
@@ -152,6 +158,9 @@
   </data>
   <data name="Broadcast" xml:space="preserve">
     <value>Broadcast</value>
+  </data>
+  <data name="BuildDate" xml:space="preserve">
+    <value>Build date</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
@@ -279,6 +288,9 @@
   <data name="LastSeen" xml:space="preserve">
     <value>Last seen</value>
   </data>
+  <data name="Licenses" xml:space="preserve">
+    <value>Licenses</value>
+  </data>
   <data name="LoadingMoreData" xml:space="preserve">
     <value>Loading more data...</value>
   </data>
@@ -321,8 +333,14 @@
   <data name="Others" xml:space="preserve">
     <value>Others</value>
   </data>
+  <data name="Overview" xml:space="preserve">
+    <value>Overview</value>
+  </data>
   <data name="Parent" xml:space="preserve">
     <value>Parent</value>
+  </data>
+  <data name="PatchNotes" xml:space="preserve">
+    <value>Patch notes</value>
   </data>
   <data name="Pictures" xml:space="preserve">
     <value>Pictures</value>
@@ -488,6 +506,9 @@
   </data>
   <data name="UserData" xml:space="preserve">
     <value>User data</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
   </data>
   <data name="VoiceActingRoles" xml:space="preserve">
     <value>Voice acting roles</value>

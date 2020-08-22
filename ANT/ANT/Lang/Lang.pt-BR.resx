@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About" xml:space="preserve">
+    <value>Sobre</value>
+  </data>
   <data name="AddedToFavorite" xml:space="preserve">
     <value>Adicionado nos favoritos</value>
   </data>
@@ -135,6 +138,9 @@
   <data name="Animeography" xml:space="preserve">
     <value>Animegrafia</value>
   </data>
+  <data name="AppDetails" xml:space="preserve">
+    <value>Detalhes do aplicativo</value>
+  </data>
   <data name="ApplyFilter" xml:space="preserve">
     <value>Aplicar filtro</value>
   </data>
@@ -152,6 +158,9 @@
   </data>
   <data name="Broadcast" xml:space="preserve">
     <value>Transmissão</value>
+  </data>
+  <data name="BuildDate" xml:space="preserve">
+    <value>Data de compilação</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancelar</value>
@@ -279,6 +288,9 @@
   <data name="LastSeen" xml:space="preserve">
     <value>Visto pela última vez</value>
   </data>
+  <data name="Licenses" xml:space="preserve">
+    <value>Licenças</value>
+  </data>
   <data name="LoadingMoreData" xml:space="preserve">
     <value>Carregando mais dados...</value>
   </data>
@@ -321,8 +333,14 @@
   <data name="Others" xml:space="preserve">
     <value>Outros</value>
   </data>
+  <data name="Overview" xml:space="preserve">
+    <value>Visão geral</value>
+  </data>
   <data name="Parent" xml:space="preserve">
     <value>Principal</value>
+  </data>
+  <data name="PatchNotes" xml:space="preserve">
+    <value>Notas de lançamentos</value>
   </data>
   <data name="Pictures" xml:space="preserve">
     <value>Imagens</value>
@@ -488,6 +506,9 @@
   </data>
   <data name="UserData" xml:space="preserve">
     <value>Dados do usuário</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versão</value>
   </data>
   <data name="VoiceActingRoles" xml:space="preserve">
     <value>Papeis em dublagens</value>

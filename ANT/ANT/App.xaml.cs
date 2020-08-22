@@ -28,6 +28,8 @@ namespace ANT
         {
             InitializeComponent();
 
+            Xamarin.Essentials.VersionTracking.Track();
+
             Device.SetFlags(new[]
             {
                 "RadioButton_Experimental", "Expander_Experimental" , //"SwipeView_Experimental"
