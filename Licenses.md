@@ -1,3 +1,11 @@
+## JikanDotNet
+
+https://github.com/Ervie/jikan.net/blob/master/LICENSE
+
+## LiteDB
+
+https://www.nuget.org/packages/LiteDB/5.0.9/license
+
 ## Plugin.LocalNotifications
 
 https://github.com/thudugala/Plugin.LocalNotification/blob/master/LICENSE
