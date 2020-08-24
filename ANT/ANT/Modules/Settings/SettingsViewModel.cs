@@ -227,23 +227,19 @@ namespace ANT.Modules
         public ICommand OverviewCommand { get; private set; }
         private async Task OnOverview()
         {
-            //TODO:navegar para ant readme.md(a home) no github(testar no dispositivo real)
-            await Launcher.TryOpenAsync("https://github.com/JaoHundred/ANT#ant");
+            await Launcher.TryOpenAsync(UsefulLinksConsts.Overview);
         }
 
         public ICommand PatchNotesCommand { get; private set; }
         private async Task OnPatchNotes()
         {
-            //TODO: criar PatchNote.md ou ver como funciona o release no github
-            //TODO:navegar para patch notes do projeto ant no github
-            //await Launcher.TryOpenAsync("");
+            await Launcher.TryOpenAsync(UsefulLinksConsts.Releases);
         }
 
         public ICommand LicensesCommand { get; private set; }
         private async Task OnLicenses()
         {
-            //TODO: criar licenses.md no github
-            //await Launcher.TryOpenAsync("");
+            await Launcher.TryOpenAsync(UsefulLinksConsts.Licenses);
         }
 
         #endregion
