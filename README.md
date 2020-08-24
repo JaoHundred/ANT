@@ -2,6 +2,8 @@
 ANimeTracking(Android)
 
 
+## English
+
 ANimeTracking is an app for you to keep the tracking of your favorite anime shows. This was possible thanks to the Jikan API, Jikan.Net and MyAnimeList website.
 
 ### Features:
@@ -16,6 +18,38 @@ ANimeTracking is an app for you to keep the tracking of your favorite anime show
 - Favorite anime characters and voice actors
 - See details about anime characters and voice actors
 
+### Supported Languages
+
+- English (en-US)
+- Portuguese (pt-BR)
+
+Supported language don't include text from MyAnimeList Databases (only en-US is available in this case).
+
+## Português
+
+ANimeTracking é um aplicativo para você manter registro dos seus shows favoritos de animes. Isso foi possível graças a Jikan.API, Jikan.Net e o site MyAnimeList.
+
+### Funcionalidades:
+
+- Ver animes por temporada
+- Ver todos os animes de todos os tempos
+- Filtre por gênero, ordene por data inicial ou por título
+- Favorite animes e os veja ordenados pelo dia da semana
+- Filtre animes favoritados pela transmissão(dia da semana) e gêneros
+- Receba recomendações com base nos seus animes favoritados
+- Favorite vários animes de uma só vez
+- Favorite personagens de animes e dubladores
+- Veja detalhes sobre personagens de animes e dubladores
+
+### Linguagens Suportadas
+
+- Inglês (en-US)
+- Português (pt-BR)
+
+Linguagens suportadas não incluem o texto recebido do banco de dados do MyAnimeList (somente en-US é suportado para esse caso).
+
+## App
+
 ### Light Mode
 
 <img src="AppPrints/LightMode/1.png" width=300 height=500> <img src="AppPrints/LightMode/2.png" width=300 height=500> <img src="AppPrints/LightMode/3.png" width=300 height=500> 
@@ -25,12 +59,3 @@ ANimeTracking is an app for you to keep the tracking of your favorite anime show
 ### Dark Mode
 
 <img src="AppPrints/DarkMode/8.png" width=300 height=500> <img src="AppPrints/DarkMode/10.png" width=300 height=500> <img src="AppPrints/DarkMode/16.png" width=300 height=500> <img src="AppPrints/DarkMode/12.png" width=300 height=500> <img src="AppPrints/DarkMode/22.png" width=300 height=500> <img src="AppPrints/DarkMode/13.png" width=300 height=500> 
-
-
-
-### Supported Languages
-
-- English (en-US)
-- Portuguese (pt-BR)
-
-Supported language don't include text from MyAnimeList Databases (only en-US is available in this case)
