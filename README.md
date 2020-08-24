@@ -1,7 +1,3 @@
-# ANT
-ANimeTracking(Android)
-
-
 ## English
 
 ANimeTracking is an app for you to keep the tracking of your favorite anime shows. This was possible thanks to the Jikan API, Jikan.Net and MyAnimeList website.
