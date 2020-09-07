@@ -50,6 +50,9 @@ namespace ANT.UTIL
                     break;
             }
 
+            if (App.liteErrorLogDB == null)
+                App.StartErrorLogLiteDB();
+
                 var errorLogCollection = App.liteErrorLogDB.GetCollection<ErrorLog>();
                 errorLogCollection.Insert(error);
 

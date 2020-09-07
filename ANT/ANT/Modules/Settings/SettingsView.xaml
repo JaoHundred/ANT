@@ -94,8 +94,8 @@
                     </ViewCell>
                 </TableSection>
                 <TableSection>
-                    <!--<ViewCell>
-                        <Grid Margin="5" IsVisible="false">
+                    <ViewCell>
+                        <Grid Margin="5">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
@@ -121,7 +121,7 @@
                             </StackLayout>
                         </Grid>
 
-                    </ViewCell>-->
+                    </ViewCell>
                 </TableSection>
                 <TableSection>
                     <ViewCell>

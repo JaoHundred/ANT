@@ -11,6 +11,9 @@ using ANT.Model;
 using System.Windows.Input;
 using ANT.Interfaces;
 using magno = MvvmHelpers.Commands;
+using Shiny;
+using Shiny.Notifications;
+using Shiny.Jobs;
 
 namespace ANT.Modules
 {
@@ -98,18 +101,11 @@ namespace ANT.Modules
                 {
                     Settings.HourToNotify = value;
 
-                    var worksIds = new[]
+                    Task.Run(async() => 
                     {
-                        WorkManagerConsts.AnimesNotificationWorkId,
-                        WorkManagerConsts.ReschedulerWorkId,
-                    };
-
-                    DependencyService.Get<IWork>().CancelWork(WorkManagerConsts.AnimesNotificationWorkId);
-
-                    //DependencyService.Get<IAlarm>()
-                    //     .StartAlarmRTCWakeUp(Settings.HourToNotify, int.Parse(WorkManagerConsts.AnimesNotificationWorkId), TimeSpan.FromDays(1));
-                    var hourToNotify = DependencyService.Get<IWork>().InitialDelay(Settings.HourToNotify);
-                    DependencyService.Get<IWork>().CreateOneTimeWorkAndKeep(WorkManagerConsts.ReschedulerWorkId, hourToNotify);
+                        await App.CancelJobAsync(WorkManagerConsts.AnimesNotificationWorkId);
+                        await App.RunJobAsync(typeof(NotificationJob), WorkManagerConsts.AnimesNotificationWorkId);
+                    });
 
                     App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, Settings);
 
@@ -118,74 +114,16 @@ namespace ANT.Modules
             }
         }
 
-
-
-        //private int _selectedLangIndex;
-        //public int SelectedLangIndex
-        //{
-        //    get => _selectedLangIndex;
-        //    set
-        //    {
-        //        if (_selectedLangIndex == value)
-        //            return;
-
-        //        SetProperty(ref _selectedLangIndex, value);
-
-        //        //switch (_selectedLangIndex)
-        //        //{
-        //        //    case 0://english
-        //        //        CultureManager.SetCultureAsync(CultureManager.Culture.English);
-        //        //        break;
-        //        //    case 1://portuguese
-        //        //        CultureManager.SetCultureAsync(CultureManager.Culture.Portuguese);
-        //        //        break;
-        //        //}
-        //    }
-        //}
-
-        //private bool _isAutomaticTranslate;
-
-        //public bool IsAutomaticTranslate
-        //{
-        //    get => _isAutomaticTranslate;
-        //    set
-        //    {
-        //        if (_isAutomaticTranslate == value)
-        //            return;
-
-        //        SetProperty(ref _isAutomaticTranslate, value);
-
-        //        //App.SettingsPreferences.AutomaticTranslate = _isAutomaticTranslate;
-        //        //JsonStorage.SaveSettingsAsync(App.SettingsPreferences, StorageConsts.LocalAppDataFolder, StorageConsts.SettingsFileName);
-        //    }
-        //}
-
         #region commands
-
-
         public ICommand SwitchNotificationCommand { get; private set; }
-        private void OnSwitchNotification()
+        private async void OnSwitchNotification()
         {
             if (Settings != null)
             {
                 if (Settings.NotificationsIsOn)
-                {
-                    var hourToNotify = DependencyService.Get<IWork>().InitialDelay(Settings.HourToNotify);
-                    DependencyService.Get<IWork>().CreateOneTimeWorkAndKeep(WorkManagerConsts.ReschedulerWorkId, hourToNotify);
-                    //DependencyService.Get<IAlarm>()
-                    //    .StartAlarmRTCWakeUp(Settings.HourToNotify, int.Parse(WorkManagerConsts.AnimesNotificationWorkId), TimeSpan.FromDays(1));
-                }
+                    await App.RunJobAsync(typeof(NotificationJob), WorkManagerConsts.AnimesNotificationWorkId);
                 else
-                {
-                    var worksIds = new[]
-                    {
-                        WorkManagerConsts.AnimesNotificationWorkId,
-                        WorkManagerConsts.ReschedulerWorkId,
-                    };
-
-                    DependencyService.Get<IWork>().CancelWork(worksIds);
-                    //DependencyService.Get<IAlarm>().CancelAlarm(int.Parse(WorkManagerConsts.AnimesNotificationWorkId));
-                }
+                    await App.CancelJobAsync(WorkManagerConsts.AnimesNotificationWorkId);
 
                 App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, Settings);
             }

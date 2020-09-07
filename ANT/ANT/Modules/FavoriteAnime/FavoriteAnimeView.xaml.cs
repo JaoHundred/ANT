@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Xamanimation;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using NotificationManager = ANT.Core.NotificationManager;
 
 namespace ANT.Modules
 {
@@ -57,17 +56,6 @@ namespace ANT.Modules
         {
             if (e.PropertyName == "IsVisible" && DeleteButton.IsVisible)
                 await DeleteButton.Animate(new ShakeAnimation());
-        }
-
-        //TODO: O método logo abaixo é para testes, remover quando estiver tudo funcionando
-        private void gerador_de_notificacao(object sender, EventArgs e)
-        {
-            var animes = (BindingContext as FavoriteAnimeViewModel).GroupedFavoriteByWeekList.SelectMany(p => p.Select(q => q));
-
-            foreach (var item in animes)
-            {
-                NotificationManager.CreateNotificationAsync(item, Consts.NotificationChannelTodayAnime, DateTime.Now.AddMinutes(3));
-            }
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)

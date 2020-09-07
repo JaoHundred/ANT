@@ -10,8 +10,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using ANT.Droid.Helpers;
-using ANT.Droid.Scheduler;
 using AndroidX;
 using AndroidX.Work;
 using ANT.Model;
@@ -35,22 +33,17 @@ namespace ANT.Droid.Broadcast
         {
             OnReceive(context, intent);
 
-            if (App.liteDB == null)
-                App.StartLiteDB();
+            //if (App.liteDB == null)
+            //    App.StartLiteDB();
 
-            var bd = ANT.App.liteDB.GetCollection<SettingsPreferences>();
-            var settings = bd.FindById(0);
+            //var bd = ANT.App.liteDB.GetCollection<SettingsPreferences>();
+            //var settings = bd.FindById(0);
 
-            if (settings == null)
-            {
-                settings = new SettingsPreferences();
-                ANT.App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, settings);
-            }
-
-            //TODO: se o work manager funcionar, apagar o conteúdo desse método
-            //if (settings.NotificationsIsOn)
-            //    new AlarmManagerHelper()
-            //        .StartAlarmRTCWakeUp(settings.HourToNotify, int.Parse(WorkManagerConsts.AnimesNotificationWorkId), TimeSpan.FromDays(1));
+            //if (settings == null)
+            //{
+            //    settings = new SettingsPreferences();
+            //    ANT.App.liteDB.GetCollection<SettingsPreferences>().Upsert(0, settings);
+            //}
         }
     }
 }
