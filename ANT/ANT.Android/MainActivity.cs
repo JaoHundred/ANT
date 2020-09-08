@@ -36,19 +36,9 @@ namespace ANT.Droid
             
             base.OnCreate(savedInstanceState);
 
-
-            //Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
-            //NotificationCenter.CreateNotificationChannel(
-            //            new Plugin.LocalNotification.Platform.Droid.NotificationChannelRequest
-            //            {
-            //                Id = Consts.NotificationChannelTodayAnime,
-            //                Name = "Today Animes",
-            //                Description = "General",
-            //            });
-
 
             LoadApplication(new App());
             this.ShinyOnCreate();
@@ -128,13 +118,6 @@ namespace ANT.Droid
         {
             base.OnNewIntent(intent);
             this.ShinyOnNewIntent(intent);
-        }
-
-        public void CancelJob(int jobId)
-        {
-            var tm = (JobScheduler)GetSystemService(Context.JobSchedulerService);
-
-            tm.Cancel(jobId);
         }
 
     }

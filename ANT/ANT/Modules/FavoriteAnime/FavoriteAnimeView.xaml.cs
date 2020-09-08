@@ -19,9 +19,6 @@ namespace ANT.Modules
         {
             InitializeComponent();
 
-#if DEBUG
-            //NotificationTester.IsVisible = true;
-#endif   
             BindingContext = new FavoriteAnimeViewModel();
         }
 
