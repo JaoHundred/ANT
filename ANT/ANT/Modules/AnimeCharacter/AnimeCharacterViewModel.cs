@@ -145,7 +145,7 @@ namespace ANT.Modules
         public ICommand OpenLinkCommand { get; private set; }
         private async Task OpenLink(string link)
         {
-            await Launcher.TryOpenAsync(link);
+            await LauncherHelper.OpenLinkAsync(link);
         }
 
         #endregion

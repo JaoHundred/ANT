@@ -14,6 +14,7 @@ using magno = MvvmHelpers.Commands;
 using Shiny;
 using Shiny.Notifications;
 using Shiny.Jobs;
+using ANT.UTIL;
 
 namespace ANT.Modules
 {
@@ -165,21 +166,23 @@ namespace ANT.Modules
         public ICommand OverviewCommand { get; private set; }
         private async Task OnOverview()
         {
-            await Launcher.TryOpenAsync(UsefulLinksConsts.Overview);
+            await LauncherHelper.OpenLinkAsync(UsefulLinksConsts.Overview);
         }
 
         public ICommand PatchNotesCommand { get; private set; }
         private async Task OnPatchNotes()
         {
-            await Launcher.TryOpenAsync(UsefulLinksConsts.Releases);
+            await LauncherHelper.OpenLinkAsync(UsefulLinksConsts.Releases);
         }
 
         public ICommand LicensesCommand { get; private set; }
         private async Task OnLicenses()
         {
-            await Launcher.TryOpenAsync(UsefulLinksConsts.Licenses);
+            await LauncherHelper.OpenLinkAsync(UsefulLinksConsts.Licenses);
         }
 
         #endregion
+
+       
     }
 }

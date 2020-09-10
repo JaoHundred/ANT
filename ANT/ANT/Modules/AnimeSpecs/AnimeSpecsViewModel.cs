@@ -388,7 +388,8 @@ namespace ANT.Modules
             {
                 IsBusy = true;
                 await Task.Delay(TimeSpan.FromMilliseconds(500));
-                await Launcher.TryOpenAsync(SelectedNews.Url);
+
+                await LauncherHelper.OpenLinkAsync(SelectedNews.Url);
                 IsBusy = false;
             }
 
@@ -397,7 +398,7 @@ namespace ANT.Modules
         public ICommand OpenLinkCommand { get; private set; }
         private async Task OnLink(string link)
         {
-            await Launcher.TryOpenAsync(link);
+            await LauncherHelper.OpenLinkAsync(link);
         }
 
         public ICommand OpenAnimeCommand { get; private set; }
