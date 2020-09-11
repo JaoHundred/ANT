@@ -1231,6 +1231,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Data location.
+        /// </summary>
+        public static string UserDataLocation {
+            get {
+                return ResourceManager.GetString("UserDataLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version.
         /// </summary>
         public static string Version {

@@ -29,6 +29,7 @@ namespace ANT.Modules
 
             SelectedThemeIndex = Settings.SelectedThemeIndex;
             CurrentVersion = Xamarin.Essentials.VersionTracking.CurrentVersion;
+            DataDirectory = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
             //SelectedLangIndex = App.SettingsPreferences.SelectedLanguageIndex;
             //IsAutomaticTranslate = App.SettingsPreferences.AutomaticTranslate;
 
@@ -38,6 +39,7 @@ namespace ANT.Modules
             OverviewCommand = new magno.AsyncCommand(OnOverview);
             PatchNotesCommand = new magno.AsyncCommand(OnPatchNotes);
             LicensesCommand = new magno.AsyncCommand(OnLicenses);
+            OpenDefaultFileAppCommand = new magno.AsyncCommand(OpenDefaultFileApp);
         }
 
         public Task InitializeTask { get; }
@@ -87,6 +89,13 @@ namespace ANT.Modules
         {
             get { return _currentVersion; }
             set { SetProperty(ref _currentVersion, value); }
+        }
+
+        private string _dataDirectory;
+        public string DataDirectory
+        {
+            get { return _dataDirectory; }
+            set { SetProperty(ref _dataDirectory, value); }
         }
 
         public SettingsPreferences Settings { get; set; }
@@ -181,8 +190,14 @@ namespace ANT.Modules
             await LauncherHelper.OpenLinkAsync(UsefulLinksConsts.Licenses);
         }
 
+        public ICommand OpenDefaultFileAppCommand { get; private set; }
+        private async Task OpenDefaultFileApp()
+        {
+            await LauncherHelper.OpenAppAsync(DataDirectory);
+        }
+
         #endregion
 
-       
+
     }
 }

@@ -507,6 +507,9 @@
   <data name="UserData" xml:space="preserve">
     <value>Dados do usuário</value>
   </data>
+  <data name="UserDataLocation" xml:space="preserve">
+    <value>Diretório dos dados</value>
+  </data>
   <data name="Version" xml:space="preserve">
     <value>Versão</value>
   </data>

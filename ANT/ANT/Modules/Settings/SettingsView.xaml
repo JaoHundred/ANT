@@ -51,114 +51,135 @@
                 </TableSection>
                 <TableSection>
                     <ViewCell>
-                        <Grid Margin="5">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-
+                        <Grid RowDefinitions="auto,*" Margin="5">
                             <Label Text="{res:Translate NSFW}" Style="{StaticResource MenuLabelColorStyle}"/>
+                            <Grid Margin="5" Grid.Row="1">
 
-                            <Switch x:Name="NSFWSwitch" Grid.Row="1" IsToggled="{Binding Settings.ShowNSFW, Mode=TwoWay}">
-                                <Switch.Behaviors>
-                                    <behavior:EventToCommandBehavior EventName="Toggled"
+                                <Switch x:Name="NSFWSwitch" IsToggled="{Binding Settings.ShowNSFW, Mode=TwoWay}">
+                                    <Switch.Behaviors>
+                                        <behavior:EventToCommandBehavior EventName="Toggled"
                                                                      Command="{Binding SwitchNSFWCommand}"/>
-                                </Switch.Behaviors>
-                            </Switch>
-                            <Label Grid.Row="1" Margin="3,0,0,0" Text="{Binding IsToggled, Source={x:Reference NSFWSwitch}
+                                    </Switch.Behaviors>
+                                </Switch>
+                                <Label Margin="3,0,0,0" Text="{Binding IsToggled, Source={x:Reference NSFWSwitch}
                                 , Converter={StaticResource BoolToStringConverter}}" FontSize="Subtitle"/>
+                            </Grid>
                         </Grid>
+
                     </ViewCell>
                 </TableSection>
                 <TableSection >
                     <ViewCell >
-                        <Grid Margin="5" RowDefinitions="auto, auto, auto" >
+                        <Grid RowDefinitions="auto,*" Margin="5">
                             <Label Text="{res:Translate UserData}" Style="{StaticResource MenuLabelColorStyle}"/>
+                            <Grid Margin="5" Grid.Row="1" RowDefinitions="*,auto">
+                                
+                                <Label Grid.ColumnSpan="2" FontSize="Subtitle">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenDefaultFileAppCommand}"/>
+                                    </Label.GestureRecognizers>
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{res:Translate UserDataLocation}" d:Text="User data Location"/>
+                                            <Span Text="{x:Static x:Environment.NewLine}"/>
+                                            <Span Text="{x:Static x:Environment.NewLine}"/>
+                                            <Span Text="{Binding DataDirectory}" FontAttributes="Bold"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
 
-                            <Label Grid.Row="1" FontSize="Subtitle">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding DatabaseInfo.DatabaseName, Mode=TwoWay}" d:Text="banco"/>
-                                        <Span Text=" "/>
-                                        <Span Text="{Binding DatabaseInfo.CollectionDataCount, Mode=TwoWay}"/>
-                                        <Span Text=" "/>
-                                        <Span Text="{res:Translate Registry}" d:Text="Registry"/>
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                            <Button Grid.Row="2" Text="{res:Translate ClearDatabase}" Command="{Binding ClearDatabaseCommand}"
-                                    Style="{StaticResource SpecsButtonStyle}" HorizontalOptions="Start"/>
+                                <Label Grid.Row="1" FontSize="Subtitle" VerticalOptions="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding DatabaseInfo.DatabaseName, Mode=TwoWay}" d:Text="banco"/>
+                                            <Span Text=" "/>
+                                            <Span Text="{Binding DatabaseInfo.CollectionDataCount, Mode=TwoWay}" d:Text="10"/>
+                                            <Span Text=" "/>
+                                            <Span Text="{res:Translate Registry}" d:Text="Registry"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Button Grid.Row="1" Grid.Column="1" HeightRequest="35" 
+                                    Text="{res:Translate ClearDatabase}" Command="{Binding ClearDatabaseCommand}"
+                                    Style="{StaticResource SpecsButtonStyle}" HorizontalOptions="End"/>
 
+                            </Grid>
                         </Grid>
+
                     </ViewCell>
                 </TableSection>
                 <TableSection>
                     <ViewCell>
-                        <Grid Margin="5">
+
+                        <Grid Margin="5" Grid.Row="1">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-
                             <Label Text="{res:Translate AnimeNotifications}" Style="{StaticResource MenuLabelColorStyle}"/>
 
                             <Switch x:Name="NotificationSwitch" Grid.Row="1" IsToggled="{Binding Settings.NotificationsIsOn, Mode=TwoWay}">
                                 <Switch.Behaviors>
                                     <behavior:EventToCommandBehavior EventName="Toggled"
-                                                                     Command="{Binding SwitchNotificationCommand}"/>
+                                                                         Command="{Binding SwitchNotificationCommand}"/>
                                 </Switch.Behaviors>
                             </Switch>
                             <Label Grid.Row="1" Margin="3,0,0,0" Text="{Binding IsToggled, Source={x:Reference NotificationSwitch}
                                 , Converter={StaticResource BoolToStringConverter}}" FontSize="Subtitle"/>
 
-                            <StackLayout Grid.Row="2" IsVisible="{Binding IsToggled, Source={x:Reference NotificationSwitch}}">
+                            <StackLayout Grid.Row="2" IsVisible="{Binding IsToggled, Source={x:Reference NotificationSwitch}}"
+                                         Margin="5">
 
-                                <Label Text="{res:Translate HourToNotify}" FontSize="Subtitle"  Margin="3,0,0,0"/>
+                                <Label Text="{res:Translate HourToNotify}" FontSize="Subtitle"  />
                                 <TimePicker TextColor="{DynamicResource TextColor}"
                                         Time="{Binding TimeToNotify, Mode=TwoWay}"/>
                             </StackLayout>
                         </Grid>
 
-                    </ViewCell>
-                </TableSection>
-                <TableSection>
-                    <ViewCell>
-                        <Grid Margin="5" >
-                            <Label Text="{res:Translate About}" Style="{StaticResource MenuLabelColorStyle}"/>
-                            <Label Grid.Row="1" Text="{res:Translate Overview}" FontSize="Subtitle">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding OverviewCommand}"/>
-                                </Label.GestureRecognizers>
-                            </Label>
-                            <Label Grid.Row="2" Text="{res:Translate PatchNotes}" FontSize="Subtitle" >
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding PatchNotesCommand}"/>
-                                </Label.GestureRecognizers>
-                            </Label>
-                            <Label Grid.Row="3" Text="{res:Translate Licenses}" FontSize="Subtitle" >
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding LicensesCommand}"/>
-                                </Label.GestureRecognizers>
-                            </Label>
-                        </Grid>
-                    </ViewCell>
-                </TableSection>
-                <TableSection>
-                    <ViewCell>
-                        <Grid Margin="5">
-                            <Label Text="{res:Translate AppDetails}" Style="{StaticResource MenuLabelColorStyle}"/>
-                            <Label Grid.Row="1" d:Text="1.0.0" Text="{Binding CurrentVersion}" FontSize="Subtitle">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{res:Translate Version}"/>
-                                        <Span Text=" "/>
-                                        <Span Text="{Binding CurrentVersion}"/>
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
 
+                    </ViewCell>
+                </TableSection>
+                <TableSection>
+                    <ViewCell>
+                        <Grid RowDefinitions="auto,*" Margin="5">
+                            <Label Text="{res:Translate About}" Style="{StaticResource MenuLabelColorStyle}"/>
+                            <Grid Margin="5" Grid.Row="1">
+                                <Label Text="{res:Translate Overview}" FontSize="Subtitle">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OverviewCommand}"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                                <Label Grid.Row="1" Text="{res:Translate PatchNotes}" FontSize="Subtitle" >
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding PatchNotesCommand}"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                                <Label Grid.Row="2" Text="{res:Translate Licenses}" FontSize="Subtitle" >
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding LicensesCommand}"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+                        </Grid>
+
+                    </ViewCell>
+                </TableSection>
+                <TableSection>
+                    <ViewCell>
+                        <Grid RowDefinitions="auto,*" Margin="5">
+                            <Label Text="{res:Translate AppDetails}" Style="{StaticResource MenuLabelColorStyle}"/>
+                            <Grid Margin="5" Grid.Row="1">
+                                <Label d:Text="1.0.0" Text="{Binding CurrentVersion}" FontSize="Subtitle">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{res:Translate Version}"/>
+                                            <Span Text=" "/>
+                                            <Span Text="{Binding CurrentVersion}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </Grid>
                         </Grid>
                     </ViewCell>
                 </TableSection>
