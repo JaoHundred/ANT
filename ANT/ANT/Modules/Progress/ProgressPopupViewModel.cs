@@ -186,8 +186,6 @@ namespace ANT.Modules
                     double result = (double)i / total;
                     MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
 
-                    await App.DelayRequest(4);
-
                     if (_cancelationToken != null && _cancelationToken.IsCancellationRequested)
                         _cancelationToken.Token.ThrowIfCancellationRequested();
 
@@ -196,13 +194,17 @@ namespace ANT.Modules
                     if ((favoriteAnime.LastUpdateDate == null)
                         || (favoriteAnime.LastUpdateDate != null && favoriteAnime.LastUpdateDate != DateTime.Today))
                     {
+                        await App.DelayRequest(4);
+
                         Anime anime = await App.Jikan.GetAnime(favoriteAnime.Anime.MalId);
                         anime.RequestCached = true;
 
                         int lastEpisode = favoriteAnime.LastEpisodeSeen;
                         bool hasNotification = favoriteAnime.CanGenerateNotifications;
 
-                        favoriteAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
+                        //TODO:linha dos episódios comentados pelo motivo do MAL estar instável e isso gerar uma carga desnecessária
+                        //a informação importante é apenas os dados do anime
+                        favoriteAnime = new FavoritedAnime(anime/*, await anime.GetAllEpisodesAsync(_cancelationToken)*/);
                         favoriteAnime.LastUpdateDate = DateTime.Today;
                         favoriteAnime.IsFavorited = true;
                         favoriteAnime.LastEpisodeSeen = lastEpisode;

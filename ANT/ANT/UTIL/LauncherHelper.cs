@@ -28,7 +28,7 @@ namespace ANT.UTIL
         }
 
         /// <summary>
-        /// Abre um app específico pela sua URI-scheme
+        /// Abre um app específico pela sua uri-scheme
         /// </summary>
         /// <param name="appLink">uri-scheme do app</param>
         /// <returns></returns>
