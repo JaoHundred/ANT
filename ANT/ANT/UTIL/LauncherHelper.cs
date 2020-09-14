@@ -37,14 +37,13 @@ namespace ANT.UTIL
             if (Device.RuntimePlatform == Device.Android)
             {
                 //TODO:https://github.com/JaoHundred/ANT/issues/79
-                
+
                 //TODO: ver qual é o uri-scheme do app padrão do android "Files/Arquivos" e o que precisa para abrir
-                string path = $"Files://{appLink}";
+                string path = $"Files://";
 
-                bool canOpen = await Launcher.CanOpenAsync(path);
 
-                if (canOpen)
-                    await Launcher.TryOpenAsync(path);
+                bool open = await Launcher.TryOpenAsync(path);
+
             }
         }
     }

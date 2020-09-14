@@ -17,6 +17,7 @@
     <ContentPage.Resources>
         <convert:InversorConverter x:Key="InversorConverter"/>
         <convert:BoolToOnOffStringSwitchConverter x:Key="BoolToStringConverter"/>
+        <convert:UserFriendlyPathConverter x:Key="UserFriendlyPathConverter"/>
 
     </ContentPage.Resources>
 
@@ -83,7 +84,7 @@
                                             <Span Text="{res:Translate UserDataLocation}" d:Text="User data Location"/>
                                             <Span Text="{x:Static x:Environment.NewLine}"/>
                                             <Span Text="{x:Static x:Environment.NewLine}"/>
-                                            <Span Text="{Binding DataDirectory}" FontAttributes="Bold"/>
+                                            <Span Text="{Binding DataDirectory, Converter={StaticResource UserFriendlyPathConverter}}" FontAttributes="Bold"/>
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
