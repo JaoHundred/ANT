@@ -26,25 +26,5 @@ namespace ANT.UTIL
                 PreferredToolbarColor = (Color)colorDictionary["StatusBarColor"]
             });
         }
-
-        /// <summary>
-        /// Abre um app específico pela sua uri-scheme
-        /// </summary>
-        /// <param name="appLink">uri-scheme do app</param>
-        /// <returns></returns>
-        public static async Task OpenAppAsync(string appLink)
-        {
-            if (Device.RuntimePlatform == Device.Android)
-            {
-                //TODO:https://github.com/JaoHundred/ANT/issues/79
-
-                //TODO: ver qual é o uri-scheme do app padrão do android "Files/Arquivos" e o que precisa para abrir
-                string path = $"Files://";
-
-
-                bool open = await Launcher.TryOpenAsync(path);
-
-            }
-        }
     }
 }

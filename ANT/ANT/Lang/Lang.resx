@@ -201,6 +201,9 @@
   <data name="Confirm" xml:space="preserve">
     <value>Confirm</value>
   </data>
+  <data name="Data" xml:space="preserve">
+    <value>Data</value>
+  </data>
   <data name="DayOfWeek" xml:space="preserve">
     <value>Day of week</value>
   </data>

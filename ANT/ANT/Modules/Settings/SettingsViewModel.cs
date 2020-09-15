@@ -39,7 +39,6 @@ namespace ANT.Modules
             OverviewCommand = new magno.AsyncCommand(OnOverview);
             PatchNotesCommand = new magno.AsyncCommand(OnPatchNotes);
             LicensesCommand = new magno.AsyncCommand(OnLicenses);
-            OpenDefaultFileAppCommand = new magno.AsyncCommand(OpenDefaultFileApp);
         }
 
         public Task InitializeTask { get; }
@@ -190,14 +189,6 @@ namespace ANT.Modules
             await LauncherHelper.OpenLinkAsync(UsefulLinksConsts.Licenses);
         }
 
-        public ICommand OpenDefaultFileAppCommand { get; private set; }
-        private async Task OpenDefaultFileApp()
-        {
-            await LauncherHelper.OpenAppAsync(DataDirectory);
-        }
-
         #endregion
-
-
     }
 }

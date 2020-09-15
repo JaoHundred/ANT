@@ -73,23 +73,15 @@
                     <ViewCell >
                         <Grid RowDefinitions="auto,*" Margin="5">
                             <Label Text="{res:Translate UserData}" Style="{StaticResource MenuLabelColorStyle}"/>
-                            <Grid Margin="5" Grid.Row="1" RowDefinitions="*,auto">
-                                
-                                <Label Grid.ColumnSpan="2" FontSize="Subtitle">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding OpenDefaultFileAppCommand}"/>
-                                    </Label.GestureRecognizers>
-                                    <Label.FormattedText>
-                                        <FormattedString>
-                                            <Span Text="{res:Translate UserDataLocation}" d:Text="User data Location"/>
-                                            <Span Text="{x:Static x:Environment.NewLine}"/>
-                                            <Span Text="{x:Static x:Environment.NewLine}"/>
-                                            <Span Text="{Binding DataDirectory, Converter={StaticResource UserFriendlyPathConverter}}" FontAttributes="Bold"/>
-                                        </FormattedString>
-                                    </Label.FormattedText>
-                                </Label>
+                            <Grid Margin="5" Grid.Row="1" RowDefinitions="auto,*,*,auto" ColumnDefinitions="*,auto">
 
-                                <Label Grid.Row="1" FontSize="Subtitle" VerticalOptions="Center">
+                                <Label Text="{res:Translate UserDataLocation}" d:Text="User data Location" FontAttributes="Bold"
+                                       FontSize="Subtitle"/>
+                                <Label Grid.Row="1" Text="{Binding DataDirectory, Converter={StaticResource UserFriendlyPathConverter}}" Grid.ColumnSpan="2"
+                                       Margin="3,0,0,0"/>
+
+                                <Label Grid.Row="2" Text="Data" FontAttributes="Bold" FontSize="Subtitle"/>
+                                <Label Grid.Row="3" VerticalOptions="Center" Margin="3,0,0,0">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="{Binding DatabaseInfo.DatabaseName, Mode=TwoWay}" d:Text="banco"/>
@@ -100,9 +92,9 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Button Grid.Row="1" Grid.Column="1" HeightRequest="35" 
-                                    Text="{res:Translate ClearDatabase}" Command="{Binding ClearDatabaseCommand}"
-                                    Style="{StaticResource SpecsButtonStyle}" HorizontalOptions="End"/>
+                                <Button Grid.Row="3" Grid.Column="1" HeightRequest="35"
+                                        Text="{res:Translate ClearDatabase}" Command="{Binding ClearDatabaseCommand}"
+                                        Style="{StaticResource SpecsButtonStyle}"/>
 
                             </Grid>
                         </Grid>
