@@ -130,7 +130,7 @@ namespace ANT.Modules
                     Anime anime = await App.Jikan.GetAnime(collection[i].Anime.MalId);
                     anime.RequestCached = true;
 
-                    var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
+                    var favoritedAnime = new FavoritedAnime(anime/*, await anime.GetAllEpisodesAsync(_cancelationToken)*/);
                     favoritedAnime.IsFavorited = true;
                     favoritedAnime.LastUpdateDate = DateTime.Today;
                     favoritedAnime.NextStreamDate = await favoritedAnime.NextEpisodeDateAsync();

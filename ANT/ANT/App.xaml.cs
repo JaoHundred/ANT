@@ -47,11 +47,13 @@ namespace ANT
         public static IJikan Jikan { get; private set; }
         protected async override void OnStart()
         {
+            LiteDBHelper.MigrateDatabase();
+
             if (liteDB == null)
-                StartLiteDB();
+                LiteDBHelper.StartLiteDB();
 
             if (liteErrorLogDB == null)
-                StartErrorLogLiteDB();
+                LiteDBHelper.StartErrorLogLiteDB();
 
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
@@ -65,7 +67,7 @@ namespace ANT
                 if (Device.RuntimePlatform == Device.Android)
                     await RunJobAsync(typeof(NotificationJob), WorkManagerConsts.AnimesNotificationWorkId);
             }
-            
+
 
             //TODO: repetir o mesmo procedimento acima para essa parte, para o work de atualização de animes na lista de favoritos
             //(repetir também no BootBroadcastReceiver)
@@ -94,11 +96,11 @@ namespace ANT
             foreach (var item in await ShinyHost.Resolve<IJobManager>().GetJobs())
             {
                 Debug.WriteLine($"Job Name: {item.Identifier}");
-            }  
+            }
 #endif
 
             await ShinyHost.Resolve<IJobManager>().Schedule(job);
-            
+
         }
 
         /// <summary>
@@ -112,7 +114,7 @@ namespace ANT
 
             var job = await jobManager.GetJob(jobIdentifier);
 
-            if(job != null)
+            if (job != null)
                 await jobManager.Cancel(job.Identifier);
         }
 
@@ -137,37 +139,7 @@ namespace ANT
         /// <summary>
         /// Método para iniciar o LiteDB
         /// </summary>
-        public static void StartLiteDB()
-        {
-            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
-
-            string fullPath = System.IO.Path.Combine(newLocation, "data");
-
-            BsonMapper bsonMapper = BsonMapper.Global;
-            bsonMapper.Entity<TodayAnimes>().Id(todayAnimes => todayAnimes.Id);
-            bsonMapper.Entity<RecommendationAnimes>().Id(recommendation => recommendation.Id);
-
-            liteDB = new LiteDatabase($"Filename={fullPath}", bsonMapper);
-
-            liteDB.Checkpoint();
-        }
-
-        /// <summary>
-        /// Método para iniciar o liteErrorLogDB
-        /// </summary>
-        public static void StartErrorLogLiteDB()
-        {
-            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
-
-            string fullPath = System.IO.Path.Combine(newLocation, "errorLog");
-
-            BsonMapper bsonMapper = BsonMapper.Global;
-            bsonMapper.Entity<ErrorLog>().Id(errorLog => errorLog.Id);
-
-            liteErrorLogDB = new LiteDatabase($"Filename={fullPath}", bsonMapper);
-
-            liteErrorLogDB.Checkpoint();
-        }
+      
 
         //TODO:se o shiny não precisar do código comentado abaixo, deletar
         //private async void Current_NotificationTapped(NotificationTappedEventArgs e)

@@ -6,13 +6,14 @@ using Xamarin.Forms;
 
 namespace ANT.Converter
 {
-    public class StringToIntConverter : IValueConverter
+    public class NullableIntToMaximumConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int num = 100000;
-            if (value is string str)
-                int.TryParse(str, out num);
+
+            if (value != null)
+                return value;
 
             return num;
         }

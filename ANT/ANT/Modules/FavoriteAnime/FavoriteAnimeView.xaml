@@ -20,7 +20,7 @@
     <ContentPage.Resources>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
         <converter:TranslateEnumConverter x:Key="TranslateEnumConverter"/>
-        <converter:StringToIntConverter x:Key="StringToIntConverter"/>
+        <converter:NullableIntToMaximumConverter x:Key="NullableIntToMaximumConverter"/>
         <converter:CanShowSwitchOnFavoritedAnimeConverter x:Key="CanShowSwitchConverter"/>
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:GenreEnumToSeparateWordConverter x:Key="GenreToStringConverter"/>
@@ -142,7 +142,7 @@
                                        TextColor="{DynamicResource TextColor}"
                                        Text="{Binding Value, Source={x:Reference lastEpisodeStepper}}"/>
                                                 <Stepper Grid.Row="2"  x:Name="lastEpisodeStepper" HorizontalOptions="CenterAndExpand"
-                                         Increment="1" Minimum="0" Maximum="{Binding Anime.Episodes, Converter={StaticResource StringToIntConverter}}" 
+                                         Increment="1" Minimum="0" Maximum="{Binding Anime.Episodes, Converter={StaticResource NullableIntToMaximumConverter}}" 
                                          Value="{Binding LastEpisodeSeen, Mode=TwoWay}" >
                                                     <Stepper.Behaviors>
                                                         <behavior:EventToCommandBehavior EventName="ValueChanged"

@@ -24,7 +24,7 @@ namespace ANT.Core
         {
             //TODO: fazer testes reais de notificação(com app no background e force closed)
             if (App.liteDB == null)
-                App.StartLiteDB();
+                LiteDBHelper.StartLiteDB();
 
             var settings = App.StartSettings();
             
@@ -54,7 +54,7 @@ namespace ANT.Core
                 await Task.Run(() =>
                 {
                     if (App.liteDB == null)
-                        App.StartLiteDB();
+                        LiteDBHelper.StartLiteDB();
 
                     var animes = App.liteDB.GetCollection<FavoritedAnime>()
                         .Find(p => p.CanGenerateNotifications && p.NextStreamDate != null && p.Anime.Airing);

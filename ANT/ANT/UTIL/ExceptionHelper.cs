@@ -1,4 +1,5 @@
-﻿using ANT.Interfaces;
+﻿using ANT.Core;
+using ANT.Interfaces;
 using ANT.Model;
 using JikanDotNet.Exceptions;
 using LiteDB;
@@ -51,7 +52,7 @@ namespace ANT.UTIL
             }
 
             if (App.liteErrorLogDB == null)
-                App.StartErrorLogLiteDB();
+                LiteDBHelper.StartErrorLogLiteDB();
 
                 var errorLogCollection = App.liteErrorLogDB.GetCollection<ErrorLog>();
                 errorLogCollection.Insert(error);
