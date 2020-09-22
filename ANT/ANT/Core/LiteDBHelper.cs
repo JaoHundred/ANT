@@ -58,13 +58,6 @@ namespace ANT.Core
                 string fullPath = System.IO.Path.Combine(newLocation, "data");
                 string completePath = $"Filename={fullPath}";
 
-                //TODO: migrate não está funcionando, tentar pesquisar o que é
-                //a correção momentânea mas que não ajuda a resolver o problema de mapeamento do Episodes dentro de anime
-                //é reinstalar o app(deletando todos os dados de usuário no processo)
-                //https://github.com/Ervie/jikan.net/blob/master/Changelog.md
-                //para simular a migração, retornar para uma versão anterior a mudança do Episodes, registrar dados, atualizar novamente
-                //para a att mais recente e depois abrir o app o código abaixo será executado
-
                 using (var db = new LiteDatabase(completePath))
                 {
                     var favorites = db.GetCollection("FavoritedAnime").FindAll();
