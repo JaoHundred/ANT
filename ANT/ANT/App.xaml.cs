@@ -47,13 +47,15 @@ namespace ANT
         public static IJikan Jikan { get; private set; }
         protected async override void OnStart()
         {
-            LiteDBHelper.MigrateDatabase();
 
             if (liteDB == null)
                 LiteDBHelper.StartLiteDB();
 
             if (liteErrorLogDB == null)
                 LiteDBHelper.StartErrorLogLiteDB();
+
+            if (liteDB.UserVersion == 0)
+                LiteDBHelper.MigrateLiteDB();
 
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
@@ -139,7 +141,7 @@ namespace ANT
         /// <summary>
         /// Método para iniciar o LiteDB
         /// </summary>
-      
+
 
         //TODO:se o shiny não precisar do código comentado abaixo, deletar
         //private async void Current_NotificationTapped(NotificationTappedEventArgs e)

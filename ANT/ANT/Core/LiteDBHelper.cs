@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
 using ANT.UTIL;
+using System.Linq;
+using Android.OS;
+using System.Reflection;
 
 namespace ANT.Core
 {
@@ -44,58 +47,67 @@ namespace ANT.Core
             App.liteErrorLogDB.Checkpoint();
         }
 
-        public static void MigrateDatabase()
+        public static void MigrateLiteDB()
         {
-            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
-            string fullPath = System.IO.Path.Combine(newLocation, "data");
-            string completePath = $"Filename={fullPath}";
+            try
+            {
+                App.liteDB.Dispose();
+                App.liteDB = null;
 
-            //TODO: migrate não está funcionando, tentar pesquisar o que é
-            //a correção momentânea mas que não ajuda a resolver o problema de mapeamento do Episodes dentro de anime
-            //é reinstalar o app(deletando todos os dados de usuário no processo)
-            //https://github.com/Ervie/jikan.net/blob/master/Changelog.md
-            //para simular a migração, retornar para uma versão anterior a mudança do Episodes, registrar dados, atualizar novamente
-            //para a att mais recente e depois abrir o app o código abaixo será executado
+                string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
+                string fullPath = System.IO.Path.Combine(newLocation, "data");
+                string completePath = $"Filename={fullPath}";
 
-            //using (var db = new LiteDatabase(completePath))
-            //{
-            //    if (db.UserVersion == 0)
-            //    {
-            //        Exception exp = null;
-            //        try
-            //        {
-            //            foreach (var doc in db.GetCollection("FavoritedAnime").FindAll())
-            //            {
-            //                doc["Anime"]["Episodes"] = ConvertStringToNullableInt(doc["Anime"]["Episodes"].AsString);
-            //                db.GetCollection("FavoritedAnime").Update(doc);
-            //            }
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            exp = ex;
-            //            ex.SaveExceptionData();
-            //        }
+                //TODO: migrate não está funcionando, tentar pesquisar o que é
+                //a correção momentânea mas que não ajuda a resolver o problema de mapeamento do Episodes dentro de anime
+                //é reinstalar o app(deletando todos os dados de usuário no processo)
+                //https://github.com/Ervie/jikan.net/blob/master/Changelog.md
+                //para simular a migração, retornar para uma versão anterior a mudança do Episodes, registrar dados, atualizar novamente
+                //para a att mais recente e depois abrir o app o código abaixo será executado
 
-            //        try
-            //        {
-            //            foreach (var doc in db.GetCollection("RecentVisualized").FindAll())
-            //            {
-            //                doc["RecentVisualized"]["FavoritedAnime"]["Anime"]["Episodes"] =
-            //                    ConvertStringToNullableInt(doc["RecentVisualized"]["FavoritedAnime"]["Anime"]["Episodes"].AsString);
+                using (var db = new LiteDatabase(completePath))
+                {
+                    var favorites = db.GetCollection("FavoritedAnime").FindAll();
 
-            //                db.GetCollection("RecentVisualized").Update(doc);
-            //            }
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            exp = ex;
-            //            ex.SaveExceptionData();
-            //        }
+                    foreach (var doc in favorites)
+                    {
+                        string rawValue = doc["Anime"]["Episodes"].RawValue as string;
 
-            //        if (exp == null)
-            //            db.UserVersion = 1;
-            //    }
-            //}
+                        doc["Anime"]["Episodes"] = ConvertStringToNullableInt(rawValue);
+                        db.GetCollection("FavoritedAnime").Update(doc);
+                    }
+
+                    var recents = db.GetCollection("RecentVisualized").FindAll();
+
+                    foreach (var doc in recents)
+                    {
+                        string rawValue = doc["FavoritedAnime"]["Anime"]["Episodes"].RawValue as string;
+
+                        doc["FavoritedAnime"]["Anime"]["Episodes"] = ConvertStringToNullableInt(rawValue);
+
+                        db.GetCollection("RecentVisualized").Update(doc);
+                    }
+
+                    db.UserVersion++;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine(ex.Source);
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.TargetSite.Name);
+
+                ex.SaveExceptionData();
+            }
+            finally
+            {
+                if (App.liteDB == null)
+                    StartLiteDB();
+            }
         }
 
         private static int? ConvertStringToNullableInt(string str)
