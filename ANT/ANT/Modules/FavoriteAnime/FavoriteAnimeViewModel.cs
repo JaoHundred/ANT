@@ -21,6 +21,8 @@ namespace ANT.Modules
     {
         public FavoriteAnimeViewModel()
         {
+            GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>();
+
             SearchCommand = new magno.AsyncCommand(OnSearch);
             ClearTextCommand = new magno.Command(OnClearText);
             DeleteFavoriteCommand = new magno.AsyncCommand(OnDeleteFavoriteCommand);
@@ -50,7 +52,7 @@ namespace ANT.Modules
             };
 
             _originalCollection = await ConstructGroupedCollectionAsync();
-            GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(_originalCollection);
+            GroupedFavoriteByWeekList.ReplaceRange(_originalCollection);
         }
 
         private static Task<List<GroupedFavoriteAnimeByWeekDay>> ConstructGroupedCollectionAsync()
@@ -59,7 +61,7 @@ namespace ANT.Modules
             {
                 var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>().FindAll().ToList();
 
-                if(!_settingsPreferences.ShowNSFW)
+                if (!_settingsPreferences.ShowNSFW)
                 {
                     favoriteCollection = favoriteCollection.Where(p => !p.IsNSFW).ToList();
                 }

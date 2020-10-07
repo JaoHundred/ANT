@@ -19,6 +19,9 @@ namespace ANT.Modules
 {
     public class ProgressPopupViewModel : BaseViewModel, IAsyncInitialization
     {
+
+        //TODO: https://github.com/JaoHundred/ANT/issues/80
+
         public ProgressPopupViewModel(object collection, BaseViewModel viewModelType)
         {
             _cancelationToken = new CancellationTokenSource();
@@ -53,27 +56,27 @@ namespace ANT.Modules
                     {
                         await FavoriteAnimesFromCatalogue();
                     }
-                    else if (_viewModelType is FavoriteAnimeViewModel && _collection is IList<FavoritedAnime> animeCollection)
+                    else if (_viewModelType is FavoriteAnimeViewModel && _collection is IList<FavoritedAnime>)
                     {
-                        await UpdateAnimesFromFavorited(animeCollection);
+                        await UpdateAnimesFromFavorited();
 
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.UpdatedAnimes);
                         });
                     }
-                    else if (_viewModelType is FavoriteCharacterViewModel && _collection is IList<FavoritedAnimeCharacter> characterCollection)
+                    else if (_viewModelType is FavoriteCharacterViewModel && _collection is IList<FavoritedAnimeCharacter>)
                     {
-                        await UpdateCharactersFromFavorited(characterCollection);
+                        await UpdateCharactersFromFavorited();
 
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.UpdatedCharacters);
                         });
                     }
-                    else if (_viewModelType is FavoriteVoiceActorViewModel && _collection is IList<FavoritedVoiceActor> voiceActorCollection)
+                    else if (_viewModelType is FavoriteVoiceActorViewModel && _collection is IList<FavoritedVoiceActor>)
                     {
-                        await UpdateVoiceActorFromFavorited(voiceActorCollection);
+                        await UpdateVoiceActorFromFavorited();
 
                         Device.BeginInvokeOnMainThread(() =>
                         {
@@ -170,7 +173,7 @@ namespace ANT.Modules
             }
         }
 
-        private async Task UpdateAnimesFromFavorited(IList<FavoritedAnime> animes)
+        private async Task UpdateAnimesFromFavorited()
         {
             //TODO:testar mais algumas vezes, na primeira tentativa no dispositivo real
             //foram feitas trocas de aplicativo enquanto essa função continuava funcionando
@@ -179,6 +182,7 @@ namespace ANT.Modules
             try
             {
                 var db = App.liteDB.GetCollection<FavoritedAnime>();
+                var animes = _collection as IList<FavoritedAnime>;
                 double total = animes.Count;
 
                 for (int i = 0; i < animes.Count; i++)
@@ -189,7 +193,7 @@ namespace ANT.Modules
                     if (_cancelationToken != null && _cancelationToken.IsCancellationRequested)
                         _cancelationToken.Token.ThrowIfCancellationRequested();
 
-                    var favoriteAnime = animes[i];
+                    var favoriteAnime = db.FindById(animes[i].Anime.MalId);
 
                     if ((favoriteAnime.LastUpdateDate == null)
                         || (favoriteAnime.LastUpdateDate != null && favoriteAnime.LastUpdateDate != DateTime.Today))
@@ -216,7 +220,7 @@ namespace ANT.Modules
 
                         db.Update(favoriteAnime.Anime.MalId, favoriteAnime);
 
-                        
+
                     }
                 }
             }
@@ -231,7 +235,7 @@ namespace ANT.Modules
                 ex.SaveExceptionData();
             }
         }
-        private async Task UpdateCharactersFromFavorited(IList<FavoritedAnimeCharacter> characters)
+        private async Task UpdateCharactersFromFavorited()
         {
             //TODO:testar mais algumas vezes, na primeira tentativa no dispositivo real
             //foram feitas trocas de aplicativo enquanto essa função continuava funcionando
@@ -240,6 +244,7 @@ namespace ANT.Modules
             try
             {
                 var db = App.liteDB.GetCollection<FavoritedAnimeCharacter>();
+                var characters = _collection as List<FavoritedAnimeCharacter>;
                 double total = characters.Count;
 
                 for (int i = 0; i < characters.Count; i++)
@@ -252,7 +257,7 @@ namespace ANT.Modules
                     if (_cancelationToken != null && _cancelationToken.IsCancellationRequested)
                         _cancelationToken.Token.ThrowIfCancellationRequested();
 
-                    var chara = characters[i];
+                    var chara = db.FindById(characters[i].Character.MalId);
 
                     Character character = await App.Jikan.GetCharacter(chara.Character.MalId);
                     character.RequestCached = true;
@@ -280,11 +285,12 @@ namespace ANT.Modules
             }
         }
 
-        private async Task UpdateVoiceActorFromFavorited(IList<FavoritedVoiceActor> voiceActors)
+        private async Task UpdateVoiceActorFromFavorited()
         {
             try
             {
                 var db = App.liteDB.GetCollection<FavoritedVoiceActor>();
+                var voiceActors = _collection as IList<FavoritedVoiceActor>;
                 double total = voiceActors.Count;
 
                 for (int i = 0; i < voiceActors.Count; i++)
@@ -297,7 +303,7 @@ namespace ANT.Modules
                     if (_cancelationToken != null && _cancelationToken.IsCancellationRequested)
                         _cancelationToken.Token.ThrowIfCancellationRequested();
 
-                    var voiceAc = voiceActors[i];
+                    var voiceAc = db.FindById(voiceActors[i].VoiceActor.MalId);
 
                     Person person = await App.Jikan.GetPerson(voiceAc.VoiceActor.MalId);
                     person.RequestCached = true;
