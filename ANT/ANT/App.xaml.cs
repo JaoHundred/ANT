@@ -64,11 +64,8 @@ namespace ANT
 
             SettingsPreferences settings = StartSettings();
 
-            if (settings.NotificationsIsOn)
-            {
-                if (Device.RuntimePlatform == Device.Android)
-                    await RunJobAsync(typeof(NotificationJob), WorkManagerConsts.AnimesNotificationWorkId);
-            }
+            if (settings.NotificationsIsOn && Device.RuntimePlatform == Device.Android)
+                await RunJobAsync(typeof(NotificationJob), WorkManagerConsts.AnimesNotificationWorkId);
 
 
             //TODO: repetir o mesmo procedimento acima para essa parte, para o work de atualização de animes na lista de favoritos

@@ -13,6 +13,7 @@
              mc:Ignorable="d"
              x:Class="ANT.Modules.CatalogueView"
              BackgroundColor="{DynamicResource AppBackgroundColor}"
+             Shell.FlyoutBehavior="Disabled"
              x:DataType="VM:CatalogueViewModel"
              x:Name="_Page"  >
 
