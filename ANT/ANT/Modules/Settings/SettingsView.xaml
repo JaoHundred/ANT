@@ -62,7 +62,7 @@
                                                                      Command="{Binding SwitchNSFWCommand}"/>
                                     </Switch.Behaviors>
                                 </Switch>
-                                <Label Margin="3,0,0,0" Text="{Binding IsToggled, Source={x:Reference NSFWSwitch}
+                                <Label Text="{Binding IsToggled, Source={x:Reference NSFWSwitch}
                                 , Converter={StaticResource BoolToStringConverter}}" FontSize="Subtitle"/>
                             </Grid>
                         </Grid>
@@ -71,6 +71,37 @@
                 </TableSection>
                 <TableSection >
                     <ViewCell >
+                        <Grid Margin="5" Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Label Text="{res:Translate AnimeNotifications}" Style="{StaticResource MenuLabelColorStyle}"/>
+
+                            <Switch x:Name="NotificationSwitch" Margin="5" Grid.Row="1" IsToggled="{Binding Settings.NotificationsIsOn, Mode=TwoWay}">
+                                <Switch.Behaviors>
+                                    <behavior:EventToCommandBehavior EventName="Toggled"
+                                                                         Command="{Binding SwitchNotificationCommand}"/>
+                                </Switch.Behaviors>
+                            </Switch>
+                            <Label Grid.Row="1" Margin="5,0,0,0" Text="{Binding IsToggled, Source={x:Reference NotificationSwitch}
+                                , Converter={StaticResource BoolToStringConverter}}" FontSize="Subtitle"/>
+
+                            <StackLayout Grid.Row="2" IsVisible="{Binding IsToggled, Source={x:Reference NotificationSwitch}}"
+                                         Margin="5">
+
+                                <Label Text="{res:Translate HourToNotify}" FontSize="Subtitle"  />
+                                <TimePicker TextColor="{DynamicResource TextColor}"
+                                        Time="{Binding TimeToNotify, Mode=TwoWay}"/>
+                            </StackLayout>
+                        </Grid>
+
+                    </ViewCell>
+                </TableSection>
+                <TableSection>
+                    <ViewCell>
+
                         <Grid RowDefinitions="auto,*" Margin="5">
                             <Label Text="{res:Translate UserData}" Style="{StaticResource MenuLabelColorStyle}"/>
                             <Grid Margin="5" Grid.Row="1" RowDefinitions="auto,*,*,auto" ColumnDefinitions="*,auto">
@@ -99,36 +130,6 @@
                             </Grid>
                         </Grid>
 
-                    </ViewCell>
-                </TableSection>
-                <TableSection>
-                    <ViewCell>
-
-                        <Grid Margin="5" Grid.Row="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Label Text="{res:Translate AnimeNotifications}" Style="{StaticResource MenuLabelColorStyle}"/>
-
-                            <Switch x:Name="NotificationSwitch" Grid.Row="1" IsToggled="{Binding Settings.NotificationsIsOn, Mode=TwoWay}">
-                                <Switch.Behaviors>
-                                    <behavior:EventToCommandBehavior EventName="Toggled"
-                                                                         Command="{Binding SwitchNotificationCommand}"/>
-                                </Switch.Behaviors>
-                            </Switch>
-                            <Label Grid.Row="1" Margin="3,0,0,0" Text="{Binding IsToggled, Source={x:Reference NotificationSwitch}
-                                , Converter={StaticResource BoolToStringConverter}}" FontSize="Subtitle"/>
-
-                            <StackLayout Grid.Row="2" IsVisible="{Binding IsToggled, Source={x:Reference NotificationSwitch}}"
-                                         Margin="5">
-
-                                <Label Text="{res:Translate HourToNotify}" FontSize="Subtitle"  />
-                                <TimePicker TextColor="{DynamicResource TextColor}"
-                                        Time="{Binding TimeToNotify, Mode=TwoWay}"/>
-                            </StackLayout>
-                        </Grid>
 
 
                     </ViewCell>
