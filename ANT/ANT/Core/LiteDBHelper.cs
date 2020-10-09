@@ -14,17 +14,21 @@ namespace ANT.Core
 {
     public class LiteDBHelper
     {
+        public const string LiteDataName = "data";
+        public const string LiteErrordbLog = "errorLog";
+
+        public static string GetLiteDBPath(string databaseName)
+        {
+            return System.IO.Path.Combine(DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder(), databaseName);
+        }
+
         public static void StartLiteDB()
         {
-            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
-
-            string fullPath = System.IO.Path.Combine(newLocation, "data");
-
             BsonMapper bsonMapper = BsonMapper.Global;
             bsonMapper.Entity<TodayAnimes>().Id(todayAnimes => todayAnimes.Id);
             bsonMapper.Entity<RecommendationAnimes>().Id(recommendation => recommendation.Id);
 
-            string completePath = $"Filename={fullPath}";
+            string completePath = $"Filename={GetLiteDBPath(LiteDataName)}";
             App.liteDB = new LiteDatabase(completePath, bsonMapper);
 
             App.liteDB.Checkpoint();
@@ -35,14 +39,10 @@ namespace ANT.Core
         /// </summary>
         public static void StartErrorLogLiteDB()
         {
-            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
-
-            string fullPath = System.IO.Path.Combine(newLocation, "errorLog");
-
             BsonMapper bsonMapper = BsonMapper.Global;
             bsonMapper.Entity<ErrorLog>().Id(errorLog => errorLog.Id);
 
-            App.liteErrorLogDB = new LiteDatabase($"Filename={fullPath}", bsonMapper);
+            App.liteErrorLogDB = new LiteDatabase($"Filename={GetLiteDBPath(LiteErrordbLog)}", bsonMapper);
 
             App.liteErrorLogDB.Checkpoint();
         }
@@ -54,9 +54,7 @@ namespace ANT.Core
                 App.liteDB.Dispose();
                 App.liteDB = null;
 
-                string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
-                string fullPath = System.IO.Path.Combine(newLocation, "data");
-                string completePath = $"Filename={fullPath}";
+                string completePath = $"Filename={GetLiteDBPath(LiteDataName)}";
 
                 using (var db = new LiteDatabase(completePath))
                 {

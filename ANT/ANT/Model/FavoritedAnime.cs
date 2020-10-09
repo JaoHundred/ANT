@@ -58,7 +58,7 @@ namespace ANT.Model
             get { return _notificationStatus; }
             private set { SetProperty(ref _notificationStatus, value); }
         }
-        private bool _canGenerateNotifications = true;
+        private bool _canGenerateNotifications;
         /// <summary>
         /// O usuário liga ou desliga a exibição de notificações para este anime, por padrão vem ligado(true)
         /// </summary>

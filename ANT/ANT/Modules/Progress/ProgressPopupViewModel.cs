@@ -175,6 +175,10 @@ namespace ANT.Modules
 
         private async Task UpdateAnimesFromFavorited()
         {
+
+            //TODO: https://github.com/JaoHundred/ANT/issues/80
+
+
             //TODO:testar mais algumas vezes, na primeira tentativa no dispositivo real
             //foram feitas trocas de aplicativo enquanto essa função continuava funcionando
             //ao terminar não foi completado todos as atualizações da lista, mas o processamento não parou
@@ -182,7 +186,7 @@ namespace ANT.Modules
             try
             {
                 var db = App.liteDB.GetCollection<FavoritedAnime>();
-                var animes = _collection as IList<FavoritedAnime>;
+                var animes = _collection as List<FavoritedAnime>;
                 double total = animes.Count;
 
                 for (int i = 0; i < animes.Count; i++)
@@ -193,7 +197,7 @@ namespace ANT.Modules
                     if (_cancelationToken != null && _cancelationToken.IsCancellationRequested)
                         _cancelationToken.Token.ThrowIfCancellationRequested();
 
-                    var favoriteAnime = db.FindById(animes[i].Anime.MalId);
+                    var favoriteAnime = animes[i];
 
                     if ((favoriteAnime.LastUpdateDate == null)
                         || (favoriteAnime.LastUpdateDate != null && favoriteAnime.LastUpdateDate != DateTime.Today))
@@ -214,13 +218,16 @@ namespace ANT.Modules
                         favoriteAnime.LastEpisodeSeen = lastEpisode;
                         favoriteAnime.NextStreamDate = await favoriteAnime.NextEpisodeDateAsync();
 
+
+                        //TODO:linha abaixo de testes, remover quando conseguir corrigir o problema da https://github.com/JaoHundred/ANT/issues/80
+                        //favoriteAnime.Anime.Airing = false;
+
                         //se está exibindo e possui data de estreia
                         favoriteAnime.CanGenerateNotifications =
                             favoriteAnime.Anime.Airing && favoriteAnime.NextStreamDate != null ? hasNotification : false;
 
                         db.Update(favoriteAnime.Anime.MalId, favoriteAnime);
-
-
+                       
                     }
                 }
             }
@@ -233,6 +240,10 @@ namespace ANT.Modules
             catch (Exception ex)
             {
                 ex.SaveExceptionData();
+            }
+            finally
+            {
+                App.liteDB.Checkpoint();
             }
         }
         private async Task UpdateCharactersFromFavorited()
