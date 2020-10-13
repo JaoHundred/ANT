@@ -39,7 +39,7 @@ namespace ANT.Modules
 
             try
             {
-                FavoritedAnimeCharacter animeCharacter = App.liteDB.GetCollection<FavoritedAnimeCharacter>().Find(p => p.Character.MalId == characterId).FirstOrDefault();
+                FavoritedAnimeCharacter animeCharacter = App.liteDB.GetCollection<FavoritedAnimeCharacter>().FindById(characterId);
 
                 if (animeCharacter == null)
                 {

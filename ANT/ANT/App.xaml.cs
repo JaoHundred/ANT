@@ -54,8 +54,7 @@ namespace ANT
             if (liteErrorLogDB == null)
                 LiteDBHelper.StartErrorLogLiteDB();
 
-            if (liteDB.UserVersion == 0)
-                LiteDBHelper.MigrateLiteDB();
+            LiteDBHelper.MigrateLiteDB();
 
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
@@ -123,8 +122,8 @@ namespace ANT
         /// <returns></returns>
         public static SettingsPreferences StartSettings()
         {
-            var bd = liteDB.GetCollection<SettingsPreferences>();
-            var settings = bd.FindById(0);
+            var db = liteDB.GetCollection<SettingsPreferences>();
+            var settings = db.FindById(0);
 
             if (settings == null)
             {

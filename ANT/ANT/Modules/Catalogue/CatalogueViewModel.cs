@@ -85,7 +85,7 @@ namespace ANT.Modules
             {
                 foreach (var observableAnime in Animes)
                 {
-                    var favorited = App.liteDB.GetCollection<FavoritedAnime>().FindOne(p => p.Anime.MalId == observableAnime.Anime.MalId);
+                    var favorited = App.liteDB.GetCollection<FavoritedAnime>().FindById(observableAnime.Anime.MalId);
 
                     observableAnime.IsFavorited = favorited != null;
                 }

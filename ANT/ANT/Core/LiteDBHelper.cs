@@ -49,55 +49,57 @@ namespace ANT.Core
 
         public static void MigrateLiteDB()
         {
-            try
+            if (App.liteDB.UserVersion == 0)
             {
-                App.liteDB.Dispose();
-                App.liteDB = null;
-
-                string completePath = $"Filename={GetLiteDBPath(LiteDataName)}";
-
-                using (var db = new LiteDatabase(completePath))
+                try
                 {
-                    var favorites = db.GetCollection("FavoritedAnime").FindAll();
+                    App.liteDB.Dispose();
+                    App.liteDB = null;
 
-                    foreach (var doc in favorites)
+                    string completePath = $"Filename={GetLiteDBPath(LiteDataName)}";
+
+                    using (var db = new LiteDatabase(completePath))
                     {
-                        string rawValue = doc["Anime"]["Episodes"].RawValue as string;
 
-                        doc["Anime"]["Episodes"] = ConvertStringToNullableInt(rawValue);
-                        db.GetCollection("FavoritedAnime").Update(doc);
+                        var favorites = db.GetCollection("FavoritedAnime").FindAll();
+
+                        foreach (var doc in favorites)
+                        {
+                            string rawValue = doc["Anime"]["Episodes"].RawValue as string;
+
+                            doc["Anime"]["Episodes"] = ConvertStringToNullableInt(rawValue);
+                            db.GetCollection("FavoritedAnime").Update(doc);
+                        }
+
+                        var recents = db.GetCollection("RecentVisualized").FindAll();
+
+                        foreach (var doc in recents)
+                        {
+                            string rawValue = doc["FavoritedAnime"]["Anime"]["Episodes"].RawValue as string;
+
+                            doc["FavoritedAnime"]["Anime"]["Episodes"] = ConvertStringToNullableInt(rawValue);
+
+                            db.GetCollection("RecentVisualized").Update(doc);
+                        }
+
+                        db.UserVersion = 1;
                     }
-
-                    var recents = db.GetCollection("RecentVisualized").FindAll();
-
-                    foreach (var doc in recents)
-                    {
-                        string rawValue = doc["FavoritedAnime"]["Anime"]["Episodes"].RawValue as string;
-
-                        doc["FavoritedAnime"]["Anime"]["Episodes"] = ConvertStringToNullableInt(rawValue);
-
-                        db.GetCollection("RecentVisualized").Update(doc);
-                    }
-
-                    db.UserVersion++;
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    Console.WriteLine(ex.Source);
+                    Console.WriteLine(ex.InnerException);
+                    Console.WriteLine(ex.TargetSite.Name);
 
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                Console.WriteLine(ex.Source);
-                Console.WriteLine(ex.InnerException);
-                Console.WriteLine(ex.TargetSite.Name);
-
-                ex.SaveExceptionData();
-            }
-            finally
-            {
-                if (App.liteDB == null)
-                    StartLiteDB();
+                    ex.SaveExceptionData();
+                }
+                finally
+                {
+                    if (App.liteDB == null)
+                        StartLiteDB();
+                }
             }
         }
 
