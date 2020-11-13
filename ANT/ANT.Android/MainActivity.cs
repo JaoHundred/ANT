@@ -14,14 +14,12 @@ using ANT.Interfaces;
 using MvvmHelpers;
 using ANT.UTIL;
 using System.Linq;
-using Plugin.LocalNotification;
 using Android.Content;
-using ANT.Droid.Helpers;
-using ANT.Droid.Scheduler;
 using Android.App.Job;
 using System.Threading.Tasks;
 using AndroidX.Work;
 using ANT.Droid.Broadcast;
+using Shiny;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ANT.Droid.MainActivity))]
 namespace ANT.Droid
@@ -30,29 +28,20 @@ namespace ANT.Droid
         ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+       
         protected override void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
-
+            
             base.OnCreate(savedInstanceState);
 
-
-            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
-            NotificationCenter.CreateNotificationChannel(
-                        new Plugin.LocalNotification.Platform.Droid.NotificationChannelRequest
-                        {
-                            Id = Consts.NotificationChannelTodayAnime,
-                            Name = "Today Animes",
-                            Description = "General",
-                        });
-
 
             LoadApplication(new App());
-            NotificationCenter.NotifyNotificationTapped(Intent);
+            this.ShinyOnCreate();
         }
 
         private readonly string _rootRoute = "Home";
@@ -120,21 +109,15 @@ namespace ANT.Droid
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            AndroidShinyHost.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
         protected override void OnNewIntent(Intent intent)
         {
-            NotificationCenter.NotifyNotificationTapped(intent);
             base.OnNewIntent(intent);
-        }
-
-        public void CancelJob(int jobId)
-        {
-            var tm = (JobScheduler)GetSystemService(Context.JobSchedulerService);
-
-            tm.Cancel(jobId);
+            this.ShinyOnNewIntent(intent);
         }
 
     }

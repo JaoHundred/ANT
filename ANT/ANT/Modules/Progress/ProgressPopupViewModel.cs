@@ -19,6 +19,9 @@ namespace ANT.Modules
 {
     public class ProgressPopupViewModel : BaseViewModel, IAsyncInitialization
     {
+
+        //TODO: https://github.com/JaoHundred/ANT/issues/80
+
         public ProgressPopupViewModel(object collection, BaseViewModel viewModelType)
         {
             _cancelationToken = new CancellationTokenSource();
@@ -53,27 +56,27 @@ namespace ANT.Modules
                     {
                         await FavoriteAnimesFromCatalogue();
                     }
-                    else if (_viewModelType is FavoriteAnimeViewModel && _collection is IList<FavoritedAnime> animeCollection)
+                    else if (_viewModelType is FavoriteAnimeViewModel && _collection is IList<FavoritedAnime>)
                     {
-                        await UpdateAnimesFromFavorited(animeCollection);
+                        await UpdateAnimesFromFavorited();
 
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.UpdatedAnimes);
                         });
                     }
-                    else if (_viewModelType is FavoriteCharacterViewModel && _collection is IList<FavoritedAnimeCharacter> characterCollection)
+                    else if (_viewModelType is FavoriteCharacterViewModel && _collection is IList<FavoritedAnimeCharacter>)
                     {
-                        await UpdateCharactersFromFavorited(characterCollection);
+                        await UpdateCharactersFromFavorited();
 
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             DependencyService.Get<IToast>().MakeToastMessageLong(Lang.Lang.UpdatedCharacters);
                         });
                     }
-                    else if (_viewModelType is FavoriteVoiceActorViewModel && _collection is IList<FavoritedVoiceActor> voiceActorCollection)
+                    else if (_viewModelType is FavoriteVoiceActorViewModel && _collection is IList<FavoritedVoiceActor>)
                     {
-                        await UpdateVoiceActorFromFavorited(voiceActorCollection);
+                        await UpdateVoiceActorFromFavorited();
 
                         Device.BeginInvokeOnMainThread(() =>
                         {
@@ -130,7 +133,7 @@ namespace ANT.Modules
                     Anime anime = await App.Jikan.GetAnime(collection[i].Anime.MalId);
                     anime.RequestCached = true;
 
-                    var favoritedAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
+                    var favoritedAnime = new FavoritedAnime(anime/*, await anime.GetAllEpisodesAsync(_cancelationToken)*/);
                     favoritedAnime.IsFavorited = true;
                     favoritedAnime.LastUpdateDate = DateTime.Today;
                     favoritedAnime.NextStreamDate = await favoritedAnime.NextEpisodeDateAsync();
@@ -170,8 +173,12 @@ namespace ANT.Modules
             }
         }
 
-        private async Task UpdateAnimesFromFavorited(IList<FavoritedAnime> animes)
+        private async Task UpdateAnimesFromFavorited()
         {
+
+            //TODO: https://github.com/JaoHundred/ANT/issues/80
+
+
             //TODO:testar mais algumas vezes, na primeira tentativa no dispositivo real
             //foram feitas trocas de aplicativo enquanto essa função continuava funcionando
             //ao terminar não foi completado todos as atualizações da lista, mas o processamento não parou
@@ -179,14 +186,13 @@ namespace ANT.Modules
             try
             {
                 var db = App.liteDB.GetCollection<FavoritedAnime>();
+                var animes = _collection as List<FavoritedAnime>;
                 double total = animes.Count;
 
                 for (int i = 0; i < animes.Count; i++)
                 {
                     double result = (double)i / total;
                     MessagingCenter.Send<ProgressPopupViewModel, double>(this, string.Empty, result);
-
-                    await App.DelayRequest(4);
 
                     if (_cancelationToken != null && _cancelationToken.IsCancellationRequested)
                         _cancelationToken.Token.ThrowIfCancellationRequested();
@@ -196,25 +202,32 @@ namespace ANT.Modules
                     if ((favoriteAnime.LastUpdateDate == null)
                         || (favoriteAnime.LastUpdateDate != null && favoriteAnime.LastUpdateDate != DateTime.Today))
                     {
+                        await App.DelayRequest(4);
+
                         Anime anime = await App.Jikan.GetAnime(favoriteAnime.Anime.MalId);
                         anime.RequestCached = true;
 
                         int lastEpisode = favoriteAnime.LastEpisodeSeen;
                         bool hasNotification = favoriteAnime.CanGenerateNotifications;
 
-                        favoriteAnime = new FavoritedAnime(anime, await anime.GetAllEpisodesAsync(_cancelationToken));
+                        //TODO:linha dos episódios comentados pelo motivo do MAL estar instável e isso gerar uma carga desnecessária
+                        //a informação importante é apenas os dados do anime
+                        favoriteAnime = new FavoritedAnime(anime/*, await anime.GetAllEpisodesAsync(_cancelationToken)*/);
                         favoriteAnime.LastUpdateDate = DateTime.Today;
                         favoriteAnime.IsFavorited = true;
                         favoriteAnime.LastEpisodeSeen = lastEpisode;
                         favoriteAnime.NextStreamDate = await favoriteAnime.NextEpisodeDateAsync();
+
+
+                        //TODO:linha abaixo de testes, remover quando conseguir corrigir o problema da https://github.com/JaoHundred/ANT/issues/80
+                        //favoriteAnime.Anime.Airing = false;
 
                         //se está exibindo e possui data de estreia
                         favoriteAnime.CanGenerateNotifications =
                             favoriteAnime.Anime.Airing && favoriteAnime.NextStreamDate != null ? hasNotification : false;
 
                         db.Update(favoriteAnime.Anime.MalId, favoriteAnime);
-
-                        
+                       
                     }
                 }
             }
@@ -228,8 +241,12 @@ namespace ANT.Modules
             {
                 ex.SaveExceptionData();
             }
+            finally
+            {
+                App.liteDB.Checkpoint();
+            }
         }
-        private async Task UpdateCharactersFromFavorited(IList<FavoritedAnimeCharacter> characters)
+        private async Task UpdateCharactersFromFavorited()
         {
             //TODO:testar mais algumas vezes, na primeira tentativa no dispositivo real
             //foram feitas trocas de aplicativo enquanto essa função continuava funcionando
@@ -238,6 +255,7 @@ namespace ANT.Modules
             try
             {
                 var db = App.liteDB.GetCollection<FavoritedAnimeCharacter>();
+                var characters = _collection as List<FavoritedAnimeCharacter>;
                 double total = characters.Count;
 
                 for (int i = 0; i < characters.Count; i++)
@@ -250,7 +268,7 @@ namespace ANT.Modules
                     if (_cancelationToken != null && _cancelationToken.IsCancellationRequested)
                         _cancelationToken.Token.ThrowIfCancellationRequested();
 
-                    var chara = characters[i];
+                    var chara = db.FindById(characters[i].Character.MalId);
 
                     Character character = await App.Jikan.GetCharacter(chara.Character.MalId);
                     character.RequestCached = true;
@@ -278,11 +296,12 @@ namespace ANT.Modules
             }
         }
 
-        private async Task UpdateVoiceActorFromFavorited(IList<FavoritedVoiceActor> voiceActors)
+        private async Task UpdateVoiceActorFromFavorited()
         {
             try
             {
                 var db = App.liteDB.GetCollection<FavoritedVoiceActor>();
+                var voiceActors = _collection as IList<FavoritedVoiceActor>;
                 double total = voiceActors.Count;
 
                 for (int i = 0; i < voiceActors.Count; i++)
@@ -295,7 +314,7 @@ namespace ANT.Modules
                     if (_cancelationToken != null && _cancelationToken.IsCancellationRequested)
                         _cancelationToken.Token.ThrowIfCancellationRequested();
 
-                    var voiceAc = voiceActors[i];
+                    var voiceAc = db.FindById(voiceActors[i].VoiceActor.MalId);
 
                     Person person = await App.Jikan.GetPerson(voiceAc.VoiceActor.MalId);
                     person.RequestCached = true;

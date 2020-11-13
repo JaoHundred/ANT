@@ -20,7 +20,7 @@
     <ContentPage.Resources>
         <converter:EmptyTextToBoolConverter x:Key="EmptyTextToBoolConverter"/>
         <converter:TranslateEnumConverter x:Key="TranslateEnumConverter"/>
-        <converter:StringToIntConverter x:Key="StringToIntConverter"/>
+        <converter:NullableIntToMaximumConverter x:Key="NullableIntToMaximumConverter"/>
         <converter:CanShowSwitchOnFavoritedAnimeConverter x:Key="CanShowSwitchConverter"/>
         <converter:InversorConverter x:Key="InversorConverter"/>
         <converter:GenreEnumToSeparateWordConverter x:Key="GenreToStringConverter"/>
@@ -142,7 +142,7 @@
                                        TextColor="{DynamicResource TextColor}"
                                        Text="{Binding Value, Source={x:Reference lastEpisodeStepper}}"/>
                                                 <Stepper Grid.Row="2"  x:Name="lastEpisodeStepper" HorizontalOptions="CenterAndExpand"
-                                         Increment="1" Minimum="0" Maximum="{Binding Anime.Episodes, Converter={StaticResource StringToIntConverter}}" 
+                                         Increment="1" Minimum="0" Maximum="{Binding Anime.Episodes, Converter={StaticResource NullableIntToMaximumConverter}}" 
                                          Value="{Binding LastEpisodeSeen, Mode=TwoWay}" >
                                                     <Stepper.Behaviors>
                                                         <behavior:EventToCommandBehavior EventName="ValueChanged"
@@ -157,9 +157,6 @@
                             </CollectionView.ItemTemplate>
 
                         </CollectionView>
-
-                        <Button Text="gerador de notificação" Clicked="gerador_de_notificacao"
-                x:Name="NotificationTester" IsVisible="False"/>
 
                         <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
                 Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="DeleteButton_AnimationOnIsVisible">
@@ -214,7 +211,7 @@
                             <DataTemplate x:DataType="model:DayOfWeekFilterDate">
                                 <StackLayout Orientation="Horizontal">
                                     <StackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding BindingContext.DayOfWeekCheckedCommand, Source={x:Reference _page}}"
+                                        <TapGestureRecognizer Command="{Binding BindingContext.ObjectCheckedCommand, Source={x:Reference _page}}"
                                                               CommandParameter="{Binding .}"/>
                                     </StackLayout.GestureRecognizers>
                                     <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
@@ -237,7 +234,7 @@
                             <DataTemplate x:DataType="model:GenreData">
                                 <StackLayout Orientation="Horizontal">
                                     <StackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding BindingContext.GenreCheckedCommand, Source={x:Reference _page}}"
+                                        <TapGestureRecognizer Command="{Binding BindingContext.ObjectCheckedCommand, Source={x:Reference _page}}"
                                                       CommandParameter="{Binding .}"/>
                                     </StackLayout.GestureRecognizers>
                                     <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>

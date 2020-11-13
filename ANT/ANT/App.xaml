@@ -89,12 +89,14 @@
                 <Setter Property="BorderColor" Value="Gray"/>
                 <Setter Property="BackgroundColor" Value="{DynamicResource CatalogueAnimeFrameColor}"/>
                 <Setter Property="CornerRadius" Value="10"/>
+                <Setter Property="HasShadow" Value="False"/>
             </Style>
 
             <Style TargetType="Frame" x:Key="FrameGenreStyle" >
                 <Setter Property="BackgroundColor" Value="{DynamicResource GenresColor}"/>
                 <Setter Property="BorderColor" Value="Transparent"/>
                 <Setter Property="CornerRadius" Value="5"/>
+                <Setter Property="HasShadow" Value="False"/>
             </Style>
 
             <Style TargetType="Frame" x:Key="HeaderFrameStyle" BasedOn="{StaticResource FrameGenreStyle}">
@@ -106,6 +108,7 @@
                 <Setter Property="BackgroundColor" Value="Transparent"/>
                 <Setter Property="BorderColor" Value="Transparent"/>
                 <Setter Property="Padding" Value="35,0,35,0"/>
+                <Setter Property="HasShadow" Value="False"/>
             </Style>
 
             <Style TargetType="ProgressBar">

@@ -1,11 +1,12 @@
-﻿using MvvmHelpers;
+﻿using ANT.Interfaces;
+using MvvmHelpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ANT.Model
 {
-    public class DayOfWeekFilterDate : ObservableObject
+    public class DayOfWeekFilterDate : ObservableObject, ICheckableObject
     {
         public DayOfWeekFilterDate(TodayDayOfWeek todayDayOfWeek, bool isChecked = false)
         {

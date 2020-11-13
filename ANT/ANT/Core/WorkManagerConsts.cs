@@ -4,10 +4,11 @@ using System.Text;
 
 namespace ANT.Core
 {
+    /// <summary>
+    /// Classe para marcação de nome do job gerador de notificação, usar o AnimesNotificationWorkId
+    /// </summary>
     public static class WorkManagerConsts
     {
         public const string AnimesNotificationWorkId = "0";
-        public const string UpdateAnimesWorkId = "1";
-        public const string ReschedulerWorkId = "2";
     }
 }

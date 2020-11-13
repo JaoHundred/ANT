@@ -21,16 +21,17 @@ namespace ANT.Modules
     {
         public FavoriteAnimeViewModel()
         {
+            GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>();
+
             SearchCommand = new magno.AsyncCommand(OnSearch);
             ClearTextCommand = new magno.Command(OnClearText);
             DeleteFavoriteCommand = new magno.AsyncCommand(OnDeleteFavoriteCommand);
             ClearAllCommand = new magno.AsyncCommand(OnClearAll);
             SelectionModeCommand = new magno.Command(OnSelectionMode);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
-            GenreCheckedCommand = new magno.Command<GenreData>(OnGenreCheck);
+            ObjectCheckedCommand = new magno.Command<ICheckableObject>(OnObjectChecked);
             ApplyFilterCommand = new magno.AsyncCommand(OnApplyFilter);
             ResetFilterCommand = new magno.Command(OnResetFilter);
-            DayOfWeekCheckedCommand = new magno.Command<DayOfWeekFilterDate>(OnDayOfWeekCheck);
             SwitchCommand = new Xamarin.Forms.Command<FavoritedAnime>(OnSwitch);
             StepperCommand = new Xamarin.Forms.Command<FavoritedAnime>(OnStepper);
             UpdateFavoriteAnimesCommand = new AsyncCommand(OnUpdateAnimes);
@@ -50,7 +51,7 @@ namespace ANT.Modules
             };
 
             _originalCollection = await ConstructGroupedCollectionAsync();
-            GroupedFavoriteByWeekList = new ObservableRangeCollection<GroupedFavoriteAnimeByWeekDay>(_originalCollection);
+            GroupedFavoriteByWeekList.ReplaceRange(_originalCollection);
         }
 
         private static Task<List<GroupedFavoriteAnimeByWeekDay>> ConstructGroupedCollectionAsync()
@@ -59,7 +60,7 @@ namespace ANT.Modules
             {
                 var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>().FindAll().ToList();
 
-                if(!_settingsPreferences.ShowNSFW)
+                if (!_settingsPreferences.ShowNSFW)
                 {
                     favoriteCollection = favoriteCollection.Where(p => !p.IsNSFW).ToList();
                 }
@@ -298,16 +299,10 @@ namespace ANT.Modules
             }
         }
 
-        public ICommand GenreCheckedCommand { get; private set; }
-        private void OnGenreCheck(GenreData genreData)
+        public ICommand ObjectCheckedCommand { get; private set; }
+        private void OnObjectChecked(ICheckableObject checkableObject)
         {
-            genreData.IsChecked = !genreData.IsChecked;
-        }
-
-        public ICommand DayOfWeekCheckedCommand { get; private set; }
-        private void OnDayOfWeekCheck(DayOfWeekFilterDate dayOfWeekFilterDate)
-        {
-            dayOfWeekFilterDate.IsChecked = !dayOfWeekFilterDate.IsChecked;
+            checkableObject.IsChecked = !checkableObject.IsChecked;
         }
 
         public ICommand ApplyFilterCommand { get; private set; }

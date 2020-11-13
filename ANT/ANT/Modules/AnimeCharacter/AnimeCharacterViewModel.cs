@@ -39,7 +39,7 @@ namespace ANT.Modules
 
             try
             {
-                FavoritedAnimeCharacter animeCharacter = App.liteDB.GetCollection<FavoritedAnimeCharacter>().Find(p => p.Character.MalId == characterId).FirstOrDefault();
+                FavoritedAnimeCharacter animeCharacter = App.liteDB.GetCollection<FavoritedAnimeCharacter>().FindById(characterId);
 
                 if (animeCharacter == null)
                 {
@@ -145,7 +145,7 @@ namespace ANT.Modules
         public ICommand OpenLinkCommand { get; private set; }
         private async Task OpenLink(string link)
         {
-            await Launcher.TryOpenAsync(link);
+            await LauncherHelper.OpenLinkAsync(link);
         }
 
         #endregion

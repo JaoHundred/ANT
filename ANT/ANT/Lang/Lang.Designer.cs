@@ -61,6 +61,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Added to favorites.
         /// </summary>
         public static string AddedToFavorite {
@@ -115,6 +124,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to App details.
+        /// </summary>
+        public static string AppDetails {
+            get {
+                return ResourceManager.GetString("AppDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply filter.
         /// </summary>
         public static string ApplyFilter {
@@ -165,6 +183,15 @@ namespace ANT.Lang {
         public static string Broadcast {
             get {
                 return ResourceManager.GetString("Broadcast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Build date.
+        /// </summary>
+        public static string BuildDate {
+            get {
+                return ResourceManager.GetString("BuildDate", resourceCulture);
             }
         }
         
@@ -282,6 +309,15 @@ namespace ANT.Lang {
         public static string Confirm {
             get {
                 return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        public static string Data {
+            get {
+                return ResourceManager.GetString("Data", resourceCulture);
             }
         }
         
@@ -547,6 +583,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Licenses.
+        /// </summary>
+        public static string Licenses {
+            get {
+                return ResourceManager.GetString("Licenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading more data....
         /// </summary>
         public static string LoadingMoreData {
@@ -673,11 +718,29 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Overview.
+        /// </summary>
+        public static string Overview {
+            get {
+                return ResourceManager.GetString("Overview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parent.
         /// </summary>
         public static string Parent {
             get {
                 return ResourceManager.GetString("Parent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Patch notes.
+        /// </summary>
+        public static string PatchNotes {
+            get {
+                return ResourceManager.GetString("PatchNotes", resourceCulture);
             }
         }
         
@@ -1173,6 +1236,24 @@ namespace ANT.Lang {
         public static string UserData {
             get {
                 return ResourceManager.GetString("UserData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data location.
+        /// </summary>
+        public static string UserDataLocation {
+            get {
+                return ResourceManager.GetString("UserDataLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string Version {
+            get {
+                return ResourceManager.GetString("Version", resourceCulture);
             }
         }
         

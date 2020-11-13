@@ -6,7 +6,6 @@ using ANT.Modules;
 using JikanDotNet;
 using LiteDB;
 using MvvmHelpers;
-using Plugin.LocalNotification;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +15,11 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
 using System.Resources;
+using Shiny;
+using Shiny.Jobs;
+using Shiny.Notifications;
+using Microsoft.Extensions.DependencyInjection;
+using ANT.ShinyStart;
 
 namespace ANT
 {
@@ -28,13 +32,14 @@ namespace ANT
         {
             InitializeComponent();
 
+            Xamarin.Essentials.VersionTracking.Track();
+
             Device.SetFlags(new[]
             {
                 "RadioButton_Experimental", "Expander_Experimental" , //"SwipeView_Experimental"
             });
 
             MainPage = new AppShell();
-            NotificationCenter.Current.NotificationTapped += Current_NotificationTapped;
         }
 
         public static LiteDatabase liteDB;
@@ -42,19 +47,83 @@ namespace ANT
         public static IJikan Jikan { get; private set; }
         protected async override void OnStart()
         {
+
             if (liteDB == null)
-                StartLiteDB();
+                LiteDBHelper.StartLiteDB();
 
             if (liteErrorLogDB == null)
-                StartErrorLogLiteDB();
+                LiteDBHelper.StartErrorLogLiteDB();
+
+            LiteDBHelper.MigrateLiteDB();
 
             // Handle when your app starts
             await ThemeManager.LoadThemeAsync();
 
             Jikan = new Jikan(useHttps: true);
 
-            var bd = liteDB.GetCollection<SettingsPreferences>();
-            var settings = bd.FindById(0);
+            SettingsPreferences settings = StartSettings();
+
+            if (settings.NotificationsIsOn && Device.RuntimePlatform == Device.Android)
+                await RunJobAsync(typeof(NotificationJob), WorkManagerConsts.AnimesNotificationWorkId);
+
+
+            //TODO: repetir o mesmo procedimento acima para essa parte, para o work de atualização de animes na lista de favoritos
+            //(repetir também no BootBroadcastReceiver)
+        }
+
+        /// <summary>
+        /// Verifica se o job já existe criando um se não houver e roda em seguida
+        /// </summary>
+        /// <param name="jobType">tipo que herda de Shiny.IJob</param>
+        /// <returns></returns>
+        public static async Task RunJobAsync(Type jobType, string jobIdentifier, bool repeat = true)
+        {
+            var jobManager = ShinyHost.Resolve<IJobManager>();
+
+            var job = await jobManager.GetJob(jobIdentifier);
+
+            if (job == null)
+            {
+                job = new JobInfo(jobType, jobIdentifier)
+                {
+                    Repeat = repeat,
+                };
+            }
+
+#if DEBUG
+            foreach (var item in await ShinyHost.Resolve<IJobManager>().GetJobs())
+            {
+                Debug.WriteLine($"Job Name: {item.Identifier}");
+            }
+#endif
+
+            await ShinyHost.Resolve<IJobManager>().Schedule(job);
+
+        }
+
+        /// <summary>
+        /// Cancela um job através de seu identificador
+        /// </summary>
+        /// <param name="jobIdentifier">Nome do job para se cancelar</param>
+        /// <returns></returns>
+        public static async Task CancelJobAsync(string jobIdentifier)
+        {
+            var jobManager = ShinyHost.Resolve<IJobManager>();
+
+            var job = await jobManager.GetJob(jobIdentifier);
+
+            if (job != null)
+                await jobManager.Cancel(job.Identifier);
+        }
+
+        /// <summary>
+        /// Usar após garantir que o LiteDB já foi iniciado
+        /// </summary>
+        /// <returns></returns>
+        public static SettingsPreferences StartSettings()
+        {
+            var db = liteDB.GetCollection<SettingsPreferences>();
+            var settings = db.FindById(0);
 
             if (settings == null)
             {
@@ -62,71 +131,23 @@ namespace ANT
                 liteDB.GetCollection<SettingsPreferences>().Upsert(0, settings);
             }
 
-            //TODO:quando estiver funcionando o sistema de workmanager, descomentar linhas abaixo e remover o isvisible false do SettingsView
-            // na parte do menu de agendamento de notificação
-            //if (settings.NotificationsIsOn)
-            //{
-            //    if (Device.RuntimePlatform == Device.Android)
-            //    {
-            //        await Task.Run(() =>
-            //        {
-
-            //           var hourToNotify = DependencyService.Get<IWork>().InitialDelay(settings.HourToNotify);
-
-            //            DependencyService.Get<IWork>().CreateOneTimeWorkAndKeep(WorkManagerConsts.ReschedulerWorkId, hourToNotify);
-            //            //DependencyService.Get<IAlarm>()
-            //            //.StartAlarmRTCWakeUp(settings.HourToNotify, int.Parse(WorkManagerConsts.AnimesNotificationWorkId), TimeSpan.FromDays(1));
-            //        });
-            //    }
-            //}
-
-            //TODO: repetir o mesmo procedimento acima para essa parte, para o work de atualização de animes na lista de favoritos
-            //(repetir também no BootBroadcastReceiver)
+            return settings;
         }
 
         /// <summary>
         /// Método para iniciar o LiteDB
         /// </summary>
-        public static void StartLiteDB()
-        {
-            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
 
-            string fullPath = System.IO.Path.Combine(newLocation, "data");
 
-            BsonMapper bsonMapper = BsonMapper.Global;
-            bsonMapper.Entity<TodayAnimes>().Id(todayAnimes => todayAnimes.Id);
-            bsonMapper.Entity<RecommendationAnimes>().Id(recommendation => recommendation.Id);
+        //TODO:se o shiny não precisar do código comentado abaixo, deletar
+        //private async void Current_NotificationTapped(NotificationTappedEventArgs e)
+        //{
+        //    while (liteDB == null)
+        //        await Task.Delay(TimeSpan.FromMilliseconds(100));
 
-            liteDB = new LiteDatabase($"Filename={fullPath}", bsonMapper);
-
-            liteDB.Checkpoint();
-        }
-
-        /// <summary>
-        /// Método para iniciar o liteErrorLogDB
-        /// </summary>
-        public static void StartErrorLogLiteDB()
-        {
-            string newLocation = DependencyService.Get<IGetFolder>().GetApplicationDocumentsFolder();
-
-            string fullPath = System.IO.Path.Combine(newLocation, "errorLog");
-
-            BsonMapper bsonMapper = BsonMapper.Global;
-            bsonMapper.Entity<ErrorLog>().Id(errorLog => errorLog.Id);
-
-            liteErrorLogDB = new LiteDatabase($"Filename={fullPath}", bsonMapper);
-
-            liteErrorLogDB.Checkpoint();
-        }
-
-        private async void Current_NotificationTapped(NotificationTappedEventArgs e)
-        {
-            while (liteDB == null)
-                await Task.Delay(TimeSpan.FromMilliseconds(100));
-
-            int malId = int.Parse(e.Data);
-            await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(malId);
-        }
+        //    int malId = int.Parse(e.Data);
+        //    await NavigationManager.NavigateShellAsync<AnimeSpecsViewModel>(malId);
+        //}
 
         //TODO: resolução(talvez) da seleção de idioma https://forums.xamarin.com/discussion/79379/update-language-translation-on-the-fly-using-translateextension
 

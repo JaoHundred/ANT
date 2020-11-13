@@ -58,7 +58,7 @@ namespace ANT.Modules
             {
                 long id = (long)param;
 
-                _favoritedAnime = App.liteDB.GetCollection<FavoritedAnime>().FindOne(p => p.Anime.MalId == id);
+                _favoritedAnime = App.liteDB.GetCollection<FavoritedAnime>().FindById(id);
 
 
                 if (_favoritedAnime == null)
@@ -388,7 +388,8 @@ namespace ANT.Modules
             {
                 IsBusy = true;
                 await Task.Delay(TimeSpan.FromMilliseconds(500));
-                await Launcher.TryOpenAsync(SelectedNews.Url);
+
+                await LauncherHelper.OpenLinkAsync(SelectedNews.Url);
                 IsBusy = false;
             }
 
@@ -397,7 +398,7 @@ namespace ANT.Modules
         public ICommand OpenLinkCommand { get; private set; }
         private async Task OnLink(string link)
         {
-            await Launcher.TryOpenAsync(link);
+            await LauncherHelper.OpenLinkAsync(link);
         }
 
         public ICommand OpenAnimeCommand { get; private set; }
@@ -460,7 +461,7 @@ namespace ANT.Modules
                     _cancellationToken.Token.ThrowIfCancellationRequested();
 
                 var recentCollection = App.liteDB.GetCollection<RecentVisualized>();
-                var favoritedSubEntry = recentCollection.FindOne(p => p.FavoritedAnime.Anime.MalId == recentFavoritedAnime.Anime.MalId);
+                var favoritedSubEntry = recentCollection.FindById(recentFavoritedAnime.Anime.MalId);
 
                 if (favoritedSubEntry != null)
                     recentCollection.Upsert(recentFavoritedAnime.Anime.MalId, new RecentVisualized(recentFavoritedAnime));

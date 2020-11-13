@@ -72,7 +72,7 @@ namespace ANT.Modules
             OpenSearchCommand = new magno.Command(OnOpenSearch);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
             LoadMoreCommand = new magno.AsyncCommand(OnLoadMore);
-            GenreCheckedCommand = new magno.Command<GenreData>(OnGenreCheck);
+            ObjectCheckedCommand = new magno.Command<ICheckableObject>(OnObjectChecked);
             ApplyFilterCommand = new magno.AsyncCommand(OnApplyFilter);
             ResetFilterCommand = new magno.AsyncCommand(OnResetFilter);
             BackButtonCommand = new magno.AsyncCommand<CatalogueView>(OnBackButton);
@@ -85,7 +85,7 @@ namespace ANT.Modules
             {
                 foreach (var observableAnime in Animes)
                 {
-                    var favorited = App.liteDB.GetCollection<FavoritedAnime>().FindOne(p => p.Anime.MalId == observableAnime.Anime.MalId);
+                    var favorited = App.liteDB.GetCollection<FavoritedAnime>().FindById(observableAnime.Anime.MalId);
 
                     observableAnime.IsFavorited = favorited != null;
                 }
@@ -614,10 +614,13 @@ namespace ANT.Modules
             }
         }
 
-        public ICommand GenreCheckedCommand { get; private set; }
-        private void OnGenreCheck(GenreData genreData)
+        public ICommand ObjectCheckedCommand { get; private set; }
+        private void OnObjectChecked(ICheckableObject checkableObject)
         {
-            genreData.IsChecked = !genreData.IsChecked;
+            if ((checkableObject is OrderData || checkableObject is SortDirectionData) && checkableObject.IsChecked)
+                return;
+
+            checkableObject.IsChecked = !checkableObject.IsChecked;
         }
 
         public ICommand ApplyFilterCommand { get; private set; }
