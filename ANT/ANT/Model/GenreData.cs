@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using MvvmHelpers;
 using JikanDotNet;
+using ANT.Interfaces;
 
 namespace ANT.Model
 {
-    public class GenreData : ObservableObject
+    public class GenreData : ObservableObject, ICheckableObject
     {
         public GenreData(GenreSearch genre)
         {

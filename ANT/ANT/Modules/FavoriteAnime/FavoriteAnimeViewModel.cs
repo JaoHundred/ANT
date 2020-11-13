@@ -29,10 +29,9 @@ namespace ANT.Modules
             ClearAllCommand = new magno.AsyncCommand(OnClearAll);
             SelectionModeCommand = new magno.Command(OnSelectionMode);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
-            GenreCheckedCommand = new magno.Command<GenreData>(OnGenreCheck);
+            ObjectCheckedCommand = new magno.Command<ICheckableObject>(OnObjectChecked);
             ApplyFilterCommand = new magno.AsyncCommand(OnApplyFilter);
             ResetFilterCommand = new magno.Command(OnResetFilter);
-            DayOfWeekCheckedCommand = new magno.Command<DayOfWeekFilterDate>(OnDayOfWeekCheck);
             SwitchCommand = new Xamarin.Forms.Command<FavoritedAnime>(OnSwitch);
             StepperCommand = new Xamarin.Forms.Command<FavoritedAnime>(OnStepper);
             UpdateFavoriteAnimesCommand = new AsyncCommand(OnUpdateAnimes);
@@ -300,16 +299,10 @@ namespace ANT.Modules
             }
         }
 
-        public ICommand GenreCheckedCommand { get; private set; }
-        private void OnGenreCheck(GenreData genreData)
+        public ICommand ObjectCheckedCommand { get; private set; }
+        private void OnObjectChecked(ICheckableObject checkableObject)
         {
-            genreData.IsChecked = !genreData.IsChecked;
-        }
-
-        public ICommand DayOfWeekCheckedCommand { get; private set; }
-        private void OnDayOfWeekCheck(DayOfWeekFilterDate dayOfWeekFilterDate)
-        {
-            dayOfWeekFilterDate.IsChecked = !dayOfWeekFilterDate.IsChecked;
+            checkableObject.IsChecked = !checkableObject.IsChecked;
         }
 
         public ICommand ApplyFilterCommand { get; private set; }

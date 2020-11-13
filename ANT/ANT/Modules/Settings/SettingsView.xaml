@@ -107,7 +107,7 @@
                             <Grid Margin="5" Grid.Row="1" RowDefinitions="auto,*,*,auto" ColumnDefinitions="*,auto">
 
                                 <Label Text="{res:Translate UserDataLocation}" d:Text="User data Location" FontAttributes="Bold"
-                                       FontSize="Subtitle"/>
+                                       FontSize="Subtitle" Grid.ColumnSpan="2"/>
                                 <Label Grid.Row="1" Text="{Binding DataDirectory, Converter={StaticResource UserFriendlyPathConverter}}" Grid.ColumnSpan="2"
                                        Margin="3,0,0,0"/>
 

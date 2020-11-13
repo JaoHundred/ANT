@@ -211,7 +211,7 @@
                             <DataTemplate x:DataType="model:DayOfWeekFilterDate">
                                 <StackLayout Orientation="Horizontal">
                                     <StackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding BindingContext.DayOfWeekCheckedCommand, Source={x:Reference _page}}"
+                                        <TapGestureRecognizer Command="{Binding BindingContext.ObjectCheckedCommand, Source={x:Reference _page}}"
                                                               CommandParameter="{Binding .}"/>
                                     </StackLayout.GestureRecognizers>
                                     <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
@@ -234,7 +234,7 @@
                             <DataTemplate x:DataType="model:GenreData">
                                 <StackLayout Orientation="Horizontal">
                                     <StackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding BindingContext.GenreCheckedCommand, Source={x:Reference _page}}"
+                                        <TapGestureRecognizer Command="{Binding BindingContext.ObjectCheckedCommand, Source={x:Reference _page}}"
                                                       CommandParameter="{Binding .}"/>
                                     </StackLayout.GestureRecognizers>
                                     <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>

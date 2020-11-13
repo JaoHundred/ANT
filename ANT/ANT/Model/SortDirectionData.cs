@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ANT.Interfaces;
 using JikanDotNet;
 using MvvmHelpers;
 
 namespace ANT.Model
 {
-    public class SortDirectionData : ObservableObject
+    public class SortDirectionData : ObservableObject, ICheckableObject
     {
         public SortDirectionData(SortDirection sortDirection, bool isChecked = false)
         {

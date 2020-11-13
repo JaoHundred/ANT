@@ -219,8 +219,15 @@
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="favo:SortDirectionData">
-                                <RadioButton Grid.Row="1" Text="{Binding SortDirection, Converter={StaticResource TranslateEnumConverter}}" 
-                                         GroupName="SortDirection" IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
+                                <StackLayout Orientation="Horizontal">
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.ObjectCheckedCommand, Source={x:Reference _Page}}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </StackLayout.GestureRecognizers>
+                                    <RadioButton GroupName="SortDirection" IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
+                                    <Label Grid.Column="1" Text="{Binding SortDirection, Converter={StaticResource TranslateEnumConverter}}"
+                                           VerticalTextAlignment="Center"/>
+                                </StackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
@@ -234,8 +241,17 @@
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="favo:OrderData">
-                                <RadioButton Text="{Binding OrderBy, Converter={StaticResource TranslateEnumConverter}}" GroupName="SearchSortable" 
-                                         IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
+                                <StackLayout Orientation="Horizontal">
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.ObjectCheckedCommand, Source={x:Reference _Page}}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </StackLayout.GestureRecognizers>
+
+                                    <RadioButton GroupName="SearchSortable" IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
+                                    <Label Text="{Binding OrderBy, Converter={StaticResource TranslateEnumConverter}}"
+                                           VerticalTextAlignment="Center"/>
+                                </StackLayout>
+                                
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
@@ -252,7 +268,7 @@
                             <DataTemplate x:DataType="favo:GenreData">
                                 <StackLayout Orientation="Horizontal">
                                     <StackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding BindingContext.GenreCheckedCommand, Source={x:Reference _Page}}"
+                                        <TapGestureRecognizer Command="{Binding BindingContext.ObjectCheckedCommand, Source={x:Reference _Page}}"
                                                               CommandParameter="{Binding .}"/>
                                     </StackLayout.GestureRecognizers>
                                     <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
