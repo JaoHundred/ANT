@@ -30,12 +30,11 @@ namespace ANT.Model
             };
 
             Years = new List<int>();
-            for (int i = minYear; i <= maxYear; i++)
+            for (int i = maxYear; i >= minYear; i--)
                 Years.Add(i);
 
             SelectedYear = year;
             SelectedSeason = Seasons.First(p => p.ToLower() == season.ToLower());
-            Years = Years.OrderByDescending(p => p).ToList();
         }
 
         public IList<int> Years { get; }
