@@ -18,7 +18,6 @@ using Android.Content;
 using Android.App.Job;
 using System.Threading.Tasks;
 using AndroidX.Work;
-using ANT.Droid.Broadcast;
 using Shiny;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ANT.Droid.MainActivity))]
@@ -37,7 +36,7 @@ namespace ANT.Droid
             base.OnCreate(savedInstanceState);
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
+            Rg.Plugins.Popup.Popup.Init(this);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
 
             LoadApplication(new App());
