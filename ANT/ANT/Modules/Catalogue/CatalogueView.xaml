@@ -73,8 +73,8 @@
                     <Grid RowSpacing="0">
 
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="{Binding IsSeasonCatalogue, Converter={StaticResource BoolToGridLenghtConverter}, ConverterParameter=20}"/>
-                            <RowDefinition Height="90*"/>
+                            <RowDefinition Height="{Binding IsSeasonCatalogue, Converter={StaticResource BoolToGridLenghtConverter}}"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Frame VerticalOptions="Start" Padding="3" CornerRadius="0" Margin="3,3" 
                                IsVisible="{Binding SeasonData, Converter={StaticResource ValueIsNullToBoolConverter}}">

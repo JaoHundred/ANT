@@ -11,10 +11,7 @@ namespace ANT.Converter
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool isSeasonCatalogue && isSeasonCatalogue)
-            {
-                string par = parameter.ToString();
-                return new GridLength(int.Parse(par), GridUnitType.Star);
-            }
+                return new GridLength(0, GridUnitType.Auto);
 
             return new GridLength(0);
         }
