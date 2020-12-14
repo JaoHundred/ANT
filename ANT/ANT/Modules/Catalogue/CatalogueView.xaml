@@ -79,11 +79,11 @@
                         <Frame VerticalOptions="Start" Padding="3" CornerRadius="0" Margin="3,3" 
                                IsVisible="{Binding SeasonData, Converter={StaticResource ValueIsNullToBoolConverter}}">
                             <Grid x:DataType="VM:CatalogueViewModel">
-                                <Picker Title="{res:Translate SelectYear}" HorizontalOptions="Center"
-                                        ItemsSource="{Binding SeasonData.Years}"
+                                <Picker Title="{res:Translate SelectYear}" HorizontalTextAlignment="Center"
+                                        ItemsSource="{Binding SeasonData.Years}" 
                                         SelectedItem="{Binding SeasonData.SelectedYear, Mode=TwoWay}"/>
 
-                                <Picker Grid.Column="1" Title="{res:Translate SelectSeason}" HorizontalOptions="Center"
+                                <Picker Grid.Column="1" Title="{res:Translate SelectSeason}" HorizontalTextAlignment="Center"
                                         ItemsSource="{Binding SeasonData.Seasons}"
                                         SelectedItem="{Binding SeasonData.SelectedSeason, Mode=TwoWay}"/>
 

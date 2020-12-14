@@ -8,6 +8,7 @@
        xmlns:res="clr-namespace:ANT.Lang"
        x:Class="ANT.Modules.AppShell"
        x:DataType="modules:AppShellViewModel"
+       xmlns:FFimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
        FlyoutHeaderBehavior="Fixed"
        BackgroundColor="{DynamicResource StatusBarColor}" 
        FlyoutBackgroundColor="{DynamicResource HamburgerMenuBodyColor }"
@@ -43,9 +44,12 @@
 
     <Shell.FlyoutHeader>
         <!--para mudar a cor do fundo do cabeçalho do hamburguer menu aberto(espaço em cima dos itens) usar a prop backgroundcolor-->
-        <Grid BackgroundColor="{DynamicResource HamburgerMenuHeaderColor}">
-            <Label Text="ANT" FontSize="40" HorizontalOptions="Center"/>
-        </Grid>
+        <StackLayout BackgroundColor="{DynamicResource HamburgerMenuHeaderColor}" Orientation="Vertical"
+                     Spacing="0">
+            <Label Text="ANT" FontSize="40" HorizontalOptions="Center"
+                   TextColor="#d3d4d4" FontAttributes="Bold"/>
+            <FFimage:CachedImage Source="ANTGray.png" HeightRequest="45"/>
+        </StackLayout>
     </Shell.FlyoutHeader>
 
     <Shell.ItemTemplate>
