@@ -6,9 +6,9 @@ https://github.com/Ervie/jikan.net/blob/master/LICENSE
 
 https://www.nuget.org/packages/LiteDB/5.0.9/license
 
-## Plugin.LocalNotifications
+## Shiny.Notifications
 
-https://github.com/thudugala/Plugin.LocalNotification/blob/master/LICENSE
+https://github.com/shinyorg/shiny/blob/master/LICENSE.md
 
 ## Refractored.MvvmHelpers
 
