@@ -142,6 +142,15 @@ namespace ANT.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Archived.
+        /// </summary>
+        public static string Archived {
+            get {
+                return ResourceManager.GetString("Archived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ascending.
         /// </summary>
         public static string Ascending {
@@ -336,6 +345,24 @@ namespace ANT.Lang {
         public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting animes.
+        /// </summary>
+        public static string Deleting {
+            get {
+                return ResourceManager.GetString("Deleting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected animes will be deleted, do you wish to continue?.
+        /// </summary>
+        public static string DeletingMessage {
+            get {
+                return ResourceManager.GetString("DeletingMessage", resourceCulture);
             }
         }
         
@@ -957,6 +984,33 @@ namespace ANT.Lang {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Archive.
+        /// </summary>
+        public static string Shelved {
+            get {
+                return ResourceManager.GetString("Shelved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Archiving animes.
+        /// </summary>
+        public static string Shelving {
+            get {
+                return ResourceManager.GetString("Shelving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Archived animes will be unarchived and unarchived will be archived. Archived animes won&apos;t be updated, do you wish to continue?.
+        /// </summary>
+        public static string ShelvingMessage {
+            get {
+                return ResourceManager.GetString("ShelvingMessage", resourceCulture);
             }
         }
         

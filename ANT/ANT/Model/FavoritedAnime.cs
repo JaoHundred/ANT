@@ -78,6 +78,8 @@ namespace ANT.Model
 
         public bool IsNSFW { get; set; }
 
+        public bool IsArchived { get; set; }
+
         public IList<AnimeEpisode> Episodes { get; set; }
 
         public IList<RelatedAnime> RelatedAnimes { get; set; }

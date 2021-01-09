@@ -61,7 +61,7 @@ namespace ANT.UTIL
 
                 foreach (var dayOfWeek in dayOfWeekFilterDates)
                 {
-                    if (favoriteAnime.NextStreamDate != null && favoriteAnime.Anime.Airing)
+                    if (favoriteAnime.NextStreamDate != null && favoriteAnime.Anime.Airing && !favoriteAnime.IsArchived)
                     {
                         bool hasWeekDay = favoriteAnime.NextStreamDate.Value.DayOfWeek.ToString() == dayOfWeek.TodayDayOfWeek.ToString();
                         bool hasToday = false;
@@ -71,6 +71,12 @@ namespace ANT.UTIL
 
                         if (hasWeekDay || hasToday)
                             hasAnyDayOfWeek.Add(hasWeekDay | hasToday);
+                    }
+
+                    else if (favoriteAnime.IsArchived && dayOfWeek.TodayDayOfWeek == TodayDayOfWeek.Archived)
+                    {
+                        hasAnyDayOfWeek.Add(true);
+                        break;
                     }
 
                     else if (HasNotStartedAiring(favoriteAnime)
@@ -94,7 +100,7 @@ namespace ANT.UTIL
 
         public static bool IsUnknownAiring(FavoritedAnime favoriteAnime)
         {
-            return !HasFinishedAiring(favoriteAnime) && !HasNotStartedAiring(favoriteAnime);
+            return !HasFinishedAiring(favoriteAnime) && !HasNotStartedAiring(favoriteAnime) && !favoriteAnime.IsArchived;
         }
 
         public static bool HasFinishedAiring(FavoritedAnime favoriteAnime)
@@ -103,14 +109,16 @@ namespace ANT.UTIL
                 && favoriteAnime.Anime.Aired != null
                 && favoriteAnime.Anime.Aired.From.HasValue && favoriteAnime.Anime.Aired.To.HasValue
                 && favoriteAnime.Anime.Aired.From < DateTime.Today
-                && favoriteAnime.Anime.Aired.To < DateTime.Today;
+                && favoriteAnime.Anime.Aired.To < DateTime.Today
+                && !favoriteAnime.IsArchived;
         }
 
         public static bool HasNotStartedAiring(FavoritedAnime favoriteAnime)
         {
             return favoriteAnime.Anime.Aired?.From != null
                 && favoriteAnime.Anime.Aired.From > DateTime.Today
-                && !favoriteAnime.Anime.Airing;
+                && !favoriteAnime.Anime.Airing
+                && !favoriteAnime.IsArchived;
         }
 
         public static string GetDescription(Enum value)
@@ -481,6 +489,7 @@ namespace ANT.UTIL
                  new DayOfWeekFilterDate(TodayDayOfWeek.Unknown),
                  new DayOfWeekFilterDate(TodayDayOfWeek.FinishedAiring),
                  new DayOfWeekFilterDate(TodayDayOfWeek.NotStarted),
+                 new DayOfWeekFilterDate(TodayDayOfWeek.Archived),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Sunday),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Monday),
                  new DayOfWeekFilterDate(TodayDayOfWeek.Tuesday),

@@ -158,8 +158,22 @@
 
                         </CollectionView>
 
-                        <Button x:Name="DeleteButton" Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
-                Style="{StaticResource RoundedButtonOverlayStyle}" PropertyChanged="DeleteButton_AnimationOnIsVisible">
+
+                        <Button Command="{Binding ArchiveFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
+                                    PropertyChanged="DeleteButton_AnimationOnIsVisible"
+                                    Style="{StaticResource RoundedButtonOverlayStyle}" 
+                                    Margin="30,30,30,140">
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="{StaticResource FontIcon}"
+                                 Glyph="{StaticResource Archive}"
+                                 Size="22" />
+                            </Button.ImageSource>
+                        </Button>
+
+                        <Button Command="{Binding DeleteFavoriteCommand}" IsVisible="{Binding IsMultiSelect}" 
+                                    PropertyChanged="DeleteButton_AnimationOnIsVisible"
+                                    Style="{StaticResource RoundedButtonOverlayStyle}" 
+                                    Margin="30,30,30,60">
                             <Button.ImageSource>
                                 <FontImageSource FontFamily="{StaticResource FontIcon}"
                                  Glyph="{StaticResource Delete}"

@@ -26,6 +26,7 @@ namespace ANT.Modules
             SearchCommand = new magno.AsyncCommand(OnSearch);
             ClearTextCommand = new magno.Command(OnClearText);
             DeleteFavoriteCommand = new magno.AsyncCommand(OnDeleteFavoriteCommand);
+            ArchiveFavoriteCommand = new magno.AsyncCommand(OnArchiveFavorite);
             ClearAllCommand = new magno.AsyncCommand(OnClearAll);
             SelectionModeCommand = new magno.Command(OnSelectionMode);
             OpenAnimeCommand = new magno.AsyncCommand(OnOpenAnime);
@@ -69,6 +70,9 @@ namespace ANT.Modules
                                     () => new ResourceManager(typeof(Lang.Lang)));
 
                 var group = new List<GroupedFavoriteAnimeByWeekDay>();
+
+                var shelvedAnimes = favoriteCollection.Where(p => p.IsArchived).GroupBy(p => p.IsArchived).ToList();
+                favoriteCollection.RemoveAll(p => p.IsArchived);
 
                 var airingAndHasDayWeekAnimes = favoriteCollection.Where(p => p.NextStreamDate != null && p.Anime.Airing);
 
@@ -154,6 +158,9 @@ namespace ANT.Modules
                     foreach (var item in groupedFavoritedUnknown)
                         group.Add(new GroupedFavoriteAnimeByWeekDay(Lang.Lang.UnknownDate, item.ToList()));
 
+                foreach (var shelved in shelvedAnimes)
+                    group.Add(new GroupedFavoriteAnimeByWeekDay(Lang.Lang.Shelved, shelved.ToList()));
+
 #if DEBUG
                 var groupedList = group.SelectMany(p => p.Select(q => q)).ToList();
 
@@ -234,17 +241,66 @@ namespace ANT.Modules
 
         private async Task OnDeleteFavoriteCommand()
         {
-            var items = SelectedItems.Cast<FavoritedAnime>();
-            var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
-            
-            foreach (var item in items)
-                favoriteCollection.Delete(item.Anime.MalId);
+            if (SelectedItems?.Count == 0)
+                return;
 
-            var collection = await ConstructGroupedCollectionAsync();
-            _originalCollection = collection;
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ChoiceModalViewModel>();
 
-            GroupedFavoriteByWeekList.ReplaceRange(_originalCollection);
+            if (canNavigate)
+            {
+                var action = new Action(async () =>
+                {
+                    var items = SelectedItems.Cast<FavoritedAnime>().ToList();
+                    SelectedItems.Clear();
+                    var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
+
+                    foreach (var item in items)
+                        favoriteCollection.Delete(item.Anime.MalId);
+
+                    var collection = await ConstructGroupedCollectionAsync();
+                    _originalCollection = collection;
+
+                    GroupedFavoriteByWeekList.ReplaceRange(_originalCollection);
+                });
+
+                await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.Deleting, Lang.Lang.DeletingMessage, action);
+            }
         }
+
+        public ICommand ArchiveFavoriteCommand { get; private set; }
+        private async Task OnArchiveFavorite()
+        {
+            if (SelectedItems?.Count == 0)
+                return;
+
+            bool canNavigate = await NavigationManager.CanPopUpNavigateAsync<ChoiceModalViewModel>();
+
+            if (canNavigate)
+            {
+                var action = new Action(async () =>
+                {
+                    var items = SelectedItems.Cast<FavoritedAnime>().ToList();
+                    SelectedItems.Clear();
+                    var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>();
+
+                    foreach (var item in items)
+                    {
+                        item.IsArchived = !item.IsArchived;
+                        item.CanGenerateNotifications = !item.IsArchived;
+                        favoriteCollection.Update(item.Anime.MalId, item);
+                    }
+
+                    var collection = await ConstructGroupedCollectionAsync();
+                    _originalCollection = collection;
+
+                    GroupedFavoriteByWeekList.ReplaceRange(_originalCollection);
+                });
+
+                await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.Shelving, Lang.Lang.ShelvingMessage, action);
+            }
+        }
+
+
 
         public ICommand ClearAllCommand { get; private set; }
         private async Task OnClearAll()
@@ -410,7 +466,7 @@ namespace ANT.Modules
             {
                 var action = new Action(async () =>
                 {
-                    var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>().FindAll().ToList();
+                    var favoriteCollection = App.liteDB.GetCollection<FavoritedAnime>().FindAll().Where(p => !p.IsArchived).ToList();
 
                     if (!_settingsPreferences.ShowNSFW)
                     {

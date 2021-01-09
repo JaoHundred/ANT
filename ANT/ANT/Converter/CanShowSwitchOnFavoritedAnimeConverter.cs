@@ -12,7 +12,7 @@ namespace ANT.Converter
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is FavoritedAnime favoritedAnime)
-                return favoritedAnime.NextStreamDate != null && favoritedAnime.Anime.Airing;
+                return favoritedAnime.NextStreamDate != null && favoritedAnime.Anime.Airing && !favoritedAnime.IsArchived;
             return false;
         }
 

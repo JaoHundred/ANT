@@ -144,6 +144,9 @@
   <data name="ApplyFilter" xml:space="preserve">
     <value>Aplicar filtro</value>
   </data>
+  <data name="Archived" xml:space="preserve">
+    <value>Arquivado</value>
+  </data>
   <data name="Ascending" xml:space="preserve">
     <value>Crescente</value>
   </data>
@@ -209,6 +212,12 @@
   </data>
   <data name="Delete" xml:space="preserve">
     <value>Deletar</value>
+  </data>
+  <data name="Deleting" xml:space="preserve">
+    <value>Deletando animes</value>
+  </data>
+  <data name="DeletingMessage" xml:space="preserve">
+    <value>Os animes selecionados serão deletados, deseja continuar?</value>
   </data>
   <data name="Descending" xml:space="preserve">
     <value>Decrescente</value>
@@ -416,6 +425,15 @@
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Configurações</value>
+  </data>
+  <data name="Shelved" xml:space="preserve">
+    <value>Arquivados</value>
+  </data>
+  <data name="Shelving" xml:space="preserve">
+    <value>Arquivando animes</value>
+  </data>
+  <data name="ShelvingMessage" xml:space="preserve">
+    <value>Os animes selecionados serão arquivados, animes arquivados não serão atualizados, deseja continuar?</value>
   </data>
   <data name="ShrinkSize" xml:space="preserve">
     <value>Diminuir tamanho</value>

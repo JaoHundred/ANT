@@ -51,8 +51,10 @@ namespace ANT.Modules
 
         private async void DeleteButton_AnimationOnIsVisible(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsVisible" && DeleteButton.IsVisible)
-                await DeleteButton.Animate(new ShakeAnimation());
+            if (sender is VisualElement element && e.PropertyName == "IsVisible" && element.IsVisible)
+            {
+                await element.Animate(new ShakeAnimation());
+            }
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
