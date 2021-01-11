@@ -286,7 +286,7 @@ namespace ANT.Modules
                     foreach (var item in items)
                     {
                         item.IsArchived = !item.IsArchived;
-                        item.CanGenerateNotifications = !item.IsArchived;
+                        item.CanGenerateNotifications = false;
                         favoriteCollection.Update(item.Anime.MalId, item);
                     }
 
@@ -299,8 +299,6 @@ namespace ANT.Modules
                 await NavigationManager.NavigatePopUpAsync<ChoiceModalViewModel>(Lang.Lang.Shelving, Lang.Lang.ShelvingMessage, action);
             }
         }
-
-
 
         public ICommand ClearAllCommand { get; private set; }
         private async Task OnClearAll()
